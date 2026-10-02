@@ -4,6 +4,7 @@ import { roomById } from './rooms'
 import { Stage } from './scene/Stage'
 import { TopBar } from './ui/TopBar'
 import { Mixer } from './ui/Mixer'
+import { SharedMix } from './ui/SharedMix'
 
 export function App() {
   const night = useStore((s) => s.night)
@@ -56,6 +57,7 @@ export function App() {
       <TopBar brandRef={brand} />
       <div className={seasoned ? 'hotspots seasoned' : 'hotspots'} ref={hotspots} />
       <Mixer panelRef={panel} />
+      <SharedMix />
     </>
   )
 }

@@ -28,7 +28,8 @@ Le développement se fait sous Windows : les commandes doivent fonctionner dans 
 ```
 src/
   main.tsx, App.tsx
-  state/store.ts            # Zustand : on/off et volume par son, mode nuit
+  state/store.ts            # Zustand : on/off et volume par son, mode nuit, pièce, minuteur, ambiances
+  state/mixes.ts            # ambiances : modèle, stockage, lien de partage (voir docs/MIXES.md)
   rooms/                    # types.ts (format d'une pièce), bedroom.ts (la chambre : objets, sons, ancres, ciel, lumières), index.ts
   scene/
     Stage.tsx               # <Canvas>, caméra iso, lumières, cadrage, rotation au drag
@@ -42,7 +43,7 @@ src/
     recordings.ts           # chargement Opus/MP3, boucles en fondu, repli sur la synthèse
     session.ts              # Media Session : titre, pause / lecture depuis l'écran verrouillé
     channels/               # radio.ts, tracks.ts (pistes lofi), rain.ts, fan.ts, purr.ts, outside.ts
-  ui/                       # TopBar, RoomPicker, Mixer, MixerCard, SleepTimer, InstallButton, splash.ts (écran de chargement, HTML dans index.html)
+  ui/                       # TopBar, RoomPicker, Mixer, MixerCard, SleepTimer, MixesMenu, SharedMix, InstallButton, splash.ts (écran de chargement, HTML dans index.html)
   styles/tokens.css
 scripts/encode-audio.mjs    # npm run audio : sources → Opus/WebM + MP3 dans public/audio/
 netlify.toml                # hébergement : cache et en-têtes (voir docs/DEPLOY.md)

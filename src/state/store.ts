@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { roomById, rooms } from '../rooms'
 import type { ObjectId, RoomSound, SoundId, Target } from '../rooms/types'
 import { reduceMotion } from '../motion'
+import { MAX_SAVED, loadMixes, mixFromSearch, mixName, storeMixes, type Mix, type SavedMix } from './mixes'
 
 type PerSound<T> = Record<SoundId, T>
 // Les sons de toutes les pièces : un son qui revient d'une pièce à l'autre garde son volume.
@@ -25,6 +26,10 @@ export interface Store {
   kicks: number
   /** Écran de chargement : fichiers préchargés, et scène dessinée une première fois. */
   loading: { done: number; total: number; scene: boolean }
+  /** Ambiances enregistrées dans ce navigateur. */
+  mixes: SavedMix[]
+  /** Ambiance reçue par un lien, en attente d'un geste pour être jouée. */
+  shared: Mix | null
   /** Minuteur de sommeil : instant (ms) où tout s'est éteint en fondu, ou null. */
   sleepEnd: number | null
   /** Place prise par le titre (en haut) et le mixeur (en bas), en px : la pièce se cadre entre les deux. */
@@ -35,6 +40,15 @@ export interface Store {
   setVolume: (id: SoundId, v: number) => void
   /** Lance le minuteur de sommeil (durée en minutes), ou l'annule (null). */
   setSleep: (minutes: number | null) => void
+  /** L'ambiance en cours : pièce, sons qui jouent et leur volume, jour / nuit. */
+  currentMix: () => Mix
+  /** Enregistre l'ambiance en cours (la plus récente en premier). */
+  saveMix: () => void
+  deleteMix: (id: string) => void
+  /** Joue une ambiance : change de pièce si besoin, règle les volumes et le jour / nuit, allume ses sons. */
+  applyMix: (m: Mix) => void
+  /** Écarte l'ambiance reçue par un lien. */
+  dismissShared: () => void
   /** Change de pièce : les sons se coupent, la scène s'efface, puis la nouvelle pièce apparaît. */
   goto: (id: string) => void
 }
@@ -61,7 +75,7 @@ function flip(s: Store, target: Target): Partial<Store> {
   }
 }
 
-export const useStore = create<Store>()((set, get) => ({
+export const useStore = create<Store>()((set, get, api) => ({
   night: hour >= 20 || hour < 7,
   room: savedRoom(),
   leaving: null,
@@ -73,7 +87,52 @@ export const useStore = create<Store>()((set, get) => ({
   kicks: 0,
   loading: { done: 0, total: 0, scene: false },
   insets: { top: 0, bottom: 0 },
+  mixes: loadMixes(),
+  shared: mixFromSearch(location.search),
   sleepEnd: null,
+  currentMix: () => {
+    const s = get(), on = roomById(s.room).sounds.filter((x) => s.on[x.id]).map((x) => x.id)
+    return { room: s.room, on, vol: Object.fromEntries(on.map((id) => [id, Math.round(s.vol[id] * 100) / 100])), night: s.night }
+  },
+  saveMix: () => {
+    const mix = get().currentMix()
+    if (!mix.on.length) return
+    // La même ambiance enregistrée deux fois ne fait qu'une entrée, remontée en tête.
+    const same = JSON.stringify(mix), others = get().mixes.filter((x) => JSON.stringify(x.mix) !== same)
+    const list = [{ id: Date.now().toString(36), name: mixName(mix), mix }, ...others].slice(0, MAX_SAVED)
+    storeMixes(list)
+    set({ mixes: list })
+  },
+  deleteMix: (id) => {
+    const list = get().mixes.filter((x) => x.id !== id)
+    storeMixes(list)
+    set({ mixes: list })
+  },
+  applyMix: (m) => {
+    const apply = () => {
+      const sounds = roomById(m.room).sounds
+      set((s) => ({
+        night: m.night,
+        vol: { ...s.vol, ...m.vol },
+        on: { ...perSound(() => false), ...Object.fromEntries(sounds.filter((x) => m.on.includes(x.id)).map((x) => [x.id, true])) },
+        taps: s.taps + 1,
+      }))
+    }
+    if (get().room === m.room) return apply()
+    if (get().leaving) return
+    get().goto(m.room)
+    // On joue une fois la nouvelle pièce affichée (la transition coupe tout, puis change de pièce).
+    const stop = api.subscribe((s) => {
+      if (s.room !== m.room) return
+      stop()
+      apply()
+    })
+    setTimeout(stop, 2000)
+  },
+  dismissShared: () => {
+    set({ shared: null })
+    history.replaceState(null, '', location.pathname) // l'adresse ne garde pas le lien reçu
+  },
   setSleep: (minutes) => set({ sleepEnd: minutes === null ? null : Date.now() + minutes * 60_000 }),
   // Toucher un objet, son hotspot ou sa carte du mixeur. Sans effet pendant une transition.
   toggle: (target) => set((s) => (s.leaving ? s : { taps: s.taps + 1, ...flip(s, target) })),

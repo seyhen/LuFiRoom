@@ -156,6 +156,14 @@ function keepOutput(anyOn: boolean) {
   if (!anyOn) sinkOff = window.setTimeout(() => !ids.some((id) => useStore.getState().on[id]) && el.pause(), 2500)
 }
 
+/**
+ * À appeler au moment d'un geste, avant un changement d'état qui n'allumera les sons que plus tard (une ambiance qui change
+ * de pièce) : crée ou relance l'AudioContext et ouvre la sortie tant que le navigateur l'autorise.
+ */
+export function unlockAudio() {
+  if (ensure()) keepOutput(false)
+}
+
 /** Allume ou éteint un canal de la pièce courante. Son graphe n'est construit qu'à sa première activation. */
 function set(k: Kit, id: SoundId) {
   const key = keyOf(id)

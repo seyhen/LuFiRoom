@@ -3,6 +3,7 @@ import { useStore } from '../state/store'
 import { roomById } from '../rooms'
 import { MixerCard } from './MixerCard'
 import { SleepTimer } from './SleepTimer'
+import { MixesMenu } from './MixesMenu'
 
 /** Mixeur flottant : une carte par son, le compte des sons actifs et « Tout couper ». */
 export function Mixer({ panelRef }: { panelRef: Ref<HTMLDivElement> }) {
@@ -15,6 +16,7 @@ export function Mixer({ panelRef }: { panelRef: Ref<HTMLDivElement> }) {
           <span className="eyebrow">Ambiance</span>
           <span className="count">{n === 0 ? 'silence' : `${n} son${n > 1 ? 's' : ''} actif${n > 1 ? 's' : ''}`}</span>
           <div className="head-end">
+            <MixesMenu />
             <SleepTimer />
             <button className="mute" type="button" hidden={n === 0} onClick={() => useStore.getState().muteAll()}>
               Tout couper

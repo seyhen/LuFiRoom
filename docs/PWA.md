@@ -59,6 +59,6 @@ Vérifié dans Chromium : le flux porte bien le son, l'élément joue et se met 
 **Pas vérifié sur un vrai téléphone** : surtout iPhone (Safari), où le comportement en arrière-plan est le plus capricieux. À essayer : lancer une ambiance, verrouiller l'écran, attendre une minute, vérifier que ça joue et que les contrôles apparaissent. Si ça ne marche pas, les pistes à explorer sont le mode « plein écran » de l'app installée et la manière dont iOS traite le flux.
 Un point d'attention : la radio générative programme ses notes avec des minuteurs ; en arrière-plan prolongé, un navigateur peut les ralentir (en général pas tant qu'un son est audible).
 
-## Pas encore fait
+## Ambiances enregistrées et partage par lien
 
-- **Mixes sauvegardés et partage par lien.**
+Voir `docs/MIXES.md`.

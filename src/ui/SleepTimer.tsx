@@ -46,9 +46,9 @@ export function SleepTimer() {
     setOpen(false)
   }
   return (
-    <div className="sleep" ref={root}>
+    <div className="pop" ref={root}>
       <button
-        className={end === null ? 'sleep-btn' : 'sleep-btn on'}
+        className={end === null ? 'pop-btn' : 'pop-btn on'}
         type="button"
         aria-haspopup="true"
         aria-expanded={open}
@@ -56,10 +56,10 @@ export function SleepTimer() {
         onClick={() => setOpen((o) => !o)}
       >
         {timerIcon}
-        <span>{end === null ? 'Minuteur' : remaining(left)}</span>
+        <span className={end === null ? 'lbl' : undefined}>{end === null ? 'Minuteur' : remaining(left)}</span>
       </button>
       {open && (
-        <div className="sleep-menu" role="group" aria-label="Éteindre en fondu dans…">
+        <div className="pop-menu" role="group" aria-label="Éteindre en fondu dans…">
           {CHOICES.map((c) => (
             <button key={c.min} type="button" onClick={() => choose(c.min)}>
               {c.label}
