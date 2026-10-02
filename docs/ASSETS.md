@@ -92,6 +92,40 @@ Quoi chercher (mots-clés anglais, en général plus riches) :
 Pour chaque fichier retenu, ajoute **tout de suite** sa ligne dans `public/audio/CREDITS.md` (auteur, lien, licence, date) et garde une capture de la page de licence hors du dépôt.
 Puis : `audio-src/`, `npm run audio`, déclaration dans la pièce, écoute au casque et sur le haut-parleur d'un téléphone, réglage du `gain`.
 
+## Générer les sons avec une IA
+
+Une autre voie que les banques de sons : générer les boucles et la musique avec un outil d'IA. Je ne peux pas appeler ces services depuis mon environnement : c'est toi qui génères, moi qui intègre (`audio-src/`, `npm run audio`, déclaration, mixage, `CREDITS.md`).
+Mes connaissances sur ces outils s'arrêtent à mi-2026 et leurs conditions changent vite : **relis les conditions d'usage au moment où tu t'abonnes**.
+
+**Ce qui doit être vrai, pour rester dans la règle « CC0 ou licence achetée »** :
+- l'offre que tu utilises autorise explicitement l'**usage commercial** des sons générés, et leur **redistribution dans une app** (pas seulement « publier sur les réseaux ») ;
+- tu es sur le **plan payant concerné au moment de la génération** (les conditions s'appliquent souvent à la date de création : un son généré en offre gratuite peut rester non commercial) ;
+- tu gardes une trace : l'outil, le plan, la date, le prompt, une capture des conditions. Écris-les dans `public/audio/CREDITS.md` (colonne « Source » : « généré avec X, plan Y, date »).
+- Le statut juridique de la musique générée est encore mouvant selon les pays (droit d'auteur sur les sorties d'IA, litiges autour des données d'entraînement de certains services). Ça ne bloque pas l'usage dans l'app, mais ça veut dire qu'on ne peut pas toujours empêcher qu'un tiers réutilise ces sons.
+- Écarte les modèles ouverts dont les poids sont publiés pour la **recherche ou le non commercial** (c'est le cas de certains modèles de musique ouverts très connus).
+
+**Choisir selon le besoin** :
+
+| Besoin | Piste | Pourquoi |
+|---|---|---|
+| Bruit blanc, rose, brun | Pas d'IA : `ffmpeg` (`anoisesrc`) ou la synthèse de l'app | un bruit blanc n'a pas de « prise de son » : il est déjà parfait en synthèse |
+| Ambiances (pluie, ventilo, feu, vent, oiseaux, grillons, ronron) | Un générateur d'effets sonores sur plan payant commercial, ou des enregistrements CC0 | l'IA est bonne pour des textures continues, moins pour le ronron d'un chat |
+| Musique lofi | Un générateur de musique dont l'offre autorise l'usage dans un produit, ou un·e artiste lofi sous licence | c'est la partie la plus exposée juridiquement : pour une app qu'on veut vendre, une licence écrite d'un·e artiste est la plus sûre |
+
+**Prompts de départ** (en anglais, les générateurs y répondent mieux) :
+
+- `rain` : *gentle steady rain on a window, heard from inside a quiet room, soft, continuous, no thunder, no voices, no cars*
+- `fan` : *small desk fan running at low speed, steady soft hum and air flow, close microphone, continuous, no clicks*
+- `purr` : *a cat purring softly and steadily, close recording, continuous, no meowing, no room noise*
+- `birds` : *quiet morning birdsong in a garden, several species, gentle, a little distant, continuous, no human sounds*
+- `crickets` : *crickets chirping at night in a quiet countryside, continuous, no other sounds*
+- `fire` : *wood fire crackling in a fireplace, steady warm crackle, close microphone, continuous, no voices*
+- `wind` : *cold wind over snow, steady with slow gusts and a soft low howl, continuous, no thunder, nothing rattling*
+- radio : *lofi hip hop, instrumental, 72 bpm, warm electric piano chords, soft dusty drums with a lazy swing, mellow bass, light vinyl crackle, relaxed, no vocals, steady loudness, 3 minutes* (variantes : *rainy afternoon*, *late night study*, *cozy winter cabin*, entre 70 et 85 bpm)
+
+**Après la génération** : écoute en entier et garde 20 à 60 s sans évènement marquant (pour les boucles) ; pour la musique, vérifie qu'il n'y a ni voix, ni changement brusque, ni fin abrupte. Note le **tempo** de chaque morceau (champ `bpm` de `playlist`).
+Les boucles n'ont pas besoin d'être parfaitement bouclables : l'app fond chaque passage dans le suivant.
+
 ## Écran de chargement
 
 Il est dans `index.html` (HTML et CSS seuls, visibles avant même le JavaScript) et pilotés par `src/ui/splash.ts`.
