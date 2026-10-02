@@ -44,6 +44,7 @@ src/
   ui/                       # TopBar, RoomPicker, Mixer, MixerCard, SleepTimer, InstallButton, splash.ts (écran de chargement, HTML dans index.html)
   styles/tokens.css
 scripts/encode-audio.mjs    # npm run audio : sources → Opus/WebM + MP3 dans public/audio/
+netlify.toml                # hébergement : cache et en-têtes (voir docs/DEPLOY.md)
 vite.config.ts              # dont vite-plugin-pwa : manifeste, service worker, cache des sons (voir docs/PWA.md)
 ```
 

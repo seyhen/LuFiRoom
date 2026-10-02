@@ -66,6 +66,15 @@ Cahier des charges d'origine :
 - Minuteur de sommeil, mixes sauvegardés, partage d'un mix par lien.
 
 ## Phase 5 : mise en ligne (piste)
+État : config Netlify et guide faits (`netlify.toml`, `docs/DEPLOY.md`) ; le déploiement lui-même se fait depuis ton compte Netlify.
+
+- [x] Config d'hébergement : cache, service worker toujours revalidé, types des sons, en-têtes de sécurité.
+- [ ] Déploiement sur Netlify depuis le dépôt (à faire depuis ton compte) et nom de domaine.
+- [ ] Image et titre d'aperçu des liens (Open Graph), une fois l'adresse définitive connue.
+- [ ] Mesure d'audience légère et respectueuse de la vie privée.
+- [ ] Modèle économique éventuel.
+
+Cahier des charges d'origine :
 - Déploiement (Vercel ou Netlify), nom de domaine.
 - Mesure d'audience légère et respectueuse de la vie privée.
 - Modèle économique éventuel (chambres ou sons premium).

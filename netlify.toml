@@ -1,0 +1,67 @@
+# Déploiement sur Netlify : voir docs/DEPLOY.md.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Vite 8 demande Node 20.19 ou plus récent.
+  NODE_VERSION = "22"
+
+# Fichiers hachés de Vite (le nom change quand le contenu change) : cache d'un an.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Ce qui doit toujours être revalidé : la page, le service worker (sinon une mise à jour ne passe jamais), le manifeste.
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/registerSW.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/workbox-*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Cache-Control = "no-cache"
+    Content-Type = "application/manifest+json"
+
+# Les sons n'ont pas de nom haché : un jour de cache, et pour en remplacer un, on change son nom (voir docs/DEPLOY.md).
+# Type explicite : un .webm est sinon annoncé comme de la vidéo.
+[[headers]]
+  for = "/audio/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/audio/*.webm"
+  [headers.values]
+    Content-Type = "audio/webm"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # L'app n'utilise ni caméra, ni micro, ni position.
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
