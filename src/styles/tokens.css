@@ -1,0 +1,23 @@
+:root {
+  --bg: #e5daef;
+  --day-1: #f7f1fa; --day-2: #e7dcf0; --day-3: #d2c1e3;
+  --night-1: #342d66; --night-2: #211c44; --night-3: #13102a;
+  --ink: #33264a; --ink-soft: #6b5b85;
+  --panel: rgba(255, 251, 255, .76); --line: rgba(80, 60, 120, .15);
+  --accent: #128d96; --accent-soft: rgba(18, 141, 150, .12);
+  --icon-ink: #33264a;
+  /* pastilles du mixeur */
+  --c-radio: #9fdecd; --c-rain: #b9d4f7; --c-fan: #f8dc8c; --c-cat: #dcd2f2; --c-win: #f7c4d4;
+  --shadow: 0 12px 32px rgba(72, 50, 112, .16);
+  --font-display: "Gluten", "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Nunito", ui-rounded, "Segoe UI", system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+html.night {
+  --bg: #191632; --ink: #f3eeff; --ink-soft: #b8addb;
+  --panel: rgba(30, 25, 58, .78); --line: rgba(210, 190, 255, .15);
+  --accent: #6cd9d2; --accent-soft: rgba(108, 217, 210, .14);
+  --shadow: 0 12px 32px rgba(0, 0, 0, .38);
+  color-scheme: dark;
+}
