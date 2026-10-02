@@ -87,6 +87,21 @@ html.night .sky-night { opacity: 1 }
 .card input[type=range] { width: 100%; margin: 0; height: 18px; accent-color: var(--accent); opacity: .5; transition: opacity .3s; cursor: pointer }
 .card.on input[type=range] { opacity: 1 }
 
+/* choix de la pièce : sous la phrase d'aide (pointer-events: auto, comme .tools) */
+.rooms { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; pointer-events: auto }
+.room { height: 32px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); font: 800 13px/1 var(--font-body); cursor: pointer;
+  transition: background-color .25s, color .25s, border-color .25s }
+.room[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: #fff }
+html.night .room[aria-pressed=true] { color: #12102a }
+.room:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+
+/* changement de pièce : la scène, ses hotspots et les cartes du mixeur s'effacent (350 ms, voir FADE dans store.ts) */
+.scene, .hotspots, .mix { transition: opacity .3s ease, transform .3s ease }
+html.leaving .scene, html.leaving .hotspots { opacity: 0; transform: scale(.97) }
+html.leaving .mix { opacity: 0 }
+html.leaving .hs { pointer-events: none }
+
 @media (max-width: 520px) {
   .brand p { font-size: 12.5px; max-width: 24ch }
   .clock { display: none }

@@ -1,11 +1,14 @@
 import { useLayoutEffect, useRef } from 'react'
 import { useStore } from './state/store'
+import { roomById } from './rooms'
 import { Stage } from './scene/Stage'
 import { TopBar } from './ui/TopBar'
 import { Mixer } from './ui/Mixer'
 
 export function App() {
   const night = useStore((s) => s.night)
+  const room = useStore((s) => roomById(s.room))
+  const leaving = useStore((s) => s.leaving !== null) // la scène s'efface : voir app.css
   const seasoned = useStore((s) => s.taps >= 3) // les hotspots arrêtent de pulser
   const brand = useRef<HTMLDivElement>(null!), panel = useRef<HTMLDivElement>(null!), hotspots = useRef<HTMLDivElement>(null!)
 
@@ -13,6 +16,17 @@ export function App() {
   useLayoutEffect(() => {
     document.documentElement.classList.toggle('night', night)
   }, [night])
+
+  // Le ciel du fond est celui de la pièce (le changement se fait pendant que la scène est effacée).
+  useLayoutEffect(() => {
+    const st = document.documentElement.style
+    room.sky.day.forEach((c, i) => st.setProperty(`--day-${i + 1}`, c))
+    room.sky.night.forEach((c, i) => st.setProperty(`--night-${i + 1}`, c))
+  }, [room])
+
+  useLayoutEffect(() => {
+    document.documentElement.classList.toggle('leaving', leaving)
+  }, [leaving])
 
   // Mesure la place prise par le titre et le mixeur, pour cadrer la pièce entre les deux.
   useLayoutEffect(() => {

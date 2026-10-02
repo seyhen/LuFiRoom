@@ -1,10 +1,11 @@
 import type { Ref } from 'react'
 import { useStore } from '../state/store'
-import { sounds } from '../rooms/bedroom'
+import { roomById } from '../rooms'
 import { MixerCard } from './MixerCard'
 
 /** Mixeur flottant : une carte par son, le compte des sons actifs et « Tout couper ». */
 export function Mixer({ panelRef }: { panelRef: Ref<HTMLDivElement> }) {
+  const { id, sounds } = useStore((s) => roomById(s.room))
   const n = useStore((s) => sounds.filter((x) => s.on[x.id]).length)
   return (
     <nav className="dock" aria-label="Mixeur d'ambiance">
@@ -16,7 +17,7 @@ export function Mixer({ panelRef }: { panelRef: Ref<HTMLDivElement> }) {
             Tout couper
           </button>
         </div>
-        <div className="mix">
+        <div className="mix" key={id /* chaque pièce repart de la première carte */}>
           {sounds.map((s) => (
             <MixerCard key={s.id} sound={s} />
           ))}

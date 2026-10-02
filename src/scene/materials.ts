@@ -57,10 +57,7 @@ export const fairyMats = [0xffd36b, 0xff9fc0, 0x8ff0dc].map(
   (c) => new MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: 0.2, roughness: 0.4 }),
 )
 
-/** Couleurs de jour / nuit des lumières, et du nuage sec / de pluie. */
+/** Couleurs du nuage, sec et sous la pluie. (Celles des lumières sont dans les données de la pièce.) */
 export const COL = {
-  hemiDay: new Color(0xfff4fb), hemiNight: new Color(0x6c6db8),
-  gDay: new Color(0xbca8d0), gNight: new Color(0x2c2448),
-  sunDay: new Color(0xfff0e2), sunNight: new Color(0x9fb2ff),
   cloudDay: new Color(0xfdfbff), cloudRain: new Color(0xb9b6cf),
 }

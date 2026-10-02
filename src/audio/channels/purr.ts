@@ -1,9 +1,9 @@
-import { loops } from '../../rooms/bedroom'
+import type { Room } from '../../rooms/types'
 import { purrBuffer } from '../buffers'
 import type { Kit } from '../engine'
 
 /** Ronron du chat, enregistré ou synthétisé. */
-export default function purr(kit: Kit, out: GainNode) {
+export default function purr(kit: Kit, out: GainNode, { loops }: Room) {
   const { ctx, biq, loop } = kit
   kit.loopOr(loops.purr, out, () => {
     const pk = biq('peaking', 170, 0.9)

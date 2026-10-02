@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { SoundId } from '../audio/engine'
+import type { SoundId } from '../rooms/types'
 
 const svg = (children: ReactNode) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">

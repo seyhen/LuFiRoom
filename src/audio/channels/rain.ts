@@ -1,10 +1,10 @@
 import { useStore } from '../../state/store'
-import { loops } from '../../rooms/bedroom'
+import type { Room } from '../../rooms/types'
 import { dropletBuffer } from '../buffers'
 import type { Kit } from '../engine'
 
 /** Pluie, étouffée quand la fenêtre est fermée. Enregistrée, ou synthétisée : souffle rose, gouttes sur la vitre, grondement grave. */
-export default function rain(kit: Kit, out: GainNode) {
+export default function rain(kit: Kit, out: GainNode, { loops }: Room) {
   const { ctx, gain, biq, loop, noise } = kit
   // Fenêtre ouverte (sons du dehors actifs) : l'enregistrement passe sans filtre (coupure à Nyquist), la synthèse à 7500 Hz.
   let open = ctx.sampleRate / 2

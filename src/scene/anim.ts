@@ -2,11 +2,11 @@ import { useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Sprite, SpriteMaterial, type Group, type Texture } from 'three'
 import { useStore } from '../state/store'
-import type { ObjectId } from '../rooms/bedroom'
+import type { ObjectId } from '../rooms/types'
 import { TAU, approach } from '../math'
 import { noRay } from './parts'
 
-export const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches
+export { reduceMotion } from '../motion'
 
 /** Transitions partagées (0 → 1), avancées par <Lights> avant le reste de la frame. */
 export const mood = { night: useStore.getState().night ? 1 : 0, rain: 0 }

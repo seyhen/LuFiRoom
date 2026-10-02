@@ -1,6 +1,7 @@
 import { useEffect, useState, type Ref } from 'react'
 import { useStore } from '../state/store'
 import { moonIcon, sunIcon } from './icons'
+import { RoomPicker } from './RoomPicker'
 
 const now = () => new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
 
@@ -17,6 +18,7 @@ export function TopBar({ brandRef }: { brandRef: Ref<HTMLDivElement> }) {
       <div className="brand" ref={brandRef}>
         <h1>Chambre Lofi</h1>
         <p>Touche les objets pour composer ton ambiance. Glisse pour tourner la pièce.</p>
+        <RoomPicker />
       </div>
       <div className="tools">
         <span className="clock" aria-label="Heure locale">{time}</span>

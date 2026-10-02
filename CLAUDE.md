@@ -29,9 +29,10 @@ Le développement se fait sous Windows : les commandes doivent fonctionner dans 
 src/
   main.tsx, App.tsx
   state/store.ts            # Zustand : on/off et volume par son, mode nuit
-  rooms/bedroom.ts          # config de la chambre : objets, sons liés, ancres des hotspots
+  rooms/                    # types.ts (format d'une pièce), bedroom.ts (la chambre : objets, sons, ancres, ciel, lumières), index.ts
   scene/
     Stage.tsx               # <Canvas>, caméra iso, lumières, cadrage, rotation au drag
+    scenes.ts, rooms/       # la scène 3D de chaque pièce (BedroomScene...) ; ajouter une pièce : docs/ROOMS.md
     materials.ts            # palette de matériaux gummy partagés
     objects/                # Radio, Cloud, Rain, Fan, Cat, Window, Lamp, Bed, Desk...
     Hotspot.tsx             # bouton DOM projeté sur un objet 3D (drei <Html>)
@@ -40,12 +41,12 @@ src/
     buffers.ts              # bruits en boucle sans couture, gouttes, crépitement, ronron
     recordings.ts           # chargement Opus/MP3, boucles en fondu, repli sur la synthèse
     channels/               # radio.ts, tracks.ts (pistes lofi), rain.ts, fan.ts, purr.ts, outside.ts
-  ui/                       # TopBar, Mixer, MixerCard, splash.ts (écran de chargement, HTML dans index.html)
+  ui/                       # TopBar, RoomPicker, Mixer, MixerCard, splash.ts (écran de chargement, HTML dans index.html)
   styles/tokens.css
 scripts/encode-audio.mjs    # npm run audio : sources → Opus/WebM + MP3 dans public/audio/
 ```
 
-Principe clé : **une chambre est une donnée**. Les objets interactifs, les sons qu'ils pilotent et leurs ancres viennent de `rooms/*.ts`, pour pouvoir ajouter d'autres pièces (café, cabane sous la neige...) sans toucher au moteur.
+Principe clé : **une chambre est une donnée**. Les objets interactifs, les sons qu'ils pilotent, leurs ancres, le ciel et les lumières viennent de `rooms/*.ts`, pour pouvoir ajouter d'autres pièces (café, cabane sous la neige...) sans toucher au moteur.
 
 ## Conventions
 

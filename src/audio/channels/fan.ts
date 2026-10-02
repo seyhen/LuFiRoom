@@ -1,8 +1,8 @@
-import { loops } from '../../rooms/bedroom'
+import type { Room } from '../../rooms/types'
 import type { Kit } from '../engine'
 
 /** Ventilateur. Enregistré, ou synthétisé : souffle brun et rose modulé à 7.2 Hz, plus le ronflement du moteur. */
-export default function fan(kit: Kit, out: GainNode) {
+export default function fan(kit: Kit, out: GainNode, { loops }: Room) {
   const { gain, biq, osc, loop, noise } = kit
   kit.loopOr(loops.fan, out, () => {
     const am = gain(1)

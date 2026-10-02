@@ -1,15 +1,15 @@
 import type { CSSProperties, MutableRefObject } from 'react'
 import { Html } from '@react-three/drei'
 import { isActive, useStore } from '../state/store'
-import { objects, type RoomObject } from '../rooms/bedroom'
+import type { Room, RoomObject } from '../rooms/types'
 
 type Layer = MutableRefObject<HTMLDivElement>
 
 /** Un vrai bouton par objet interactif, recalé chaque frame sur l'ancre 3D projetée. */
-export function Hotspots({ layer }: { layer: Layer }) {
+export function Hotspots({ room, layer }: { room: Room; layer: Layer }) {
   return (
     <>
-      {objects.map((o, i) => (
+      {room.objects.map((o, i) => (
         <Hotspot key={o.id} obj={o} delay={i * 0.37} layer={layer} />
       ))}
     </>

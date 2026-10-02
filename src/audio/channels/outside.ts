@@ -1,12 +1,12 @@
 import { useStore } from '../../state/store'
-import { loops } from '../../rooms/bedroom'
+import type { Room } from '../../rooms/types'
 import { rand } from '../../math'
 import { impulse } from '../buffers'
 import { crossLoop, later, missing } from '../recordings'
 import type { Channel, Kit } from '../engine'
 
 /** Dehors : des oiseaux le jour, des grillons la nuit. Enregistrés, ou synthétisés. */
-export default function outside(kit: Kit, out: GainNode): Channel {
+export default function outside(kit: Kit, out: GainNode, { loops }: Room): Channel {
   const ch = later(), { birds, crickets } = loops
   const synth = () => ch.use(synthOutside(kit, out))
   if (!birds || !crickets) synth()

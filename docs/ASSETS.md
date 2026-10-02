@@ -14,7 +14,7 @@ audio-src/bedroom/rain.wav   ──  npm run audio  ──>  public/audio/bedroo
 2. `npm run audio` encode tout ce qui est nouveau ou modifié (`npm run audio -- --force` pour tout refaire).
    Il faut **ffmpeg** dans le PATH : sous Windows, `winget install Gyan.FFmpeg`, puis rouvrir PowerShell.
    Chaque fichier sort en Opus/WebM (64 kbit/s en mono, 96 en stéréo) et en MP3 (repli), à la même sonie : **-20 LUFS**.
-3. Déclare-le dans `src/rooms/bedroom.ts` (le script affiche la ligne `src:` à copier).
+3. Déclare-le dans la pièce concernée (`src/rooms/bedroom.ts` : champs `loops` et `playlist` ; le script affiche la ligne `src:` à copier).
 4. Écris la source et la licence dans `public/audio/CREDITS.md`. **Licences : CC0 ou achetée, rien d'autre sans en parler.**
 
 Le navigateur prend le WebM s'il le lit, sinon le MP3. Si un fichier manque ou ne se décode pas, le son retombe sur la synthèse
@@ -78,7 +78,7 @@ se rencontrent du premier coup.
 - Compression : `npx @gltf-transform/cli optimize chambre.glb public/models/bedroom.glb --compress meshopt --texture-compress webp --texture-size 2048`.
 - Budget mobile milieu de gamme : moins de 100 000 triangles, textures de 2048 px au plus, quelques matériaux, moins de 2 Mo compressé.
 
-**Objets interactifs : des nœuds séparés, nommés comme les `ObjectId` de `src/rooms/bedroom.ts`**
+**Objets interactifs : des nœuds séparés, nommés comme les `ObjectId` de `src/rooms/types.ts`**
 
 | Nœud | Contient, pour les animations (nœuds enfants nommés) |
 |---|---|

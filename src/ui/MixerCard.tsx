@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { useStore } from '../state/store'
-import type { RoomSound } from '../rooms/bedroom'
+import type { RoomSound } from '../rooms/types'
 import { soundIcons } from './icons'
 
 /** Un son : pastille, nom, sous-titre vivant (le bouton bascule) et curseur de volume. */

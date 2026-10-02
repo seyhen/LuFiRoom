@@ -2,29 +2,14 @@ import { useEffect, useLayoutEffect, useRef, type MutableRefObject } from 'react
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Raycaster, Vector2, Vector3, type Group, type Object3D, type OrthographicCamera } from 'three'
 import { useStore } from '../state/store'
-import { objects, type ObjectId } from '../rooms/bedroom'
+import { roomById } from '../rooms'
+import type { ObjectId, Room as RoomData } from '../rooms/types'
 import { clamp } from '../math'
 import { pointer, reduceMotion } from './anim'
 import { shadowTex } from './textures'
 import { Lights } from './Lights'
 import { Hotspots } from './Hotspot'
-import { Shell } from './objects/Shell'
-import { WindowView } from './objects/WindowView'
-import { Window } from './objects/Window'
-import { Rug } from './objects/Rug'
-import { Bed } from './objects/Bed'
-import { Nightstand } from './objects/Nightstand'
-import { Lamp } from './objects/Lamp'
-import { Shelf } from './objects/Shelf'
-import { FairyLights } from './objects/FairyLights'
-import { Desk } from './objects/Desk'
-import { Chair } from './objects/Chair'
-import { Plant } from './objects/Plant'
-import { Radio } from './objects/Radio'
-import { Fan } from './objects/Fan'
-import { Cat } from './objects/Cat'
-import { Cloud } from './objects/Cloud'
-import { Rain } from './objects/Rain'
+import { scenes } from './scenes'
 
 type Layer = MutableRefObject<HTMLDivElement>
 
@@ -34,12 +19,13 @@ const CAM_POS = LOOK.clone().addScaledVector(new Vector3(1, 0.8, 1).normalize(),
 
 // `legacy linear flat` : rendu de three r128 comme le prototype (couleurs telles quelles, pas de tone mapping).
 export function Stage({ hotspotLayer }: { hotspotLayer: Layer }) {
+  const room = useStore((s) => roomById(s.room))
   return (
     <Canvas
       className="scene"
       style={{ position: 'fixed', inset: 0 }}
       role="img"
-      aria-label="Chambre lofi en 3D isométrique : lit avec un chat, bureau avec radio et ventilateur, fenêtre, nuage, lampe champignon."
+      aria-label={room.description}
       orthographic
       camera={{ manual: true, near: 0.1, far: 120 }}
       shadows
@@ -49,13 +35,13 @@ export function Stage({ hotspotLayer }: { hotspotLayer: Layer }) {
     >
       <Framing />
       <Ready />
-      <Lights />
+      <Lights room={room} />
       {/* ombre douce sous le diorama, pour l'effet « flotte » */}
       <mesh rotation-x={-Math.PI / 2} position={[-0.2, -1.8, -0.2]}>
         <planeGeometry args={[13, 13]} />
         <meshBasicMaterial map={shadowTex} transparent depthWrite={false} opacity={0.6} />
       </mesh>
-      <Room hotspotLayer={hotspotLayer} />
+      <Room key={room.id} room={room} hotspotLayer={hotspotLayer} />
     </Canvas>
   )
 }
@@ -89,41 +75,26 @@ function Framing() {
 }
 
 /** La pièce : flotte, tourne quand on la glisse. */
-function Room({ hotspotLayer }: { hotspotLayer: Layer }) {
-  const room = useRef<Group>(null!)
-  const turn = useTapAndTurn(room)
+function Room({ room, hotspotLayer }: { room: RoomData; hotspotLayer: Layer }) {
+  const group = useRef<Group>(null!)
+  const turn = useTapAndTurn(group, room)
+  const Scene = scenes[room.id]
   useFrame(({ clock }, delta) => {
     const t = turn.current
     t.angle += (t.target - t.angle) * Math.min(1, Math.min(delta, 0.05) * 6)
-    room.current.rotation.y = t.angle
-    room.current.position.y = reduceMotion ? 0 : Math.sin(clock.elapsedTime * 0.7) * 0.06
+    group.current.rotation.y = t.angle
+    group.current.position.y = reduceMotion ? 0 : Math.sin(clock.elapsedTime * 0.7) * 0.06
   }, -1)
   return (
-    <group ref={room}>
-      <Shell />
-      <WindowView />
-      <Window />
-      <Rug />
-      <Bed />
-      <Nightstand />
-      <Lamp />
-      <Shelf />
-      <FairyLights />
-      <Desk />
-      <Chair />
-      <Plant />
-      <Radio />
-      <Fan />
-      <Cat />
-      <Cloud />
-      <Rain />
-      <Hotspots layer={hotspotLayer} />
+    <group ref={group}>
+      <Scene />
+      <Hotspots room={room} layer={hotspotLayer} />
     </group>
   )
 }
 
 /** Tap (moins de 8 px) sur un objet : bascule. Glisser : tourne la pièce sur ±0.6 rad. Souris : survol. */
-function useTapAndTurn(room: MutableRefObject<Group>) {
+function useTapAndTurn(group: MutableRefObject<Group>, room: RoomData) {
   const gl = useThree((s) => s.gl), camera = useThree((s) => s.camera)
   const turn = useRef({ angle: 0, target: 0 })
   useEffect(() => {
@@ -132,7 +103,7 @@ function useTapAndTurn(room: MutableRefObject<Group>) {
     const pick = (x: number, y: number): ObjectId | null => {
       ndc.set((x / el.clientWidth) * 2 - 1, -(y / el.clientHeight) * 2 + 1)
       ray.setFromCamera(ndc, camera)
-      for (let o: Object3D | null = ray.intersectObjects(room.current.children, true)[0]?.object ?? null; o; o = o.parent) {
+      for (let o: Object3D | null = ray.intersectObjects(group.current.children, true)[0]?.object ?? null; o; o = o.parent) {
         if (o.userData.id) return o.userData.id
       }
       return null
@@ -160,7 +131,8 @@ function useTapAndTurn(room: MutableRefObject<Group>) {
       if (!down || e.pointerId !== down.id) return
       if (!down.moved) {
         const id = pick(e.clientX, e.clientY)
-        if (id) useStore.getState().toggle(objects.find((o) => o.id === id)!.target)
+        const obj = room.objects.find((o) => o.id === id)
+        if (obj) useStore.getState().toggle(obj.target)
       }
       down = null
     }
@@ -182,6 +154,6 @@ function useTapAndTurn(room: MutableRefObject<Group>) {
       el.removeEventListener('pointercancel', onCancel)
       el.removeEventListener('pointerleave', onLeave)
     }
-  }, [gl, camera, room])
+  }, [gl, camera, group, room])
   return turn
 }

@@ -1,5 +1,6 @@
 import { preload, useStore } from '../state/store'
-import { loops, playlist, type Loop } from '../rooms/bedroom'
+import { roomById } from '../rooms'
+import type { Loop, Room, SoundId } from '../rooms/types'
 import { brownGen, loopBuffer, pinkGen, whiteGen } from './buffers'
 import { crossLoop, decode, missing, prefetch } from './recordings'
 import radio from './channels/radio'
@@ -12,7 +13,7 @@ import outside from './channels/outside'
 // canal (bus Gain) ─┬─> master Gain 0.9 ─> compresseur ─> sortie
 // canal (bus Gain) ─┘
 
-export type SoundId = 'radio' | 'rain' | 'fan' | 'purr' | 'outside'
+export type { SoundId }
 
 /** Ce que reçoit un canal pour construire son graphe : contexte, master, raccourcis et bruits partagés. */
 export type Kit = ReturnType<typeof makeKit>
@@ -21,11 +22,11 @@ export interface Channel {
   start(): void
   stop(): void
 }
-type Build = (kit: Kit, out: GainNode) => Channel | void
+type Build = (kit: Kit, out: GainNode, room: Room) => Channel | void
 
 // Gain final d'un canal = volume utilisateur × gain de base.
 const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
-  radio: { build: playlist.length ? tracks : radio, base: 0.9 }, // pistes enregistrées, sinon musique générative
+  radio: { build: (k, out, room) => (room.playlist.length ? tracks(k, out, room) : radio(k, out)), base: 0.9 }, // pistes enregistrées, sinon musique générative
   rain: { build: rain, base: 1.0 },
   fan: { build: fan, base: 0.75 },
   purr: { build: purr, base: 0.95 },
@@ -80,13 +81,21 @@ function makeKit(ctx: AudioContext, master: GainNode) {
   return { ctx, master, gain, biq, osc, loop, noise, sample, loopOr }
 }
 
-// Les boucles se téléchargent dès l'ouverture, pendant l'écran de chargement. On les décode à leur premier allumage.
-// Les pistes de la radio, elles, sont lues en flux.
-for (const { src } of Object.values(loops)) preload(prefetch(src))
+// Les boucles de la pièce se téléchargent dès l'ouverture, pendant l'écran de chargement. On les décode à leur premier
+// allumage. Celles des autres pièces partent quand on s'en approche (voir plus bas). Les pistes de la radio sont lues en flux.
+const preloadRoom = (room: Room, count: boolean) => {
+  for (const { src } of Object.values(room.loops)) {
+    const p = prefetch(src)
+    if (count) preload(p)
+  }
+}
+preloadRoom(roomById(useStore.getState().room), true)
 
 let kit: Kit | null = null
-const bus = {} as Record<SoundId, GainNode>
-const built: Partial<Record<SoundId, Channel | void>> = {}
+// Un bus et un canal par son et par pièce : le ronron de la chambre n'est pas celui d'une autre pièce.
+const bus: Record<string, GainNode> = {}
+const built: Record<string, Channel | void> = {}
+const keyOf = (id: SoundId) => `${useStore.getState().room}/${id}`
 
 /** Crée l'AudioContext (au premier geste), ou le relance s'il a été suspendu. */
 function ensure() {
@@ -106,30 +115,31 @@ function ensure() {
   master.gain.value = 0.9
   master.connect(comp).connect(ctx.destination)
   kit = makeKit(ctx, master)
-  for (const id of ids) {
-    bus[id] = kit.gain(0)
-    bus[id].connect(master)
-  }
   return kit
 }
 
-/** Allume ou éteint un canal. Son graphe n'est construit qu'à sa première activation. */
+/** Allume ou éteint un canal de la pièce courante. Son graphe n'est construit qu'à sa première activation. */
 function set(k: Kit, id: SoundId) {
-  if (!(id in built)) built[id] = CHANNELS[id].build(k, bus[id])
+  const key = keyOf(id)
+  if (!(key in built)) {
+    bus[key] = k.gain(0)
+    bus[key].connect(k.master)
+    built[key] = CHANNELS[id].build(k, bus[key], roomById(useStore.getState().room))
+  }
   const { on, vol } = useStore.getState()
-  const g = bus[id].gain, now = k.ctx.currentTime
+  const g = bus[key].gain, now = k.ctx.currentTime
   g.cancelScheduledValues(now)
   g.setTargetAtTime(on[id] ? vol[id] * CHANNELS[id].base : 0, now, on[id] ? 0.45 : 0.28)
-  const ch = built[id]
+  const ch = built[key]
   if (ch) on[id] ? ch.start() : ch.stop()
 }
 
 function volume(k: Kit, id: SoundId) {
-  const { on, vol } = useStore.getState()
-  if (!on[id]) return
-  const g = bus[id].gain, now = k.ctx.currentTime
-  g.cancelScheduledValues(now)
-  g.setTargetAtTime(vol[id] * CHANNELS[id].base, now, 0.06)
+  const { on, vol } = useStore.getState(), b = bus[keyOf(id)]
+  if (!on[id] || !b) return
+  const now = k.ctx.currentTime
+  b.gain.cancelScheduledValues(now)
+  b.gain.setTargetAtTime(vol[id] * CHANNELS[id].base, now, 0.06)
 }
 
 /** « Pop » d'interface : montant à l'allumage, descendant à l'extinction. */
@@ -148,6 +158,8 @@ function pop({ ctx, master, gain, osc }: Kit, up: boolean) {
 // L'audio suit le store. Un changement on/off ou jour/nuit vient toujours d'un geste de l'utilisateur
 // (l'écouteur est appelé pendant le clic) : c'est là qu'on crée ou relance l'AudioContext (règle d'autoplay).
 useStore.subscribe((s, p) => {
+  // On s'en va vers une autre pièce : ses boucles commencent à se télécharger pendant l'effacement.
+  if (s.leaving && s.leaving !== p.leaving) preloadRoom(roomById(s.leaving), false)
   const changed = ids.filter((id) => s.on[id] !== p.on[id])
   if (changed.length || s.night !== p.night) {
     const k = ensure()

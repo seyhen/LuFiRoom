@@ -1,5 +1,5 @@
 import { useStore } from '../../state/store'
-import { playlist } from '../../rooms/bedroom'
+import type { Room } from '../../rooms/types'
 import { EXTS, fileUrl, later, missing } from '../recordings'
 import type { Channel, Kit } from '../engine'
 import radio, { tuneStatic } from './radio'
@@ -19,7 +19,7 @@ function shuffled(n: number, last: number) {
  * Radio sur les pistes enregistrées de la chambre, dans un ordre mélangé. Elles sont lues en flux par un élément <audio>
  * branché sur le graphe, sans être décodées en entier en mémoire. Si aucune ne se lit, retour à la musique générative.
  */
-export default function tracks(kit: Kit, out: GainNode): Channel {
+export default function tracks(kit: Kit, out: GainNode, { playlist }: Room): Channel {
   const el = new Audio()
   el.crossOrigin = 'anonymous' // au cas où les fichiers passeraient un jour par un autre domaine
   kit.ctx.createMediaElementSource(el).connect(out)
