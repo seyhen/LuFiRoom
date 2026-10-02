@@ -6,7 +6,7 @@ import { STATIONS } from '../src/audio/stations.ts'
 // Notes permises, en demi-tons au-dessus de la fondamentale.
 const TONES = { maj9: [0, 4, 7, 11, 2], m9: [0, 3, 7, 10, 2], 13: [0, 4, 7, 10, 2, 9], 69: [0, 4, 7, 9, 2] }
 const MELODY = { maj9: [0, 2, 4, 7, 9, 11], m9: [0, 2, 3, 5, 7, 10], 13: [0, 2, 4, 7, 9, 10], 69: [0, 2, 4, 7, 9] }
-const VOICES = ['ep', 'pad', 'pluck'], LEADS = ['bell', 'mbox'], SNARES = ['snare', 'rim', 'brush'], HATS = ['closed', 'shaker'], BASS = ['root', 'oct', 'fifth', 'next']
+const VOICES = ['ep', 'pad', 'pluck'], LEADS = ['bell', 'mbox'], SNARES = ['snare', 'rim', 'brush'], HATS = ['closed', 'shaker', 'sleigh'], BASS = ['root', 'oct', 'fifth', 'next']
 // La radio du prototype (docs/PROTOTYPE.md) : la première station doit rester identique.
 const PROTO = {
   bpm: 72,

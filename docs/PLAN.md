@@ -28,7 +28,7 @@ Fini quand :
 - [x] `public/audio/CREDITS.md` : gabarit et règles de licence.
 - [x] Enregistrements en boucle : pluie, ventilo, ronron, oiseaux, grillons, et feu et vent de la cabane. Pris sur Pixabay (Pixabay Content License, **pas CC0** : accord du propriétaire le 2026-10-02), niveaux calés sur la synthèse ; **à écouter et à régler à l'oreille** (`gain` dans `src/rooms/`). Sources et licences : `public/audio/CREDITS.md`.
 - [ ] Pistes lofi sous licence pour la radio.
-- [x] En attendant : radio générative en cinq stations (Nuit douce, Petit matin, Brume, Veillée, Bureau), à changer depuis le mixeur ou l'écran verrouillé. Voir `docs/RADIO.md`.
+- [x] En attendant : radio générative en six stations (Nuit douce, Petit matin, Brume, Veillée, Bureau, et Noël pour la cabane), à changer depuis le mixeur ou l'écran verrouillé. Voir `docs/RADIO.md`.
 - [ ] Modèle Blender en `.glb` compressé, puis son chargement (nœuds nommés, lumière cuite) : à valider d'abord, voir `docs/ASSETS.md`.
 
 Cahier des charges d'origine :
@@ -45,8 +45,11 @@ Cahier des charges d'origine :
 - [x] Moteur lu depuis la pièce courante : scène, lumières, hotspots, mixeur, audio (bus et canaux par pièce).
 - [x] Sélecteur de pièce (caché tant qu'il n'y en a qu'une) et transition en fondu, sons coupés, dernière pièce mémorisée.
 - [x] 2e pièce : cabane sous la neige (cheminée et feu, fenêtre sur la tempête, coffre et radio, fauteuil, lampe). Sons : feu et vent enregistrés (Pixabay, voir `public/audio/CREDITS.md`) ; la radio est celle de la chambre.
+- [x] Cabane habillée pour Noël, en cocon : murs en rondins, cheminée en pierre et manteau en bois (chaussettes, guirlande, bougies, fumée de cheminée), sapin décoré et cadeaux, couronne, tapis tressé, fauteuil canneberge et plaid écossais, pouf, chocolat chaud qui fume, lanterne, poinsettia, patères (écharpe, bonnet, moufles), caisse de disques, neige sur les murs et qui tombe autour (poussée par le vent), lumière chaude, interface canneberge et ambre. Le chat dort devant le feu et ronronne (ronron de la chambre). La radio devient un **tourne-disque** valise (disque qui tourne, bras qui se pose, haut-parleur dans le couvercle).
+- [x] Chambre refaite, avec son ambiance à elle (rêveuse, pastel, un soir de pluie) : papier peint étoilé et boiseries menthe, fresque et étoiles qui brillent dans le noir, tête de lit en nuage, couette matelassée, plaid, lune en peluche, tapis nuage, rideaux qui ondulent avec la fenêtre et le ventilo, tache de lumière de la fenêtre, gouttes sur la vitre quand il pleut, polaroïds, cadres, guirlande de lunes, bureau (portable lofi, cahier, pot à crayons), étagère (bougie, plante qui retombe), monstera, sansevière, coin lecture (pouf-poire, tabouret, bougie), poussières de lumière, étoile filante à la fenêtre.
 - [ ] Autres pièces : café un jour de pluie, bibliothèque, toit-terrasse la nuit.
-- [ ] Cabane : son de neige / bois qui craque, un objet de plus (chat devant le feu ?), pistes de radio propres à la pièce.
+- [x] Cabane : le tourne-disque joue sa propre liste (Noël, Veillée, Brume, Nuit douce) ; la chambre garde les cinq stations d'origine. Chaque pièce retient sa station.
+- [ ] Cabane : son de neige / bois qui craque, vraies pistes de Noël sous licence.
 
 Cahier des charges d'origine :
 - Format de chambre stabilisé (modèle, objets, sons, palette, ciel).

@@ -33,9 +33,12 @@ src/
   rooms/                    # types.ts (format d'une pièce), bedroom.ts (la chambre : objets, sons, ancres, ciel, lumières), index.ts
   scene/
     Stage.tsx               # <Canvas>, caméra iso, lumières, cadrage, rotation au drag
-    scenes.ts, rooms/       # la scène 3D de chaque pièce (BedroomScene...) ; ajouter une pièce : docs/ROOMS.md
+    scenes.ts               # associe chaque pièce à sa scène 3D ; ajouter une pièce : docs/ROOMS.md
+    bedroom/, cabin/        # la scène de chaque pièce (BedroomScene.tsx, CabinScene.tsx), un fichier par objet, ses matériaux et ses textures
+    objects/                # objets partagés entre pièces : Window, Radio, Lamp, Cat, FairyLights, Candles
+    parts.tsx, Static.tsx   # briques (Part, Batch, rbox, cyl, worldUV, orient) ; <Static> regroupe le décor immobile en peu de tracés
     materials.ts            # palette de matériaux gummy partagés
-    objects/                # Radio, Cloud, Rain, Fan, Cat, Window, Lamp, Bed, Desk...
+    Floaters.tsx            # neige autour de la cabane, poussières de la chambre
     Hotspot.tsx             # bouton DOM projeté sur un objet 3D (drei <Html>)
   audio/
     engine.ts               # AudioContext, master, compresseur, un bus par son
@@ -66,6 +69,7 @@ Principe clé : **une chambre est une donnée**. Les objets interactifs, les son
 
 - 3D isométrique (caméra orthographique), pièce en diorama qui flotte sur un ciel doux.
 - Style gummy : formes arrondies partout, matériaux un peu brillants (clearcoat), couleurs pastel, rien de pointu.
+- Chaque pièce a sa propre ambiance, de la lumière à l'interface : la chambre est rêveuse (lilas, menthe, rose, un soir de pluie), la cabane est un cocon de Noël (miel, canneberge, sapin, feu). Une nouvelle pièce ne ressemble pas aux autres.
 - Palette : lavande, menthe, rose, bleu canard, beurre, toffee. Valeurs exactes dans `docs/PROTOTYPE.md`.
 - Typo : Gluten (titre), Nunito (texte), DM Mono (données).
 - L'image d'inspiration d'origine est le travail d'un autre artiste : on s'en inspire pour l'ambiance, on ne reproduit pas sa scène.

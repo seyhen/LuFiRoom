@@ -27,7 +27,7 @@ export function Mixer({ panelRef }: { panelRef: Ref<HTMLDivElement> }) {
         <div className="mix" key={id /* chaque pièce repart de la première carte */}>
           {sounds.map((s) => (
             // Avec des pistes enregistrées, la radio les joue dans l'ordre mélangé : pas de stations à changer.
-            <MixerCard key={s.id} sound={s} extra={s.id === 'radio' && !playlist.length ? <StationButton /> : undefined} />
+            <MixerCard key={s.id} sound={s} extra={s.id === 'radio' && !playlist.length ? <StationButton noun={s.skip} /> : undefined} />
           ))}
         </div>
       </div>

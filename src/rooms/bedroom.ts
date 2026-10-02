@@ -25,13 +25,14 @@ export const bedroom: Room = {
     crickets: { src: 'audio/bedroom/crickets', gain: 0.25 },
   },
   playlist,
+  stations: ['nuit-douce', 'petit-matin', 'brume', 'veillee', 'bureau'],
   objects: [
     { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.3, 5.75, -3.85] },
-    { id: 'radio', target: 'radio', label: 'Radio · lofi', anchor: [1.95, 2.05, -2.45] },
+    { id: 'radio', target: 'radio', label: 'Radio · lofi', anchor: [2.3, 2.05, -2.5] },
     { id: 'window', target: 'outside', label: 'Fenêtre · dehors', anchor: [1.4, 3.35, -3.0] },
-    { id: 'fan', target: 'fan', label: 'Ventilo · bruit blanc', anchor: [0.98, 2.35, -2.45] },
-    { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-1.0, 1.42, -0.45] },
-    { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-2.55, 1.62, -2.55] },
+    { id: 'fan', target: 'fan', label: 'Ventilo · bruit blanc', anchor: [0.62, 2.35, -2.6] },
+    { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-1.15, 1.45, -0.5] },
+    { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-2.68, 1.75, -2.72] },
   ],
   sounds: [
     {

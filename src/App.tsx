@@ -1,10 +1,13 @@
 import { useLayoutEffect, useRef } from 'react'
 import { useStore } from './state/store'
 import { roomById } from './rooms'
+import type { UiToken } from './rooms/types'
 import { Stage } from './scene/Stage'
 import { TopBar } from './ui/TopBar'
 import { Mixer } from './ui/Mixer'
 import { SharedMix } from './ui/SharedMix'
+
+const UI_TOKENS: UiToken[] = ['accent', 'ink', 'ink-soft', 'panel', 'line', 'bg']
 
 export function App() {
   const night = useStore((s) => s.night)
@@ -13,19 +16,26 @@ export function App() {
   const seasoned = useStore((s) => s.taps >= 3) // les hotspots arrêtent de pulser
   const brand = useRef<HTMLDivElement>(null!), panel = useRef<HTMLDivElement>(null!), hotspots = useRef<HTMLDivElement>(null!)
 
+  // Le ciel du fond et les couleurs d'interface sont ceux de la pièce (le changement se fait pendant que la scène est effacée).
+  useLayoutEffect(() => {
+    const st = document.documentElement.style
+    room.sky.day.forEach((c, i) => st.setProperty(`--day-${i + 1}`, c))
+    room.sky.night.forEach((c, i) => st.setProperty(`--night-${i + 1}`, c))
+    for (const token of UI_TOKENS) {
+      const [d, n] = room.ui?.[token] ?? []
+      if (d) st.setProperty(`--${token}-d`, d)
+      else st.removeProperty(`--${token}-d`)
+      if (n) st.setProperty(`--${token}-n`, n)
+      else st.removeProperty(`--${token}-n`)
+    }
+  }, [room])
+
   // Le mode nuit redéfinit les tokens d'interface.
   useLayoutEffect(() => {
     document.documentElement.classList.toggle('night', night)
     // La barre du navigateur (et celle de l'app installée) prend la couleur du fond.
     document.querySelector('meta[name=theme-color]')?.setAttribute('content', getComputedStyle(document.documentElement).getPropertyValue('--bg').trim())
-  }, [night])
-
-  // Le ciel du fond est celui de la pièce (le changement se fait pendant que la scène est effacée).
-  useLayoutEffect(() => {
-    const st = document.documentElement.style
-    room.sky.day.forEach((c, i) => st.setProperty(`--day-${i + 1}`, c))
-    room.sky.night.forEach((c, i) => st.setProperty(`--night-${i + 1}`, c))
-  }, [room])
+  }, [night, room])
 
   useLayoutEffect(() => {
     document.documentElement.classList.toggle('leaving', leaving)

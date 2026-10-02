@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { ExtrudeGeometry, Path, Shape, type Group } from 'three'
+import { ExtrudeGeometry, Path, Shape, type Group, type Material } from 'three'
 import { isActive, useStore } from '../../state/store'
 import { approach, smooth } from '../../math'
 import { M } from '../materials'
@@ -12,7 +12,7 @@ const frameShape = rrPath(new Shape(), 0, 0, paneW, paneH, 0.08)
 frameShape.holes.push(rrPath(new Path(), 0.08, 0.08, paneW - 0.16, paneH - 0.16, 0.03))
 const frameGeo = new ExtrudeGeometry(frameShape, { depth: 0.04, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 2, curveSegments: 6 })
 
-function Pane() {
+function Pane({ glass }: { glass?: Material }) {
   return (
     <>
       <Part geo={frameGeo} m={M.plum} p={[0, 0, -0.03]} />
@@ -23,12 +23,17 @@ function Pane() {
       <mesh material={M.glass} position={[paneW / 2, paneH / 2, 0]}>
         <planeGeometry args={[paneW - 0.16, paneH - 0.16]} />
       </mesh>
+      {glass && (
+        <mesh material={glass} position={[paneW / 2, paneH / 2, 0.006]} renderOrder={2}>
+          <planeGeometry args={[paneW - 0.16, paneH - 0.16]} />
+        </mesh>
+      )}
     </>
   )
 }
 
-/** Fenêtre : ouverte (1.08 rad) quand son son est actif. */
-export function Window() {
+/** Fenêtre : ouverte (1.08 rad) quand son son est actif. `glass` : un matériau posé sur la vitre (gouttes de pluie, givre). */
+export function Window({ glass }: { glass?: Material }) {
   const left = useRef<Group>(null!), right = useRef<Group>(null!), open = useRef(0)
   useFrame((_, delta) => {
     open.current = approach(open.current, isActive(useStore.getState(), 'window') ? 1 : 0, Math.min(delta, 0.05) * 1.6)
@@ -39,11 +44,11 @@ export function Window() {
   return (
     <group userData={{ id: 'window' }}>
       <group ref={left} position={[WIN.x0 + 0.01, WIN.y0 + 0.02, -3.12]}>
-        <Pane />
+        <Pane glass={glass} />
       </group>
       <group ref={right} position={[WIN.x1 - 0.01, WIN.y0 + 0.02, -3.12]}>
         <group position={[-paneW, 0, 0]}>
-          <Pane />
+          <Pane glass={glass} />
         </group>
       </group>
       {/* zone de tap invisible sur toute l'ouverture */}

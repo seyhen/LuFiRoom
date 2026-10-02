@@ -210,8 +210,30 @@ export default function radio(kit: Kit, out: GainNode): Channel {
     }
   }
 
-  // Charley fermé, ou shaker (attaque plus douce, plus long).
+  // Grelots de traîneau : une grappe de petites cloches très aiguës, légèrement désaccordées à chaque coup, qui sonnent un instant,
+  // et un souffle métallique à l'attaque.
+  function sleigh(t: number, v: number) {
+    const g = gain(0.0001)
+    g.gain.setValueAtTime(0.0001, t)
+    g.gain.exponentialRampToValueAtTime(v * 0.055, t + 0.004)
+    g.gain.exponentialRampToValueAtTime(0.0003, t + 0.26)
+    g.connect(drumsBus)
+    ;[[2490, 1], [3320, 0.8], [4160, 0.6], [5380, 0.4], [6710, 0.3]].forEach(([f, a]) => {
+      const o = osc('sine', f * (1 + (Math.random() - 0.5) * 0.04))
+      o.connect(gain(a)).connect(g)
+      o.start(t)
+      o.stop(t + 0.3)
+    })
+    const s = noiseHit(t, 0.09), ng = gain(0.0001)
+    ng.gain.setValueAtTime(0.0001, t)
+    ng.gain.exponentialRampToValueAtTime(v * 0.1, t + 0.003)
+    ng.gain.exponentialRampToValueAtTime(0.0003, t + 0.07)
+    s.connect(biq('highpass', 6000, 0.7)).connect(ng).connect(drumsBus)
+  }
+
+  // Charley fermé, shaker (attaque plus douce, plus long) ou grelots.
   function hat(t: number, v: number) {
+    if (st.drums.hat.kind === 'sleigh') return sleigh(t, v)
     const shaker = st.drums.hat.kind === 'shaker', s = noiseHit(t, shaker ? 0.12 : 0.08), g = gain(0.0001)
     if (shaker) {
       g.gain.setValueAtTime(0.0001, t)

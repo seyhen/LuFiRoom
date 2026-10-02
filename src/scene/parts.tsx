@@ -1,4 +1,5 @@
-import { BoxGeometry, CylinderGeometry, SphereGeometry, Vector3, type BufferGeometry, type Material, type Path } from 'three'
+import { forwardRef, useImperativeHandle, useLayoutEffect, useRef } from 'react'
+import { BoxGeometry, Color, CylinderGeometry, Euler, ExtrudeGeometry, Matrix4, Object3D, Path, Shape, SphereGeometry, Vector3, type BufferGeometry, type InstancedMesh, type Material } from 'three'
 import type { ThreeElements } from '@react-three/fiber'
 
 export type V3 = [number, number, number]
@@ -38,6 +39,24 @@ export function rbox(w: number, h: number, d: number, r = 0.06, seg = 3) {
   })
 }
 
+/**
+ * Copie de `g` dont les UV suivent les unités de la scène (projetées selon l'orientation de chaque face) :
+ * une texture répétée (pierre, tartan) garde la même taille sur toutes les faces, sans s'étirer. `size` : unités par texture.
+ * Sur le dessus, la texture file le long de x, ou de z avec `along: 'z'` (le sens des lames d'un parquet).
+ */
+export function worldUV(g: BufferGeometry, size = 1, along: 'x' | 'z' = 'x') {
+  return memo(`w${g.uuid},${size},${along}`, () => {
+    const c = g.clone(), p = c.attributes.position, n = c.attributes.normal, uv = c.attributes.uv
+    for (let i = 0; i < p.count; i++) {
+      const ax = Math.abs(n.getX(i)), ay = Math.abs(n.getY(i)), az = Math.abs(n.getZ(i))
+      if (ay >= ax && ay >= az) along === 'x' ? uv.setXY(i, p.getX(i) / size, p.getZ(i) / size) : uv.setXY(i, p.getZ(i) / size, p.getX(i) / size)
+      else if (ax >= az) uv.setXY(i, p.getZ(i) / size, p.getY(i) / size)
+      else uv.setXY(i, p.getX(i) / size, p.getY(i) / size)
+    }
+    return c
+  })
+}
+
 export const cyl = (rt: number, rb: number, h: number, seg = 24) =>
   memo(`c${rt},${rb},${h},${seg}`, () => new CylinderGeometry(rt, rb, h, seg))
 
@@ -54,7 +73,80 @@ export function rrPath<P extends Path>(p: P, x: number, y: number, w: number, h:
   return p
 }
 
-/** Un maillage qui porte et reçoit les ombres. `geo` ou une géométrie en enfant. */
-export function Part({ geo, m, p, ...rest }: { geo?: BufferGeometry; m: Material; p?: V3 } & ThreeElements['mesh']) {
-  return <mesh geometry={geo} material={m} position={p} castShadow receiveShadow {...rest} />
+// Mur du fond, percé de la fenêtre. Deux emplois pour le matériau : [grandes faces, chants (dont l'embrasure)].
+const wallShape = rrPath(new Shape(), -3.34, -0.05, 6.54, 4.35, 0.12)
+wallShape.holes.push(rrPath(new Path(), WIN.x0, WIN.y0, WIN.x1 - WIN.x0, WIN.y1 - WIN.y0, 0.16))
+export const backWall = new ExtrudeGeometry(wallShape, { depth: 0.2, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.06, bevelSegments: 3, curveSegments: 10 })
+
+const radii = new WeakMap<BufferGeometry, number>()
+const radiusOf = (g: BufferGeometry) => {
+  let r = radii.get(g)
+  if (r === undefined) {
+    g.computeBoundingSphere()
+    radii.set(g, (r = g.boundingSphere?.radius ?? 1))
+  }
+  return r
 }
+const biggest = (s: unknown) => (typeof s === 'number' ? s : Array.isArray(s) ? Math.max(...s.map(Math.abs)) : 1)
+
+/**
+ * Un maillage qui reçoit les ombres, et qui en porte sauf s'il est tout petit (boutons, crayons, perles : leur ombre ne se voit pas
+ * et chaque ombre coûte un tracé de plus). `geo` ou une géométrie en enfant ; `castShadow` force le choix.
+ */
+export function Part({ geo, m, p, ...rest }: { geo?: BufferGeometry; m: Material | Material[]; p?: V3 } & ThreeElements['mesh']) {
+  const tiny = geo !== undefined && radiusOf(geo) * biggest(rest.scale) < 0.09
+  return <mesh geometry={geo} material={m} position={p} castShadow={!tiny} receiveShadow {...rest} />
+}
+
+const bx = new Vector3(), by = new Vector3(), bz = new Vector3(), bm = new Matrix4(), be = new Euler()
+/**
+ * Rotation (x, y, z) qui met l'axe y d'une forme le long de `y` et son axe z du côté de `up` : un tronc dans sa direction,
+ * une feuille dont la pointe suit sa tige et dont le dessus regarde le ciel.
+ */
+export function orient(y: V3, up: V3 = [0, 1, 0]): V3 {
+  by.set(...y).normalize()
+  bz.set(...up)
+  bx.crossVectors(by, bz)
+  if (bx.lengthSq() < 1e-6) bx.crossVectors(by, bz.set(1, 0, 0))
+  bx.normalize()
+  bz.crossVectors(bx, by)
+  be.setFromRotationMatrix(bm.makeBasis(bx, by, bz))
+  return [be.x, be.y, be.z]
+}
+
+/** Une copie dans un `Batch` : position, échelle, rotation (XYZ), teinte. */
+export interface Item {
+  p: V3
+  s: V3 | number
+  r?: V3
+  c?: number
+}
+const dummy = new Object3D(), tint = new Color()
+
+/**
+ * Une série de copies d'une même forme (boules du sapin, feuillage, paquets) : un seul tracé pour toute la série.
+ * Posées une fois ; `c` teinte chaque copie (le matériau reste blanc). La ref donne accès aux copies (ampoules qui scintillent).
+ */
+export const Batch = forwardRef<InstancedMesh, { geo: BufferGeometry; m: Material; items: Item[]; shadow?: boolean }>(function Batch(
+  { geo, m, items, shadow = false },
+  ref,
+) {
+  const mesh = useRef<InstancedMesh>(null!)
+  useImperativeHandle(ref, () => mesh.current)
+  useLayoutEffect(() => {
+    const g = mesh.current
+    items.forEach(({ p, s, r = [0, 0, 0], c }, i) => {
+      dummy.position.set(...p)
+      if (typeof s === 'number') dummy.scale.setScalar(s)
+      else dummy.scale.set(...s)
+      dummy.rotation.set(...r)
+      dummy.updateMatrix()
+      g.setMatrixAt(i, dummy.matrix)
+      if (c !== undefined) g.setColorAt(i, tint.setHex(c))
+    })
+    g.instanceMatrix.needsUpdate = true
+    if (g.instanceColor) g.instanceColor.needsUpdate = true
+    g.computeBoundingSphere()
+  }, [items])
+  return <instancedMesh ref={mesh} args={[geo, m, items.length]} castShadow={shadow} receiveShadow raycast={noRay} />
+})

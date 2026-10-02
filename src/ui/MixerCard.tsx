@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { useStore } from '../state/store'
 import type { RoomSound } from '../rooms/types'
-import { soundIcons } from './icons'
+import { soundIcons, vinylIcon } from './icons'
 
 /** Un son : pastille, nom, sous-titre vivant (le bouton bascule) et curseur de volume, avec un bouton en plus si `extra`. */
 export function MixerCard({ sound, extra }: { sound: RoomSound; extra?: ReactNode }) {
@@ -12,7 +12,7 @@ export function MixerCard({ sound, extra }: { sound: RoomSound; extra?: ReactNod
     <div className={on ? 'card on' : 'card'}>
       <button className="tg" type="button" aria-pressed={on} onClick={() => useStore.getState().toggle(sound.id)}>
         <span className="ico" style={{ '--chip': sound.chip } as CSSProperties}>
-          {soundIcons[sound.id]}
+          {sound.icon === 'vinyl' ? vinylIcon : soundIcons[sound.id]}
           <span className="eq" aria-hidden="true">
             <i />
             <i />

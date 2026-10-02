@@ -17,8 +17,8 @@ const EYES = [1, -1].map((sgn): V3 => {
 const nose = face.clone().multiplyScalar(0.178)
 const EARS = [[-0.05, 0.11], [0.11, -0.05]]
 
-/** Chat roulé en boule sur le lit. Qui ronronne : respiration plus ample, queue qui balance, cœurs. */
-export function Cat() {
+/** Chat roulé en boule (sur le lit, ou devant le feu de la cabane). Qui ronronne : respiration plus ample, queue qui balance, cœurs. */
+export function Cat({ position = [-1.15, 0.88, -0.55], rotation = -0.25 }: { position?: V3; rotation?: number }) {
   const g = useRef<Group>(null!), body = useRef<Mesh>(null!), tail = useRef<Group>(null!)
   const hearts = useParticles(), since = useRef(0)
   useSquash('cat', g)
@@ -29,12 +29,12 @@ export function Cat() {
     since.current += Math.min(delta, 0.05)
     if (purr && since.current > 1.3) {
       since.current = 0
-      hearts.emit(heartTex, -0.85 + rand(-0.1, 0.1), 1.25, -0.4, { size: 0.2, life: 2.2, vy: 0.4, sway: 0.08 })
+      hearts.emit(heartTex, position[0] + 0.3 + rand(-0.1, 0.1), position[1] + 0.37, position[2] + 0.15, { size: 0.2, life: 2.2, vy: 0.4, sway: 0.08 })
     }
   })
   return (
     <>
-      <group ref={g} userData={{ id: 'cat' }} position={[-1.15, 0.88, -0.55]} rotation-y={-0.25}>
+      <group ref={g} userData={{ id: 'cat' }} position={position} rotation-y={rotation}>
         <mesh ref={body} geometry={SPH} material={M.fur} scale={[0.44, 0.21, 0.32]} position={[0, 0.19, 0]} castShadow receiveShadow />
         <Part geo={SPH} m={M.furLight} scale={[0.3, 0.12, 0.2]} p={[0.12, 0.12, 0.14]} />
         <group position={[0.3, 0.24, 0.18]}>

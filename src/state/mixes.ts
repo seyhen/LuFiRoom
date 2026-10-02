@@ -1,4 +1,4 @@
-import { STATIONS } from '../audio/stations'
+import { stationIds } from '../audio/stations'
 import { roomById, rooms } from '../rooms'
 import type { SoundId } from '../rooms/types'
 
@@ -73,5 +73,5 @@ export function mixFromSearch(search: string): Mix | null {
     if (Number.isFinite(n)) vol[sid as SoundId] = Math.min(1, Math.max(0, n / 100))
   }
   const station = q.get('station')
-  return on.length ? { room: id, on, vol, night: q.get('night') === '1', ...(STATIONS.some((s) => s.id === station) ? { station: station! } : {}) } : null
+  return on.length ? { room: id, on, vol, night: q.get('night') === '1', ...(station && stationIds(roomById(id).stations).includes(station) ? { station } : {}) } : null
 }

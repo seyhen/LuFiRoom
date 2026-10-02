@@ -16,6 +16,7 @@ export function Chair() {
       ))}
       <Part geo={cyl(0.045, 0.045, 0.52, 12)} m={M.plum} p={[0, 0.37, 0]} />
       <Part geo={rbox(0.8, 0.14, 0.74, 0.07)} m={M.pink} p={[0, 0.68, 0]} />
+      <Part geo={rbox(0.5, 0.08, 0.46, 0.035)} m={M.butter} p={[0, 0.78, -0.02]} rotation-y={0.2} />
       <Part geo={rbox(0.12, 0.34, 0.06, 0.03)} m={M.plum} p={[0, 0.86, 0.34]} />
       <Part geo={rbox(0.74, 0.86, 0.13, 0.065)} m={M.pink} p={[0, 1.2, 0.38]} rotation-x={0.08} />
     </group>

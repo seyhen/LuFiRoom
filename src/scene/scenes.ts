@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react'
-import { BedroomScene } from './rooms/BedroomScene'
+import { BedroomScene } from './bedroom/BedroomScene'
 import { CabinScene } from './cabin/CabinScene'
 
 /** La scène 3D de chaque pièce, par identifiant (celui de src/rooms/*.ts). */

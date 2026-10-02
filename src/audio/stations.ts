@@ -7,7 +7,8 @@ export type Voice = 'ep' | 'pad' | 'pluck'
 /** Voix de la mélodie : clochette ou boîte à musique. */
 export type Lead = 'bell' | 'mbox'
 export type SnareKind = 'snare' | 'rim' | 'brush'
-export type HatKind = 'closed' | 'shaker'
+/** Charley fermé, shaker, ou grelots de traîneau (une grappe de petites cloches très aiguës). */
+export type HatKind = 'closed' | 'shaker' | 'sleigh'
 /** Note de basse : la fondamentale, son octave, sa quinte, ou une note d'approche sous la fondamentale de l'accord suivant. */
 export type BassKind = 'root' | 'oct' | 'fifth' | 'next'
 export type Quality = 'maj9' | 'm9' | '13' | '69'
@@ -97,6 +98,10 @@ const Bbmaj9 = chord(10, 'maj9', 34, [53, 57, 60, 62], [69, 72, 74, 77, 79, 81])
 const Fmaj9 = chord(5, 'maj9', 29, [52, 55, 57, 60], [69, 72, 76, 77, 79, 81])
 const Fmaj9b = chord(5, 'maj9', 29, [55, 57, 60, 64], [67, 69, 72, 76, 77, 79])
 const Fmaj9hi = chord(5, 'maj9', 41, [55, 57, 60, 64], [69, 72, 76, 77, 79, 81])
+// En sol majeur, pour Noël : I - vi - IV - V, les voix bougent de deux demi-tons au plus.
+const Gmaj9 = chord(7, 'maj9', 43, [57, 59, 62, 66], [71, 74, 76, 78, 79, 83])
+const Em9 = chord(4, 'm9', 40, [55, 59, 62, 66], [67, 71, 74, 76, 78, 79])
+const D13 = chord(2, '13', 38, [57, 60, 64, 66], [69, 71, 72, 74, 76, 78])
 
 export const STATIONS: Station[] = [
   {
@@ -193,13 +198,42 @@ export const STATIONS: Station[] = [
     },
     lead: { voice: 'bell', bars: [4, 5, 6, 7], rhythms: [[2, 6, 10], [0, 8, 11], [3, 7, 12]], p: 0.55, vel: [0.09, 0.13] },
   },
+  {
+    id: 'noel',
+    name: 'Noël',
+    about: 'Boîte à musique et grelots, en sol majeur, 70 bpm.',
+    bpm: 70,
+    swing: 0.22,
+    level: 1.1,
+    tone: { lp: 3800, sat: 1.4, crackle: 0.32, wobble: [8, 2.5], echo: [0.38, 0.42] },
+    chords: [Gmaj9, Em9, Cmaj9b, D13],
+    keys: { voice: 'ep', spread: 20, hits: [[0, 'all', 6, 0.5], [6, 'upper', 3, 0.3], [10, 'all', 4, 0.42], [14, 'upper', 2, 0.28]] },
+    bass: [[0, 'root', 4, 0.75], [6, 'fifth', 2, 0.45], [10, 'root', 3, 0.6], [14, 'next', 1.8, 0.45]],
+    drums: {
+      kick: [[0, 0.65], [10, 0.5]],
+      ghost: [7, 0.25, 0.3],
+      snare: { kind: 'rim', late: 0.008, hits: [[4, 0.45], [12, 0.45]], ghost: [15, 0.12, 0.2] },
+      hat: { kind: 'sleigh', step: 4, hi: 0.5, lo: 0.3, jit: 0.06, extra: [2, 6, 10, 14], extraV: 0.22, extraP: 0.4 },
+    },
+    lead: { voice: 'mbox', bars: [2, 3, 6, 7], rhythms: [[0, 6, 10], [3, 8, 12], [2, 6, 11, 14], [0, 4, 8, 12]], p: 0.8, vel: [0.11, 0.16] },
+  },
 ]
 
 /** La station d'identifiant `id`, ou la première si on ne la connaît pas (un lien ancien, un navigateur qui se souvient d'une station retirée). */
 export const stationById = (id: string) => STATIONS.find((s) => s.id === id) ?? STATIONS[0]
 
-/** La station qui suit (ou précède, `dir` = -1), en tournant. */
-export const stationAfter = (id: string, dir = 1) => STATIONS[(STATIONS.indexOf(stationById(id)) + dir + STATIONS.length) % STATIONS.length]
+/**
+ * La station qui suit (ou précède, `dir` = -1), en tournant. `ids` : les stations de la pièce, dans l'ordre (toutes par défaut).
+ * Une station qui n'est pas dans la liste (on vient d'une autre pièce) a pour suivante la première, pour précédente la dernière.
+ */
+export const stationAfter = (id: string, dir = 1, ids?: readonly string[]) => {
+  const list = ids?.length ? ids.map(stationById) : STATIONS
+  const i = list.indexOf(stationById(id))
+  return list[i < 0 ? (dir > 0 ? 0 : list.length - 1) : (i + dir + list.length) % list.length]
+}
+
+/** Les identifiants des stations d'une liste de pièce (toutes les stations par défaut). */
+export const stationIds = (ids?: readonly string[]) => (ids?.length ? ids.map((id) => stationById(id).id) : STATIONS.map((s) => s.id))
 
 /** Sous-titre de la carte « Radio lofi » : la station choisie, ou, avec des pistes enregistrées, la piste en cours. */
 export const radioSub = (tracks: number) => (s: { on: Record<string, boolean>; onAir: string; station: string }) =>
