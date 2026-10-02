@@ -1,12 +1,14 @@
+import { STATIONS } from '../audio/stations'
 import { roomById, rooms } from '../rooms'
 import type { SoundId } from '../rooms/types'
 
-/** Une ambiance : la pièce, les sons qui jouent avec leur volume, et le jour / nuit. */
+/** Une ambiance : la pièce, les sons qui jouent avec leur volume, le jour / nuit, et la station si la radio joue. */
 export interface Mix {
   room: string
   on: SoundId[]
   vol: Partial<Record<SoundId, number>>
   night: boolean
+  station?: string
 }
 
 /** Une ambiance gardée dans le navigateur. */
@@ -45,7 +47,7 @@ export function storeMixes(list: SavedMix[]) {
 
 export const MAX_SAVED = MAX
 
-// Lien de partage : ?room=cabin&mix=fire.70,wind.60&night=1   (son.volume en %, jour = 0, nuit = 1)
+// Lien de partage : ?room=cabin&mix=fire.70,radio.75&night=1&station=veillee   (son.volume en %, jour = 0, nuit = 1)
 
 export function mixToUrl(m: Mix) {
   const q = new URLSearchParams({
@@ -53,6 +55,7 @@ export function mixToUrl(m: Mix) {
     mix: m.on.map((id) => `${id}.${Math.round((m.vol[id] ?? 0.7) * 100)}`).join(','),
     night: m.night ? '1' : '0',
   })
+  if (m.station) q.set('station', m.station)
   return `${location.origin}${import.meta.env.BASE_URL}?${q}`
 }
 
@@ -69,5 +72,6 @@ export function mixFromSearch(search: string): Mix | null {
     on.push(sid as SoundId)
     if (Number.isFinite(n)) vol[sid as SoundId] = Math.min(1, Math.max(0, n / 100))
   }
-  return on.length ? { room: id, on, vol, night: q.get('night') === '1' } : null
+  const station = q.get('station')
+  return on.length ? { room: id, on, vol, night: q.get('night') === '1', ...(STATIONS.some((s) => s.id === station) ? { station: station! } : {}) } : null
 }

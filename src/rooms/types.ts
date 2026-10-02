@@ -30,7 +30,7 @@ export interface RoomSound {
   /** Volume par défaut (0 → 1). */
   volume: number
   /** Sous-titre vivant de la carte du mixeur. */
-  sub: (s: { night: boolean; on: Record<SoundId, boolean>; onAir: string }) => string
+  sub: (s: { night: boolean; on: Record<SoundId, boolean>; onAir: string; station: string }) => string
 }
 
 /** Une boucle d'ambiance enregistrée. */

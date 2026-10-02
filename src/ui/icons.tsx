@@ -17,7 +17,8 @@ export const soundIcons: Record<SoundId, ReactNode> = {
   outside: svg(<><rect x="4" y="3" width="16" height="18" rx="3" /><path d="M12 3v18M4 12h16" /></>),
 }
 
-export const mixIcon = svg(<path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z" />)
+export const skipIcon = svg(<><path d="M6.5 5.5v13l9-6.5z" /><path d="M18.5 5.5v13" /></>)
+export const mixIcon =svg(<path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z" />)
 export const shareIcon = svg(<><path d="M12 15.5v-11M8 8l4-4 4 4" /><path d="M5 12.5v5.8a1.7 1.7 0 0 0 1.7 1.7h10.6a1.7 1.7 0 0 0 1.7-1.7v-5.8" /></>)
 export const saveIcon = svg(<><path d="M12 5v14M5 12h14" /></>)
 export const closeIcon = svg(<path d="M6.5 6.5l11 11M17.5 6.5l-11 11" />)

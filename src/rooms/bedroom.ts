@@ -1,3 +1,4 @@
+import { radioSub } from '../audio/stations'
 import type { Room, Track } from './types'
 
 // La chambre. Les enregistrements sont à déclarer dans `loops` et `playlist` (docs/ASSETS.md) ; sources et licences :
@@ -15,7 +16,14 @@ export const bedroom: Room = {
     hemi: { sky: [0xfff4fb, 0x6c6db8], ground: [0xbca8d0, 0x2c2448], intensity: [0.62, 0.42] },
     sun: { color: [0xfff0e2, 0x9fb2ff], intensity: [0.6, 0.28] },
   },
-  loops: {},
+  // Gains calés sur le niveau de sortie de la synthèse (mesuré à ±1 dB) : un point de départ, à régler à l'oreille.
+  loops: {
+    rain: { src: 'audio/bedroom/rain', gain: 0.85 },
+    fan: { src: 'audio/bedroom/fan', gain: 0.75 },
+    purr: { src: 'audio/bedroom/purr', gain: 0.5 },
+    birds: { src: 'audio/bedroom/birds', gain: 0.16 },
+    crickets: { src: 'audio/bedroom/crickets', gain: 0.25 },
+  },
   playlist,
   objects: [
     { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.3, 5.75, -3.85] },
@@ -31,7 +39,7 @@ export const bedroom: Room = {
       name: 'Radio lofi',
       chip: 'var(--c-radio)',
       volume: 0.75,
-      sub: (s) => (s.on.radio && s.onAir) || (playlist.length ? `lofi · ${playlist.length} morceau${playlist.length > 1 ? 'x' : ''}` : 'lofi · 72 bpm'),
+      sub: radioSub(playlist.length),
     },
     { id: 'rain', name: 'Pluie', chip: 'var(--c-rain)', volume: 0.7, sub: (s) => (s.on.outside ? 'vitre ouverte' : 'vitre fermée') },
     { id: 'fan', name: 'Bruit blanc', chip: 'var(--c-fan)', volume: 0.55, sub: () => 'ventilateur' },

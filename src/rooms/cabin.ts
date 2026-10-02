@@ -1,3 +1,4 @@
+import { radioSub } from '../audio/stations'
 import type { Room } from './types'
 
 // La cabane sous la neige : un feu qui crépite, le vent dehors, la radio. Les enregistrements sont à déclarer dans `loops`
@@ -12,7 +13,11 @@ export const cabin: Room = {
     hemi: { sky: [0xf4f8ff, 0x5d6fb8], ground: [0xb7c4dc, 0x23284a], intensity: [0.62, 0.42] },
     sun: { color: [0xf3f6ff, 0x9fb2ff], intensity: [0.6, 0.28] },
   },
-  loops: {},
+  // Gains calés sur le niveau de sortie de la synthèse (mesuré à ±1 dB) : un point de départ, à régler à l'oreille.
+  loops: {
+    fire: { src: 'audio/cabin/fire', gain: 0.5 },
+    wind: { src: 'audio/cabin/wind', gain: 0.7 },
+  },
   playlist: [],
   objects: [
     { id: 'fireplace', target: 'fire', label: 'Cheminée · feu', anchor: [-1.9, 1.15, -2.25] },
@@ -23,6 +28,6 @@ export const cabin: Room = {
   sounds: [
     { id: 'fire', name: 'Feu de bois', chip: 'var(--c-fire)', volume: 0.7, sub: (s) => (s.on.fire ? 'ça crépite' : 'cheminée') },
     { id: 'wind', name: 'Vent', chip: 'var(--c-wind)', volume: 0.6, sub: (s) => (s.night ? 'tempête' : 'rafales') },
-    { id: 'radio', name: 'Radio lofi', chip: 'var(--c-radio)', volume: 0.75, sub: (s) => (s.on.radio && s.onAir) || 'lofi · 72 bpm' },
+    { id: 'radio', name: 'Radio lofi', chip: 'var(--c-radio)', volume: 0.75, sub: radioSub(0) },
   ],
 }

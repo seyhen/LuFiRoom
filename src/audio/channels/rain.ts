@@ -9,10 +9,14 @@ export default function rain(kit: Kit, out: GainNode, { loops }: Room) {
   // Fenêtre ouverte (sons du dehors actifs) : l'enregistrement passe sans filtre (coupure à Nyquist), la synthèse à 7500 Hz.
   let open = ctx.sampleRate / 2
   const cutoff = () => (useStore.getState().on.outside ? open : 2300)
-  const lp = biq('lowpass', cutoff(), 0.4)
-  lp.connect(out)
+  // Fenêtre fermée, la pluie passe aussi 3 dB plus bas : elle reste derrière la vitre.
+  const level = () => (useStore.getState().on.outside ? 1 : 0.7)
+  const lp = biq('lowpass', cutoff(), 0.4), trim = gain(level())
+  lp.connect(trim).connect(out)
   useStore.subscribe((s, p) => {
-    if (s.on.outside !== p.on.outside) lp.frequency.setTargetAtTime(cutoff(), ctx.currentTime, 0.4)
+    if (s.on.outside === p.on.outside) return
+    lp.frequency.setTargetAtTime(cutoff(), ctx.currentTime, 0.4)
+    trim.gain.setTargetAtTime(level(), ctx.currentTime, 0.4)
   })
   kit.loopOr(loops.rain, lp, () => {
     open = 7500

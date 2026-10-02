@@ -26,8 +26,9 @@ Fini quand :
       Tout son sans enregistrement, ou dont le fichier ne charge pas, reste synthétisé.
 - [x] Préchargement des boucles et écran de chargement léger.
 - [x] `public/audio/CREDITS.md` : gabarit et règles de licence.
-- [ ] Enregistrements en boucle : pluie, ventilo, ronron, oiseaux, grillons (à fournir, CC0 ou achetés).
+- [x] Enregistrements en boucle : pluie, ventilo, ronron, oiseaux, grillons, et feu et vent de la cabane. Pris sur Pixabay (Pixabay Content License, **pas CC0** : accord du propriétaire le 2026-10-02), niveaux calés sur la synthèse ; **à écouter et à régler à l'oreille** (`gain` dans `src/rooms/`). Sources et licences : `public/audio/CREDITS.md`.
 - [ ] Pistes lofi sous licence pour la radio.
+- [x] En attendant : radio générative en cinq stations (Nuit douce, Petit matin, Brume, Veillée, Bureau), à changer depuis le mixeur ou l'écran verrouillé. Voir `docs/RADIO.md`.
 - [ ] Modèle Blender en `.glb` compressé, puis son chargement (nœuds nommés, lumière cuite) : à valider d'abord, voir `docs/ASSETS.md`.
 
 Cahier des charges d'origine :
@@ -43,7 +44,7 @@ Cahier des charges d'origine :
 - [x] Format de pièce stabilisé : `src/rooms/types.ts` (objets, sons, enregistrements, ciel, lumières), scène associée dans `src/scene/scenes.ts`.
 - [x] Moteur lu depuis la pièce courante : scène, lumières, hotspots, mixeur, audio (bus et canaux par pièce).
 - [x] Sélecteur de pièce (caché tant qu'il n'y en a qu'une) et transition en fondu, sons coupés, dernière pièce mémorisée.
-- [x] 2e pièce : cabane sous la neige (cheminée et feu, fenêtre sur la tempête, coffre et radio, fauteuil, lampe). Sons synthétisés : feu, vent ; la radio est celle de la chambre. Enregistrements `fire` et `wind` à fournir (`docs/ASSETS.md`).
+- [x] 2e pièce : cabane sous la neige (cheminée et feu, fenêtre sur la tempête, coffre et radio, fauteuil, lampe). Sons : feu et vent enregistrés (Pixabay, voir `public/audio/CREDITS.md`) ; la radio est celle de la chambre.
 - [ ] Autres pièces : café un jour de pluie, bibliothèque, toit-terrasse la nuit.
 - [ ] Cabane : son de neige / bois qui craque, un objet de plus (chat devant le feu ?), pistes de radio propres à la pièce.
 

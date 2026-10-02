@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { stationAfter, stationById } from '../audio/stations'
 import { roomById, rooms } from '../rooms'
 import type { ObjectId, RoomSound, SoundId, Target } from '../rooms/types'
 import { reduceMotion } from '../motion'
@@ -21,9 +22,11 @@ export interface Store {
   taps: number
   /** Dernier rebond demandé pour chaque objet (performance.now()). */
   squashAt: Partial<Record<ObjectId, number>>
-  /** Publiés par la radio : ce qu'elle joue (sous-titre du mixeur), nombre de kicks joués. */
+  /** Publiés par la radio : ce qu'elle joue (sous-titre du mixeur, pour les pistes enregistrées), nombre de kicks joués. */
   onAir: string
   kicks: number
+  /** Station de la radio générative (identifiant, voir src/audio/stations.ts). */
+  station: string
   /** Écran de chargement : fichiers préchargés, et scène dessinée une première fois. */
   loading: { done: number; total: number; scene: boolean }
   /** Ambiances enregistrées dans ce navigateur. */
@@ -51,10 +54,14 @@ export interface Store {
   dismissShared: () => void
   /** Change de pièce : les sons se coupent, la scène s'efface, puis la nouvelle pièce apparaît. */
   goto: (id: string) => void
+  /** Choisit la station de la radio ; `nextStation` passe à la suivante (ou à la précédente avec -1), en tournant. */
+  setStation: (id: string) => void
+  nextStation: (dir?: 1 | -1) => void
 }
 
 const hour = new Date().getHours()
 const ROOM_KEY = 'chambre-lofi.room'
+const STATION_KEY = 'chambre-lofi.station'
 const FADE = 350 // ms, la durée de l'effacement (voir app.css)
 
 // La dernière pièce visitée, si le navigateur veut bien s'en souvenir.
@@ -63,6 +70,23 @@ function savedRoom() {
     return roomById(localStorage.getItem(ROOM_KEY) ?? '').id
   } catch {
     return rooms[0].id
+  }
+}
+
+// La dernière station écoutée, de la même façon.
+function savedStation() {
+  try {
+    return stationById(localStorage.getItem(STATION_KEY) ?? '').id
+  } catch {
+    return stationById('').id
+  }
+}
+
+function rememberStation(id: string) {
+  try {
+    localStorage.setItem(STATION_KEY, id)
+  } catch {
+    // pas de stockage : on ne s'en souviendra pas
   }
 }
 
@@ -85,6 +109,7 @@ export const useStore = create<Store>()((set, get, api) => ({
   squashAt: {},
   onAir: '',
   kicks: 0,
+  station: savedStation(),
   loading: { done: 0, total: 0, scene: false },
   insets: { top: 0, bottom: 0 },
   mixes: loadMixes(),
@@ -92,7 +117,14 @@ export const useStore = create<Store>()((set, get, api) => ({
   sleepEnd: null,
   currentMix: () => {
     const s = get(), on = roomById(s.room).sounds.filter((x) => s.on[x.id]).map((x) => x.id)
-    return { room: s.room, on, vol: Object.fromEntries(on.map((id) => [id, Math.round(s.vol[id] * 100) / 100])), night: s.night }
+    return {
+      room: s.room,
+      on,
+      vol: Object.fromEntries(on.map((id) => [id, Math.round(s.vol[id] * 100) / 100])),
+      night: s.night,
+      // La station ne compte que si la radio joue (et si elle joue des stations : sans piste enregistrée).
+      ...(on.includes('radio') && !roomById(s.room).playlist.length ? { station: s.station } : {}),
+    }
   },
   saveMix: () => {
     const mix = get().currentMix()
@@ -111,7 +143,10 @@ export const useStore = create<Store>()((set, get, api) => ({
   applyMix: (m) => {
     const apply = () => {
       const sounds = roomById(m.room).sounds
+      const station = m.station ? stationById(m.station).id : get().station
+      rememberStation(station)
       set((s) => ({
+        station,
         night: m.night,
         vol: { ...s.vol, ...m.vol },
         on: { ...perSound(() => false), ...Object.fromEntries(sounds.filter((x) => m.on.includes(x.id)).map((x) => [x.id, true])) },
@@ -140,6 +175,17 @@ export const useStore = create<Store>()((set, get, api) => ({
   toggleNight: () => set((s) => flip(s, 'night')),
   muteAll: () => set({ on: perSound(() => false) }),
   setVolume: (id, v) => set((s) => ({ vol: { ...s.vol, [id]: v } })),
+  setStation: (id) => {
+    const station = stationById(id).id
+    if (station === get().station) return
+    rememberStation(station)
+    // La radio de la scène rebondit, comme quand on la touche.
+    set((s) => {
+      const radio = roomById(s.room).objects.find((o) => o.target === 'radio')
+      return { station, squashAt: radio ? { ...s.squashAt, [radio.id]: performance.now() } : s.squashAt }
+    })
+  },
+  nextStation: (dir = 1) => get().setStation(stationAfter(get().station, dir).id),
   goto: (id) => {
     const s = get()
     if (s.leaving || id === s.room || roomById(id).id !== id) return
