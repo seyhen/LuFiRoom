@@ -14,6 +14,19 @@ Pour chaque fichier, garde aussi la page ou le reçu de la licence (capture ou P
 |---|---|---|---|---|---|---|
 | | | | | | | |
 
+## Bruits colorés (calculés, pas enregistrés)
+
+Générés par `scripts/make-noises.mjs` (`npm run noises`, puis `npm run audio`) : aucune source extérieure, aucune licence à respecter, les fichiers appartiennent au projet.
+Pas encore déclarés dans une pièce (voir `docs/ASSETS.md`).
+
+| Fichier | Contenu | Pente | Durée |
+|---|---|---|---|
+| `noise/white` | bruit blanc | 0 dB / octave | 20 s, stéréo |
+| `noise/pink` | bruit rose | -3 dB / octave | 20 s, stéréo |
+| `noise/brown` | bruit brun | -6 dB / octave | 20 s, stéréo |
+| `noise/blue` | bruit bleu | +3 dB / octave | 20 s, stéréo |
+| `noise/violet` | bruit violet | +6 dB / octave | 20 s, stéréo |
+
 ## Radio lofi
 
 | Fichier | Titre | Artiste | Source (lien) | Licence | Tempo (bpm) | Ajouté le |
