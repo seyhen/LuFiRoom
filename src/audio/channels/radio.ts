@@ -16,8 +16,23 @@ const PROG = [
 const RHYTHMS = [[0, 3, 6, 10, 14], [2, 6, 8, 11], [0, 4, 7, 10, 12], [3, 6, 10, 13], [0, 2, 6, 8, 12]]
 const SD = 60 / 72 / 4 // une double croche à 72 bpm
 
+/** Grésillement de recherche de station, à l'allumage : bruit en passe-bande qui glisse de 700 à 2600 Hz. */
+export function tuneStatic({ ctx, master, gain, biq, noise }: Kit) {
+  const t = ctx.currentTime, s = ctx.createBufferSource(), bp = biq('bandpass', 700, 2.5), g = gain(0)
+  s.buffer = noise.white
+  s.start(t, Math.random() * 3)
+  s.stop(t + 0.55)
+  bp.frequency.setValueAtTime(700, t)
+  bp.frequency.exponentialRampToValueAtTime(2600, t + 0.45)
+  g.gain.setValueAtTime(0, t)
+  g.gain.linearRampToValueAtTime(0.3 * useStore.getState().vol.radio, t + 0.04)
+  g.gain.linearRampToValueAtTime(0, t + 0.5)
+  s.connect(bp).connect(g).connect(master)
+}
+
 /** Radio lofi générative : batterie, piano électrique, basse et clochette, joués en direct. */
-export default function radio({ ctx, master, gain, biq, osc, loop, noise }: Kit, out: GainNode): Channel {
+export default function radio(kit: Kit, out: GainNode): Channel {
+  const { ctx, gain, biq, osc, loop, noise } = kit
   // Bus radio : passe-bas, saturation douce, crépitement de vinyle.
   const pre = gain(0.85), sat = ctx.createWaveShaper()
   sat.curve = satCurve(1.6)
@@ -74,8 +89,8 @@ export default function radio({ ctx, master, gain, biq, osc, loop, noise }: Kit,
       n++
     }
     for (const c of chords) if (c.t <= now) name = c.name
-    const s = useStore.getState()
-    if (n || name !== s.chord) useStore.setState({ kicks: s.kicks + n, chord: name })
+    const s = useStore.getState(), onAir = name && `${name} · 72 bpm`
+    if (n || onAir !== s.onAir) useStore.setState({ kicks: s.kicks + n, onAir })
   }
 
   // Mélodie seulement sur les mesures 4 à 7 d'un cycle de 8 : marche aléatoire dans les notes de l'accord.
@@ -241,24 +256,12 @@ export default function radio({ ctx, master, gain, biq, osc, loop, noise }: Kit,
     }
   }
 
-  // Grésillement de recherche de station : bruit en passe-bande qui glisse de 700 à 2600 Hz.
-  function tuneStatic(t: number) {
-    const s = noiseHit(t, 0.55), bp = biq('bandpass', 700, 2.5), g = gain(0)
-    bp.frequency.setValueAtTime(700, t)
-    bp.frequency.exponentialRampToValueAtTime(2600, t + 0.45)
-    g.gain.setValueAtTime(0, t)
-    g.gain.linearRampToValueAtTime(0.3 * useStore.getState().vol.radio, t + 0.04)
-    g.gain.linearRampToValueAtTime(0, t + 0.5)
-    s.connect(bp).connect(g).connect(master)
-  }
-
   return {
     start() {
       clearTimeout(stopT)
       if (timer) return
-      const now = ctx.currentTime
-      tuneStatic(now)
-      next = now + 0.5
+      tuneStatic(kit)
+      next = ctx.currentTime + 0.5
       step = 0
       timer = window.setInterval(tick, 25)
     },

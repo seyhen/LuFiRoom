@@ -1,6 +1,9 @@
-import { useStore } from '../state/store'
+import { preload, useStore } from '../state/store'
+import { loops, playlist, type Loop } from '../rooms/bedroom'
 import { brownGen, loopBuffer, pinkGen, whiteGen } from './buffers'
+import { crossLoop, decode, missing, prefetch } from './recordings'
 import radio from './channels/radio'
+import tracks from './channels/tracks'
 import rain from './channels/rain'
 import fan from './channels/fan'
 import purr from './channels/purr'
@@ -22,7 +25,7 @@ type Build = (kit: Kit, out: GainNode) => Channel | void
 
 // Gain final d'un canal = volume utilisateur × gain de base.
 const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
-  radio: { build: radio, base: 0.9 },
+  radio: { build: playlist.length ? tracks : radio, base: 0.9 }, // pistes enregistrées, sinon musique générative
   rain: { build: rain, base: 1.0 },
   fan: { build: fan, base: 0.75 },
   purr: { build: purr, base: 0.95 },
@@ -58,8 +61,28 @@ function makeKit(ctx: AudioContext, master: GainNode) {
     return s
   }
   const noise = { white: loopBuffer(ctx, 5, whiteGen), pink: loopBuffer(ctx, 6, pinkGen), brown: loopBuffer(ctx, 7, brownGen) }
-  return { ctx, master, gain, biq, osc, loop, noise }
+  const sample = (src: string) => decode(ctx, src)
+  // Joue la boucle enregistrée vers `dest`, à son niveau. Sans enregistrement, ou s'il ne se charge pas : `synth()`.
+  const loopOr = (rec: Loop | undefined, dest: AudioNode, synth: () => void) => {
+    if (!rec) return synth()
+    sample(rec.src).then(
+      (b) => {
+        const g = gain(rec.gain)
+        g.connect(dest)
+        crossLoop(ctx, b, g)
+      },
+      (e) => {
+        missing(rec.src, e)
+        synth()
+      },
+    )
+  }
+  return { ctx, master, gain, biq, osc, loop, noise, sample, loopOr }
 }
+
+// Les boucles se téléchargent dès l'ouverture, pendant l'écran de chargement. On les décode à leur premier allumage.
+// Les pistes de la radio, elles, sont lues en flux.
+for (const { src } of Object.values(loops)) preload(prefetch(src))
 
 let kit: Kit | null = null
 const bus = {} as Record<SoundId, GainNode>

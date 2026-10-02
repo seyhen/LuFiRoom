@@ -48,6 +48,7 @@ export function Stage({ hotspotLayer }: { hotspotLayer: Layer }) {
       flat
     >
       <Framing />
+      <Ready />
       <Lights />
       {/* ombre douce sous le diorama, pour l'effet « flotte » */}
       <mesh rotation-x={-Math.PI / 2} position={[-0.2, -1.8, -0.2]}>
@@ -57,6 +58,15 @@ export function Stage({ hotspotLayer }: { hotspotLayer: Layer }) {
       <Room hotspotLayer={hotspotLayer} />
     </Canvas>
   )
+}
+
+/** Prévient l'écran de chargement quand la scène a été dessinée (la première image compile les shaders). */
+function Ready() {
+  const frames = useRef(0)
+  useFrame(() => {
+    if (++frames.current === 2) useStore.setState((s) => ({ loading: { ...s.loading, scene: true } }))
+  })
+  return null
 }
 
 /** Cadrage : la pièce tient dans la zone libre entre le titre et le mixeur. */

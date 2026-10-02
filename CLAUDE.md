@@ -38,9 +38,11 @@ src/
   audio/
     engine.ts               # AudioContext, master, compresseur, un bus par son
     buffers.ts              # bruits en boucle sans couture, gouttes, crépitement, ronron
-    channels/               # radio.ts, rain.ts, fan.ts, purr.ts, outside.ts
-  ui/                       # TopBar, Mixer, MixerCard
+    recordings.ts           # chargement Opus/MP3, boucles en fondu, repli sur la synthèse
+    channels/               # radio.ts, tracks.ts (pistes lofi), rain.ts, fan.ts, purr.ts, outside.ts
+  ui/                       # TopBar, Mixer, MixerCard, splash.ts (écran de chargement, HTML dans index.html)
   styles/tokens.css
+scripts/encode-audio.mjs    # npm run audio : sources → Opus/WebM + MP3 dans public/audio/
 ```
 
 Principe clé : **une chambre est une donnée**. Les objets interactifs, les sons qu'ils pilotent et leurs ancres viennent de `rooms/*.ts`, pour pouvoir ajouter d'autres pièces (café, cabane sous la neige...) sans toucher au moteur.
@@ -65,7 +67,7 @@ Principe clé : **une chambre est une donnée**. Les objets interactifs, les son
 
 ## Sons
 
-Tous les sons du prototype sont synthétisés en direct. On garde ce moteur en phase 1. En phase 2, on passe à de vrais enregistrements en boucle. N'utiliser que des sons dont la licence permet un usage commercial (CC0 ou licence achetée), et noter la source de chaque fichier dans `public/audio/CREDITS.md`.
+Tous les sons du prototype sont synthétisés en direct. On garde ce moteur en phase 1. En phase 2, on passe à de vrais enregistrements en boucle (déclarés dans `rooms/bedroom.ts`, voir `docs/ASSETS.md`) : la synthèse reste le repli de tout son sans enregistrement. N'utiliser que des sons dont la licence permet un usage commercial (CC0 ou licence achetée), et noter la source de chaque fichier dans `public/audio/CREDITS.md`.
 
 ## Commandes
 
@@ -74,6 +76,7 @@ npm install
 npm run dev       # serveur local
 npm run build     # doit passer sans erreur TS avant chaque commit
 npm run preview
+npm run audio     # encode audio-src/ vers public/audio/ (ffmpeg requis, voir docs/ASSETS.md)
 ```
 
 ## Avant de dire qu'une tâche est finie

@@ -19,6 +19,18 @@ Fini quand :
 - ça tourne fluide en largeur mobile et desktop.
 
 ## Phase 2 : vrais assets
+État : le code est prêt, il manque les fichiers (sons et modèle). Guide : `docs/ASSETS.md`.
+
+- [x] Formats Opus/WebM avec MP3 en repli, outil d'encodage `npm run audio` (sonie unifiée à -20 LUFS).
+- [x] Moteur : boucles enregistrées sans couture (fondu entre les passages), radio sur pistes mélangées en flux, jour / nuit des sons du dehors.
+      Tout son sans enregistrement, ou dont le fichier ne charge pas, reste synthétisé.
+- [x] Préchargement des boucles et écran de chargement léger.
+- [x] `public/audio/CREDITS.md` : gabarit et règles de licence.
+- [ ] Enregistrements en boucle : pluie, ventilo, ronron, oiseaux, grillons (à fournir, CC0 ou achetés).
+- [ ] Pistes lofi sous licence pour la radio.
+- [ ] Modèle Blender en `.glb` compressé, puis son chargement (nœuds nommés, lumière cuite) : à valider d'abord, voir `docs/ASSETS.md`.
+
+Cahier des charges d'origine :
 - Modéliser la chambre dans Blender, exporter en `.glb` compressé (Draco ou meshopt), lumière précalculée dans les textures.
 - Garder les objets interactifs comme meshes séparés et nommés pour le raycast et les animations.
 - Remplacer les sons synthétisés par des boucles enregistrées (pluie, ventilo, ronron, dehors) et des pistes lofi sous licence pour la radio.

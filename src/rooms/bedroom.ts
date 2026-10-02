@@ -24,7 +24,19 @@ export interface RoomSound {
   /** Volume par défaut (0 → 1). */
   volume: number
   /** Sous-titre vivant de la carte du mixeur. */
-  sub: (s: { night: boolean; on: Record<SoundId, boolean>; chord: string }) => string
+  sub: (s: { night: boolean; on: Record<SoundId, boolean>; onAir: string }) => string
+}
+
+/** Une piste de la radio. */
+export interface Track {
+  /** Chemin sous `public/`, sans extension. Les pistes sortent aussi à -20 LUFS. */
+  src: string
+  title: string
+  artist: string
+  /** Tempo : la radio pulse tous les deux temps. */
+  bpm: number
+  /** Instant du premier temps, en secondes (0 par défaut). */
+  beat?: number
 }
 
 // Dans l'ordre des hotspots : ordre de tabulation et décalage de leur pulsation.
@@ -37,9 +49,36 @@ export const objects: RoomObject[] = [
   { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-2.55, 1.62, -2.55] },
 ]
 
+// Enregistrements de la chambre : chemins sous `public/`, sans extension. Chaque fichier existe en `.webm` (Opus)
+// et en `.mp3` (repli pour les navigateurs qui ne lisent pas l'Opus) : `npm run audio` les produit, voir docs/ASSETS.md.
+// Un son sans enregistrement reste synthétisé comme dans le prototype. Sources et licences : public/audio/CREDITS.md.
+
+/** Une boucle d'ambiance enregistrée. */
+export interface Loop {
+  /** Chemin sous `public/`, sans extension. */
+  src: string
+  /**
+   * Niveau dans le mélange. Les fichiers sortent tous de `npm run audio` à la même sonie (-20 LUFS) : c'est ce gain
+   * qui fait qu'un ronron reste plus discret que la pluie. Points de départ dans docs/ASSETS.md.
+   */
+  gain: number
+}
+
+/** Boucles d'ambiance. Le dehors n'utilise ses enregistrements que si les oiseaux (jour) et les grillons (nuit) sont là. */
+export const loops: Partial<Record<'rain' | 'fan' | 'purr' | 'birds' | 'crickets', Loop>> = {}
+
+/** Pistes de la radio, jouées dans un ordre mélangé. Sans piste, la radio joue sa musique générative. */
+export const playlist: Track[] = []
+
 // Dans l'ordre du mixeur.
 export const sounds: RoomSound[] = [
-  { id: 'radio', name: 'Radio lofi', chip: 'var(--c-radio)', volume: 0.75, sub: (s) => (s.on.radio && s.chord ? `${s.chord} · 72 bpm` : 'lofi · 72 bpm') },
+  {
+    id: 'radio',
+    name: 'Radio lofi',
+    chip: 'var(--c-radio)',
+    volume: 0.75,
+    sub: (s) => (s.on.radio && s.onAir) || (playlist.length ? `lofi · ${playlist.length} morceau${playlist.length > 1 ? 'x' : ''}` : 'lofi · 72 bpm'),
+  },
   { id: 'rain', name: 'Pluie', chip: 'var(--c-rain)', volume: 0.7, sub: (s) => (s.on.outside ? 'vitre ouverte' : 'vitre fermée') },
   { id: 'fan', name: 'Bruit blanc', chip: 'var(--c-fan)', volume: 0.55, sub: () => 'ventilateur' },
   { id: 'purr', name: 'Ronron', chip: 'var(--c-cat)', volume: 0.7, sub: () => 'chat endormi' },

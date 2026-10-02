@@ -7,8 +7,36 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Gluten:wght@600;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<script>
+  // Même règle que src/state/store.ts (nuit entre 20 h et 7 h), posée avant le JS pour que l'écran de chargement soit à l'heure.
+  var h = new Date().getHours()
+  if (h >= 20 || h < 7) document.documentElement.classList.add('night')
+</script>
+<style>
+  /* Écran de chargement, visible avant même le JS ; src/ui/splash.ts le fait avancer puis le retire.
+     Couleurs reprises de src/styles/tokens.css (le CSS de l'app n'est pas encore là). */
+  #splash { position: fixed; inset: 0; z-index: 10; display: grid; place-content: center; justify-items: center; gap: 16px; padding: 16px;
+    background: radial-gradient(130% 90% at 50% 40%, #f7f1fa 0%, #e7dcf0 52%, #d2c1e3 100%); color: #33264a;
+    font: 500 13px/1.4 Nunito, ui-rounded, "Segoe UI", system-ui, sans-serif; text-align: center; transition: opacity .5s ease, visibility .5s }
+  .night #splash { background: radial-gradient(130% 90% at 50% 40%, #342d66 0%, #211c44 52%, #13102a 100%); color: #f3eeff }
+  #splash.out { opacity: 0; visibility: hidden }
+  #splash .t { margin: 0; font: 800 36px/1 Gluten, "Baloo 2", "Trebuchet MS", system-ui, sans-serif }
+  #splash .bar { width: 148px; height: 10px; padding: 2px; border-radius: 99px; background: rgba(80, 60, 120, .14) }
+  .night #splash .bar { background: rgba(210, 190, 255, .16) }
+  #splash .bar i { display: block; height: 100%; min-width: 6px; width: calc(var(--p, 0) * 100%); border-radius: inherit; background: #128d96;
+    transition: width .35s ease; animation: wait 1.4s ease-in-out infinite alternate }
+  .night #splash .bar i { background: #6cd9d2 }
+  #splash .m { margin: 0; opacity: .72 }
+  @keyframes wait { from { opacity: .55 } to { opacity: 1 } }
+  @media (prefers-reduced-motion: reduce) { #splash .bar i { animation: none } }
+</style>
 </head>
 <body>
+<div id="splash">
+  <p class="t">Chambre Lofi</p>
+  <div class="bar" role="progressbar" aria-label="Chargement de la chambre" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div>
+  <p class="m">On range la chambre…</p>
+</div>
 <div id="root"></div>
 <script type="module" src="/src/main.tsx"></script>
 </body>

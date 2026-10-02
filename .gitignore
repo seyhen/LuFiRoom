@@ -1,2 +1,4 @@
 node_modules
 dist
+# sons sources avant encodage (lourds) : voir docs/ASSETS.md
+audio-src

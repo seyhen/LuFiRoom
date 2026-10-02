@@ -1,10 +1,42 @@
 import { useStore } from '../../state/store'
+import { loops } from '../../rooms/bedroom'
 import { rand } from '../../math'
 import { impulse } from '../buffers'
+import { crossLoop, later, missing } from '../recordings'
 import type { Channel, Kit } from '../engine'
 
-/** Dehors : fond d'air, et des oiseaux le jour ou des grillons la nuit, avec un peu de réverbération. */
-export default function outside({ ctx, gain, biq, osc, loop, noise }: Kit, out: GainNode): Channel {
+/** Dehors : des oiseaux le jour, des grillons la nuit. Enregistrés, ou synthétisés. */
+export default function outside(kit: Kit, out: GainNode): Channel {
+  const ch = later(), { birds, crickets } = loops
+  const synth = () => ch.use(synthOutside(kit, out))
+  if (!birds || !crickets) synth()
+  else {
+    Promise.all([kit.sample(birds.src), kit.sample(crickets.src)]).then(([day, night]) => {
+      // Les deux boucles tournent ; on passe de l'une à l'autre en même temps que la pièce.
+      const gDay = kit.gain(0), gNight = kit.gain(0)
+      crossLoop(kit.ctx, day, gDay)
+      crossLoop(kit.ctx, night, gNight)
+      gDay.connect(out)
+      gNight.connect(out)
+      const mix = (isNight: boolean, tau: number) => {
+        const t = kit.ctx.currentTime
+        gDay.gain.setTargetAtTime(isNight ? 0 : birds.gain, t, tau)
+        gNight.gain.setTargetAtTime(isNight ? crickets.gain : 0, t, tau)
+      }
+      mix(useStore.getState().night, 0.01)
+      useStore.subscribe((s, p) => {
+        if (s.night !== p.night) mix(s.night, 0.4)
+      })
+    }, (e) => {
+      missing('dehors', e)
+      synth()
+    })
+  }
+  return ch
+}
+
+/** Synthèse du prototype : fond d'air, et des oiseaux le jour ou des grillons la nuit, avec un peu de réverbération. */
+function synthOutside({ ctx, gain, biq, osc, loop, noise }: Kit, out: GainNode): Channel {
   loop(noise.pink, 3.3).connect(biq('lowpass', 650, 0.4)).connect(gain(0.16)).connect(out)
   const input = gain(1), hp = biq('highpass', 1100, 0.5), conv = ctx.createConvolver()
   conv.buffer = impulse(ctx, 2.2, 3.2)
