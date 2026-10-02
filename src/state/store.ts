@@ -25,12 +25,16 @@ export interface Store {
   kicks: number
   /** Écran de chargement : fichiers préchargés, et scène dessinée une première fois. */
   loading: { done: number; total: number; scene: boolean }
+  /** Minuteur de sommeil : instant (ms) où tout s'est éteint en fondu, ou null. */
+  sleepEnd: number | null
   /** Place prise par le titre (en haut) et le mixeur (en bas), en px : la pièce se cadre entre les deux. */
   insets: { top: number; bottom: number }
   toggle: (target: Target) => void
   toggleNight: () => void
   muteAll: () => void
   setVolume: (id: SoundId, v: number) => void
+  /** Lance le minuteur de sommeil (durée en minutes), ou l'annule (null). */
+  setSleep: (minutes: number | null) => void
   /** Change de pièce : les sons se coupent, la scène s'efface, puis la nouvelle pièce apparaît. */
   goto: (id: string) => void
 }
@@ -69,6 +73,8 @@ export const useStore = create<Store>()((set, get) => ({
   kicks: 0,
   loading: { done: 0, total: 0, scene: false },
   insets: { top: 0, bottom: 0 },
+  sleepEnd: null,
+  setSleep: (minutes) => set({ sleepEnd: minutes === null ? null : Date.now() + minutes * 60_000 }),
   // Toucher un objet, son hotspot ou sa carte du mixeur. Sans effet pendant une transition.
   toggle: (target) => set((s) => (s.leaving ? s : { taps: s.taps + 1, ...flip(s, target) })),
   // Bouton jour / nuit : comme toucher la lampe, sans compter comme un geste.

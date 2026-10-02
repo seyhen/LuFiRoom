@@ -15,6 +15,8 @@ export function App() {
   // Le mode nuit redéfinit les tokens d'interface.
   useLayoutEffect(() => {
     document.documentElement.classList.toggle('night', night)
+    // La barre du navigateur (et celle de l'app installée) prend la couleur du fond.
+    document.querySelector('meta[name=theme-color]')?.setAttribute('content', getComputedStyle(document.documentElement).getPropertyValue('--bg').trim())
   }, [night])
 
   // Le ciel du fond est celui de la pièce (le changement se fait pendant que la scène est effacée).

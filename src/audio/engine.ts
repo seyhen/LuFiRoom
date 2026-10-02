@@ -96,6 +96,8 @@ const preloadRoom = (room: Room, count: boolean) => {
 preloadRoom(roomById(useStore.getState().room), true)
 
 let kit: Kit | null = null
+let masterGain: GainNode | null = null
+const MASTER = 0.9
 // Un bus et un canal par son et par pièce : le ronron de la chambre n'est pas celui d'une autre pièce.
 const bus: Record<string, GainNode> = {}
 const built: Record<string, Channel | void> = {}
@@ -116,8 +118,9 @@ function ensure() {
   comp.attack.value = 0.008
   comp.release.value = 0.3
   const master = ctx.createGain()
-  master.gain.value = 0.9
+  master.gain.value = MASTER
   master.connect(comp).connect(ctx.destination)
+  masterGain = master
   kit = makeKit(ctx, master)
   return kit
 }
@@ -159,6 +162,31 @@ function pop({ ctx, master, gain, osc }: Kit, up: boolean) {
   o.stop(t + 0.16)
 }
 
+// Minuteur de sommeil : sur l'horloge audio (qui ne dort pas quand l'onglet est en arrière-plan), le master descend
+// en fondu pendant les dernières secondes ; à l'échéance, tout se coupe. Il se rouvre une fois les bus éteints.
+const SLEEP_FADE = 30 // s
+let sleepTimer = 0
+function sleepSchedule(k: Kit, end: number | null, was: number | null) {
+  clearTimeout(sleepTimer)
+  const g = masterGain!.gain, now = k.ctx.currentTime, cur = g.value
+  g.cancelScheduledValues(now)
+  g.setValueAtTime(cur, now) // repart du niveau actuel : pas de saut si on annule en plein fondu
+  if (end === null) {
+    // Annulé en route : on rouvre tout de suite. Arrivé à l'échéance : on attend que les bus soient descendus (fin des fondus).
+    const done = was !== null && Date.now() >= was - 200
+    if (done) g.setValueAtTime(MASTER, now + 2.5)
+    else g.setTargetAtTime(MASTER, now, 0.1)
+    return
+  }
+  const left = Math.max(0, (end - Date.now()) / 1000), fade = Math.min(SLEEP_FADE, left)
+  g.setValueAtTime(MASTER, now + left - fade) // le master reste ouvert jusqu'au début du fondu
+  g.linearRampToValueAtTime(0, now + left)
+  sleepTimer = window.setTimeout(() => {
+    useStore.getState().muteAll()
+    useStore.setState({ sleepEnd: null })
+  }, left * 1000)
+}
+
 // L'audio suit le store. Un changement on/off ou jour/nuit vient toujours d'un geste de l'utilisateur
 // (l'écouteur est appelé pendant le clic) : c'est là qu'on crée ou relance l'AudioContext (règle d'autoplay).
 useStore.subscribe((s, p) => {
@@ -173,4 +201,11 @@ useStore.subscribe((s, p) => {
     if (s.night !== p.night) pop(k, !s.night)
   }
   if (kit) for (const id of ids) if (s.vol[id] !== p.vol[id]) volume(kit, id)
+  if (s.sleepEnd !== p.sleepEnd) {
+    const k = ensure()
+    if (k) sleepSchedule(k, s.sleepEnd, p.sleepEnd)
+  } else if (s.sleepEnd !== null && ids.some((id) => s.on[id] && !p.on[id]) && s.sleepEnd - Date.now() < SLEEP_FADE * 1000) {
+    // On rallume un son pendant le fondu final : il serait inaudible, on annule le minuteur.
+    useStore.setState({ sleepEnd: null })
+  }
 })

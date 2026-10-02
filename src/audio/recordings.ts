@@ -13,6 +13,18 @@ async function get(url: string) {
   return res.arrayBuffer()
 }
 
+const warmed = new Set<string>()
+/**
+ * Garde un fichier pour le hors ligne. Le lecteur <audio> demande des morceaux (206), que le service worker ne peut pas mettre
+ * en cache : on télécharge le fichier entier une fois (200), qu'il garde. Sans effet sans service worker, ou en mode économie de données.
+ */
+export function keepOffline(url: string) {
+  const saver = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData
+  if (!navigator.serviceWorker?.controller || saver || warmed.has(url)) return
+  warmed.add(url)
+  fetch(url).catch(() => warmed.delete(url))
+}
+
 const bytes = new Map<string, Promise<ArrayBuffer>>()
 const buffers = new Map<string, Promise<AudioBuffer>>()
 

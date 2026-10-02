@@ -19,7 +19,7 @@ Nom de travail : « Chambre Lofi » (provisoire).
 - Zustand pour l'état global (sons actifs, volumes, jour/nuit)
 - Web Audio API natif pour le son (pas Howler : on a besoin de chaînes de filtres, ex. pluie étouffée quand la fenêtre est fermée)
 - CSS natif avec variables (tokens dans `src/styles/tokens.css`), pas de Tailwind
-- PWA en phase 4 (vite-plugin-pwa)
+- PWA avec vite-plugin-pwa (service worker actif seulement dans le build : `npm run build` puis `npm run preview`)
 
 Le développement se fait sous Windows : les commandes doivent fonctionner dans PowerShell (pas de `rm -rf`, `export`, etc. dans les scripts npm).
 
@@ -41,9 +41,10 @@ src/
     buffers.ts              # bruits en boucle sans couture, gouttes, crépitement, ronron
     recordings.ts           # chargement Opus/MP3, boucles en fondu, repli sur la synthèse
     channels/               # radio.ts, tracks.ts (pistes lofi), rain.ts, fan.ts, purr.ts, outside.ts
-  ui/                       # TopBar, RoomPicker, Mixer, MixerCard, splash.ts (écran de chargement, HTML dans index.html)
+  ui/                       # TopBar, RoomPicker, Mixer, MixerCard, SleepTimer, InstallButton, splash.ts (écran de chargement, HTML dans index.html)
   styles/tokens.css
 scripts/encode-audio.mjs    # npm run audio : sources → Opus/WebM + MP3 dans public/audio/
+vite.config.ts              # dont vite-plugin-pwa : manifeste, service worker, cache des sons (voir docs/PWA.md)
 ```
 
 Principe clé : **une chambre est une donnée**. Les objets interactifs, les sons qu'ils pilotent, leurs ancres, le ciel et les lumières viennent de `rooms/*.ts`, pour pouvoir ajouter d'autres pièces (café, cabane sous la neige...) sans toucher au moteur.

@@ -17,5 +17,7 @@ export const soundIcons: Record<SoundId, ReactNode> = {
   outside: svg(<><rect x="4" y="3" width="16" height="18" rx="3" /><path d="M12 3v18M4 12h16" /></>),
 }
 
+export const timerIcon = svg(<><circle cx="12" cy="13.5" r="7.5" /><path d="M12 9.5v4l2.6 1.6M9.5 3h5" /></>)
+export const installIcon = svg(<><path d="M12 3.5v11" /><path d="m7.5 10.5 4.5 4.5 4.5-4.5" /><path d="M5 19.5h14" /></>)
 export const sunIcon = svg(<><circle cx="12" cy="12" r="4" /><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4" /></>)
 export const moonIcon = svg(<path d="M19.5 14.6A7.8 7.8 0 0 1 9.4 4.5a7.8 7.8 0 1 0 10.1 10.1z" />)

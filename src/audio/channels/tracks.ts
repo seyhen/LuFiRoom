@@ -1,6 +1,6 @@
 import { useStore } from '../../state/store'
 import type { Room } from '../../rooms/types'
-import { EXTS, fileUrl, later, missing } from '../recordings'
+import { EXTS, fileUrl, keepOffline, later, missing } from '../recordings'
 import type { Channel, Kit } from '../engine'
 import radio, { tuneStatic } from './radio'
 
@@ -48,6 +48,7 @@ export default function tracks(kit: Kit, out: GainNode, { playlist }: Room): Cha
     misses = 0
     const t = track()
     useStore.setState({ onAir: `${t.title} · ${t.artist}` })
+    keepOffline(fileUrl(t.src, EXTS[ext]))
   }
   el.onerror = () => {
     if (++ext < EXTS.length) return load() // l'Opus ne passe pas : on retente en MP3

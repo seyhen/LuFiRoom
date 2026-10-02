@@ -53,6 +53,14 @@ Cahier des charges d'origine :
 - Idées de pièces : café un jour de pluie, cabane sous la neige, bibliothèque, toit-terrasse la nuit.
 
 ## Phase 4 : app installable (piste)
+État : PWA et minuteur de sommeil faits ; reste la lecture en arrière-plan / écran verrouillé, et les mixes sauvegardés. Guide : `docs/PWA.md`.
+
+- [x] PWA : manifeste, icônes, installation (bouton « Installer l'app » là où le navigateur la propose), hors ligne.
+- [x] Minuteur de sommeil : 15 min, 30 min, 1 h ou 2 h, fondu de 30 s puis tout s'éteint.
+- [ ] Lecture en arrière-plan et contrôles écran verrouillé (Media Session), surtout sur iOS.
+- [ ] Mixes sauvegardés, partage d'un mix par lien.
+
+Cahier des charges d'origine :
 - PWA (installable, hors ligne une fois les sons en cache).
 - Lecture en arrière-plan et contrôles écran verrouillé (Media Session), surtout sur iOS.
 - Minuteur de sommeil, mixes sauvegardés, partage d'un mix par lien.
