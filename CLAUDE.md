@@ -50,7 +50,7 @@ netlify.toml                # hébergement : cache et en-têtes (voir docs/DEPLO
 vite.config.ts              # dont vite-plugin-pwa : manifeste, service worker, cache des sons (voir docs/PWA.md)
 ```
 
-Principe clé : **une chambre est une donnée**. Les objets interactifs, les sons qu'ils pilotent, leurs ancres, le ciel et les lumières viennent de `rooms/*.ts`, pour pouvoir ajouter d'autres pièces (café, cabane sous la neige...) sans toucher au moteur.
+Principe clé : **une chambre est une donnée**. Les objets interactifs, les sons qu'ils pilotent, leurs ancres, le ciel et les lumières viennent de `rooms/*.ts`, pour pouvoir ajouter d'autres pièces (café, cabane sous la neige, toit-terrasse...) sans toucher au moteur.
 
 ## Conventions
 

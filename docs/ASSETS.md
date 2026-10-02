@@ -31,6 +31,10 @@ Le navigateur prend le WebM s'il le lit, sinon le MP3. Si un fichier manque ou n
 | `purr` | ronron | chat qui ronronne, de près | 0.1 à 0.3 |
 | `fire` | feu de bois (cabane) | feu de cheminée qui crépite, de près | 0.8 |
 | `wind` | vent (cabane) | vent sur la neige, avec des rafales | 0.8 |
+| `street` | la rue (café) | rue sous la pluie, voitures sur le pavé mouillé, un bus de loin | 0.8 |
+| `murmur` | brouhaha (café) | conversations indistinctes dans un café, sans mot compréhensible | 0.8 |
+| `espresso` | expresso (café) | machine à café qui moud, coule et fait mousser, des tasses qui tintent | 0.8 |
+| `pages` | pages (café) | bibliothèque silencieuse : pages qu'on tourne, tic-tac d'horloge, parquet qui craque | 0.8 |
 | `birds` + `crickets` | dehors | oiseaux le jour, grillons la nuit (**les deux ensemble**, sinon le dehors reste synthétisé). Le passage de l'un à l'autre suit le bouton jour / nuit. | 0.3 à 0.5 |
 
 Les gains sont des points de départ, mesurés avec des bruits de test : règle-les à l'oreille, en gardant le mélange
@@ -94,6 +98,10 @@ Quoi chercher (mots-clés anglais, en général plus riches) :
 | `birds` | `birdsong morning`, `forest birds ambience` | un seul oiseau très marqué qui reviendrait à chaque boucle |
 | `crickets` | `crickets night`, `night insects ambience` | voix, avions |
 | `fire` | `fireplace crackling`, `wood fire close` | pops très forts isolés |
+| `street` | `rainy street traffic`, `wet road cars passing` | klaxons, voix, musique |
+| `murmur` | `cafe ambience murmur`, `restaurant crowd walla` | mots nets, rires forts, musique de fond |
+| `espresso` | `espresso machine`, `coffee shop barista cups` | voix, caisse enregistreuse |
+| `pages` | `library ambience page turning clock ticking` | voix, pas, toux |
 | `wind` | `wind blizzard`, `wind snow ambience`, `howling wind` | tonnerre, voix, objets qui claquent |
 
 Pour chaque fichier retenu, ajoute **tout de suite** sa ligne dans `public/audio/CREDITS.md` (auteur, lien, licence, date) et garde une capture de la page de licence hors du dépôt.

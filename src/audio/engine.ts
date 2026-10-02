@@ -2,7 +2,7 @@ import { preload, useStore } from '../state/store'
 import { roomById } from '../rooms'
 import type { Loop, Room, SoundId } from '../rooms/types'
 import { brownGen, loopBuffer, pinkGen, whiteGen } from './buffers'
-import { crossLoop, decode, missing, prefetch } from './recordings'
+import { crossLoop, decode, later, missing, prefetch } from './recordings'
 import radio from './channels/radio'
 import tracks from './channels/tracks'
 import rain from './channels/rain'
@@ -11,6 +11,10 @@ import purr from './channels/purr'
 import outside from './channels/outside'
 import fire from './channels/fire'
 import wind from './channels/wind'
+import street from './channels/street'
+import murmur from './channels/murmur'
+import espresso from './channels/espresso'
+import pages from './channels/pages'
 
 // canal (bus Gain) ─┬─> master Gain 0.9 ─> compresseur ─> sortie
 // canal (bus Gain) ─┘
@@ -35,6 +39,10 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   outside: { build: outside, base: 1.0 },
   fire: { build: fire, base: 0.9 },
   wind: { build: wind, base: 0.9 },
+  street: { build: street, base: 0.9 },
+  murmur: { build: murmur, base: 0.9 },
+  espresso: { build: espresso, base: 0.9 },
+  pages: { build: pages, base: 0.9 },
 }
 const ids = Object.keys(CHANNELS) as SoundId[]
 
@@ -82,7 +90,26 @@ function makeKit(ctx: AudioContext, master: GainNode) {
       },
     )
   }
-  return { ctx, master, gain, biq, osc, loop, noise, sample, loopOr }
+  // Comme loopOr, pour une synthèse faite d'évènements planifiés (qui a un start et un stop) : renvoie le canal à brancher.
+  const loopOrChannel = (rec: Loop | undefined, dest: AudioNode, synth: () => Channel | void): Channel => {
+    const ch = later()
+    if (!rec) ch.use(synth())
+    else {
+      sample(rec.src).then(
+        (b) => {
+          const g = gain(rec.gain)
+          g.connect(dest)
+          crossLoop(ctx, b, g)
+        },
+        (e) => {
+          missing(rec.src, e)
+          ch.use(synth())
+        },
+      )
+    }
+    return ch
+  }
+  return { ctx, master, gain, biq, osc, loop, noise, sample, loopOr, loopOrChannel }
 }
 
 // Les boucles de la pièce se téléchargent dès l'ouverture, pendant l'écran de chargement. On les décode à leur premier
