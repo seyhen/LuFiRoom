@@ -64,6 +64,34 @@ Ce qu'il faut dans le fichier :
 Un budget raisonnable pour le premier chargement : **moins de 2 Mo** de boucles (elles sont préchargées pendant l'écran de chargement).
 Les pistes de la radio ne sont téléchargées qu'à l'écoute et ne comptent pas dans ce budget.
 
+## Où trouver les sons
+
+Je n'ai pas pu parcourir ces sites depuis l'environnement où je travaille (réseau fermé) : rien de ci-dessous n'est vérifié, **c'est à toi de contrôler la licence de chaque fichier avant de l'ajouter**.
+
+**Règle** : CC0 ou licence achetée qui autorise l'usage commercial. Écarte « CC BY » (il faudrait créditer dans l'app : à décider avant), tout « NC » (non commercial), « ND », et les mentions vagues (« libre de droits », « gratuit pour usage personnel ») qui ne disent pas ce qu'on peut faire.
+Plusieurs banques de sons « gratuites » ont une licence propre qui exclut la revente du fichier seul ou limite l'usage commercial : lis-la, ne te fie pas au mot « gratuit ».
+
+Pistes de recherche (à vérifier) :
+- catalogues collaboratifs de sons, avec un filtre de licence « CC0 » (Freesound, OpenGameArt, Wikimedia Commons) ;
+- bibliothèques de sons vendues à l'unité ou en pack, avec une licence commerciale écrite (à garder avec le reçu) ;
+- pour la musique : un·e artiste lofi qui te vend une licence pour l'app (la plus sûre, et ça donne une identité), des labels qui proposent des licences commerciales, ou des morceaux CC0.
+  Attention aux morceaux « sans droit d'auteur » dont on ne retrouve pas la licence écrite.
+
+Quoi chercher (mots-clés anglais, en général plus riches) :
+
+| Son | Recherche | À éviter dans la prise |
+|---|---|---|
+| `rain` | `rain on window`, `rain window interior`, `light rain loop` | tonnerre, voitures, voix |
+| `fan` | `desk fan`, `table fan loop`, `fan hum` | clics de commutateur, claquements |
+| `purr` | `cat purring`, `purr close` | miaulements, bruits de pièce |
+| `birds` | `birdsong morning`, `forest birds ambience` | un seul oiseau très marqué qui reviendrait à chaque boucle |
+| `crickets` | `crickets night`, `night insects ambience` | voix, avions |
+| `fire` | `fireplace crackling`, `wood fire close` | pops très forts isolés |
+| `wind` | `wind blizzard`, `wind snow ambience`, `howling wind` | tonnerre, voix, objets qui claquent |
+
+Pour chaque fichier retenu, ajoute **tout de suite** sa ligne dans `public/audio/CREDITS.md` (auteur, lien, licence, date) et garde une capture de la page de licence hors du dépôt.
+Puis : `audio-src/`, `npm run audio`, déclaration dans la pièce, écoute au casque et sur le haut-parleur d'un téléphone, réglage du `gain`.
+
 ## Écran de chargement
 
 Il est dans `index.html` (HTML et CSS seuls, visibles avant même le JavaScript) et pilotés par `src/ui/splash.ts`.
