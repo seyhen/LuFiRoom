@@ -42,7 +42,32 @@ Donne un nouveau nom au fichier (`rain-2.webm`) et change-le dans `src/rooms/*.t
 - Un son de test, ouvert à la main (`/audio/...`), répond avec le bon type (`audio/webm`) et un en-tête `accept-ranges: bytes`.
 - Sur un téléphone : installation (Android : bouton « Installer l'app » ; iPhone : Partager, « Sur l'écran d'accueil »).
 
-## Plus tard
+## Aperçu des liens (Open Graph)
 
-- **Aperçu à la publication d'un lien** (Open Graph) : une image et un titre. Il faut l'adresse définitive (l'image doit avoir une adresse absolue), donc après le nom de domaine.
-- **Mesure d'audience** et **modèle économique** : pas encore, voir `docs/PLAN.md`.
+Quand on colle l'adresse dans une messagerie ou un réseau, l'aperçu montre le titre, la description et `public/og.jpg` (1200 × 630, la chambre en plein cadre).
+Les titre et description sont dans `index.html`. Les adresses **absolues** (`og:url`, `og:image`, lien canonique) sont ajoutées au build par `vite.config.ts`, car elles dépendent du domaine :
+
+- sur Netlify, la variable `URL` (adresse principale du site, nom de domaine compris) est fournie toute seule : rien à faire ;
+- ailleurs, ou pour forcer une adresse : variable d'environnement `SITE_URL` (par exemple `https://exemple.fr`). PowerShell : `$env:SITE_URL = "https://exemple.fr"; npm run build`.
+- sans adresse (build local), seuls le titre et la description sont déclarés.
+
+Pour changer l'image : remplacer `public/og.jpg` (même nom, 1200 × 630, JPEG). Les messageries gardent l'ancienne un moment ; leurs outils de « débogage de lien » forcent la mise à jour.
+
+## Mesure d'audience
+
+Rien n'est actif : aucun script n'est chargé tant que tu n'as pas choisi de service. Le point d'accroche est prêt (`vite.config.ts`) : à la construction,
+si `ANALYTICS_SRC` est défini, une balise `<script defer>` est ajoutée à la page. `ANALYTICS_ATTRS` ajoute ses attributs.
+
+```
+ANALYTICS_SRC=https://exemple-de-service/script.js
+ANALYTICS_ATTRS=data-domain=exemple.fr
+```
+
+À mettre dans « Site configuration », « Environment variables » de Netlify (pas dans le dépôt : le choix du service et ses identifiants ne regardent que toi).
+Choisis un service **sans cookie** et qui ne garde pas d'identifiant personnel ; chaque service documente l'adresse de son script et ses attributs.
+Selon l'outil et le pays, une information aux visiteurs peut rester nécessaire : vérifie ses conditions (je ne peux pas te donner d'avis juridique). L'app n'a aujourd'hui ni cookie ni compte.
+Le service worker ne garde pas ce script : hors ligne, il échoue sans bruit.
+
+## Modèle économique
+
+Pistes et recommandation dans `docs/MODELE-ECONOMIQUE.md`.

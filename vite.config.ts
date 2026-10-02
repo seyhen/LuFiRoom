@@ -1,12 +1,45 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 const DAY = '#e5daef' // --bg de tokens.css
 
+/**
+ * Ce qui dépend de l'adresse du site ou de l'hébergement, ajouté à index.html au build (voir docs/DEPLOY.md) :
+ * - l'aperçu des liens (Open Graph) veut des adresses absolues. Elles viennent de SITE_URL, ou de `URL` que Netlify
+ *   fournit au build (son adresse principale, nom de domaine compris). Sans adresse, l'image n'est pas déclarée ;
+ * - la mesure d'audience, si ANALYTICS_SRC est défini (adresse du script du service choisi). ANALYTICS_ATTRS
+ *   ajoute ses attributs, par exemple « data-domain=exemple.fr ».
+ */
+function siteMeta(): Plugin {
+  return {
+    name: 'site-meta',
+    transformIndexHtml() {
+      const site = (process.env.SITE_URL || process.env.URL || '').replace(/\/$/, '')
+      const tags: { tag: string; attrs: Record<string, string | boolean>; injectTo: 'head' }[] = []
+      const add = (tag: string, attrs: Record<string, string | boolean>) => tags.push({ tag, attrs, injectTo: 'head' })
+      if (site) {
+        add('link', { rel: 'canonical', href: `${site}/` })
+        add('meta', { property: 'og:url', content: `${site}/` })
+        add('meta', { property: 'og:image', content: `${site}/og.jpg` })
+        add('meta', { property: 'og:image:width', content: '1200' })
+        add('meta', { property: 'og:image:height', content: '630' })
+        add('meta', { property: 'og:image:alt', content: 'Une chambre en 3D isométrique : lit, chat, bureau avec radio, fenêtre et nuage.' })
+        add('meta', { name: 'twitter:image', content: `${site}/og.jpg` })
+      }
+      if (process.env.ANALYTICS_SRC) {
+        const extra = Object.fromEntries((process.env.ANALYTICS_ATTRS ?? '').split(/\s+/).filter(Boolean).map((a) => a.split(/=(.*)/s).slice(0, 2) as [string, string]))
+        add('script', { defer: true, src: process.env.ANALYTICS_SRC, ...extra })
+      }
+      return tags
+    },
+  }
+}
+
 export default defineConfig({
   plugins: [
     react(),
+    siteMeta(),
     VitePWA({
       // La nouvelle version prend la main toute seule, sans recharger la page : la musique ne s'arrête pas.
       registerType: 'autoUpdate',
