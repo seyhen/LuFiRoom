@@ -44,7 +44,21 @@ Bouton « Minuteur » dans l'en-tête du mixeur : 15 min, 30 min, 1 h ou 2 h, et
 - Changer de pièce ne l'arrête pas. Il n'est pas mémorisé entre deux visites.
 - État : `sleepEnd` dans le store (instant d'échéance), logique audio dans `src/audio/engine.ts`, interface dans `src/ui/SleepTimer.tsx`.
 
+## Lecture en arrière-plan et écran verrouillé
+
+Le Web Audio seul est coupé par certains systèmes (iOS surtout) quand l'écran se verrouille. Le son de l'app sort donc par un élément `<audio>` :
+
+- le compresseur final est branché sur un `MediaStreamAudioDestinationNode`, dont le flux est lu par un `<audio>` caché (`src/audio/engine.ts`). Pour le système, c'est un lecteur de média ;
+- cet élément ne joue que quand un son est actif (lancé pendant le geste de l'utilisateur, mis en pause 2.5 s après le dernier son éteint), pour ne pas laisser de contrôles affichés ni user la batterie ;
+- si le navigateur ne sait pas faire (ou refuse de lire), la sortie directe prend le relais, avec un avertissement dans la console : on perd la lecture en fond, pas le son.
+
+La **Media Session** (`src/audio/session.ts`) donne au système ce qu'il affiche : titre (les sons actifs, ou le morceau de la radio quand elle joue des pistes), pièce, icône, et trois commandes.
+« Pause » coupe l'ambiance en retenant ce qui jouait, « Lecture » la remet (ou lance le premier son de la pièce s'il n'y avait rien), « Stop » coupe.
+
+Vérifié dans Chromium : le flux porte bien le son, l'élément joue et se met en pause comme prévu, les commandes agissent, les métadonnées suivent la pièce et les sons.
+**Pas vérifié sur un vrai téléphone** : surtout iPhone (Safari), où le comportement en arrière-plan est le plus capricieux. À essayer : lancer une ambiance, verrouiller l'écran, attendre une minute, vérifier que ça joue et que les contrôles apparaissent. Si ça ne marche pas, les pistes à explorer sont le mode « plein écran » de l'app installée et la manière dont iOS traite le flux.
+Un point d'attention : la radio générative programme ses notes avec des minuteurs ; en arrière-plan prolongé, un navigateur peut les ralentir (en général pas tant qu'un son est audible).
+
 ## Pas encore fait
 
-- **Lecture en arrière-plan et écran verrouillé** : sur iOS, le Web Audio se coupe quand l'écran se verrouille. Il faudra passer par un élément `<audio>` et la Media Session API.
 - **Mixes sauvegardés et partage par lien.**

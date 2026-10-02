@@ -97,6 +97,12 @@ preloadRoom(roomById(useStore.getState().room), true)
 
 let kit: Kit | null = null
 let masterGain: GainNode | null = null
+let limiter: DynamicsCompressorNode | null = null
+// Sortie : un flux (MediaStream) lu par un élément <audio>, plutôt que les haut-parleurs directs. Pour le système, c'est alors
+// un lecteur de média : la lecture continue écran verrouillé ou app en arrière-plan, et la Media Session (src/audio/session.ts)
+// peut afficher des contrôles. Si le navigateur ne sait pas, ou refuse de lire, la sortie directe reste le repli.
+let sink: HTMLAudioElement | null = null
+let sinkOff = 0
 const MASTER = 0.9
 // Un bus et un canal par son et par pièce : le ronron de la chambre n'est pas celui d'une autre pièce.
 const bus: Record<string, GainNode> = {}
@@ -119,10 +125,35 @@ function ensure() {
   comp.release.value = 0.3
   const master = ctx.createGain()
   master.gain.value = MASTER
-  master.connect(comp).connect(ctx.destination)
+  master.connect(comp)
+  limiter = comp
   masterGain = master
+  if (typeof ctx.createMediaStreamDestination === 'function' && 'srcObject' in HTMLMediaElement.prototype) {
+    const dest = ctx.createMediaStreamDestination()
+    comp.connect(dest)
+    sink = new Audio()
+    sink.srcObject = dest.stream
+  } else comp.connect(ctx.destination)
   kit = makeKit(ctx, master)
   return kit
+}
+
+/** Lance la lecture du flux de sortie (pendant un geste de l'utilisateur), puis le met en pause quand plus rien ne joue. */
+function keepOutput(anyOn: boolean) {
+  if (!sink) return
+  clearTimeout(sinkOff)
+  const el = sink
+  if (el.paused) {
+    el.play().catch((e) => {
+      // Lecture refusée : on revient à la sortie directe, sans contrôles système mais sans silence.
+      console.warn('Sortie en flux indisponible, sortie directe.', e)
+      sink = null
+      limiter!.disconnect()
+      limiter!.connect(kit!.ctx.destination)
+    })
+  }
+  // Rien ne joue (les fondus durent moins de 2 s) : on libère l'audio du système, sinon ses contrôles restent affichés.
+  if (!anyOn) sinkOff = window.setTimeout(() => !ids.some((id) => useStore.getState().on[id]) && el.pause(), 2500)
 }
 
 /** Allume ou éteint un canal de la pièce courante. Son graphe n'est construit qu'à sa première activation. */
@@ -199,6 +230,7 @@ useStore.subscribe((s, p) => {
     for (const id of changed) set(k, id)
     if (changed.length) pop(k, changed.some((id) => s.on[id]))
     if (s.night !== p.night) pop(k, !s.night)
+    keepOutput(ids.some((id) => s.on[id]))
   }
   if (kit) for (const id of ids) if (s.vol[id] !== p.vol[id]) volume(kit, id)
   if (s.sleepEnd !== p.sleepEnd) {
