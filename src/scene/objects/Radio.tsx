@@ -7,9 +7,11 @@ import { M } from '../materials'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { useParticles, useSquash } from '../anim'
 import { noteTexA, noteTexB } from '../textures'
+import type { V3 } from '../parts'
 
-/** Radio sur le bureau : cadran éclairé, antenne qui bouge, une note qui s'envole et une pulsation à chaque kick. */
-export function Radio() {
+/** Radio (sur le bureau par défaut) : cadran éclairé, antenne qui bouge, une note qui s'envole et une pulsation à chaque kick. */
+export function Radio({ position = [1.9, 1.35, -2.55] }: { position?: V3 }) {
+  const [px, py, pz] = position
   const g = useRef<Group>(null!), needle = useRef<Mesh>(null!), antenna = useRef<Group>(null!)
   const notes = useParticles()
   const beat = useRef({ seen: useStore.getState().kicks, at: -10, flip: false })
@@ -20,7 +22,7 @@ export function Radio() {
       b.at = t
       if (on) {
         b.flip = !b.flip
-        notes.emit(b.flip ? noteTexA : noteTexB, 1.9 + rand(-0.3, 0.3), 2.05, -2.4, { size: 0.26, life: 2.6, vy: 0.55, sway: 0.12 })
+        notes.emit(b.flip ? noteTexA : noteTexB, px + rand(-0.3, 0.3), py + 0.7, pz + 0.15, { size: 0.26, life: 2.6, vy: 0.55, sway: 0.12 })
       }
     }
     M.dial.emissiveIntensity = on ? 0.9 : 0.08
@@ -30,7 +32,7 @@ export function Radio() {
   useSquash('radio', g, (t) => (isActive(useStore.getState(), 'radio') ? Math.exp(-(t - beat.current.at) * 9) * 0.05 : 0))
   return (
     <>
-      <group ref={g} userData={{ id: 'radio' }} position={[1.9, 1.35, -2.55]}>
+      <group ref={g} userData={{ id: 'radio' }} position={position}>
         <Part geo={rbox(0.84, 0.5, 0.36, 0.12)} m={M.mint} p={[0, 0.25, 0]} />
         {/* haut-parleur */}
         <Part m={M.mintDark} p={[-0.18, 0.24, 0.17]} rotation-x={Math.PI / 2}>

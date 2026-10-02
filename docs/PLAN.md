@@ -38,13 +38,14 @@ Cahier des charges d'origine :
 - `public/audio/CREDITS.md` à jour.
 
 ## Phase 3 : plusieurs chambres (piste)
-État : le socle et le sélecteur sont faits, la 2e pièce reste à construire (la cabane sous la neige). Guide : `docs/ROOMS.md`.
+État : socle, sélecteur et 2e pièce (la cabane sous la neige) faits. Guide : `docs/ROOMS.md`.
 
 - [x] Format de pièce stabilisé : `src/rooms/types.ts` (objets, sons, enregistrements, ciel, lumières), scène associée dans `src/scene/scenes.ts`.
 - [x] Moteur lu depuis la pièce courante : scène, lumières, hotspots, mixeur, audio (bus et canaux par pièce).
 - [x] Sélecteur de pièce (caché tant qu'il n'y en a qu'une) et transition en fondu, sons coupés, dernière pièce mémorisée.
-- [ ] 2e pièce : cabane sous la neige (décor, objets, sons : feu, vent, neige ; canaux à écrire).
+- [x] 2e pièce : cabane sous la neige (cheminée et feu, fenêtre sur la tempête, coffre et radio, fauteuil, lampe). Sons synthétisés : feu, vent ; la radio est celle de la chambre. Enregistrements `fire` et `wind` à fournir (`docs/ASSETS.md`).
 - [ ] Autres pièces : café un jour de pluie, bibliothèque, toit-terrasse la nuit.
+- [ ] Cabane : son de neige / bois qui craque, un objet de plus (chat devant le feu ?), pistes de radio propres à la pièce.
 
 Cahier des charges d'origine :
 - Format de chambre stabilisé (modèle, objets, sons, palette, ciel).

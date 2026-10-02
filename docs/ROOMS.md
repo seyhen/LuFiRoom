@@ -15,6 +15,9 @@ Le moteur (scène, audio, mixeur, sélecteur) ne change pas.
 | `light` | hémisphérique et soleil (ou lune), de jour et de nuit |
 | `dimmedBy` | l'objet dont l'activation assombrit la pièce (la pluie), s'il y en a un |
 
+Exemples : `src/rooms/bedroom.ts` et `src/scene/rooms/BedroomScene.tsx` (la chambre), `src/rooms/cabin.ts` et `src/scene/cabin/` (la cabane : un fichier par objet).
+Les objets déjà écrits se réutilisent : `Window`, `Radio`, `Lamp` et `FairyLights` servent aux deux pièces (`Radio` et `Lamp` prennent une `position`).
+
 ## Les étapes
 
 1. `src/rooms/<nom>.ts` : exporte la pièce, sur le modèle de `bedroom.ts`.

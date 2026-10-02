@@ -9,6 +9,8 @@ import rain from './channels/rain'
 import fan from './channels/fan'
 import purr from './channels/purr'
 import outside from './channels/outside'
+import fire from './channels/fire'
+import wind from './channels/wind'
 
 // canal (bus Gain) ─┬─> master Gain 0.9 ─> compresseur ─> sortie
 // canal (bus Gain) ─┘
@@ -31,6 +33,8 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   fan: { build: fan, base: 0.75 },
   purr: { build: purr, base: 0.95 },
   outside: { build: outside, base: 1.0 },
+  fire: { build: fire, base: 0.9 },
+  wind: { build: wind, base: 0.9 },
 }
 const ids = Object.keys(CHANNELS) as SoundId[]
 

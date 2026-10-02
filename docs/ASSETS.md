@@ -29,6 +29,8 @@ Le navigateur prend le WebM s'il le lit, sinon le MP3. Si un fichier manque ou n
 | `rain` | pluie | pluie sur une vitre, vue de l'intérieur. Passe dans un filtre : étouffée fenêtre fermée, nette fenêtre ouverte. | 1 à 1.4 |
 | `fan` | bruit blanc | ventilateur de bureau, souffle régulier | 0.6 |
 | `purr` | ronron | chat qui ronronne, de près | 0.1 à 0.3 |
+| `fire` | feu de bois (cabane) | feu de cheminée qui crépite, de près | 0.8 |
+| `wind` | vent (cabane) | vent sur la neige, avec des rafales | 0.8 |
 | `birds` + `crickets` | dehors | oiseaux le jour, grillons la nuit (**les deux ensemble**, sinon le dehors reste synthétisé). Le passage de l'un à l'autre suit le bouton jour / nuit. | 0.3 à 0.5 |
 
 Les gains sont des points de départ, mesurés avec des bruits de test : règle-les à l'oreille, en gardant le mélange

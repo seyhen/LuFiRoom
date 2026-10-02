@@ -13,7 +13,7 @@ ShaderChunk.lights_pars_begin = ShaderChunk.lights_pars_begin.replace(
 )
 
 // Gummy : un peu brillant, vernis doux.
-const gummy = (color: number, o: MeshPhysicalMaterialParameters = {}) =>
+export const gummy = (color: number, o: MeshPhysicalMaterialParameters = {}) =>
   new MeshPhysicalMaterial({ color, roughness: 0.46, metalness: 0, clearcoat: 0.55, clearcoatRoughness: 0.3, ...o })
 
 /** Palette partagée. */

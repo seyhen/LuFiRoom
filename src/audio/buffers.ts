@@ -95,6 +95,27 @@ export function crackleBuffer(ctx: BaseAudioContext, sec = 7) {
   return normalize(buf, 0.7)
 }
 
+/**
+ * Feu de bois : un lit de petits craquements, des éclats plus nets, un « pop » de temps en temps.
+ * Chaque craquement est une courte salve de bruit filtré qui s'éteint vite.
+ */
+export function fireBuffer(ctx: BaseAudioContext, sec = 9) {
+  const sr = ctx.sampleRate, N = Math.floor(sec * sr), buf = ctx.createBuffer(2, N, sr)
+  for (let c = 0; c < 2; c++) {
+    const d = buf.getChannelData(c)
+    const burst = (i0: number, len: number, amp: number, tone: number) => {
+      let lp = 0
+      for (let n = 0; n < len; n++) {
+        lp += (Math.random() * 2 - 1 - lp) * tone
+        d[(i0 + n) % N] += amp * Math.exp((-5 * n) / len) * lp
+      }
+    }
+    for (let k = 0; k < sec * 22; k++) burst((Math.random() * N) | 0, ((0.002 + Math.random() * 0.012) * sr) | 0, Math.pow(Math.random(), 2.4) * 0.5, 0.5 + Math.random() * 0.4)
+    for (let k = 0; k < sec * 2.4; k++) burst((Math.random() * N) | 0, ((0.01 + Math.random() * 0.035) * sr) | 0, 0.5 + Math.random() * 0.5, 0.15 + Math.random() * 0.25)
+  }
+  return normalize(buf, 0.8)
+}
+
 /** Ronron : 2 cycles de 2.7 s (inspiration à 27 Hz, pause, expiration à 23.5 Hz). */
 export function purrBuffer(ctx: BaseAudioContext) {
   const sr = ctx.sampleRate, cyc = 2.7, N = Math.floor(cyc * 2 * sr), buf = ctx.createBuffer(2, N, sr)

@@ -3,14 +3,14 @@ import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, SphereGeometry, type Group, type PointLight, type Sprite } from 'three'
 import { TAU, smooth } from '../../math'
 import { M } from '../materials'
-import { Part, cyl, noRay } from '../parts'
+import { Part, cyl, noRay, type V3 } from '../parts'
 import { mood, useSquash } from '../anim'
 import { glowTex } from '../textures'
 
 const capGeo = new SphereGeometry(0.34, 32, 16, 0, TAU, 0, Math.PI / 2)
 
 /** Lampe champignon sur la table de chevet : bascule jour / nuit, éclaire la pièce la nuit. */
-export function Lamp() {
+export function Lamp({ position = [-2.55, 0.68, -2.55] }: { position?: V3 }) {
   const g = useRef<Group>(null!), light = useRef<PointLight>(null!), glow = useRef<Sprite>(null!)
   useSquash('lamp', g)
   useFrame(() => {
@@ -20,7 +20,7 @@ export function Lamp() {
     glow.current.material.opacity = e * 0.75
   })
   return (
-    <group ref={g} userData={{ id: 'lamp' }} position={[-2.55, 0.68, -2.55]}>
+    <group ref={g} userData={{ id: 'lamp' }} position={position}>
       <Part geo={cyl(0.16, 0.18, 0.06, 24)} m={M.cream} p={[0, 0.03, 0]} />
       <Part geo={cyl(0.06, 0.08, 0.32, 18)} m={M.cream} p={[0, 0.2, 0]} />
       <Part geo={capGeo} m={M.lampCap} p={[0, 0.33, 0]} scale-y={0.72} />

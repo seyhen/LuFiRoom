@@ -6,7 +6,7 @@ import { muralTex } from '../textures'
 // Mur du fond, percé de la fenêtre.
 const wallShape = rrPath(new Shape(), -3.34, -0.05, 6.54, 4.35, 0.12)
 wallShape.holes.push(rrPath(new Path(), WIN.x0, WIN.y0, WIN.x1 - WIN.x0, WIN.y1 - WIN.y0, 0.16))
-const backWall = new ExtrudeGeometry(wallShape, { depth: 0.2, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.06, bevelSegments: 3, curveSegments: 10 })
+export const backWall = new ExtrudeGeometry(wallShape, { depth: 0.2, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.06, bevelSegments: 3, curveSegments: 10 })
 
 /** Socle, parquet, murs (fresque à gauche) et appui intérieur de la fenêtre. */
 export function Shell() {
