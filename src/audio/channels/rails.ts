@@ -11,7 +11,7 @@ import type { Channel, Kit } from '../engine'
 export default function rails(kit: Kit, out: GainNode, { loops }: Room): Channel {
   return kit.loopOrChannel(loops.rails, out, () => {
     const { ctx, gain, biq, osc, loop, noise } = kit
-    const bus = gain(1.6)
+    const bus = gain(1.3)
     bus.connect(out)
     // La caisse qui roule : grave, avec un balancement lent ; l'air qui glisse sur la voiture.
     const body = gain(0.5)

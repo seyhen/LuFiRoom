@@ -10,7 +10,7 @@ import type { Channel, Kit } from '../engine'
 export default function tea(kit: Kit, out: GainNode, { loops }: Room): Channel {
   return kit.loopOrChannel(loops.tea, out, () => {
     const { ctx, gain, biq, osc, noise } = kit
-    const bus = gain(3.2)
+    const bus = gain(5)
     bus.connect(out)
     function tink(t: number, v: number) {
       const f = rand(3600, 4400)
