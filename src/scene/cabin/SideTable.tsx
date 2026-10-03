@@ -1,14 +1,13 @@
 import { M } from '../materials'
-import { Part, cyl, type V3 } from '../parts'
+import { Part, cyl } from '../parts'
 
-/** Petite table ronde : la lampe est posée dessus (voir les scènes). Par défaut à côté du fauteuil de la cabane. */
-export function SideTable({ position = [1.4, 0, -1.75] }: { position?: V3 }) {
-  const [x, , z] = position
+/** Table ronde à côté du fauteuil : la lampe et le chocolat chaud sont posés dessus (voir CabinScene). */
+export function SideTable() {
   return (
     <>
-      <Part geo={cyl(0.38, 0.38, 0.06, 28)} m={M.toffeeLight} p={[x, 0.59, z]} />
-      <Part geo={cyl(0.06, 0.08, 0.56, 14)} m={M.toffee} p={[x, 0.29, z]} />
-      <Part geo={cyl(0.22, 0.24, 0.04, 22)} m={M.toffee} p={[x, 0.02, z]} />
+      <Part geo={cyl(0.66, 0.66, 0.06, 40)} m={M.toffeeLight} p={[1.5, 0.59, -1.62]} />
+      <Part geo={cyl(0.07, 0.09, 0.56, 14)} m={M.toffee} p={[1.5, 0.29, -1.62]} />
+      <Part geo={cyl(0.27, 0.29, 0.04, 24)} m={M.toffee} p={[1.5, 0.02, -1.62]} />
     </>
   )
 }

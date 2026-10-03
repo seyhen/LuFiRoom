@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { CanvasTexture } from 'three'
 import { TAU, rand, smooth } from '../../math'
-import { mood } from '../anim'
+import { mood, reduceMotion } from '../anim'
 import { noRay } from '../parts'
 import { makeCanvas } from '../textures'
 
@@ -56,13 +56,45 @@ function drawSky(n: number, r: number) {
   tex.needsUpdate = true
 }
 
-/** Le ciel vu par la fenêtre, redessiné seulement quand le jour / nuit ou la pluie changent. */
+/** Une étoile filante : un trait qui s'efface derrière sa tête, `t` de 0 à 1. */
+function drawShootingStar(t: number, x0: number, y0: number) {
+  const X = x0 - t * 150, Y = y0 + t * 70, a = Math.sin(Math.PI * t)
+  const g = x.createLinearGradient(X + 60, Y - 28, X, Y)
+  g.addColorStop(0, 'rgba(255,250,225,0)'); g.addColorStop(1, `rgba(255,250,225,${(0.95 * a).toFixed(3)})`)
+  x.strokeStyle = g; x.lineWidth = 2.6; x.lineCap = 'round'
+  x.beginPath(); x.moveTo(X + 60, Y - 28); x.lineTo(X, Y); x.stroke()
+  x.fillStyle = `rgba(255,252,235,${a.toFixed(3)})`
+  x.beginPath(); x.arc(X, Y, 3, 0, TAU); x.fill()
+  tex.needsUpdate = true
+}
+
+/**
+ * Le ciel vu par la fenêtre, redessiné seulement quand le jour / nuit ou la pluie changent. Par ciel dégagé, une étoile
+ * file de temps en temps.
+ */
 export function WindowView() {
-  const drawn = useRef({ n: -1, r: -1 })
-  useFrame(() => {
-    const d = drawn.current
-    if (Math.abs(mood.night - d.n) > 0.01 || Math.abs(mood.rain - d.r) > 0.01) {
-      drawSky(smooth(mood.night), smooth(mood.rain))
+  const drawn = useRef({ n: -1, r: -1 }), star = useRef({ at: -1, next: 10 + Math.random() * 12, x: 400, y: 50 })
+  useFrame((_, delta) => {
+    const d = drawn.current, s = star.current
+    const n = smooth(mood.night), r = smooth(mood.rain)
+    if (!reduceMotion) {
+      s.next -= Math.min(delta, 0.05)
+      if (s.at < 0 && s.next <= 0 && n > 0.95 && r < 0.05) {
+        s.at = 0
+        s.next = 22 + Math.random() * 30
+        s.x = 380 + Math.random() * 90
+        s.y = 40 + Math.random() * 60
+      }
+    }
+    if (s.at >= 0) {
+      s.at += Math.min(delta, 0.05)
+      drawSky(n, r)
+      if (s.at < 0.9) drawShootingStar(s.at / 0.9, s.x, s.y)
+      else s.at = -1
+      d.n = mood.night
+      d.r = mood.rain
+    } else if (Math.abs(mood.night - d.n) > 0.01 || Math.abs(mood.rain - d.r) > 0.01) {
+      drawSky(n, r)
       d.n = mood.night
       d.r = mood.rain
     }

@@ -4,11 +4,11 @@ import type { Group } from 'three'
 import { isActive, useStore } from '../../state/store'
 import { TAU, approach } from '../../math'
 import { M } from '../materials'
-import { Part, SPH, cyl, rbox } from '../parts'
+import { Part, SPH, cyl, rbox, type V3 } from '../parts'
 import { useSquash } from '../anim'
 
 /** Ventilateur de bureau : pales à 22 rad/s, la tête oscille. */
-export function Fan() {
+export function Fan({ position = [0.98, 1.35, -2.45] }: { position?: V3 }) {
   const g = useRef<Group>(null!), head = useRef<Group>(null!), blades = useRef<Group>(null!)
   const spin = useRef({ speed: 0, angle: 0, swivel: 0 })
   useSquash('fan', g)
@@ -21,7 +21,7 @@ export function Fan() {
     head.current.rotation.y = -0.45 + Math.sin(s.swivel) * 0.4
   })
   return (
-    <group ref={g} userData={{ id: 'fan' }} position={[0.98, 1.35, -2.45]}>
+    <group ref={g} userData={{ id: 'fan' }} position={position}>
       <Part geo={cyl(0.19, 0.21, 0.06, 26)} m={M.butter} p={[0, 0.03, 0]} />
       <Part geo={cyl(0.035, 0.035, 0.36, 12)} m={M.cream} p={[0, 0.24, 0]} />
       <group ref={head} position={[0, 0.46, 0]} rotation-y={-0.45}>

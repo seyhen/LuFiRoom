@@ -26,8 +26,9 @@ Fini quand :
       Tout son sans enregistrement, ou dont le fichier ne charge pas, reste synthétisé.
 - [x] Préchargement des boucles et écran de chargement léger.
 - [x] `public/audio/CREDITS.md` : gabarit et règles de licence.
-- [ ] Enregistrements en boucle : pluie, ventilo, ronron, oiseaux, grillons (à fournir, CC0 ou achetés).
+- [x] Enregistrements en boucle : pluie, ventilo, ronron, oiseaux, grillons, et feu et vent de la cabane. Pris sur Pixabay (Pixabay Content License, **pas CC0** : accord du propriétaire le 2026-10-02), niveaux calés sur la synthèse ; **à écouter et à régler à l'oreille** (`gain` dans `src/rooms/`). Sources et licences : `public/audio/CREDITS.md`.
 - [ ] Pistes lofi sous licence pour la radio.
+- [x] En attendant : radio générative en six stations (Nuit douce, Petit matin, Brume, Veillée, Bureau, et Noël pour la cabane), à changer depuis le mixeur ou l'écran verrouillé. Voir `docs/RADIO.md`.
 - [ ] Modèle Blender en `.glb` compressé, puis son chargement (nœuds nommés, lumière cuite) : à valider d'abord, voir `docs/ASSETS.md`.
 
 Cahier des charges d'origine :
@@ -43,7 +44,9 @@ Cahier des charges d'origine :
 - [x] Format de pièce stabilisé : `src/rooms/types.ts` (objets, sons, enregistrements, ciel, lumières), scène associée dans `src/scene/scenes.ts`.
 - [x] Moteur lu depuis la pièce courante : scène, lumières, hotspots, mixeur, audio (bus et canaux par pièce).
 - [x] Sélecteur de pièce (caché tant qu'il n'y en a qu'une) et transition en fondu, sons coupés, dernière pièce mémorisée.
-- [x] 2e pièce : cabane sous la neige (cheminée et feu, fenêtre sur la tempête, coffre et radio, fauteuil, lampe). Sons synthétisés : feu, vent ; la radio est celle de la chambre. Enregistrements `fire` et `wind` à fournir (`docs/ASSETS.md`).
+- [x] 2e pièce : cabane sous la neige (cheminée et feu, fenêtre sur la tempête, coffre et radio, fauteuil, lampe). Sons : feu et vent enregistrés (Pixabay, voir `public/audio/CREDITS.md`) ; la radio est celle de la chambre.
+- [x] Cabane habillée pour Noël, en cocon : murs en rondins, cheminée en pierre et manteau en bois (chaussettes, guirlande, bougies, fumée de cheminée), sapin décoré et cadeaux, couronne, tapis tressé, fauteuil canneberge et plaid écossais, pouf, chocolat chaud qui fume, lanterne, poinsettia, patères (écharpe, bonnet, moufles), caisse de disques, neige sur les murs et qui tombe autour (poussée par le vent), lumière chaude, interface canneberge et ambre. Le chat dort devant le feu et ronronne (ronron de la chambre). La radio devient un **tourne-disque** valise (disque qui tourne, bras qui se pose, haut-parleur dans le couvercle).
+- [x] Chambre refaite, avec son ambiance à elle (rêveuse, pastel, un soir de pluie) : papier peint étoilé et boiseries menthe, fresque et étoiles qui brillent dans le noir, tête de lit en nuage, couette matelassée, plaid, lune en peluche, tapis nuage, rideaux qui ondulent avec la fenêtre et le ventilo, tache de lumière de la fenêtre, gouttes sur la vitre quand il pleut, polaroïds, cadres, guirlande de lunes, bureau (portable lofi, cahier, pot à crayons), étagère (bougie, plante qui retombe), monstera, sansevière, coin lecture (pouf-poire, tabouret, bougie), poussières de lumière, étoile filante à la fenêtre.
 - [x] 3e pièce : café d'Édimbourg sous la pluie, avec son coin bibliothèque (comptoir et machine à café, mur de livres et échelle, clients, ardoise, horloge, fenêtre sur le Château et la Old Town). Sons synthétisés : la rue, le brouhaha, l'expresso, les pages et le tic-tac ; pluie et radio sont celles de la chambre.
 - [x] Café, 2e version : un cocon chaud face à une ville froide. Dedans : cheminée victorienne (feu, charbons, carreaux, papier peint damassé, tableau du Château), fauteuil à oreilles en tartan Royal Stewart, skye terrier endormi (clin d'œil à Greyfriars Bobby), deux bibliothèques autour du feu, lampe de banquier (jour / nuit), guirlande guinguette, bougies, chardons et bruyère, clients à la fenêtre, table de lecture, entrée trempée (portemanteau, parapluies, flaques, paillasson « Fàilte »). Dehors : la vieille ville repeinte (Château, Victoria Street), réverbère à lumière froide, vitrine embuée avec son enseigne dorée. Nouveau son dans le café : le feu de bois.
 - [x] 4e pièce : plage, un bungalow au coucher du soleil (grande porte sur la mer qui bouge, phare, voilages, lit de jour et chat roux, fauteuils de rotin). Sons : vagues, mouettes, carillon ; radio et ronron repris.
@@ -51,9 +54,10 @@ Cahier des charges d'origine :
 - [x] 6e pièce : toit-terrasse à Brooklyn un soir d'été (tours qui s'allument, château d'eau, braséro, guirlande, linge au vent, pigeons). Sons : la ville, les pigeons ; feu, vent (en brise), radio repris.
 - [x] 7e pièce : atelier d'illustratrice sous les toits de Paris (verrière d'acier, tour Eiffel qui scintille, table à dessin, clavier, tourne-disque, bouilloire). Sons : clavier, crayon, bouilloire ; pluie et radio repris.
 - [x] 8e pièce : onsen en automne (bassin qui fume, source, shishi-odoshi, érable, lanterne de pierre, furin, ryokan et montagnes). Sons : source, shishi-odoshi, furin ; jardin et radio repris.
-- [x] Déco, 2e passe : la cabane devient un chalet de rondins sous la neige (cheminée de pierres, husky, chocolats chauds, chaussettes qui sèchent, skis, luge) ; une signature par pièce : rais de soleil et filet de pêcheur (plage), lumières de gare qui traversent le compartiment et lavabo (train), enseigne de néon, escalier de secours, vapeur (toit), poutres, mur de cadres et guirlande (atelier), noren ゆ, lanternes rouges et lucioles (onsen).
+- [x] Les signatures de chaque pièce (2e passe) : rais de soleil et filet de pêcheur (plage), lumières de gare et compartiment habité (train), néon, escalier de secours et vapeur (toit), poutres, mur de cadres et guirlande (atelier), noren ゆ, lanternes rouges et lucioles (onsen).
+- [x] Cabane : le tourne-disque joue sa propre liste (Noël, Veillée, Brume, Nuit douce) ; la chambre garde les cinq stations d'origine. Chaque pièce retient sa station.
+- [ ] Cabane : son de neige / bois qui craque, vraies pistes de Noël sous licence.
 - [ ] Enregistrements pour les nouveaux sons (liste et mots-clés dans `docs/ASSETS.md`).
-- [ ] Cabane : son de neige / bois qui craque, un objet de plus (chat devant le feu ?), pistes de radio propres à la pièce.
 
 Cahier des charges d'origine :
 - Format de chambre stabilisé (modèle, objets, sons, palette, ciel).

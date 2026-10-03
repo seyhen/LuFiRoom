@@ -8,7 +8,7 @@ export type SoundId =
   | 'waves' | 'gulls' | 'chimes' | 'rails' | 'tea' | 'city' | 'pigeons' | 'keys' | 'pencil' | 'kettle' | 'spring' | 'bamboo'
 /** Un objet interactif de la scène. */
 export type ObjectId =
-  | 'cloud' | 'radio' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
+  | 'cloud' | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
   | 'gull' | 'chimes' | 'tea' | 'book' | 'brazier' | 'pigeons' | 'city' | 'laundry' | 'keyboard' | 'pencil' | 'kettle'
   | 'spring' | 'bamboo' | 'furin' | 'maple'
 /** Ce qu'un objet pilote : un son, ou le passage jour / nuit. */
@@ -32,10 +32,14 @@ export interface RoomSound {
   name: string
   /** Couleur de la pastille dans le mixeur. */
   chip: string
+  /** Icône de la carte, si ce n'est pas celle du son (un tourne-disque est un son « radio » à l'oreille, mais pas à l'œil). */
+  icon?: 'vinyl'
+  /** Nom du bouton qui change la musique de la carte « radio » (« Station suivante » par défaut). */
+  skip?: string
   /** Volume par défaut (0 → 1). */
   volume: number
   /** Sous-titre vivant de la carte du mixeur. */
-  sub: (s: { night: boolean; on: Record<SoundId, boolean>; onAir: string }) => string
+  sub: (s: { night: boolean; on: Record<SoundId, boolean>; onAir: string; station: string }) => string
 }
 
 /** Une boucle d'ambiance enregistrée. */
@@ -63,6 +67,9 @@ export interface Track {
   beat?: number
 }
 
+/** Les couleurs d'interface qu'une pièce peut changer (noms des variables CSS de tokens.css). */
+export type UiToken = 'accent' | 'ink' | 'ink-soft' | 'panel' | 'line' | 'bg'
+
 export interface Room {
   /** Identifiant stable (clé de la scène, mémorisé entre deux visites). */
   id: string
@@ -80,8 +87,12 @@ export interface Room {
    * Le dehors n'utilise ses enregistrements que si les oiseaux (jour) et les grillons (nuit) sont là.
    */
   loops: Loops
+  /** Les stations de la radio générative de la pièce (identifiants de src/audio/stations.ts), dans l'ordre : la première est celle d'une première visite. Toutes par défaut. */
+  stations?: string[]
   /** Pistes de la radio, jouées dans un ordre mélangé. Sans piste, la radio joue sa musique générative. */
   playlist: Track[]
+  /** Couleurs d'interface propres à la pièce, de jour puis de nuit. Celles qui manquent gardent la teinte de base. */
+  ui?: Partial<Record<UiToken, DayNight<string>>>
   /** Ciel du fond (dégradé radial : centre, milieu, bord), de jour puis de nuit. */
   sky: { day: [string, string, string]; night: [string, string, string] }
   /** Lumières : ciel et sol de l'hémisphérique, soleil (ou lune). Couleurs hexadécimales, intensités avant × π. */

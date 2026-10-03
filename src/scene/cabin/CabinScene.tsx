@@ -1,45 +1,78 @@
-import { Window } from '../objects/Window'
-import { Radio } from '../objects/Radio'
-import { FairyLights } from '../objects/FairyLights'
 import { Static } from '../Static'
+import { Snowfall } from '../Floaters'
+import { Window } from '../objects/Window'
+import { Lamp } from '../objects/Lamp'
+import { Cat } from '../objects/Cat'
+import { FairyLights } from '../objects/FairyLights'
+import { WIN } from '../parts'
 import { CabinShell } from './CabinShell'
 import { SnowView } from './SnowView'
 import { Fireplace } from './Fireplace'
 import { Chest } from './Chest'
 import { Armchair } from './Armchair'
 import { SideTable } from './SideTable'
-import { Firewood } from './Firewood'
-import { Dog } from './Dog'
+import { Sheepskin } from './Sheepskin'
+import { BraidedRug } from './BraidedRug'
+import { ChristmasTree } from './ChristmasTree'
+import { Gifts } from './Gifts'
+import { Wreath } from './Wreath'
+import { LogBasket } from './LogBasket'
+import { Pouf } from './Pouf'
+import { Cocoa } from './Cocoa'
 import { Lantern } from './Lantern'
-import { ArmchairThrow, Cocoa, DryingLine, PineconeBasket, Rug, Sled, WallGear } from './Cozy'
-import { C } from './materials'
+import { Turntable } from './Turntable'
+import { RecordCrate } from './RecordCrate'
+import { WallDecor } from './WallDecor'
+import { Poinsettia } from './Poinsettia'
+import { CoatPegs } from './CoatPegs'
+import { Candles, type Candle } from '../objects/Candles'
+import { warmFairy } from './materials'
+
+// Sur l'appui de la fenêtre, de part et d'autre.
+const SILL = WIN.y0 + 0.02
+const WINDOW_CANDLES: Candle[] = [
+  { p: [0.5, SILL, -2.86], h: 0.24 },
+  { p: [0.72, SILL, -2.82], h: 0.15, r: 0.05 },
+  { p: [2.32, SILL, -2.86], h: 0.2 },
+]
 
 /**
- * Le chalet de rondins sous la neige : la neige sur le toit, la cheminée de pierres de rivière, un husky qui dort devant le
- * feu, deux chocolats chauds, des chaussettes qui sèchent, des raquettes au mur, une luge, la tempête à la fenêtre.
+ * La cabane de Noël sous la neige : cheminée habillée et son feu, sapin et cadeaux, fauteuil sur un tapis tressé,
+ * chat sur la peau de mouton, chocolat chaud, lanterne sur des livres, coffre avec le tourne-disque et un poinsettia, patères
+ * (écharpe, bonnet, moufles), lampe, couronne, bougies à la fenêtre sur la tempête.
  */
 export function CabinScene() {
   return (
-    <Static>
-      <CabinShell />
+    <>
+      {/* le décor immobile, regroupé en quelques tracés (voir Static) */}
+      <Static>
+        <CabinShell />
+        <FairyLights mats={warmFairy} />
+        <Wreath />
+        <CoatPegs />
+        <WallDecor />
+        <BraidedRug />
+        <Sheepskin />
+        <LogBasket />
+        <Chest />
+        <Poinsettia />
+        <Armchair />
+        <Pouf />
+        <SideTable />
+        <Lantern />
+        <ChristmasTree />
+        <Gifts />
+        <RecordCrate />
+      </Static>
       <SnowView />
-      <Window frame={C.beamDark} />
-      <FairyLights />
-      <Rug />
+      <Snowfall />
+      <Window />
+      <Candles items={WINDOW_CANDLES} />
       <Fireplace />
-      <DryingLine />
-      <Dog />
-      <Chest />
-      <Radio position={[1.9, 0.71, -2.7]} />
-      <Armchair />
-      <ArmchairThrow />
-      <SideTable />
-      <Lantern position={[1.25, 0.62, -1.85]} />
+      <Turntable position={[1.9, 0.71, -2.64]} />
+      <Lamp position={[1.05, 0.62, -1.7]} />
       <Cocoa />
-      <Firewood />
-      <PineconeBasket />
-      <WallGear />
-      <Sled />
-    </Static>
+      <Cat position={[-1.55, 0.12, -1.3]} rotation={0.1} />
+    </>
   )
 }

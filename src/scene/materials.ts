@@ -1,5 +1,4 @@
 import { Color, ColorManagement, DoubleSide, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, ShaderChunk, type MeshPhysicalMaterialParameters } from 'three'
-import { woodTex } from './textures'
 
 // Même rendu que le prototype, qui tourne sur three r128 :
 // - pas de gestion des couleurs, les hex sont utilisés tels quels (avec <Canvas legacy linear flat>).
@@ -18,10 +17,8 @@ export const gummy = (color: number, o: MeshPhysicalMaterialParameters = {}) =>
 
 /** Palette partagée. */
 export const M = {
-  wallBack: gummy(0xeae1f1, { roughness: 0.78, clearcoat: 0.12 }),
   wallLeft: gummy(0xf3e8e1, { roughness: 0.78, clearcoat: 0.12 }),
   base: gummy(0xc5b3dc, { roughness: 0.6 }),
-  floor: gummy(0xffffff, { map: woodTex, roughness: 0.5, clearcoat: 0.45 }),
   toffee: gummy(0xc77f5e),
   toffeeLight: gummy(0xe2b08b),
   cream: gummy(0xfff7ef, { roughness: 0.62, clearcoat: 0.25 }),
@@ -32,6 +29,7 @@ export const M = {
   mint: gummy(0x8fd8c6),
   mintDark: gummy(0x58b3a3),
   butter: gummy(0xf6d071),
+  butterDeep: gummy(0xe2b34a),
   plum: gummy(0x4a3a5a, { roughness: 0.38 }),
   peri: gummy(0xabb6ef, { roughness: 0.7, clearcoat: 0.2 }),
   woodLight: gummy(0xecc9a0),
@@ -50,8 +48,10 @@ export const M = {
   red: gummy(0xe0586e),
   mug: gummy(0xfdf6ff),
   brass: gummy(0xd9a84a, { roughness: 0.3, clearcoat: 0.9 }),
-  wax: gummy(0xfff4e0, { roughness: 0.6, emissive: 0xffd7a0, emissiveIntensity: 0.15 }),
   bulb: new MeshStandardMaterial({ color: 0xffe2a8, emissive: 0xffb45e, emissiveIntensity: 1.2, roughness: 0.3 }),
+  /** Cire des bougies (elle luit un peu la nuit) et leur flamme : voir objects/Candles. */
+  wax: gummy(0xfff3e0, { roughness: 0.5, emissive: 0xffa95e, emissiveIntensity: 0 }),
+  candleFlame: new MeshBasicMaterial({ color: 0xffc766 }),
   glass: new MeshPhysicalMaterial({ color: 0xe2f4ff, transparent: true, opacity: 0.16, roughness: 0.05, clearcoat: 1, depthWrite: false, side: DoubleSide }),
 }
 

@@ -4,10 +4,11 @@ import { roomById } from '../rooms'
 import { MixerCard } from './MixerCard'
 import { SleepTimer } from './SleepTimer'
 import { MixesMenu } from './MixesMenu'
+import { StationButton } from './StationButton'
 
 /** Mixeur flottant : une carte par son, le compte des sons actifs et « Tout couper ». */
 export function Mixer({ panelRef }: { panelRef: Ref<HTMLDivElement> }) {
-  const { id, sounds } = useStore((s) => roomById(s.room))
+  const { id, sounds, playlist } = useStore((s) => roomById(s.room))
   const n = useStore((s) => sounds.filter((x) => s.on[x.id]).length)
   return (
     <nav className="dock" aria-label="Mixeur d'ambiance">
@@ -25,7 +26,8 @@ export function Mixer({ panelRef }: { panelRef: Ref<HTMLDivElement> }) {
         </div>
         <div className="mix" key={id /* chaque pièce repart de la première carte */}>
           {sounds.map((s) => (
-            <MixerCard key={s.id} sound={s} />
+            // Avec des pistes enregistrées, la radio les joue dans l'ordre mélangé : pas de stations à changer.
+            <MixerCard key={s.id} sound={s} extra={s.id === 'radio' && !playlist.length ? <StationButton noun={s.skip} /> : undefined} />
           ))}
         </div>
       </div>

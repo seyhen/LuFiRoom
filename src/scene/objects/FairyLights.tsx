@@ -1,5 +1,5 @@
 import { useFrame } from '@react-three/fiber'
-import { CatmullRomCurve3, TubeGeometry, Vector3 } from 'three'
+import { CatmullRomCurve3, TubeGeometry, Vector3, type MeshStandardMaterial } from 'three'
 import { smooth } from '../../math'
 import { M, fairyMats } from '../materials'
 import { SPH } from '../parts'
@@ -13,11 +13,11 @@ const wire = new TubeGeometry(
 )
 const bulbs = Array.from({ length: 20 }, (_, i) => (i + 0.5) / 20)
 
-/** Guirlande lumineuse : s'allume la nuit et clignote doucement. */
-export function FairyLights() {
+/** Guirlande lumineuse : s'allume la nuit et clignote doucement. `mats` : les trois couleurs d'ampoules. */
+export function FairyLights({ mats = fairyMats }: { mats?: MeshStandardMaterial[] }) {
   useFrame(({ clock }) => {
     const e = smooth(mood.night), t = clock.elapsedTime
-    fairyMats.forEach((m, i) => {
+    mats.forEach((m, i) => {
       m.emissiveIntensity = 0.15 + e * (1.15 + 0.3 * Math.sin(t * 2 + i * 2))
     })
   })
@@ -25,7 +25,7 @@ export function FairyLights() {
     <>
       <mesh geometry={wire} material={M.plum} />
       {bulbs.map((f, i) => (
-        <mesh key={i} geometry={SPH} material={fairyMats[i % 3]} scale={[0.05, 0.065, 0.05]} position={[-2.9, fy(f) - 0.06, 2.95 - f * 5.85]} />
+        <mesh key={i} geometry={SPH} material={mats[i % 3]} scale={[0.05, 0.065, 0.05]} position={[-2.9, fy(f) - 0.06, 2.95 - f * 5.85]} />
       ))}
     </>
   )

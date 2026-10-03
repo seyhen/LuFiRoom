@@ -1,6 +1,6 @@
 # Ajouter une pièce
 
-Une pièce est une donnée (`src/rooms/<nom>.ts`, type `Room` dans `src/rooms/types.ts`) plus une scène 3D (`src/scene/<nom>/<Nom>Scene.tsx`).
+Une pièce est une donnée (`src/rooms/<nom>.ts`, type `Room` dans `src/rooms/types.ts`) plus une scène 3D (`src/scene/<nom>/<Nom>Scene.tsx`, avec un fichier par objet à côté).
 Le moteur (scène, audio, mixeur, sélecteur) ne change pas.
 
 ## Ce que contient une pièce
@@ -9,15 +9,19 @@ Le moteur (scène, audio, mixeur, sélecteur) ne change pas.
 |---|---|
 | `id`, `name`, `description` | identifiant stable (mémorisé entre deux visites), nom de la puce du sélecteur, description pour les lecteurs d'écran |
 | `objects` | les objets interactifs : quel son (ou le jour / nuit) ils pilotent, leur bulle, l'ancre de leur hotspot |
-| `sounds` | les cartes du mixeur, dans l'ordre : nom, pastille, volume par défaut, sous-titre vivant |
+| `sounds` | les cartes du mixeur, dans l'ordre : nom, pastille, volume par défaut, sous-titre vivant ; en option une icône (`icon: 'vinyl'`) et le nom du bouton qui change la musique (`skip`) |
 | `loops`, `playlist` | enregistrements de la pièce (voir `docs/ASSETS.md`). Un son sans enregistrement reste synthétisé |
 | `sky` | dégradé du fond, de jour et de nuit |
+| `ui` | les teintes d'interface de la pièce (accent, encre, panneau du mixeur…), de jour et de nuit : la cabane est canneberge et ambre, la chambre garde le teal de base |
 | `light` | hémisphérique et soleil (ou lune), de jour et de nuit |
 | `dimmedBy` | l'objet dont l'activation assombrit la pièce (la pluie), s'il y en a un |
 
-Exemples : `src/rooms/cafe.ts` et `src/scene/cafe/` (le café : objets animés, murs de livres en instances, vue peinte en canvas, réverbère derrière la vitre), `src/rooms/bedroom.ts` et `src/scene/rooms/BedroomScene.tsx` (la chambre), `src/rooms/cabin.ts` et `src/scene/cabin/` (la cabane : un fichier par objet).
+Exemples : `src/rooms/bedroom.ts` et `src/scene/bedroom/` (la chambre), `src/rooms/cabin.ts` et `src/scene/cabin/` (la cabane).
+Les objets partagés sont dans `src/scene/objects/` : `Window` (avec une vitre en option : gouttes de pluie…), `Radio`, `Lamp`, `Cat`, `FairyLights` (couleurs au choix) et `Candles` servent aux deux pièces ; la plupart prennent une `position`.
+Les briques sont dans `src/scene/parts.tsx` : `Part` (un maillage, avec ombre sauf s'il est minuscule), `Batch` (une série de copies d'une forme en un seul tracé, avec une teinte chacune), `rbox`, `cyl`, `worldUV` (une texture à l'échelle de la pièce), `orient`.
+Et les six autres : `cafe/` (objets animés, murs de livres en instances, vue peinte, réverbère derrière la vitre), et cinq pièces qui montrent chacune une autre façon de faire le dehors : `beach/` (une grande porte sur une vue peinte, des vagues qui défilent par-dessus), `train/` (un paysage en trois bandes qui défilent), `roof/` (en plein air : la ville en volumes derrière les parapets), `atelier/` (une verrière à petits carreaux), `onsen/` (une palissade et des montagnes découpées, sans fenêtre).
 Et cinq pièces qui montrent chacune une autre façon de faire le dehors : `beach/` (une grande porte sur une vue peinte, des vagues qui défilent par-dessus), `train/` (un paysage en trois bandes qui défilent à des vitesses différentes), `roof/` (en plein air : la ville est faite de tours en volume derrière les parapets), `atelier/` (une verrière à petits carreaux), `onsen/` (une palissade et des montagnes découpées, sans fenêtre).
-Les objets déjà écrits se réutilisent : `Window`, `Radio`, `Lamp` et `FairyLights` servent à plusieurs pièces (`Radio`, `Lamp` et `SideTable` prennent une `position`). `Window` prend aussi une peinture de cadre, des vitres (le café y met sa buée et son enseigne) et une variante vitrine (`transom`). `Flames` fait le feu d'une cheminée (flammes, lumière, halo, braises), dans la cabane comme dans le café. Le nuage et la pluie (`Cloud`, `Rain`) se placent derrière la fenêtre : toute pièce qui garde cette fenêtre les reprend tels quels, comme le café. La pluie s'entend nette quand l'objet `window` de la pièce a son son allumé, étouffée sinon (ou s'il n'y a pas de fenêtre : une verrière).
+`Window` prend aussi une peinture de cadre, une vitre par battant (le café y met sa buée et son enseigne) et une variante vitrine (`transom`). `Flames` fait le feu d'une cheminée (flammes, lumière, halo, braises), dans la cabane comme dans le café. Le nuage et la pluie (`Cloud`, `Rain`) se placent derrière la fenêtre : toute pièce qui garde cette fenêtre les reprend tels quels, comme le café. La pluie s'entend nette quand l'objet `window` de la pièce a son son allumé, étouffée sinon (ou s'il n'y a pas de fenêtre : une verrière).
 
 Outils pour le décor :
 - `holedWall(ouvertures)` (`src/scene/walls.ts`) : le mur du fond percé où l'on veut (grande porte, verrière, fenêtre de train).
@@ -39,11 +43,13 @@ Les boîtes arrondies (`rbox`) n'affichent que le centre d'une texture : pour un
 
 1. `src/rooms/<nom>.ts` : exporte la pièce, sur le modèle de `bedroom.ts`.
 2. `src/rooms/index.ts` : ajoute-la à `rooms`. Le sélecteur apparaît dès qu'il y a deux pièces ; la première est celle d'une première visite.
-3. `src/scene/rooms/<Nom>Scene.tsx` : le décor et les objets de la pièce (hors hotspots, que le moteur ajoute depuis `objects`).
+3. `src/scene/<nom>/<Nom>Scene.tsx` : le décor et les objets de la pièce (hors hotspots, que le moteur ajoute depuis `objects`).
+   Le décor qui ne bouge jamais va dans `<Static>` (`src/scene/Static.tsx`) : ses maillages de même matériau sont regroupés en un seul, ce qui divise le nombre de tracés (la chambre est passée de 355 à 210). Ce qui bouge, rebondit ou s'anime reste dehors.
    Un objet interactif est un groupe avec `userData={{ id }}` qui appelle `useSquash(id, ref)`, comme `Cat.tsx` ; il lit son état avec `isActive(s, id)`.
 4. `src/scene/scenes.ts` : associe l'identifiant de la pièce à sa scène.
 5. Nouvel objet, ou nouveau son : ajoute son identifiant à `ObjectId` ou `SoundId` (`src/rooms/types.ts`), son icône à `src/ui/icons.tsx`,
-   et pour un son son canal dans `src/audio/channels/` puis `CHANNELS` (`src/audio/engine.ts`). Un canal reçoit la pièce : ses enregistrements sont `room.loops`. Pour un son fait d'évènements ponctuels (une tasse qui tinte), `kit.loopOrChannel` et `scheduled` (`src/audio/events.ts`) évitent de réécrire l'ordonnanceur : voir `street.ts`, `espresso.ts`, `pages.ts`.
+   et pour un son son canal dans `src/audio/channels/` puis `CHANNELS` (`src/audio/engine.ts`). Un canal reçoit la pièce : ses enregistrements sont `room.loops`.
+   Un même son peut avoir un autre visage dans une autre pièce : la cabane joue le son `radio` sur un tourne-disque (objet `turntable`, carte « Tourne-disque » avec l'icône `vinyl` et le bouton « Disque suivant »). Pour un son fait d'évènements ponctuels (une tasse qui tinte), `kit.loopOrChannel` et `scheduled` (`src/audio/events.ts`) évitent de réécrire l'ordonnanceur : voir `street.ts`, `espresso.ts`, `pages.ts`.
 
 ## Comment ça se passe à l'écran
 

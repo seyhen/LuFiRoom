@@ -13,10 +13,14 @@ export default function rain(kit: Kit, out: GainNode, { loops }: Room) {
   const win = (s: Store) => { const t = roomById(s.room).objects.find((o) => o.id === 'window')?.target; return t && t !== 'night' ? s.on[t] : false }
   const opened = () => win(useStore.getState())
   const cutoff = () => (opened() ? open : 2300)
-  const lp = biq('lowpass', cutoff(), 0.4)
-  lp.connect(out)
+  // Fenêtre fermée, la pluie passe aussi 3 dB plus bas : elle reste derrière la vitre.
+  const level = () => (opened() ? 1 : 0.7)
+  const lp = biq('lowpass', cutoff(), 0.4), trim = gain(level())
+  lp.connect(trim).connect(out)
   useStore.subscribe((s, p) => {
-    if (win(s) !== win(p)) lp.frequency.setTargetAtTime(cutoff(), ctx.currentTime, 0.4)
+    if (win(s) === win(p)) return
+    lp.frequency.setTargetAtTime(cutoff(), ctx.currentTime, 0.4)
+    trim.gain.setTargetAtTime(level(), ctx.currentTime, 0.4)
   })
   kit.loopOr(loops.rain, lp, () => {
     open = 7500

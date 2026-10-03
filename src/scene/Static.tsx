@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, type ReactNode } from 'react'
-import { Group, Matrix4, Mesh, type BufferGeometry, type Material, type Object3D } from 'three'
-import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
+import { Group, Matrix4, Mesh, type BufferGeometry, type InstancedMesh, type Material, type Object3D } from 'three'
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { noRay } from './parts'
 
 /** À mettre dans le `userData` d'un objet qui bouge : `<Static>` le laisse tel quel, lui et ses enfants. */
@@ -8,61 +8,82 @@ export const LIVE = { live: true }
 
 const skip = (o: Object3D) => o.userData.live === true || o.userData.id !== undefined
 
+interface Bucket {
+  m: Material
+  cast: boolean
+  recv: boolean
+  geos: BufferGeometry[]
+  members: { mesh: Mesh; raycast: Mesh['raycast'] }[]
+}
+
 /**
- * Fusionne, une fois montés, tous les maillages immobiles de ses enfants qui partagent un matériau : un appel de dessin
- * par matériau au lieu d'un par pièce (et autant de moins pour les ombres). Les originaux restent dans la scène, cachés.
- * Ce qui bouge (un objet interactif, `userData.id`, ou marqué `LIVE`) est laissé de côté, avec ses enfants ; les instances,
- * les sprites et les géométries non indexées aussi. Le groupe peut lui-même bouger : la fusion est faite dans son repère.
+ * Regroupe le décor immobile : tous les maillages d'un même matériau (et des mêmes ombres) deviennent un seul maillage, donc un seul
+ * tracé au lieu de dizaines (et autant en moins dans le calcul des ombres). Les originaux restent dans la scène, cachés.
+ * Ce qui bouge est laissé de côté avec ses enfants : un objet interactif (`userData.id`) ou ce qui est marqué `userData={LIVE}`.
+ * Les maillages instanciés, transparents ou à plusieurs matériaux restent tels quels. Le décor regroupé ne capte pas les taps
+ * (ni le survol) : le rayon le traverse, ce qui évite aussi de tester des dizaines de milliers de triangles à chaque mouvement.
+ * Le groupe peut lui-même bouger (un objet qui rebondit) : la fusion est faite dans son repère.
  */
 export function Static({ children }: { children: ReactNode }) {
-  const root = useRef<Group>(null!)
+  const ref = useRef<Group>(null!)
   useLayoutEffect(() => {
-    const g = root.current
-    g.updateWorldMatrix(true, true)
-    const inv = new Matrix4().copy(g.matrixWorld).invert(), rel = new Matrix4()
-    const buckets = new Map<string, { material: Material; cast: boolean; receive: boolean; parts: Mesh[] }>()
+    const root = ref.current
+    root.updateWorldMatrix(true, true)
+    const inv = new Matrix4().copy(root.matrixWorld).invert()
+    const buckets = new Map<string, Bucket>()
+    const merged: Mesh[] = []
+    const hidden: { mesh: Mesh; raycast: Mesh['raycast'] }[] = []
     const visit = (o: Object3D) => {
       for (const c of o.children) {
         if (skip(c) || !c.visible) continue
-        const m = c as Mesh
-        if (m.isMesh && !(m as { isInstancedMesh?: boolean }).isInstancedMesh && !Array.isArray(m.material) && m.geometry.index && c.children.length === 0) {
-          const key = `${m.material.uuid}|${m.castShadow}|${m.receiveShadow}`
-          let b = buckets.get(key)
-          if (!b) buckets.set(key, (b = { material: m.material, cast: m.castShadow, receive: m.receiveShadow, parts: [] }))
-          b.parts.push(m)
-        } else visit(c)
+        const mesh = c as Mesh
+        if (mesh.isMesh && !(mesh as unknown as InstancedMesh).isInstancedMesh && !Array.isArray(mesh.material) && !mesh.material.transparent) {
+          const g = mesh.geometry.index ? mesh.geometry.toNonIndexed() : mesh.geometry.clone()
+          for (const name of Object.keys(g.attributes)) if (name !== 'position' && name !== 'normal' && name !== 'uv') g.deleteAttribute(name)
+          if (!g.attributes.normal || !g.attributes.uv) g.dispose()
+          else {
+            g.applyMatrix4(new Matrix4().multiplyMatrices(inv, mesh.matrixWorld))
+            const key = `${mesh.material.uuid}|${+mesh.castShadow}|${+mesh.receiveShadow}`
+            let b = buckets.get(key)
+            if (!b) buckets.set(key, (b = { m: mesh.material, cast: mesh.castShadow, recv: mesh.receiveShadow, geos: [], members: [] }))
+            b.geos.push(g)
+            b.members.push({ mesh, raycast: mesh.raycast })
+          }
+        }
+        visit(c)
       }
     }
-    visit(g)
-    const merged: Mesh[] = []
-    for (const b of buckets.values()) {
-      if (b.parts.length < 2) continue
-      const geos: BufferGeometry[] = b.parts.map((m) => {
-        const geo = m.geometry.clone()
-        geo.applyMatrix4(rel.multiplyMatrices(inv, m.matrixWorld))
-        // mêmes attributs pour tout le monde : on ne garde que position, normale, uv
-        for (const name of Object.keys(geo.attributes)) if (name !== 'position' && name !== 'normal' && name !== 'uv') geo.deleteAttribute(name)
-        return geo
-      })
-      const geo = geos.every((x) => x.attributes.normal && x.attributes.uv) ? mergeGeometries(geos, false) : null
-      geos.forEach((x) => x.dispose())
-      if (!geo) continue
-      const mesh = new Mesh(geo, b.material)
-      mesh.castShadow = b.cast
-      mesh.receiveShadow = b.receive
-      g.add(mesh)
-      merged.push(mesh)
-      for (const m of b.parts) {
-        m.visible = false
-        m.raycast = noRay
+    visit(root)
+    for (const { m, cast, recv, geos, members } of buckets.values()) {
+      if (geos.length < 2) {
+        geos.forEach((g) => g.dispose())
+        continue
       }
+      const geo = mergeGeometries(geos, false)
+      geos.forEach((g) => g.dispose())
+      if (!geo) continue // fusion impossible : ces maillages restent visibles tels quels
+      hidden.push(...members)
+      const out = new Mesh(geo, m)
+      out.castShadow = cast
+      out.receiveShadow = recv
+      out.raycast = noRay
+      root.add(out)
+      merged.push(out)
     }
+    hidden.forEach((h) => {
+      h.mesh.visible = false
+      h.mesh.raycast = noRay // les originaux cachés ne sont plus testés non plus
+    })
     return () => {
-      for (const m of merged) {
-        g.remove(m)
-        m.geometry.dispose()
-      }
+      hidden.forEach((h) => {
+        h.mesh.visible = true
+        h.mesh.raycast = h.raycast
+      })
+      merged.forEach((out) => {
+        root.remove(out)
+        out.geometry.dispose()
+      })
     }
   }, [])
-  return <group ref={root}>{children}</group>
+  return <group ref={ref}>{children}</group>
 }

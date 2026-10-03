@@ -1,6 +1,6 @@
 import { useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Sprite, SpriteMaterial, type Group, type Texture } from 'three'
+import { Sprite, SpriteMaterial, type ColorRepresentation, type Group, type Texture } from 'three'
 import { useStore } from '../state/store'
 import type { ObjectId } from '../rooms/types'
 import { TAU, approach } from '../math'
@@ -41,9 +41,11 @@ export interface EmitOptions {
   grow?: number
   /** Opacité maximale. */
   peak?: number
+  /** Teinte de la texture (la fumée est grise). */
+  color?: ColorRepresentation
 }
 
-interface Particle extends Required<EmitOptions> {
+interface Particle extends Required<Omit<EmitOptions, 'color'>> {
   s: Sprite
   age: number
   phase: number
@@ -73,7 +75,7 @@ export function useParticles() {
     }
   })
   const emit = (tex: Texture, x: number, y: number, z: number, o: EmitOptions) => {
-    const s = new Sprite(new SpriteMaterial({ map: tex, transparent: true, depthWrite: false, opacity: 0 }))
+    const s = new Sprite(new SpriteMaterial({ map: tex, transparent: true, depthWrite: false, opacity: 0, ...(o.color === undefined ? {} : { color: o.color }) }))
     s.raycast = noRay
     s.position.set(x, y, z)
     s.scale.setScalar(o.size)

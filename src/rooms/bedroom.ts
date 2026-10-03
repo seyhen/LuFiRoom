@@ -1,3 +1,4 @@
+import { radioSub } from '../audio/stations'
 import type { Room, Track } from './types'
 
 // La chambre. Les enregistrements sont à déclarer dans `loops` et `playlist` (docs/ASSETS.md) ; sources et licences :
@@ -15,15 +16,23 @@ export const bedroom: Room = {
     hemi: { sky: [0xfff4fb, 0x6c6db8], ground: [0xbca8d0, 0x2c2448], intensity: [0.62, 0.42] },
     sun: { color: [0xfff0e2, 0x9fb2ff], intensity: [0.6, 0.28] },
   },
-  loops: {},
+  // Gains calés sur le niveau de sortie de la synthèse (mesuré à ±1 dB) : un point de départ, à régler à l'oreille.
+  loops: {
+    rain: { src: 'audio/bedroom/rain', gain: 0.85 },
+    fan: { src: 'audio/bedroom/fan', gain: 0.75 },
+    purr: { src: 'audio/bedroom/purr', gain: 0.5 },
+    birds: { src: 'audio/bedroom/birds', gain: 0.16 },
+    crickets: { src: 'audio/bedroom/crickets', gain: 0.25 },
+  },
   playlist,
+  stations: ['nuit-douce', 'petit-matin', 'brume', 'veillee', 'bureau'],
   objects: [
     { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.3, 5.75, -3.85] },
-    { id: 'radio', target: 'radio', label: 'Radio · lofi', anchor: [1.95, 2.05, -2.45] },
+    { id: 'radio', target: 'radio', label: 'Radio · lofi', anchor: [2.3, 2.05, -2.5] },
     { id: 'window', target: 'outside', label: 'Fenêtre · dehors', anchor: [1.4, 3.35, -3.0] },
-    { id: 'fan', target: 'fan', label: 'Ventilo · bruit blanc', anchor: [0.98, 2.35, -2.45] },
-    { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-1.0, 1.42, -0.45] },
-    { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-2.55, 1.62, -2.55] },
+    { id: 'fan', target: 'fan', label: 'Ventilo · bruit blanc', anchor: [0.62, 2.35, -2.6] },
+    { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-1.15, 1.45, -0.5] },
+    { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-2.68, 1.75, -2.72] },
   ],
   sounds: [
     {
@@ -31,7 +40,7 @@ export const bedroom: Room = {
       name: 'Radio lofi',
       chip: 'var(--c-radio)',
       volume: 0.75,
-      sub: (s) => (s.on.radio && s.onAir) || (playlist.length ? `lofi · ${playlist.length} morceau${playlist.length > 1 ? 'x' : ''}` : 'lofi · 72 bpm'),
+      sub: radioSub(playlist.length),
     },
     { id: 'rain', name: 'Pluie', chip: 'var(--c-rain)', volume: 0.7, sub: (s) => (s.on.outside ? 'vitre ouverte' : 'vitre fermée') },
     { id: 'fan', name: 'Bruit blanc', chip: 'var(--c-fan)', volume: 0.55, sub: () => 'ventilateur' },

@@ -1,10 +1,11 @@
 :root {
-  --bg: #e5daef;
+  /* Chaque pièce peut redéfinir ces teintes (--accent-d / --accent-n… : voir `ui` dans src/rooms/types.ts et App.tsx). */
+  --bg: var(--bg-d, #e5daef);
   --day-1: #f7f1fa; --day-2: #e7dcf0; --day-3: #d2c1e3;
   --night-1: #342d66; --night-2: #211c44; --night-3: #13102a;
-  --ink: #33264a; --ink-soft: #6b5b85;
-  --panel: rgba(255, 251, 255, .76); --line: rgba(80, 60, 120, .15);
-  --accent: #128d96; --accent-soft: rgba(18, 141, 150, .12);
+  --ink: var(--ink-d, #33264a); --ink-soft: var(--ink-soft-d, #6b5b85);
+  --panel: var(--panel-d, rgba(255, 251, 255, .76)); --line: var(--line-d, rgba(80, 60, 120, .15));
+  --accent: var(--accent-d, #128d96); --accent-soft: color-mix(in srgb, var(--accent) 13%, transparent);
   --icon-ink: #33264a;
   /* pastilles du mixeur */
   --c-radio: #9fdecd; --c-rain: #b9d4f7; --c-fan: #f8dc8c; --c-cat: #dcd2f2; --c-win: #f7c4d4; --c-fire: #f9c9a4; --c-wind: #cfe3f3; --c-street: #c7d3e6; --c-murmur: #f2cfd0; --c-espresso: #e4c7a8; --c-pages: #d4e7c5;
@@ -17,9 +18,15 @@
 }
 
 html.night {
-  --bg: #191632; --ink: #f3eeff; --ink-soft: #b8addb;
-  --panel: rgba(30, 25, 58, .78); --line: rgba(210, 190, 255, .15);
-  --accent: #6cd9d2; --accent-soft: rgba(108, 217, 210, .14);
+  --bg: var(--bg-n, #191632); --ink: var(--ink-n, #f3eeff); --ink-soft: var(--ink-soft-n, #b8addb);
+  --panel: var(--panel-n, rgba(30, 25, 58, .78)); --line: var(--line-n, rgba(210, 190, 255, .15));
+  --accent: var(--accent-n, #6cd9d2); --accent-soft: color-mix(in srgb, var(--accent) 14%, transparent);
   --shadow: 0 12px 32px rgba(0, 0, 0, .38);
   color-scheme: dark;
+}
+
+/* navigateurs sans color-mix : la teinte douce de la pièce de base */
+@supports not (color: color-mix(in srgb, red 10%, transparent)) {
+  :root { --accent-soft: rgba(18, 141, 150, .12) }
+  html.night { --accent-soft: rgba(108, 217, 210, .14) }
 }

@@ -1,45 +1,36 @@
-import { useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
-import { AdditiveBlending, type Group, type PointLight, type Sprite } from 'three'
-import { smooth } from '../../math'
-import { Part, SPH, cyl, noRay } from '../parts'
-import { mood, reduceMotion, useSquash } from '../anim'
-import { glowTex } from '../textures'
-import { flameMats } from '../materials'
-import { LIVE } from '../Static'
+import { M } from '../materials'
+import { Batch, Part, SPH, cyl, rbox, type Item } from '../parts'
 import { C } from './materials'
+import { Candles, type Candle } from '../objects/Candles'
 
-/** Une lampe-tempête sur le guéridon : sa mèche s'allume le soir (bascule jour / nuit) et dore toute la pièce. */
-export function Lantern({ position }: { position: [number, number, number] }) {
-  const g = useRef<Group>(null!), light = useRef<PointLight>(null!), glow = useRef<Sprite>(null!), flame = useRef<Group>(null!)
-  useSquash('lamp', g)
-  useFrame(({ clock }) => {
-    const e = smooth(mood.night), t = clock.elapsedTime, f = reduceMotion ? 0 : Math.sin(t * 9) * 0.06 + Math.sin(t * 14.3) * 0.04
-    light.current.intensity = e * (1.7 + f) * Math.PI // × π : voir materials.ts
-    C.lanternGlass.emissiveIntensity = e * (0.7 + f)
-    glow.current.material.opacity = e * 0.8
-    flame.current.visible = e > 0.05
-    flame.current.scale.y = 1 + f * 2
-  })
+// Par terre, devant la table d'appoint : deux livres, la lanterne posée dessus.
+const [X, Z] = [2.2, -0.3]
+const TOP = 0.195
+
+// Couverture, puis les pages en retrait (elles dépassent un peu sur la tranche).
+const book = (y: number, w: number, h: number, d: number, r: number, cover: number): Item[] => [
+  { p: [X, y, Z], s: [w, h, d], r: [0, r, 0], c: cover },
+  { p: [X, y, Z], s: [w - 0.04, h - 0.025, d + 0.006], r: [0, r, 0], c: 0xfff3dc },
+]
+const BOOKS: Item[] = [...book(0.05, 0.62, 0.1, 0.46, 0.2, 0xd25c72), ...book(0.15, 0.5, 0.09, 0.38, -0.15, 0x6db492)]
+const CANDLE: Candle[] = [{ p: [X, TOP + 0.04, Z], h: 0.14, r: 0.045 }]
+
+/** Lanterne blanche à bougie, posée sur une pile de livres. Elle luit surtout la nuit. */
+export function Lantern() {
   return (
-    <group ref={g} userData={{ id: 'lamp' }} position={position}>
-      <Part geo={cyl(0.13, 0.15, 0.08, 18)} m={C.red} p={[0, 0.04, 0]} />
-      <Part geo={cyl(0.09, 0.12, 0.05, 18)} m={C.iron} p={[0, 0.1, 0]} />
-      <Part geo={SPH} m={C.lanternGlass} scale={[0.12, 0.17, 0.12]} p={[0, 0.27, 0]} castShadow={false} />
-      <group ref={flame} userData={LIVE} position={[0, 0.25, 0]}>
-        <mesh geometry={SPH} material={flameMats.core} scale={[0.02, 0.045, 0.02]} position={[0, 0.03, 0]} raycast={noRay} />
+    <>
+      <Batch geo={rbox(1, 1, 1, 0.1)} m={C.paper} items={BOOKS} shadow />
+      <group position={[X, TOP, Z]}>
+        <Part geo={cyl(0.15, 0.16, 0.04, 24)} m={M.cream} p={[0, 0.02, 0]} />
+        <mesh geometry={cyl(0.12, 0.12, 0.32, 24)} material={M.glass} position={[0, 0.2, 0]} />
+        <Part geo={cyl(0.14, 0.15, 0.04, 24)} m={M.cream} p={[0, 0.38, 0]} />
+        <Part geo={SPH} m={M.cream} scale={[0.12, 0.07, 0.12]} p={[0, 0.4, 0]} />
+        <Part geo={SPH} m={M.cream} scale={0.03} p={[0, 0.48, 0]} castShadow={false} />
+        <Part m={M.plum} p={[0, 0.46, 0]} rotation-y={Math.PI / 4} castShadow={false}>
+          <torusGeometry args={[0.07, 0.012, 8, 20, Math.PI]} />
+        </Part>
       </group>
-      <Part geo={cyl(0.07, 0.1, 0.06, 18)} m={C.red} p={[0, 0.45, 0]} />
-      <Part m={C.iron} p={[0, 0.5, 0]} castShadow={false}>
-        <torusGeometry args={[0.1, 0.008, 6, 18, Math.PI]} />
-      </Part>
-      {[-1, 1].map((s) => (
-        <Part key={s} geo={cyl(0.006, 0.006, 0.36, 5)} m={C.iron} p={[s * 0.13, 0.27, 0]} castShadow={false} />
-      ))}
-      <pointLight ref={light} color={0xffb36a} intensity={0} distance={9} decay={1.5} position={[0, 0.3, 0.2]} />
-      <sprite ref={glow} scale={1.6} position={[0, 0.28, 0]} raycast={noRay}>
-        <spriteMaterial map={glowTex} blending={AdditiveBlending} transparent depthWrite={false} opacity={0} />
-      </sprite>
-    </group>
+      <Candles items={CANDLE} />
+    </>
   )
 }

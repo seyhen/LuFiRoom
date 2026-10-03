@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react'
-import { BedroomScene } from './rooms/BedroomScene'
+import { BedroomScene } from './bedroom/BedroomScene'
 import { CabinScene } from './cabin/CabinScene'
 import { CafeScene } from './cafe/CafeScene'
 import { BeachScene } from './beach/BeachScene'
