@@ -96,9 +96,20 @@ function drawNote(col: string) {
   }
 }
 
+/** Braise qui s'envole : un point orange à cœur clair. */
+function emberTexture() {
+  const [c, x] = makeCanvas(32, 32)
+  const g = x.createRadialGradient(16, 16, 0, 16, 16, 15)
+  g.addColorStop(0, 'rgba(255,240,190,1)'); g.addColorStop(0.35, 'rgba(255,160,70,.9)'); g.addColorStop(1, 'rgba(255,110,40,0)')
+  x.fillStyle = g
+  x.fillRect(0, 0, 32, 32)
+  return new CanvasTexture(c)
+}
+
 export const woodTex = woodTexture()
 export const muralTex = muralTexture()
 export const posterTex = posterTexture()
+export const emberTex = emberTexture()
 export const noteTexA = spriteTex(64, drawNote('#178f99'))
 export const noteTexB = spriteTex(64, drawNote('#e46f9b'))
 export const heartTex = spriteTex(64, (x) => {

@@ -5,9 +5,9 @@ import { K } from './materials'
 export function Chalkboard() {
   return (
     <>
-      <Part geo={rbox(1.95, 1.25, 0.07, 0.03)} m={K.walnut} p={[-1.4, 3.0, -2.96]} />
-      <mesh material={K.chalk} position={[-1.4, 3.0, -2.918]} receiveShadow>
-        <planeGeometry args={[1.75, 1.05]} />
+      <Part geo={rbox(1.66, 1.07, 0.07, 0.03)} m={K.walnut} p={[-1.62, 3.0, -2.96]} />
+      <mesh material={K.chalk} position={[-1.62, 3.0, -2.918]} receiveShadow>
+        <planeGeometry args={[1.5, 0.9]} />
       </mesh>
     </>
   )

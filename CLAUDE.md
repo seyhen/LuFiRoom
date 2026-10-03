@@ -35,6 +35,7 @@ src/
     Stage.tsx               # <Canvas>, caméra iso, lumières, cadrage, rotation au drag
     scenes.ts, rooms/       # la scène 3D de chaque pièce (BedroomScene...) ; ajouter une pièce : docs/ROOMS.md
     materials.ts            # palette de matériaux gummy partagés
+    Static.tsx              # fusionne les pièces immobiles par matériau (moins d'appels de dessin)
     objects/                # Radio, Cloud, Rain, Fan, Cat, Window, Lamp, Bed, Desk...
     Hotspot.tsx             # bouton DOM projeté sur un objet 3D (drei <Html>)
   audio/

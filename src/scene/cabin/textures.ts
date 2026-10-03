@@ -1,7 +1,7 @@
 import { CanvasTexture, RepeatWrapping } from 'three'
 import { makeCanvas } from '../textures'
 
-// Textures de la cabane, dessinées en canvas : lames de bois des murs et du sol, braise.
+// Textures de la cabane, dessinées en canvas : lames de bois des murs et du sol.
 
 /** Une lame verticale : ton, joint sombre à gauche, quelques veines. */
 function plank(x: CanvasRenderingContext2D, X: number, W: number, H: number, tone: string) {
@@ -55,16 +55,5 @@ function floorTexture() {
   return t
 }
 
-/** Braise qui s'envole : un point orange à cœur clair. */
-function emberTexture() {
-  const [c, x] = makeCanvas(32, 32)
-  const g = x.createRadialGradient(16, 16, 0, 16, 16, 15)
-  g.addColorStop(0, 'rgba(255,240,190,1)'); g.addColorStop(0.35, 'rgba(255,160,70,.9)'); g.addColorStop(1, 'rgba(255,110,40,0)')
-  x.fillStyle = g
-  x.fillRect(0, 0, 32, 32)
-  return new CanvasTexture(c)
-}
-
 export const wallTex = wallTexture()
 export const floorTex = floorTexture()
-export const emberTex = emberTexture()

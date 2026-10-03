@@ -7,6 +7,7 @@ import { M } from '../materials'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { useParticles, useSquash } from '../anim'
 import { puffTex } from '../textures'
+import { Static } from '../Static'
 import { K } from './materials'
 
 const dome = new SphereGeometry(0.19, 28, 14, 0, TAU, 0, Math.PI / 2)
@@ -21,7 +22,7 @@ const Mug = ({ p, m = M.mug }: { p: [number, number, number]; m?: typeof M.mug }
   </>
 )
 
-/** Comptoir de noyer et de marbre, machine à café (qui chauffe, fume et fait son bruit quand on la touche), tasses et gâteaux. */
+/** Comptoir de noyer et de marbre, barre de laiton, machine à café (qui chauffe, fume et fait son bruit quand on la touche), tasses et gâteaux. */
 export function Counter() {
   const g = useRef<Group>(null!)
   const steam = useParticles(), since = useRef(0), heat = useRef(0)
@@ -46,29 +47,31 @@ export function Counter() {
       <Part geo={rbox(2.44, 0.1, 0.94, 0.05)} m={M.cream} p={[-1.3, 1.03, -2.55]} />
       {/* la machine */}
       <group ref={g} userData={{ id: 'espresso' }} position={POS as unknown as [number, number, number]}>
-        <Part geo={rbox(0.78, 0.46, 0.46, 0.1)} m={K.steel} p={[0, 0.23, 0]} />
-        <Part geo={rbox(0.7, 0.05, 0.4, 0.02)} m={K.steel} p={[0, 0.49, 0]} />
-        <Part geo={rbox(0.56, 0.16, 0.02, 0.01)} m={M.plum} p={[0, 0.32, 0.235]} />
-        <Part m={K.brass} p={[-0.17, 0.32, 0.25]}>
-          <torusGeometry args={[0.045, 0.01, 8, 20]} />
-        </Part>
-        <Part geo={cyl(0.034, 0.034, 0.012, 16)} m={M.dial} p={[-0.17, 0.32, 0.244]} rotation-x={Math.PI / 2} />
-        <Part geo={cyl(0.022, 0.022, 0.03, 14)} m={K.led} p={[0.06, 0.32, 0.245]} rotation-x={Math.PI / 2} />
-        <Part geo={cyl(0.022, 0.022, 0.03, 14)} m={M.leaf} p={[0.15, 0.32, 0.245]} rotation-x={Math.PI / 2} />
-        {/* têtes de groupe, porte-filtres, buse de vapeur, bac et tasse */}
-        {[-0.17, 0.17].map((x) => (
-          <group key={x}>
-            <Part geo={cyl(0.065, 0.065, 0.09, 18)} m={K.brass} p={[x, 0.17, 0.2]} />
-            <Part geo={cyl(0.012, 0.012, 0.2, 10)} m={M.plum} p={[x, 0.11, 0.33]} rotation-x={Math.PI / 2} />
-            <Part geo={SPH} m={M.plum} scale={[0.05, 0.03, 0.03]} p={[x, 0.11, 0.44]} />
-          </group>
-        ))}
-        <Part geo={cyl(0.012, 0.012, 0.3, 8)} m={K.steel} p={[0.37, 0.2, 0.2]} />
-        <Part geo={rbox(0.7, 0.03, 0.26, 0.012)} m={M.plum} p={[0, 0.015, 0.3]} />
-        <Mug p={[-0.17, 0.08, 0.26]} m={M.pink} />
-        {[-0.22, 0, 0.22].map((x) => (
-          <Mug key={x} p={[x, 0.55, 0]} m={x === 0 ? M.tealLight : M.mug} />
-        ))}
+        <Static>
+          <Part geo={rbox(0.78, 0.46, 0.46, 0.1)} m={K.steel} p={[0, 0.23, 0]} />
+          <Part geo={rbox(0.7, 0.05, 0.4, 0.02)} m={K.steel} p={[0, 0.49, 0]} />
+          <Part geo={rbox(0.56, 0.16, 0.02, 0.01)} m={M.plum} p={[0, 0.32, 0.235]} />
+          <Part m={K.brass} p={[-0.17, 0.32, 0.25]}>
+            <torusGeometry args={[0.045, 0.01, 8, 20]} />
+          </Part>
+          <Part geo={cyl(0.034, 0.034, 0.012, 16)} m={M.dial} p={[-0.17, 0.32, 0.244]} rotation-x={Math.PI / 2} />
+          <Part geo={cyl(0.022, 0.022, 0.03, 14)} m={K.led} p={[0.06, 0.32, 0.245]} rotation-x={Math.PI / 2} />
+          <Part geo={cyl(0.022, 0.022, 0.03, 14)} m={M.leaf} p={[0.15, 0.32, 0.245]} rotation-x={Math.PI / 2} />
+          {/* têtes de groupe, porte-filtres, buse de vapeur, bac et tasse */}
+          {[-0.17, 0.17].map((x) => (
+            <group key={x}>
+              <Part geo={cyl(0.065, 0.065, 0.09, 18)} m={K.brass} p={[x, 0.17, 0.2]} />
+              <Part geo={cyl(0.012, 0.012, 0.2, 10)} m={M.plum} p={[x, 0.11, 0.33]} rotation-x={Math.PI / 2} />
+              <Part geo={SPH} m={M.plum} scale={[0.05, 0.03, 0.03]} p={[x, 0.11, 0.44]} />
+            </group>
+          ))}
+          <Part geo={cyl(0.012, 0.012, 0.3, 8)} m={K.steel} p={[0.37, 0.2, 0.2]} />
+          <Part geo={rbox(0.7, 0.03, 0.26, 0.012)} m={M.plum} p={[0, 0.015, 0.3]} />
+          <Mug p={[-0.17, 0.08, 0.26]} m={M.pink} />
+          {[-0.22, 0, 0.22].map((x) => (
+            <Mug key={x} p={[x, 0.55, 0]} m={x === 0 ? M.tealLight : M.mug} />
+          ))}
+        </Static>
       </group>
       <group ref={steam.group} />
       {/* sur le comptoir : une cloche de verre avec des scones, des tasses */}
@@ -78,7 +81,14 @@ export function Counter() {
         <Part key={i} geo={SPH} m={K.scone} scale={[0.07, 0.045, 0.07]} p={[-1.0 + dx, 1.16, -2.35 + dz]} />
       ))}
       <Mug p={[-0.45, 1.13, -2.2]} m={M.butter} />
-      <Mug p={[-2.3, 1.13, -2.25]} m={M.pink} />
+      {/* la boîte de shortbread en tartan, couvercle doré */}
+      <Part geo={cyl(0.11, 0.11, 0.13, 24)} m={K.stewartSmall} p={[-2.3, 1.145, -2.33]} />
+      <Part geo={cyl(0.115, 0.115, 0.03, 24)} m={K.brass} p={[-2.3, 1.225, -2.33]} />
+      {/* barre de laiton au pied du comptoir, comme dans les pubs */}
+      <Part geo={cyl(0.022, 0.022, 2.2, 10)} m={K.brass} p={[-1.3, 0.16, -2.12]} rotation-z={Math.PI / 2} />
+      {[-2.3, -1.3, -0.3].map((x) => (
+        <Part key={x} geo={cyl(0.012, 0.012, 0.1, 6)} m={K.brass} p={[x, 0.16, -2.17]} rotation-x={Math.PI / 2} castShadow={false} />
+      ))}
     </>
   )
 }

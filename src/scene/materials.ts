@@ -1,4 +1,4 @@
-import { Color, ColorManagement, DoubleSide, MeshPhysicalMaterial, MeshStandardMaterial, ShaderChunk, type MeshPhysicalMaterialParameters } from 'three'
+import { Color, ColorManagement, DoubleSide, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, ShaderChunk, type MeshPhysicalMaterialParameters } from 'three'
 import { woodTex } from './textures'
 
 // Même rendu que le prototype, qui tourne sur three r128 :
@@ -50,6 +50,12 @@ export const M = {
   red: gummy(0xe0586e),
   mug: gummy(0xfdf6ff),
   glass: new MeshPhysicalMaterial({ color: 0xe2f4ff, transparent: true, opacity: 0.16, roughness: 0.05, clearcoat: 1, depthWrite: false, side: DoubleSide }),
+}
+
+/** Flammes (cheminée, bougies) : elles brillent d'elles-mêmes, pas de lumière à calculer. */
+export const flameMats = {
+  outer: new MeshBasicMaterial({ color: 0xff8a3d, transparent: true, opacity: 0.92 }),
+  core: new MeshBasicMaterial({ color: 0xffd36b, transparent: true, opacity: 0.95 }),
 }
 
 /** Ampoules de la guirlande (jaune, rose, menthe). */

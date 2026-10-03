@@ -15,8 +15,5 @@ export const C = {
   stoneDark: gummy(0xa89dc0, { roughness: 0.62 }),
   wool: gummy(0xfffaf3, { roughness: 0.85, clearcoat: 0.05 }),
   pine: gummy(0x4f9d8c),
-  // Les flammes brillent d'elles-mêmes : pas de lumière à calculer.
-  flame: new MeshBasicMaterial({ color: 0xff8a3d, transparent: true, opacity: 0.92 }),
-  flameCore: new MeshBasicMaterial({ color: 0xffd36b, transparent: true, opacity: 0.95 }),
   snow: new MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 }),
 }

@@ -45,6 +45,7 @@ Cahier des charges d'origine :
 - [x] Sélecteur de pièce (caché tant qu'il n'y en a qu'une) et transition en fondu, sons coupés, dernière pièce mémorisée.
 - [x] 2e pièce : cabane sous la neige (cheminée et feu, fenêtre sur la tempête, coffre et radio, fauteuil, lampe). Sons synthétisés : feu, vent ; la radio est celle de la chambre. Enregistrements `fire` et `wind` à fournir (`docs/ASSETS.md`).
 - [x] 3e pièce : café d'Édimbourg sous la pluie, avec son coin bibliothèque (comptoir et machine à café, mur de livres et échelle, clients, ardoise, horloge, fenêtre sur le Château et la Old Town). Sons synthétisés : la rue, le brouhaha, l'expresso, les pages et le tic-tac ; pluie et radio sont celles de la chambre.
+- [x] Café, 2e version : un cocon chaud face à une ville froide. Dedans : cheminée victorienne (feu, charbons, carreaux, papier peint damassé, tableau du Château), fauteuil à oreilles en tartan Royal Stewart, skye terrier endormi (clin d'œil à Greyfriars Bobby), deux bibliothèques autour du feu, lampe de banquier (jour / nuit), guirlande guinguette, bougies, chardons et bruyère, clients à la fenêtre, table de lecture, entrée trempée (portemanteau, parapluies, flaques, paillasson « Fàilte »). Dehors : la vieille ville repeinte (Château, Victoria Street), réverbère à lumière froide, vitrine embuée avec son enseigne dorée. Nouveau son dans le café : le feu de bois.
 - [ ] Autres pièces : toit-terrasse la nuit.
 - [ ] Cabane : son de neige / bois qui craque, un objet de plus (chat devant le feu ?), pistes de radio propres à la pièce.
 

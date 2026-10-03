@@ -7,9 +7,11 @@ import { M } from '../materials'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { useParticles, useSquash } from '../anim'
 import { bubbleTex } from './textures'
+import { LIVE, Static } from '../Static'
 import { K } from './materials'
+import { Candle } from './Candle'
 
-const AT = [0.6, 0, 0.1] as const
+const AT = [1.4, 0, -2.22] as const
 
 function Chair({ x, dir }: { x: number; dir: 1 | -1 }) {
   return (
@@ -33,7 +35,7 @@ function Guest({ x, dir, skin, hair, body, ginger, scarf, head }: { x: number; d
           <torusGeometry args={[0.14, 0.05, 10, 20]} />
         </Part>
       )}
-      <group ref={head} position={[0.03 * dir, 1.22, 0]}>
+      <group ref={head} userData={LIVE} position={[0.03 * dir, 1.22, 0]}>
         <Part geo={SPH} m={skin} scale={0.15} />
         <Part geo={SPH} m={hair} scale={[0.165, ginger ? 0.1 : 0.13, 0.17]} p={[-0.015 * dir, 0.08, 0]} />
         {ginger ? <Part geo={SPH} m={hair} scale={0.06} p={[-0.1 * dir, 0.13, 0]} /> : <Part geo={SPH} m={hair} scale={[0.17, 0.16, 0.18]} p={[-0.05 * dir, -0.03, 0]} />}
@@ -50,7 +52,7 @@ function Guest({ x, dir, skin, hair, body, ginger, scarf, head }: { x: number; d
   )
 }
 
-/** Deux clients attablés devant une théière : ils bavardent (têtes qui dodelinent, bulles) quand leur son joue. */
+/** Deux clients attablés à la fenêtre devant une théière : ils bavardent (têtes qui dodelinent, bulles) quand leur son joue. */
 export function Guests() {
   const g = useRef<Group>(null!), a = useRef<Group>(null!), b = useRef<Group>(null!)
   const bubbles = useParticles(), since = useRef(0), turn = useRef(0), talk = useRef(0)
@@ -73,19 +75,26 @@ export function Guests() {
   return (
     <>
       <group ref={g} userData={{ id: 'guests' }} position={AT as unknown as [number, number, number]}>
-        {/* la table ronde et son service à thé */}
-        <Part geo={cyl(0.58, 0.58, 0.06, 32)} m={K.oak} p={[0, 0.8, 0]} />
-        <Part geo={cyl(0.07, 0.09, 0.76, 14)} m={K.walnut} p={[0, 0.4, 0]} />
-        <Part geo={cyl(0.3, 0.32, 0.04, 24)} m={K.walnut} p={[0, 0.02, 0]} />
-        <Part geo={SPH} m={M.pink} scale={[0.13, 0.11, 0.11]} p={[0, 0.96, 0]} />
-        <Part geo={cyl(0.012, 0.025, 0.12, 8)} m={M.pink} p={[0.15, 0.98, 0]} rotation-z={-0.9} />
-        <Part geo={SPH} m={M.cream} scale={0.025} p={[0, 1.07, 0]} />
-        <Part geo={cyl(0.06, 0.052, 0.1, 18)} m={M.mug} p={[-0.28, 0.88, 0.2]} />
-        <Part geo={cyl(0.06, 0.052, 0.1, 18)} m={M.mug} p={[0.3, 0.88, -0.18]} />
-        <Chair x={-0.95} dir={1} />
-        <Chair x={0.95} dir={-1} />
-        <Guest x={-0.88} dir={1} skin={K.skin} hair={K.ginger} body={K.jumper} ginger head={a} />
-        <Guest x={0.88} dir={-1} skin={K.skinDark} hair={K.darkHair} body={K.burgundy} scarf head={b} />
+        <Static>
+          {/* la table ronde et son service à thé */}
+          <Part geo={cyl(0.5, 0.5, 0.06, 32)} m={K.oak} p={[0, 0.8, 0]} />
+          <Part geo={cyl(0.07, 0.09, 0.76, 14)} m={K.walnut} p={[0, 0.4, 0]} />
+          <Part geo={cyl(0.3, 0.32, 0.04, 24)} m={K.walnut} p={[0, 0.02, 0]} />
+          <Part geo={SPH} m={M.pink} scale={[0.13, 0.11, 0.11]} p={[0, 0.96, 0]} />
+          <Part geo={cyl(0.012, 0.025, 0.12, 8)} m={M.pink} p={[0.15, 0.98, 0]} rotation-z={-0.9} />
+          <Part geo={SPH} m={M.cream} scale={0.025} p={[0, 1.07, 0]} />
+          <Part geo={cyl(0.06, 0.052, 0.1, 18)} m={M.mug} p={[-0.28, 0.88, 0.2]} />
+          <Part geo={cyl(0.06, 0.052, 0.1, 18)} m={M.mug} p={[0.3, 0.88, -0.18]} />
+          <Part geo={cyl(0.1, 0.09, 0.012, 22)} m={M.cream} p={[0.06, 0.84, 0.28]} castShadow={false} />
+          {[[-0.03, 0.02], [0.05, -0.02]].map(([dx, dz], i) => (
+            <Part key={i} geo={rbox(0.07, 0.025, 0.035, 0.01)} m={K.scone} p={[0.06 + dx, 0.86, 0.28 + dz]} rotation-y={i * 0.6} castShadow={false} />
+          ))}
+          <Candle position={[-0.12, 0.83, -0.22]} holder="jar" height={0.07} radius={0.03} />
+          <Chair x={-0.95} dir={1} />
+          <Chair x={0.95} dir={-1} />
+          <Guest x={-0.88} dir={1} skin={K.skin} hair={K.ginger} body={K.jumper} ginger head={a} />
+          <Guest x={0.88} dir={-1} skin={K.skinDark} hair={K.darkHair} body={K.burgundy} scarf head={b} />
+        </Static>
       </group>
       <group ref={bubbles.group} />
     </>
