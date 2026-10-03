@@ -10,6 +10,7 @@ import { Bunks } from './Bunks'
 import { ClubChair, LuggageRack, OpenSuitcase, Slippers, TeaTrolley } from './Luggage'
 import { Sideboard, Washstand } from './Corner'
 import { PassingLights } from './PassingLights'
+import { CatBasket, ChessTable, Flowers, PersianRug, SteamerTrunk } from './Lounge'
 
 /**
  * Un compartiment de voiture-lits, la nuit, quelque part dans les Alpes : boiseries d'acajou, couchettes faites, la lampe
@@ -19,6 +20,7 @@ export function TrainScene() {
   return (
     <Static>
       <TrainShell />
+      <PersianRug />
       <TrainView />
       <Cloud />
       <Rain />
@@ -34,6 +36,10 @@ export function TrainScene() {
       <Slippers />
       <Washstand />
       <PassingLights />
+      <ChessTable />
+      <SteamerTrunk />
+      <CatBasket />
+      <Flowers />
     </Static>
   )
 }

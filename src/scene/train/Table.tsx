@@ -14,11 +14,12 @@ const TOP = 1.0, Z = -2.68
 
 /** La lampe de table à abat-jour plissé bordeaux, frangé : la lumière du compartiment, jour / nuit. */
 function TableLamp() {
-  const g = useRef<Group>(null!), light = useRef<PointLight>(null!), glow = useRef<Sprite>(null!), fringe = useRef<Group>(null!)
+  const g = useRef<Group>(null!), light = useRef<PointLight>(null!), berth = useRef<PointLight>(null!), glow = useRef<Sprite>(null!), fringe = useRef<Group>(null!)
   useSquash('lamp', g)
   useFrame(({ clock }) => {
     const e = smooth(mood.night)
     light.current.intensity = (0.25 + e * 1.55) * Math.PI // × π : voir materials.ts
+    berth.current.intensity = e * 0.9 * Math.PI
     T.shade.emissiveIntensity = 0.12 + e * 0.75
     glow.current.material.opacity = 0.15 + e * 0.6
     if (!reduceMotion) fringe.current.rotation.z = Math.sin(clock.elapsedTime * 2.1) * 0.03
@@ -36,6 +37,8 @@ function TableLamp() {
       </group>
       <mesh geometry={SPH} material={T.bulb} scale={0.04} position={[0, 0.4, 0]} />
       <pointLight ref={light} color={0xffb36a} intensity={0} distance={8} decay={1.5} position={[0, 0.32, 0.25]} />
+      {/* les appliques de lecture des couchettes, allumées avec elle */}
+      <pointLight ref={berth} color={0xffc08a} intensity={0} distance={6} decay={1.5} position={[-2.0, 0.6, 1.0]} />
       <sprite ref={glow} scale={1.4} position={[0, 0.42, 0.05]} raycast={noRay}>
         <spriteMaterial map={glowTex} blending={AdditiveBlending} transparent depthWrite={false} opacity={0} />
       </sprite>

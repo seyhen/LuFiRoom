@@ -65,8 +65,8 @@ export function ClubChair() {
         <Part geo={rbox(0.24, 0.02, 0.32, 0.008)} m={T.cream} p={[0.4, 0.71, 0.08]} rotation-y={0.1} castShadow={false} />
         <Part geo={rbox(0.24, 0.03, 0.3, 0.01)} m={T.wool} p={[-0.02, 0.57, 0.12]} rotation-y={0.4} castShadow={false} />
       </group>
-      <Part geo={cyl(0.24, 0.26, 0.32, 22)} m={T.velvet} p={[1.65, 0.16, -0.9]} />
-      <Part geo={cyl(0.245, 0.245, 0.03, 22)} m={T.gold} p={[1.65, 0.3, -0.9]} castShadow={false} />
+      <Part geo={cyl(0.24, 0.26, 0.32, 22)} m={T.velvet} p={[1.05, 0.16, -0.75]} />
+      <Part geo={cyl(0.245, 0.245, 0.03, 22)} m={T.gold} p={[1.05, 0.3, -0.75]} castShadow={false} />
     </>
   )
 }
@@ -74,7 +74,7 @@ export function ClubChair() {
 /** La valise ouverte sur son porte-bagages pliant : des pulls pliés, un appareil photo, une carte. */
 export function OpenSuitcase() {
   return (
-    <group position={[0.55, 0, 1.15]} rotation-y={0.35}>
+    <group position={[1.3, 0, 1.9]} rotation-y={-0.5}>
       {[-0.32, 0.32].map((x) => (
         <group key={x}>
           <Part geo={cyl(0.015, 0.015, 0.62, 6)} m={T.mahoganyDark} p={[x, 0.28, 0]} rotation-x={0.45} />
@@ -108,7 +108,7 @@ export function OpenSuitcase() {
 /** Le chariot de thé du wagon-restaurant, oublié là : théière d'argent, tasses, une assiette de biscuits. */
 export function TeaTrolley() {
   return (
-    <group position={[1.95, 0, 1.55]} rotation-y={0.5}>
+    <group position={[2.85, 0, 0.15]} rotation-y={-1.2}>
       {[0.25, 0.7].map((y) => (
         <Part key={y} geo={rbox(0.8, 0.04, 0.48, 0.02)} m={T.mahogany} p={[0, y, 0]} />
       ))}

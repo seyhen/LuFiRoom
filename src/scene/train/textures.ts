@@ -163,3 +163,24 @@ export const streakTex = canvasTex(512, 512, (x) => {
     x.fillStyle = 'rgba(255,255,255,.75)'; x.beginPath(); x.arc(px - rad * 0.3, py - rad * 0.3, rad * 0.35, 0, TAU); x.fill()
   }
 }, [1.5, 1])
+
+/** Tapis persan du couloir : bordure bleu nuit, médaillon central, entrelacs crème et rouille. */
+export const persianTex = canvasTex(256, 384, (x) => {
+  x.fillStyle = '#9a3a2e'; x.fillRect(0, 0, 256, 384)
+  x.fillStyle = '#1f2f5a'; x.fillRect(0, 0, 256, 384)
+  x.fillStyle = '#b84a34'; x.fillRect(22, 22, 212, 340)
+  x.strokeStyle = '#e9c48f'; x.lineWidth = 4; x.strokeRect(30, 30, 196, 324)
+  for (let i = 0; i < 12; i++) { x.fillStyle = '#e9c48f'; x.beginPath(); x.arc(11, 20 + i * 31, 4, 0, TAU); x.arc(245, 20 + i * 31, 4, 0, TAU); x.fill() }
+  for (let i = 0; i < 8; i++) { x.fillStyle = '#e9c48f'; x.beginPath(); x.arc(20 + i * 31, 11, 4, 0, TAU); x.arc(20 + i * 31, 373, 4, 0, TAU); x.fill() }
+  poly(x, [[128, 92], [196, 192], [128, 292], [60, 192]], '#1f2f5a')
+  poly(x, [[128, 120], [176, 192], [128, 264], [80, 192]], '#e9c48f')
+  poly(x, [[128, 146], [158, 192], [128, 238], [98, 192]], '#9a2e3a')
+  x.fillStyle = '#e9c48f'; x.beginPath(); x.arc(128, 192, 10, 0, TAU); x.fill()
+  for (const [cx, cy] of [[60, 70], [196, 70], [60, 314], [196, 314]]) { poly(x, [[cx, cy - 20], [cx + 20, cy], [cx, cy + 20], [cx - 20, cy]], '#1f2f5a'); x.fillStyle = '#e9c48f'; x.beginPath(); x.arc(cx, cy, 5, 0, TAU); x.fill() }
+  for (let i = 0; i < 384; i += 3) { x.fillStyle = 'rgba(0,0,0,.05)'; x.fillRect(0, i, 256, 1) }
+})
+
+/** Échiquier. */
+export const boardTex = canvasTex(128, 128, (x) => {
+  for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) { x.fillStyle = (i + j) % 2 ? '#5a3424' : '#e9d2a8'; x.fillRect(i * 16, j * 16, 16, 16) }
+})

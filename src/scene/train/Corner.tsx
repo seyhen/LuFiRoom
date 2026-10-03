@@ -68,7 +68,7 @@ export function Washstand() {
         <Part geo={cyl(0.18, 0.12, 0.08, 20)} m={T.sheet} p={[0, 1.02, 0.02]} />
         <Part geo={cyl(0.012, 0.012, 0.16, 6)} m={T.brass} p={[0, 1.12, -0.1]} rotation-x={0.6} castShadow={false} />
         <Part geo={rbox(0.5, 0.62, 0.03, 0.03)} m={T.brass} p={[0, 1.6, -0.14]} />
-        <Part geo={rbox(0.44, 0.56, 0.01, 0.02)} m={T.glass} p={[0, 1.6, -0.12]} castShadow={false} />
+        <Part geo={rbox(0.44, 0.56, 0.01, 0.02)} m={T.mirror} p={[0, 1.6, -0.12]} castShadow={false} />
         <Part geo={rbox(0.12, 0.03, 0.1, 0.01)} m={T.sheet} p={[0.2, 1.04, 0.06]} castShadow={false} />
       </group>
     </>

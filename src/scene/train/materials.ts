@@ -1,6 +1,6 @@
 import { DoubleSide, MeshBasicMaterial } from 'three'
 import { M, gummy } from '../materials'
-import { carpetTex, panelTex, streakTex } from './textures'
+import { boardTex, carpetTex, panelTex, persianTex, streakTex } from './textures'
 
 // Le mur du fond est une extrusion : ses UV sont ses coordonnées (1 unité de large, 4.4 de haut par tuile).
 const wallPanels = panelTex.clone()
@@ -39,6 +39,19 @@ export const T = {
   croissant: gummy(0xd99a52, { roughness: 0.55 }),
   tea: gummy(0xb5552a, { transparent: true, opacity: 0.85, roughness: 0.1, clearcoat: 1 }),
   glass: M.glass,
+  mirror: gummy(0xdfe6ee, { roughness: 0.05, clearcoat: 1, metalness: 0.4, emissive: 0x404858, emissiveIntensity: 0.4 }),
+  persian: gummy(0xffffff, { map: persianTex, roughness: 0.95, clearcoat: 0 }),
+  stickerA: gummy(0xe2b25a), stickerB: gummy(0x4f8a5a), stickerC: gummy(0xd9536a), stickerD: gummy(0x6a8ab8),
+  chessW: gummy(0xf3e6cf, { roughness: 0.3, clearcoat: 0.8 }),
+  chessB: gummy(0x2a1a16, { roughness: 0.3, clearcoat: 0.8 }),
+  board: gummy(0xffffff, { map: boardTex, roughness: 0.4, clearcoat: 0.6 }),
+  wicker: gummy(0xc89a62, { roughness: 0.7 }),
+  ginger: gummy(0xe08a4a, { roughness: 0.62, clearcoat: 0.2 }),
+  gingerLight: gummy(0xf6dcc0, { roughness: 0.62 }),
+  gingerDark: gummy(0xb8632e, { roughness: 0.6 }),
+  lilac: gummy(0xb9a2d8),
+  plaidLight: gummy(0xd9c9a8, { roughness: 0.9 }),
+  daisy: gummy(0xfbf6ea),
   shade: gummy(0x9a3442, { roughness: 0.8, emissive: 0xff8a5a, emissiveIntensity: 0, side: DoubleSide }),
   bulb: M.bulb,
   ink: M.ink,
