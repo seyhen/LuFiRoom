@@ -10,7 +10,7 @@ import type { Channel, Kit } from '../engine'
 export default function pencil(kit: Kit, out: GainNode, { loops }: Room): Channel {
   return kit.loopOrChannel(loops.pencil, out, () => {
     const { ctx, gain, biq, osc, noise } = kit
-    const bus = gain(4)
+    const bus = gain(12)
     bus.connect(out)
     function stroke(t: number, dur: number, v: number, f: number) {
       const s = ctx.createBufferSource(), bp = biq('bandpass', f, 1.3), g = gain(0.0001), grain = osc('sine', rand(30, 55))

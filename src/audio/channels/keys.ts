@@ -10,7 +10,7 @@ import type { Channel, Kit } from '../engine'
 export default function keys(kit: Kit, out: GainNode, { loops }: Room): Channel {
   return kit.loopOrChannel(loops.keys, out, () => {
     const { ctx, gain, biq, osc, noise } = kit
-    const bus = gain(3)
+    const bus = gain(6)
     bus.connect(out)
     const desk = biq('peaking', 220, 1.2)
     desk.gain.value = 4

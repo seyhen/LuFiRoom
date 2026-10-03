@@ -11,7 +11,7 @@ import type { Channel, Kit } from '../engine'
 export default function kettle(kit: Kit, out: GainNode, { loops }: Room): Channel {
   return kit.loopOrChannel(loops.kettle, out, () => {
     const { ctx, gain, biq, osc, noise } = kit
-    const bus = gain(2.6)
+    const bus = gain(6)
     bus.connect(out)
     const src = (t: number, dur: number, buf = noise.pink) => {
       const s = ctx.createBufferSource()
