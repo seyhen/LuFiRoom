@@ -4,6 +4,7 @@ import { AdditiveBlending, Color, NormalBlending, type Mesh, type MeshBasicMater
 import { smooth } from '../../math'
 import { mood, reduceMotion } from '../anim'
 import { noRay, type V3 } from '../parts'
+import { LIVE } from '../Static'
 
 interface Props {
   /** Texture qui se répète en largeur (RepeatWrapping), dessinée en clair : la couleur la teinte. */
@@ -42,7 +43,7 @@ export function ScrollLayer({ map, position, size, color, speed = 0, bob, phase 
     if (bob) m.position.y = position[1] + Math.sin(clock.elapsedTime * bob[1] + phase) * bob[0]
   })
   return (
-    <mesh ref={mesh} position={position} raycast={noRay}>
+    <mesh ref={mesh} userData={LIVE} position={position} raycast={noRay}>
       <planeGeometry args={size} />
       <meshBasicMaterial map={map} transparent depthWrite={false} blending={glow ? AdditiveBlending : NormalBlending} />
     </mesh>

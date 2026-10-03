@@ -4,6 +4,7 @@ import { CabinScene } from './cabin/CabinScene'
 import { CafeScene } from './cafe/CafeScene'
 import { BeachScene } from './beach/BeachScene'
 import { TrainScene } from './train/TrainScene'
+import { RoofScene } from './roof/RoofScene'
 
 /** La scène 3D de chaque pièce, par identifiant (celui de src/rooms/*.ts). */
 export const scenes: Record<string, ComponentType> = {
@@ -12,4 +13,5 @@ export const scenes: Record<string, ComponentType> = {
   cafe: CafeScene,
   beach: BeachScene,
   train: TrainScene,
+  roof: RoofScene,
 }

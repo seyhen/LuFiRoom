@@ -6,6 +6,7 @@ import { dn, poly, rgb, seeded, usePainted } from '../paint'
 import { noRay } from '../parts'
 import { reduceMotion } from '../anim'
 import { ScrollLayer } from '../objects/ScrollLayer'
+import { LIVE } from '../Static'
 import { farHillsTex, meadowLightsTex, meadowTex, nearTex } from './textures'
 
 // Le paysage par la fenêtre du compartiment. Un fond peint (ciel, montagnes, lune) juste derrière le mur, et devant lui
@@ -52,7 +53,7 @@ export function TrainView() {
     g.current.position.y = Math.sin(t * 2.1) * 0.006 + Math.sin(t * 7.3) * 0.002
   })
   return (
-    <group ref={g} raycast={noRay}>
+    <group ref={g} userData={LIVE} raycast={noRay}>
       <mesh position={[0.36, 1.87, -3.72]} raycast={noRay}>
         <planeGeometry args={[2.9, 1.9]} />
         <meshBasicMaterial map={tex} />

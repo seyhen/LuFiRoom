@@ -11,7 +11,7 @@ import type { Channel, Kit } from '../engine'
 export default function pigeons(kit: Kit, out: GainNode, { loops }: Room): Channel {
   return kit.loopOrChannel(loops.pigeons, out, () => {
     const { ctx, gain, biq, osc, noise } = kit
-    const bus = gain(3)
+    const bus = gain(5.5)
     bus.connect(out)
     /** Un roucoulement : trois ou quatre syllabes graves, la deuxième plus longue et qui monte. */
     function coo(t: number, pan: number) {
