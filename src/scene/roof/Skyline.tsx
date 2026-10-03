@@ -82,9 +82,7 @@ export function Skyline() {
   })
   return (
     <>
-      <mesh ref={moon} material={R.moon} position={[1.2, 6.1, -4.6]}>
-        <circleGeometry args={[0.38, 32]} />
-      </mesh>
+      <mesh ref={moon} geometry={SPH} material={R.moon} scale={0.34} position={[1.2, 6.1, -4.6]} />
       <group ref={g} userData={{ id: 'city' }}>
         <Static>
           {FAR.map(([x, z, w, d, h, m, kind], i) => (
