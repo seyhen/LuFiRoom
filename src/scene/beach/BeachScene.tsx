@@ -12,7 +12,8 @@ import { RattanLamp } from './RattanLamp'
 import { CoffeeTable } from './CoffeeTable'
 import { Gull } from './Gull'
 import { WindChimes } from './WindChimes'
-import { BeachBag, Hats, Macrame, RecordCrate, ShellShelf, Surfboard } from './Corner'
+import { BeachBag, DeckChair, FishingNet, Hats, Macrame, RecordCrate, ShellShelf, Surfboard } from './Corner'
+import { SunRays } from './SunRays'
 import { HangingPothos, Kentia, Monstera } from './Plants'
 import { EggChair } from './EggChair'
 import { B } from './materials'
@@ -49,6 +50,9 @@ export function BeachScene() {
       <Monstera position={[2.85, 0, -1.25]} />
       <EggChair />
       <BeachBag />
+      <FishingNet />
+      <DeckChair />
+      <SunRays />
     </Static>
   )
 }

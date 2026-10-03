@@ -130,3 +130,42 @@ export function BeachBag() {
     </>
   )
 }
+
+/** Un filet de pêcheur tendu au mur de gauche, ses flotteurs de verre et quelques étoiles de mer. */
+export function FishingNet() {
+  const knots = Array.from({ length: 7 * 5 }, (_, i) => [(i % 7) * 0.16 - 0.48, -((i / 7) | 0) * 0.15 - Math.sin(((i % 7) / 6) * Math.PI) * 0.12] as const)
+  return (
+    <group position={[-2.97, 3.3, 1.55]} rotation-y={Math.PI / 2}>
+      <Part geo={cyl(0.02, 0.02, 1.15, 8)} m={B.driftwood} rotation-z={Math.PI / 2} castShadow={false} />
+      {knots.map(([x, y], i) => (
+        <group key={i}>
+          {i % 7 < 6 && <Part geo={cyl(0.004, 0.004, 0.17, 3)} m={B.rope} p={[x + 0.08, y - 0.02, 0.01]} rotation-z={Math.PI / 2 + 0.25 * (i % 2 ? 1 : -1)} castShadow={false} />}
+          {i < 28 && <Part geo={cyl(0.004, 0.004, 0.16, 3)} m={B.rope} p={[x, y - 0.08, 0.01]} castShadow={false} />}
+        </group>
+      ))}
+      {[[-0.35, -0.35, B.seaglass], [0.1, -0.5, B.turquoise], [0.4, -0.3, B.seaglass]].map(([x, y, m], i) => (
+        <Part key={i} geo={SPH} m={m as typeof B.seaglass} scale={0.07} p={[x as number, y as number, 0.05]} castShadow={false} />
+      ))}
+      <group position={[-0.1, -0.25, 0.04]}>
+        {[0, 1, 2, 3, 4].map((i) => (
+          <Part key={i} geo={SPH} m={B.coral} scale={[0.02, 0.06, 0.012]} p={[Math.sin((i / 5) * TAU) * 0.04, Math.cos((i / 5) * TAU) * 0.04, 0]} rotation-z={-(i / 5) * TAU} castShadow={false} />
+        ))}
+      </group>
+    </group>
+  )
+}
+
+/** Dehors, sur la terrasse : un transat rayé face à la mer, et une serviette posée dessus. */
+export function DeckChair() {
+  return (
+    <group position={[1.6, 0, -3.55]} rotation-y={Math.PI + 0.25}>
+      {[-0.22, 0.22].map((x) => (
+        <group key={x}>
+          <Part geo={rbox(0.03, 0.03, 0.9, 0.01)} m={B.wood} p={[x, 0.3, 0]} rotation-x={0.6} castShadow={false} />
+          <Part geo={rbox(0.03, 0.03, 0.7, 0.01)} m={B.wood} p={[x, 0.25, 0.05]} rotation-x={-0.7} castShadow={false} />
+        </group>
+      ))}
+      <Part geo={rbox(0.42, 0.01, 0.85, 0.005)} m={B.stripeCoral} p={[0, 0.32, -0.02]} rotation-x={0.6} castShadow={false} />
+    </group>
+  )
+}

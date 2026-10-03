@@ -8,7 +8,8 @@ import { TrainWindow } from './TrainWindow'
 import { Table } from './Table'
 import { Bunks } from './Bunks'
 import { ClubChair, LuggageRack, OpenSuitcase, Slippers, TeaTrolley } from './Luggage'
-import { Sideboard } from './Corner'
+import { Sideboard, Washstand } from './Corner'
+import { PassingLights } from './PassingLights'
 
 /**
  * Un compartiment de voiture-lits, la nuit, quelque part dans les Alpes : boiseries d'acajou, couchettes faites, la lampe
@@ -31,6 +32,8 @@ export function TrainScene() {
       <OpenSuitcase />
       <TeaTrolley />
       <Slippers />
+      <Washstand />
+      <PassingLights />
     </Static>
   )
 }

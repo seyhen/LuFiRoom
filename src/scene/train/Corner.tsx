@@ -51,3 +51,30 @@ export function Sideboard() {
     </>
   )
 }
+
+/** La plaque de laiton du compartiment, avec son numéro, et le petit lavabo d'angle sous un miroir. */
+export function Washstand() {
+  return (
+    <>
+      <group position={[-1.6, 3.55, -2.97]}>
+        <Part geo={rbox(0.36, 0.2, 0.02, 0.01)} m={T.brass} />
+        <mesh position={[0, 0, 0.012]}>
+          <planeGeometry args={[0.32, 0.16]} />
+          <meshStandardMaterial map={plateTex} roughness={0.4} />
+        </mesh>
+      </group>
+      <group position={[-1.6, 0, -2.85]}>
+        <Part geo={rbox(0.6, 0.7, 0.32, 0.03)} m={T.mahogany} p={[0, 0.65, 0]} />
+        <Part geo={cyl(0.18, 0.12, 0.08, 20)} m={T.sheet} p={[0, 1.02, 0.02]} />
+        <Part geo={cyl(0.012, 0.012, 0.16, 6)} m={T.brass} p={[0, 1.12, -0.1]} rotation-x={0.6} castShadow={false} />
+        <Part geo={rbox(0.5, 0.62, 0.03, 0.03)} m={T.brass} p={[0, 1.6, -0.14]} />
+        <Part geo={rbox(0.44, 0.56, 0.01, 0.02)} m={T.glass} p={[0, 1.6, -0.12]} castShadow={false} />
+        <Part geo={rbox(0.12, 0.03, 0.1, 0.01)} m={T.sheet} p={[0.2, 1.04, 0.06]} castShadow={false} />
+      </group>
+    </>
+  )
+}
+const plateTex = canvasTex(128, 64, (x) => {
+  x.fillStyle = '#1f2f5a'; x.fillRect(0, 0, 128, 64)
+  x.fillStyle = '#e2b25a'; x.font = 'bold 34px Georgia, serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('N° 7', 64, 34)
+})

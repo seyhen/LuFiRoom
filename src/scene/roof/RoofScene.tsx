@@ -9,6 +9,7 @@ import { FireCorner, RadioCrate, Sofa, Telescope } from './Lounge'
 import { Laundry } from './Laundry'
 import { Pigeons } from './Pigeons'
 import { Herbs, OliveTree, Planter } from './Planters'
+import { FireEscape, NeonSign, Vent } from './Neon'
 
 /**
  * Un toit-terrasse de Brooklyn, un soir d'été : la ville tout autour qui s'allume, le château d'eau, un braséro, le linge
@@ -32,6 +33,9 @@ export function RoofScene() {
       <Radio position={[-2.55, 0.5, 2.35]} />
       <Telescope />
       <Laundry />
+      <NeonSign />
+      <FireEscape />
+      <Vent />
     </Static>
   )
 }

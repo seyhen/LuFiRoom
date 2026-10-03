@@ -6,6 +6,7 @@ import { Pool } from './Pool'
 import { ShishiOdoshi, Spout } from './Water'
 import { Furin, Maple, StoneLantern } from './Garden'
 import { BathThings, Plants, TeaTray } from './Props'
+import { Chochin, Fireflies, Noren } from './Signs'
 
 /**
  * Un bain en plein air (rotenburo) au bord d'un ryokan, en automne : le bassin qui fume entre ses rochers, l'eau de la source
@@ -27,6 +28,9 @@ export function OnsenScene() {
       <Radio position={[-2.45, 0.42, 2.0]} />
       <BathThings />
       <Plants />
+      <Noren />
+      <Chochin />
+      <Fireflies />
     </Static>
   )
 }

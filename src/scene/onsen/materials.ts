@@ -41,6 +41,7 @@ export const O = {
   tanzaku: gummy(0xf06a6a, { roughness: 0.9, side: DoubleSide }),
   paper: gummy(0xf7f0df, { roughness: 0.9 }),
   red: gummy(0xc23a3a),
+  chochin: gummy(0xd8402e, { roughness: 0.8, emissive: 0xff7a3a, emissiveIntensity: 0.1 }),
   ink: M.ink,
   // Les montagnes au loin, dans la brume : trois plans, du plus proche au plus lointain.
   mountains: [gummy(0x6f7f8a, { roughness: 0.9 }), gummy(0x8f9aa8, { roughness: 0.9 }), gummy(0xb2bac6, { roughness: 0.9 })],

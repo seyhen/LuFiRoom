@@ -29,10 +29,10 @@ function SteamAndLeaves() {
   useFrame(({ clock }, delta) => {
     const dt = Math.min(delta, 0.05), t = clock.elapsedTime
     since.current += dt
-    if (!reduceMotion && since.current > 0.3) {
+    if (!reduceMotion && since.current > 0.2) {
       since.current = 0
       const a = rand(0, Math.PI * 2), k = Math.sqrt(Math.random())
-      steam.emit(puffTex, POOL.cx + Math.cos(a) * POOL.rx * 0.8 * k, POOL.y + 0.1, POOL.cz + Math.sin(a) * POOL.rz * 0.8 * k, { size: 0.5, life: 4.5, vy: 0.28, sway: 0.18, grow: 1.6, peak: 0.28 })
+      steam.emit(puffTex, POOL.cx + Math.cos(a) * POOL.rx * 0.8 * k, POOL.y + 0.1, POOL.cz + Math.sin(a) * POOL.rz * 0.8 * k, { size: 0.55, life: 5, vy: 0.26, sway: 0.2, grow: 1.8, peak: 0.36 })
     }
     if (!reduceMotion) floats.current.forEach((f, i) => { f.rotation.y = t * 0.1 * (i % 2 ? 1 : -1) + i; f.position.y = POOL.y + 0.012 + Math.sin(t * 1.3 + i) * 0.006 })
   })

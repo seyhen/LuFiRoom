@@ -6,6 +6,7 @@ import { ParisView } from './ParisView'
 import { DraftingTable, Stool } from './DraftingTable'
 import { Desk, Turntable } from './Desk'
 import { Kitchenette } from './Kitchenette'
+import { Gallery, Rafters } from './Rafters'
 import { Bookcase, CanvasCorner, Easel, HangingPlants, ReadingCorner, RugAndLadder } from './Corner'
 
 /**
@@ -30,6 +31,8 @@ export function AtelierScene() {
       <RugAndLadder />
       <ReadingCorner />
       <CanvasCorner />
+      <Rafters />
+      <Gallery />
     </Static>
   )
 }

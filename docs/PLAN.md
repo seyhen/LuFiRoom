@@ -51,6 +51,7 @@ Cahier des charges d'origine :
 - [x] 6e pièce : toit-terrasse à Brooklyn un soir d'été (tours qui s'allument, château d'eau, braséro, guirlande, linge au vent, pigeons). Sons : la ville, les pigeons ; feu, vent (en brise), radio repris.
 - [x] 7e pièce : atelier d'illustratrice sous les toits de Paris (verrière d'acier, tour Eiffel qui scintille, table à dessin, clavier, tourne-disque, bouilloire). Sons : clavier, crayon, bouilloire ; pluie et radio repris.
 - [x] 8e pièce : onsen en automne (bassin qui fume, source, shishi-odoshi, érable, lanterne de pierre, furin, ryokan et montagnes). Sons : source, shishi-odoshi, furin ; jardin et radio repris.
+- [x] Déco, 2e passe : la cabane devient un chalet de rondins sous la neige (cheminée de pierres, husky, chocolats chauds, chaussettes qui sèchent, skis, luge) ; une signature par pièce : rais de soleil et filet de pêcheur (plage), lumières de gare qui traversent le compartiment et lavabo (train), enseigne de néon, escalier de secours, vapeur (toit), poutres, mur de cadres et guirlande (atelier), noren ゆ, lanternes rouges et lucioles (onsen).
 - [ ] Enregistrements pour les nouveaux sons (liste et mots-clés dans `docs/ASSETS.md`).
 - [ ] Cabane : son de neige / bois qui craque, un objet de plus (chat devant le feu ?), pistes de radio propres à la pièce.
 

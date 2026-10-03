@@ -22,6 +22,7 @@ function DraftLamp() {
     light.current.intensity = e * 1.9 * Math.PI // × π : voir materials.ts
     A.shade.emissiveIntensity = e * 0.3
     A.lampShade.emissiveIntensity = e * 0.75
+    A.bulb.emissiveIntensity = 0.3 + e * 1.3
     glow.current.material.opacity = e * 0.7
   })
   return (
