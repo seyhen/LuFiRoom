@@ -5,7 +5,7 @@ import { Skyline } from './Skyline'
 import { WaterTower } from './WaterTower'
 import { StringLights } from './StringLights'
 import { Brazier } from './Brazier'
-import { FireCorner, RadioCrate, Sofa, Telescope } from './Lounge'
+import { FireCorner, FrontCorner, RadioCrate, Sofa, Telescope } from './Lounge'
 import { Laundry } from './Laundry'
 import { Pigeons } from './Pigeons'
 import { Herbs, OliveTree, Planter } from './Planters'
@@ -32,6 +32,7 @@ export function RoofScene() {
       <RadioCrate />
       <Radio position={[-2.55, 0.5, 2.35]} />
       <Telescope />
+      <FrontCorner />
       <Laundry />
       <NeonSign />
       <FireEscape />

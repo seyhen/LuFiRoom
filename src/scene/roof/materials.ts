@@ -55,6 +55,8 @@ export const R = {
   feet: gummy(0xd9787a),
   wine: gummy(0x7a1f30, { transparent: true, opacity: 0.85, roughness: 0.1, clearcoat: 1 }),
   glass: M.glass,
+  zinc: gummy(0xaab4bf, { roughness: 0.35, clearcoat: 0.7 }),
+  ice: gummy(0xeaf6ff, { roughness: 0.1, clearcoat: 1, transparent: true, opacity: 0.85 }),
   brass: M.brass,
   bulb: M.bulb,
   ink: M.ink,

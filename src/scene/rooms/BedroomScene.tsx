@@ -16,14 +16,20 @@ import { Fan } from '../objects/Fan'
 import { Cat } from '../objects/Cat'
 import { Cloud } from '../objects/Cloud'
 import { Rain } from '../objects/Rain'
+import { Static } from '../Static'
+import { FloorCushions, HangingPlant, ReadingNook, StripedRug } from './BedroomCozy'
 
 export function BedroomScene() {
   return (
-    <>
+    <Static>
       <Shell />
       <WindowView />
       <Window />
       <Rug />
+      <StripedRug />
+      <FloorCushions />
+      <ReadingNook />
+      <HangingPlant />
       <Bed />
       <Nightstand />
       <Lamp />
@@ -37,6 +43,6 @@ export function BedroomScene() {
       <Cat />
       <Cloud />
       <Rain />
-    </>
+    </Static>
   )
 }

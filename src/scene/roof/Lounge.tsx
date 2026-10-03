@@ -33,18 +33,19 @@ function Adirondack({ position, rotation, m }: { position: [number, number, numb
     <group position={position} rotation-y={rotation}>
       {[-0.28, 0.28].map((x) => (
         <group key={x}>
-          <Part geo={rbox(0.05, 0.42, 0.06, 0.02)} m={m} p={[x, 0.21, 0.28]} />
+          <Part geo={rbox(0.06, 0.48, 0.07, 0.02)} m={m} p={[x, 0.24, 0.28]} />
+          <Part geo={rbox(0.06, 0.26, 0.07, 0.02)} m={m} p={[x, 0.13, -0.36]} />
+          <Part geo={rbox(0.05, 0.22, 0.05, 0.02)} m={m} p={[x * 1.15, 0.39, -0.18]} castShadow={false} />
           <Part geo={rbox(0.05, 0.06, 0.8, 0.02)} m={m} p={[x, 0.22, -0.02]} rotation-x={-0.12} />
-          <Part geo={rbox(0.14, 0.04, 0.72, 0.02)} m={m} p={[x * 1.15, 0.5, 0.0]} />
+          <Part geo={rbox(0.16, 0.045, 0.72, 0.02)} m={m} p={[x * 1.15, 0.5, 0.0]} />
         </group>
       ))}
-      {[-0.15, 0, 0.15, 0.3].map((z) => (
-        <Part key={z} geo={rbox(0.6, 0.03, 0.12, 0.012)} m={m} p={[0, 0.3 - z * 0.15, z]} castShadow={false} />
-      ))}
+      <Part geo={rbox(0.58, 0.04, 0.62, 0.02)} m={m} p={[0, 0.3, 0.0]} rotation-x={-0.12} />
       <group position={[0, 0.3, -0.3]} rotation-x={-0.45}>
-        {[-0.2, -0.1, 0, 0.1, 0.2].map((x) => (
-          <Part key={x} geo={rbox(0.08, 0.75 + (0.1 - Math.abs(x)) * 0.8, 0.03, 0.03)} m={m} p={[x, 0.38, 0]} />
+        {[-0.22, -0.11, 0, 0.11, 0.22].map((x) => (
+          <Part key={x} geo={rbox(0.1, 0.75 + (0.12 - Math.abs(x)) * 0.8, 0.035, 0.035)} m={m} p={[x, 0.38, 0]} rotation-z={-x * 0.35} />
         ))}
+        <Part geo={rbox(0.62, 0.05, 0.04, 0.02)} m={m} p={[0, 0.2, -0.03]} castShadow={false} />
       </group>
       <Part geo={rbox(0.44, 0.08, 0.4, 0.04)} m={R.cushion} p={[0, 0.33, 0.02]} rotation-x={-0.1} />
     </group>
@@ -128,5 +129,48 @@ export function Telescope() {
         <Part geo={cyl(0.02, 0.025, 0.12, 8)} m={R.steel} p={[0, -0.22, 0]} castShadow={false} />
       </group>
     </group>
+  )
+}
+
+/** Devant : un bac de zinc plein de glace et de bouteilles, des caisses de bois empilées avec des plantes, un arrosoir. */
+export function FrontCorner() {
+  return (
+    <>
+      <group position={[2.35, 0, 2.45]}>
+        <Part geo={cyl(0.32, 0.28, 0.36, 22)} m={R.zinc} p={[0, 0.18, 0]} />
+        {[-1, 1].map((s) => (
+          <Part key={s} m={R.zinc} p={[s * 0.33, 0.3, 0]} rotation-y={Math.PI / 2} castShadow={false}>
+            <torusGeometry args={[0.05, 0.012, 6, 12, Math.PI]} />
+          </Part>
+        ))}
+        <Part geo={cyl(0.29, 0.29, 0.04, 22)} m={R.ice} p={[0, 0.34, 0]} castShadow={false} />
+        {[[-0.1, 0.05, R.wine], [0.08, -0.06, R.leafDark], [0.12, 0.12, R.mustard], [-0.05, -0.14, R.leafDark]].map(([x, z, m], i) => (
+          <group key={i} position={[x as number, 0.38, z as number]} rotation={[0.2 * (i % 2 ? 1 : -1), 0, 0.15]}>
+            <Part geo={cyl(0.035, 0.035, 0.2, 10)} m={m as typeof R.wine} p={[0, 0.06, 0]} castShadow={false} />
+            <Part geo={cyl(0.014, 0.02, 0.06, 8)} m={m as typeof R.wine} p={[0, 0.19, 0]} castShadow={false} />
+          </group>
+        ))}
+      </group>
+      <group position={[-1.3, 0, 2.6]} rotation-y={0.3}>
+        <Part geo={rbox(0.55, 0.32, 0.4, 0.02)} m={R.teak} p={[0, 0.16, 0]} />
+        <Part geo={rbox(0.45, 0.3, 0.36, 0.02)} m={R.teak} p={[0.05, 0.47, 0.0]} rotation-y={0.2} />
+        <Part geo={cyl(0.12, 0.1, 0.16, 14)} m={R.terracotta} p={[0.05, 0.7, 0]} />
+        {Array.from({ length: 7 }, (_, i) => (
+          <Part key={i} geo={SPH} m={i % 2 ? R.leaf : R.olive} scale={[0.07, 0.14, 0.07]} p={[0.05 + Math.cos(i) * 0.06, 0.88, Math.sin(i) * 0.06]} rotation={[Math.sin(i) * 0.4, 0, Math.cos(i) * 0.4]} castShadow={false} />
+        ))}
+        <Part geo={cyl(0.1, 0.09, 0.14, 14)} m={R.terracotta} p={[-0.15, 0.39, 0.1]} />
+        {[0, 1, 2, 3].map((i) => (
+          <Part key={i} geo={SPH} m={R.tomato} scale={0.035} p={[-0.15 + Math.cos(i * 1.6) * 0.05, 0.5, 0.1 + Math.sin(i * 1.6) * 0.05]} castShadow={false} />
+        ))}
+        {/* l'arrosoir */}
+        <group position={[0.45, 0, 0.2]}>
+          <Part geo={cyl(0.1, 0.11, 0.22, 16)} m={R.zinc} p={[0, 0.11, 0]} />
+          <Part geo={cyl(0.012, 0.02, 0.26, 8)} m={R.zinc} p={[0.15, 0.2, 0]} rotation-z={-0.9} castShadow={false} />
+          <Part m={R.zinc} p={[-0.02, 0.24, 0]} castShadow={false}>
+            <torusGeometry args={[0.07, 0.012, 6, 12, Math.PI]} />
+          </Part>
+        </group>
+      </group>
+    </>
   )
 }

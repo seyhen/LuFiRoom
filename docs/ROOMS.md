@@ -31,7 +31,7 @@ Outils pour le décor :
 Chaque maillage coûte un appel de dessin, deux s'il porte une ombre. Une pièce riche en petits objets (le café en compte des centaines) se dessine vite trop lentement sur un téléphone.
 Enveloppe le décor dans `<Static>` (`src/scene/Static.tsx`) : une fois monté, il fusionne les maillages immobiles qui partagent un matériau (le café passe de 816 à 274 appels par image).
 Il laisse de côté les objets interactifs (`userData.id`) et ce qui est marqué `userData={LIVE}` (une flamme, une aiguille d'horloge, un chien qui respire, un plan qui défile), avec leurs enfants. Une géométrie qu'on déforme à chaque image (un voilage, du linge) doit rester dans un objet interactif ou être marquée `LIVE`.
-Repères mesurés (appels de dessin par image) : chambre 252, cabane 177, café 275, plage 186, train 142, toit 191, atelier 139, onsen 213. Pour fusionner l'intérieur d'un objet interactif, place un autre `<Static>` dans son groupe, comme la cheminée du café.
+Repères mesurés (appels de dessin par image) : chambre 174, cabane 177, café 275, plage 186, train 179, toit 196, atelier 139, onsen 213. Pour fusionner l'intérieur d'un objet interactif, place un autre `<Static>` dans son groupe, comme la cheminée du café.
 Garde aussi au plus trois lumières ponctuelles par pièce : les bougies et les petites lampes se contentent d'un halo (sprite), sans lumière.
 Les boîtes arrondies (`rbox`) n'affichent que le centre d'une texture : pour un tapis ou un paillasson, pose la texture sur un plan.
 
