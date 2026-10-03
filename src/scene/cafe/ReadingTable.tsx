@@ -1,8 +1,8 @@
 import { M } from '../materials'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { K } from './materials'
-import { Candle } from './Candle'
-import { Steam } from './Steam'
+import { Candle } from '../objects/Candle'
+import { Steam } from '../objects/Steam'
 
 /** Chaise de bistrot en bois courbé, dossier rond. */
 export function BistroChair({ position, rotation = 0, seat = M.pink }: { position: [number, number, number]; rotation?: number; seat?: typeof M.pink }) {

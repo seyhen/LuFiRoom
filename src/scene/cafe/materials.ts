@@ -1,5 +1,5 @@
 import { DoubleSide, MeshBasicMaterial, MeshStandardMaterial } from 'three'
-import { gummy } from '../materials'
+import { M, gummy } from '../materials'
 import { WIN } from '../parts'
 import { paneH, paneW } from '../objects/Window'
 import { cafeFloorTex, cafeWallTex, chalkTex, glassTex, paintingTex, tartanChairTex, tartanRugTex, tartanSmallTex, tilesTex, matTex, wallpaperTex } from './textures'
@@ -33,7 +33,7 @@ export const K = {
   mustard: gummy(0xd9a441),
   wool: gummy(0xf3e8d6, { roughness: 0.9, clearcoat: 0.02 }),
   steel: gummy(0xd7dee4, { roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.12 }),
-  brass: gummy(0xd9a84a, { roughness: 0.3, clearcoat: 0.9 }),
+  brass: M.brass,
   iron: gummy(0x2a2428, { roughness: 0.45, clearcoat: 0.5 }),
   slate: gummy(0x3b3a44, { roughness: 0.55 }),
   soot: gummy(0x161214, { roughness: 0.9, clearcoat: 0 }),
@@ -50,7 +50,7 @@ export const K = {
   jumper: gummy(0x4f8a6e, { roughness: 0.8, clearcoat: 0.05 }),
   scone: gummy(0xd9a066, { roughness: 0.7 }),
   berry: gummy(0xc23b52),
-  wax: gummy(0xfff4e0, { roughness: 0.6, emissive: 0xffd7a0, emissiveIntensity: 0.15 }),
+  wax: M.wax,
   thistle: gummy(0x9a6cc8, { roughness: 0.6 }),
   leaf: gummy(0x4f9a6a),
   leafDark: gummy(0x3a7a52),
@@ -60,7 +60,7 @@ export const K = {
   puddle: gummy(0x5a6b80, { roughness: 0.05, clearcoat: 1, clearcoatRoughness: 0.02, transparent: true, opacity: 0.55 }),
   // Ce qui brille de soi-même : verre de lampe, ampoules, braises (leur intensité suit le jour / nuit ou le feu).
   bankerGlass: gummy(0x2f8a5c, { roughness: 0.2, clearcoat: 1, emissive: 0x3fbf7a, emissiveIntensity: 0.05, side: DoubleSide }),
-  bulb: new MeshStandardMaterial({ color: 0xffe2a8, emissive: 0xffb45e, emissiveIntensity: 1.2, roughness: 0.3 }),
+  bulb: M.bulb,
   coal: new MeshStandardMaterial({ color: 0x241a1a, emissive: 0xff5a1e, emissiveIntensity: 0, roughness: 0.8 }),
   led: new MeshStandardMaterial({ color: 0xff7a4d, emissive: 0xff5a2a, emissiveIntensity: 0.1 }),
 }

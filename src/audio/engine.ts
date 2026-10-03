@@ -15,6 +15,18 @@ import street from './channels/street'
 import murmur from './channels/murmur'
 import espresso from './channels/espresso'
 import pages from './channels/pages'
+import waves from './channels/waves'
+import gulls from './channels/gulls'
+import chimes from './channels/chimes'
+import rails from './channels/rails'
+import tea from './channels/tea'
+import city from './channels/city'
+import pigeons from './channels/pigeons'
+import keys from './channels/keys'
+import pencil from './channels/pencil'
+import kettle from './channels/kettle'
+import spring from './channels/spring'
+import bamboo from './channels/bamboo'
 
 // canal (bus Gain) ─┬─> master Gain 0.9 ─> compresseur ─> sortie
 // canal (bus Gain) ─┘
@@ -43,6 +55,18 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   murmur: { build: murmur, base: 0.9 },
   espresso: { build: espresso, base: 0.9 },
   pages: { build: pages, base: 0.9 },
+  waves: { build: waves, base: 0.9 },
+  gulls: { build: gulls, base: 0.9 },
+  chimes: { build: chimes, base: 0.9 },
+  rails: { build: rails, base: 0.9 },
+  tea: { build: tea, base: 0.9 },
+  city: { build: city, base: 0.9 },
+  pigeons: { build: pigeons, base: 0.9 },
+  keys: { build: keys, base: 0.9 },
+  pencil: { build: pencil, base: 0.9 },
+  kettle: { build: kettle, base: 0.9 },
+  spring: { build: spring, base: 0.9 },
+  bamboo: { build: bamboo, base: 0.9 },
 }
 const ids = Object.keys(CHANNELS) as SoundId[]
 

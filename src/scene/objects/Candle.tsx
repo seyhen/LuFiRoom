@@ -1,12 +1,11 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, type Mesh } from 'three'
-import { flameMats } from '../materials'
+import { M, flameMats } from '../materials'
 import { Part, SPH, cyl, noRay, type V3 } from '../parts'
 import { reduceMotion } from '../anim'
 import { LIVE } from '../Static'
-import { K } from './materials'
-import { bulbGlowTex } from './textures'
+import { bulbGlowTex } from '../textures'
 
 /** Une bougie allumée : cire, petite flamme qui vacille, halo. Pas de lumière (trop coûteux à plusieurs) : le halo suffit. */
 export function Candle({ position, height = 0.12, radius = 0.03, holder }: { position: V3; height?: number; radius?: number; holder?: 'brass' | 'jar' }) {
@@ -22,9 +21,9 @@ export function Candle({ position, height = 0.12, radius = 0.03, holder }: { pos
     <>
       {holder === 'brass' && (
         <>
-          <Part geo={cyl(0.055, 0.065, 0.02, 16)} m={K.brass} p={[x, y - 0.13, z]} castShadow={false} />
-          <Part geo={cyl(0.014, 0.02, 0.11, 10)} m={K.brass} p={[x, y - 0.07, z]} castShadow={false} />
-          <Part geo={cyl(0.04, 0.03, 0.02, 14)} m={K.brass} p={[x, y - 0.01, z]} castShadow={false} />
+          <Part geo={cyl(0.055, 0.065, 0.02, 16)} m={M.brass} p={[x, y - 0.13, z]} castShadow={false} />
+          <Part geo={cyl(0.014, 0.02, 0.11, 10)} m={M.brass} p={[x, y - 0.07, z]} castShadow={false} />
+          <Part geo={cyl(0.04, 0.03, 0.02, 14)} m={M.brass} p={[x, y - 0.01, z]} castShadow={false} />
         </>
       )}
       {holder === 'jar' && (
@@ -32,7 +31,7 @@ export function Candle({ position, height = 0.12, radius = 0.03, holder }: { pos
           <meshPhysicalMaterial color={0xffe0b8} transparent opacity={0.35} roughness={0.1} clearcoat={1} depthWrite={false} />
         </mesh>
       )}
-      <Part geo={cyl(radius, radius, height, 14)} m={K.wax} p={[x, y + height / 2, z]} castShadow={false} />
+      <Part geo={cyl(radius, radius, height, 14)} m={M.wax} p={[x, y + height / 2, z]} castShadow={false} />
       <mesh ref={flame} userData={LIVE} geometry={SPH} material={flameMats.core} scale={[0.014, 0.035, 0.014]} position={[x, top + 0.035, z]} raycast={noRay} />
       <sprite scale={0.32} position={[x, top + 0.035, z]} raycast={noRay}>
         <spriteMaterial map={bulbGlowTex} blending={AdditiveBlending} transparent depthWrite={false} opacity={0.75} />

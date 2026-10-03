@@ -6,7 +6,7 @@ import { useSquash } from '../anim'
 import { Flames } from '../objects/Flames'
 import { Static } from '../Static'
 import { K } from './materials'
-import { Candle } from './Candle'
+import { Candle } from '../objects/Candle'
 
 // La cheminée est au milieu du mur de gauche (x = -3, face à +x), entre les deux bibliothèques.
 // Le groupe est posé à x = -2.7 : dans ses coordonnées, +x va vers la salle et z suit le mur.

@@ -1,4 +1,5 @@
-import { useStore } from '../../state/store'
+import { useStore, type Store } from '../../state/store'
+import { roomById } from '../../rooms'
 import type { Room } from '../../rooms/types'
 import { dropletBuffer } from '../buffers'
 import type { Kit } from '../engine'
@@ -8,12 +9,14 @@ export default function rain(kit: Kit, out: GainNode, { loops }: Room) {
   const { ctx, gain, biq, loop, noise } = kit
   // Fenêtre ouverte (sons du dehors actifs) : l'enregistrement passe sans filtre (coupure à Nyquist), la synthèse à 7500 Hz.
   let open = ctx.sampleRate / 2
-  const opened = () => { const { on } = useStore.getState(); return on.outside || on.street } // la fenêtre est ouverte
+  // La fenêtre de la pièce est ouverte : son objet « window » a son son allumé. Sans fenêtre (une verrière), la pluie reste étouffée.
+  const win = (s: Store) => { const t = roomById(s.room).objects.find((o) => o.id === 'window')?.target; return t && t !== 'night' ? s.on[t] : false }
+  const opened = () => win(useStore.getState())
   const cutoff = () => (opened() ? open : 2300)
   const lp = biq('lowpass', cutoff(), 0.4)
   lp.connect(out)
   useStore.subscribe((s, p) => {
-    if (s.on.outside !== p.on.outside || s.on.street !== p.on.street) lp.frequency.setTargetAtTime(cutoff(), ctx.currentTime, 0.4)
+    if (win(s) !== win(p)) lp.frequency.setTargetAtTime(cutoff(), ctx.currentTime, 0.4)
   })
   kit.loopOr(loops.rain, lp, () => {
     open = 7500

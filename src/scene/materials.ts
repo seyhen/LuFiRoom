@@ -49,6 +49,9 @@ export const M = {
   dial: gummy(0xfff3d6, { emissive: 0xffcf7a, emissiveIntensity: 0.1 }),
   red: gummy(0xe0586e),
   mug: gummy(0xfdf6ff),
+  brass: gummy(0xd9a84a, { roughness: 0.3, clearcoat: 0.9 }),
+  wax: gummy(0xfff4e0, { roughness: 0.6, emissive: 0xffd7a0, emissiveIntensity: 0.15 }),
+  bulb: new MeshStandardMaterial({ color: 0xffe2a8, emissive: 0xffb45e, emissiveIntensity: 1.2, roughness: 0.3 }),
   glass: new MeshPhysicalMaterial({ color: 0xe2f4ff, transparent: true, opacity: 0.16, roughness: 0.05, clearcoat: 1, depthWrite: false, side: DoubleSide }),
 }
 

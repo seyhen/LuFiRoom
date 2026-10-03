@@ -1,7 +1,7 @@
 import { TAU } from '../../math'
 import { Part, SPH, cyl } from '../parts'
 import { K } from './materials'
-import { Candle } from './Candle'
+import { Candle } from '../objects/Candle'
 
 // Brins de bruyère : [x, z, hauteur].
 const HEATHER = Array.from({ length: 16 }, (_, i) => [Math.cos(i * 2.4) * 0.08 * ((i % 4) / 4 + 0.4), Math.sin(i * 2.4) * 0.07 * ((i % 4) / 4 + 0.4), 0.12 + (i % 5) * 0.025] as const)

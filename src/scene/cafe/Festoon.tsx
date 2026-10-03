@@ -6,7 +6,8 @@ import { M } from '../materials'
 import { SPH, cyl, noRay } from '../parts'
 import { mood } from '../anim'
 import { K } from './materials'
-import { bulbGlowTex } from './textures'
+import { bulbGlowTex } from '../textures'
+
 
 // Une guirlande guinguette (grosses ampoules) en trois festons le long du haut du mur du fond.
 const Z = -2.94, TOP = 4.28, SAG = 0.2, HOOKS = [-2.95, -0.9, 1.15, 3.1]

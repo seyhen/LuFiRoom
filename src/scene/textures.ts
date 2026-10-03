@@ -136,3 +136,10 @@ export const shadowTex = spriteTex(256, (x) => {
   g.addColorStop(0, 'rgba(70,45,110,.5)'); g.addColorStop(0.55, 'rgba(70,45,110,.22)'); g.addColorStop(1, 'rgba(70,45,110,0)')
   x.fillStyle = g; x.fillRect(0, 0, 256, 256)
 })
+
+/** Petit halo chaud et serré, pour une ampoule ou une bougie. */
+export const bulbGlowTex = spriteTex(64, (x) => {
+  const g = x.createRadialGradient(32, 32, 0, 32, 32, 31)
+  g.addColorStop(0, 'rgba(255,226,160,.95)'); g.addColorStop(0.25, 'rgba(255,190,110,.45)'); g.addColorStop(1, 'rgba(255,170,90,0)')
+  x.fillStyle = g; x.fillRect(0, 0, 64, 64)
+})

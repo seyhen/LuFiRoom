@@ -3,9 +3,14 @@
 // src/scene/scenes.ts. Pour en ajouter une : docs/ROOMS.md.
 
 /** Un son du mixeur. Le moteur a un canal par identifiant (src/audio/engine.ts). */
-export type SoundId = 'radio' | 'rain' | 'fan' | 'purr' | 'outside' | 'fire' | 'wind' | 'street' | 'murmur' | 'espresso' | 'pages'
+export type SoundId =
+  | 'radio' | 'rain' | 'fan' | 'purr' | 'outside' | 'fire' | 'wind' | 'street' | 'murmur' | 'espresso' | 'pages'
+  | 'waves' | 'gulls' | 'chimes' | 'rails' | 'tea' | 'city' | 'pigeons' | 'keys' | 'pencil' | 'kettle' | 'spring' | 'bamboo'
 /** Un objet interactif de la scène. */
-export type ObjectId = 'cloud' | 'radio' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
+export type ObjectId =
+  | 'cloud' | 'radio' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
+  | 'gull' | 'chimes' | 'tea' | 'book' | 'brazier' | 'pigeons' | 'city' | 'laundry' | 'keyboard' | 'pencil' | 'kettle'
+  | 'spring' | 'bamboo' | 'furin' | 'maple'
 /** Ce qu'un objet pilote : un son, ou le passage jour / nuit. */
 export type Target = SoundId | 'night'
 
@@ -44,7 +49,7 @@ export interface Loop {
   gain: number
 }
 
-export type Loops = Partial<Record<'rain' | 'fan' | 'purr' | 'birds' | 'crickets' | 'fire' | 'wind' | 'street' | 'murmur' | 'espresso' | 'pages', Loop>>
+export type Loops = Partial<Record<Exclude<SoundId, 'radio' | 'outside'> | 'birds' | 'crickets', Loop>>
 
 /** Une piste de la radio. */
 export interface Track {

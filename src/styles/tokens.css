@@ -8,6 +8,8 @@
   --icon-ink: #33264a;
   /* pastilles du mixeur */
   --c-radio: #9fdecd; --c-rain: #b9d4f7; --c-fan: #f8dc8c; --c-cat: #dcd2f2; --c-win: #f7c4d4; --c-fire: #f9c9a4; --c-wind: #cfe3f3; --c-street: #c7d3e6; --c-murmur: #f2cfd0; --c-espresso: #e4c7a8; --c-pages: #d4e7c5;
+  --c-waves: #a9e0e6; --c-gulls: #f4eadb; --c-chimes: #f6e3a6; --c-rails: #c9c3e8; --c-tea: #f0d6b8; --c-city: #c6cbe0; --c-pigeons: #d9d4de;
+  --c-keys: #cde3e9; --c-pencil: #ece0c4; --c-kettle: #f5cdbd; --c-spring: #b8e2da; --c-bamboo: #d6e6b0;
   --shadow: 0 12px 32px rgba(72, 50, 112, .16);
   --font-display: "Gluten", "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
   --font-body: "Nunito", ui-rounded, "Segoe UI", system-ui, sans-serif;

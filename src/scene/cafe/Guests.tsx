@@ -9,7 +9,7 @@ import { useParticles, useSquash } from '../anim'
 import { bubbleTex } from './textures'
 import { LIVE, Static } from '../Static'
 import { K } from './materials'
-import { Candle } from './Candle'
+import { Candle } from '../objects/Candle'
 
 const AT = [1.4, 0, -2.22] as const
 

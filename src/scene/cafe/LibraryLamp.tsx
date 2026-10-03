@@ -7,8 +7,9 @@ import { Part, SPH, cyl, noRay, rbox, type V3 } from '../parts'
 import { mood, useSquash } from '../anim'
 import { Static } from '../Static'
 import { K } from './materials'
-import { bulbGlowTex } from './textures'
-import { Steam } from './Steam'
+import { bulbGlowTex } from '../textures'
+
+import { Steam } from '../objects/Steam'
 
 const dome = new SphereGeometry(1, 28, 10, 0, TAU, 0, Math.PI / 2)
 const AT: V3 = [-1.0, 0, -1.2]

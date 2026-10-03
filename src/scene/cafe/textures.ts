@@ -301,12 +301,6 @@ const page = sprite(64, (x) => {
   x.restore()
 })
 
-/** Petit halo chaud et serré, pour une ampoule ou une bougie. */
-const bulbGlow = sprite(64, (x) => {
-  const g = x.createRadialGradient(32, 32, 0, 32, 32, 31)
-  g.addColorStop(0, 'rgba(255,226,160,.95)'); g.addColorStop(0.25, 'rgba(255,190,110,.45)'); g.addColorStop(1, 'rgba(255,170,90,0)')
-  x.fillStyle = g; x.fillRect(0, 0, 64, 64)
-})
 
 /** Papier peint du manteau de cheminée : damas vert sombre, fleurons un peu plus clairs et pointe dorée. Tuile qui se répète. */
 function wallpaperTexture() {
@@ -363,7 +357,6 @@ export const paintingTex = paintingTexture()
 export const glassTex = glassTexture()
 export const bubbleTex = bubble
 export const pageTex = page
-export const bulbGlowTex = bulbGlow
 export const coldGlowTex = coldGlow
 export const matTex = matTexture()
 export const wallpaperTex = wallpaperTexture()
