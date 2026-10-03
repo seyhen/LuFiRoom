@@ -38,7 +38,7 @@ Cahier des charges d'origine :
 - `public/audio/CREDITS.md` à jour.
 
 ## Phase 3 : plusieurs chambres (piste)
-État : socle, sélecteur et 2e pièce (la cabane sous la neige) faits. Guide : `docs/ROOMS.md`.
+État : huit pièces (chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen). Guide : `docs/ROOMS.md`.
 
 - [x] Format de pièce stabilisé : `src/rooms/types.ts` (objets, sons, enregistrements, ciel, lumières), scène associée dans `src/scene/scenes.ts`.
 - [x] Moteur lu depuis la pièce courante : scène, lumières, hotspots, mixeur, audio (bus et canaux par pièce).
@@ -46,7 +46,12 @@ Cahier des charges d'origine :
 - [x] 2e pièce : cabane sous la neige (cheminée et feu, fenêtre sur la tempête, coffre et radio, fauteuil, lampe). Sons synthétisés : feu, vent ; la radio est celle de la chambre. Enregistrements `fire` et `wind` à fournir (`docs/ASSETS.md`).
 - [x] 3e pièce : café d'Édimbourg sous la pluie, avec son coin bibliothèque (comptoir et machine à café, mur de livres et échelle, clients, ardoise, horloge, fenêtre sur le Château et la Old Town). Sons synthétisés : la rue, le brouhaha, l'expresso, les pages et le tic-tac ; pluie et radio sont celles de la chambre.
 - [x] Café, 2e version : un cocon chaud face à une ville froide. Dedans : cheminée victorienne (feu, charbons, carreaux, papier peint damassé, tableau du Château), fauteuil à oreilles en tartan Royal Stewart, skye terrier endormi (clin d'œil à Greyfriars Bobby), deux bibliothèques autour du feu, lampe de banquier (jour / nuit), guirlande guinguette, bougies, chardons et bruyère, clients à la fenêtre, table de lecture, entrée trempée (portemanteau, parapluies, flaques, paillasson « Fàilte »). Dehors : la vieille ville repeinte (Château, Victoria Street), réverbère à lumière froide, vitrine embuée avec son enseigne dorée. Nouveau son dans le café : le feu de bois.
-- [ ] Autres pièces : toit-terrasse la nuit.
+- [x] 4e pièce : plage, un bungalow au coucher du soleil (grande porte sur la mer qui bouge, phare, voilages, lit de jour et chat roux, fauteuils de rotin). Sons : vagues, mouettes, carillon ; radio et ronron repris.
+- [x] 5e pièce : train de nuit, un compartiment de voiture-lits dans les Alpes (paysage qui défile, couchettes, lampe plissée, verre de thé, roues et voie sous la caisse). Sons : le train, le thé ; pluie, radio, pages repris.
+- [x] 6e pièce : toit-terrasse à Brooklyn un soir d'été (tours qui s'allument, château d'eau, braséro, guirlande, linge au vent, pigeons). Sons : la ville, les pigeons ; feu, vent (en brise), radio repris.
+- [x] 7e pièce : atelier d'illustratrice sous les toits de Paris (verrière d'acier, tour Eiffel qui scintille, table à dessin, clavier, tourne-disque, bouilloire). Sons : clavier, crayon, bouilloire ; pluie et radio repris.
+- [x] 8e pièce : onsen en automne (bassin qui fume, source, shishi-odoshi, érable, lanterne de pierre, furin, ryokan et montagnes). Sons : source, shishi-odoshi, furin ; jardin et radio repris.
+- [ ] Enregistrements pour les nouveaux sons (liste et mots-clés dans `docs/ASSETS.md`).
 - [ ] Cabane : son de neige / bois qui craque, un objet de plus (chat devant le feu ?), pistes de radio propres à la pièce.
 
 Cahier des charges d'origine :

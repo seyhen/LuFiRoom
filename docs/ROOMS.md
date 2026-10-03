@@ -1,6 +1,6 @@
 # Ajouter une pièce
 
-Une pièce est une donnée (`src/rooms/<nom>.ts`, type `Room` dans `src/rooms/types.ts`) plus une scène 3D (`src/scene/rooms/<Nom>Scene.tsx`).
+Une pièce est une donnée (`src/rooms/<nom>.ts`, type `Room` dans `src/rooms/types.ts`) plus une scène 3D (`src/scene/<nom>/<Nom>Scene.tsx`).
 Le moteur (scène, audio, mixeur, sélecteur) ne change pas.
 
 ## Ce que contient une pièce
@@ -15,14 +15,23 @@ Le moteur (scène, audio, mixeur, sélecteur) ne change pas.
 | `light` | hémisphérique et soleil (ou lune), de jour et de nuit |
 | `dimmedBy` | l'objet dont l'activation assombrit la pièce (la pluie), s'il y en a un |
 
-Exemples : `src/rooms/cafe.ts` et `src/scene/cafe/` (le café : le plus complet, avec des objets animés, des murs de livres en instances, une vue peinte en canvas, un réverbère derrière la vitre et des pièces immobiles fusionnées par `<Static>`), `src/rooms/bedroom.ts` et `src/scene/rooms/BedroomScene.tsx` (la chambre), `src/rooms/cabin.ts` et `src/scene/cabin/` (la cabane : un fichier par objet).
-Les objets déjà écrits se réutilisent : `Window`, `Radio`, `Lamp` et `FairyLights` servent à plusieurs pièces (`Radio`, `Lamp` et `SideTable` prennent une `position`). `Window` prend aussi une peinture de cadre, des vitres (le café y met sa buée et son enseigne) et une variante vitrine (`transom`). `Flames` fait le feu d'une cheminée (flammes, lumière, halo, braises), dans la cabane comme dans le café. Le nuage et la pluie (`Cloud`, `Rain`) se placent derrière la fenêtre : toute pièce qui garde cette fenêtre les reprend tels quels, comme le café.
+Exemples : `src/rooms/cafe.ts` et `src/scene/cafe/` (le café : objets animés, murs de livres en instances, vue peinte en canvas, réverbère derrière la vitre), `src/rooms/bedroom.ts` et `src/scene/rooms/BedroomScene.tsx` (la chambre), `src/rooms/cabin.ts` et `src/scene/cabin/` (la cabane : un fichier par objet).
+Et cinq pièces qui montrent chacune une autre façon de faire le dehors : `beach/` (une grande porte sur une vue peinte, des vagues qui défilent par-dessus), `train/` (un paysage en trois bandes qui défilent à des vitesses différentes), `roof/` (en plein air : la ville est faite de tours en volume derrière les parapets), `atelier/` (une verrière à petits carreaux), `onsen/` (une palissade et des montagnes découpées, sans fenêtre).
+Les objets déjà écrits se réutilisent : `Window`, `Radio`, `Lamp` et `FairyLights` servent à plusieurs pièces (`Radio`, `Lamp` et `SideTable` prennent une `position`). `Window` prend aussi une peinture de cadre, des vitres (le café y met sa buée et son enseigne) et une variante vitrine (`transom`). `Flames` fait le feu d'une cheminée (flammes, lumière, halo, braises), dans la cabane comme dans le café. Le nuage et la pluie (`Cloud`, `Rain`) se placent derrière la fenêtre : toute pièce qui garde cette fenêtre les reprend tels quels, comme le café. La pluie s'entend nette quand l'objet `window` de la pièce a son son allumé, étouffée sinon (ou s'il n'y a pas de fenêtre : une verrière).
+
+Outils pour le décor :
+- `holedWall(ouvertures)` (`src/scene/walls.ts`) : le mur du fond percé où l'on veut (grande porte, verrière, fenêtre de train).
+- `usePainted(l, h, dessin)` (`src/scene/paint.ts`) : une vue peinte en canvas, redessinée seulement quand le jour, la nuit ou la pluie changent. Pose le plan juste derrière l'ouverture ; ce qui est derrière le mur remonte et glisse vers la droite à l'écran (la caméra regarde d'en haut, depuis la droite), place-le en conséquence.
+- `ScrollLayer` : un plan transparent dont la texture défile (vagues, collines vues du train), sans rien redessiner. `glow` pour des fenêtres qui s'allument la nuit.
+- `Candle`, `Steam`, `Flames`, `Cat` (position, pelage) : partagés entre les pièces.
+- Un même son peut changer de timbre selon la pièce : le canal reçoit la pièce (le carillon devient un furin de verre dans l'onsen, le vent une brise sur le toit).
 
 ### Garder 60 images par seconde
 
 Chaque maillage coûte un appel de dessin, deux s'il porte une ombre. Une pièce riche en petits objets (le café en compte des centaines) se dessine vite trop lentement sur un téléphone.
 Enveloppe le décor dans `<Static>` (`src/scene/Static.tsx`) : une fois monté, il fusionne les maillages immobiles qui partagent un matériau (le café passe de 816 à 274 appels par image).
-Il laisse de côté les objets interactifs (`userData.id`) et ce qui est marqué `userData={LIVE}` (une flamme, une aiguille d'horloge, un chien qui respire), avec leurs enfants. Pour fusionner l'intérieur d'un objet interactif, place un autre `<Static>` dans son groupe, comme la cheminée du café.
+Il laisse de côté les objets interactifs (`userData.id`) et ce qui est marqué `userData={LIVE}` (une flamme, une aiguille d'horloge, un chien qui respire, un plan qui défile), avec leurs enfants. Une géométrie qu'on déforme à chaque image (un voilage, du linge) doit rester dans un objet interactif ou être marquée `LIVE`.
+Repères mesurés (appels de dessin par image) : chambre 252, cabane 161, café 274, plage 177, train 141, toit 188, atelier 130, onsen 192. Pour fusionner l'intérieur d'un objet interactif, place un autre `<Static>` dans son groupe, comme la cheminée du café.
 Garde aussi au plus trois lumières ponctuelles par pièce : les bougies et les petites lampes se contentent d'un halo (sprite), sans lumière.
 Les boîtes arrondies (`rbox`) n'affichent que le centre d'une texture : pour un tapis ou un paillasson, pose la texture sur un plan.
 

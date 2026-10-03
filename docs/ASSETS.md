@@ -22,7 +22,7 @@ Le navigateur prend le WebM s'il le lit, sinon le MP3. Si un fichier manque ou n
 
 ### Boucles d'ambiance
 
-À déclarer dans `loops` de `src/rooms/bedroom.ts`, sous la forme `{ src: 'audio/bedroom/rain', gain: 1 }`.
+À déclarer dans `loops` de la pièce (`src/rooms/bedroom.ts`, `cabin.ts`, `cafe.ts`, `beach.ts`, `train.ts`, `roof.ts`, `atelier.ts`, `onsen.ts`), sous la forme `{ src: 'audio/bedroom/rain', gain: 1 }`.
 
 | Clé | Remplace | Pour quoi | Départ conseillé pour `gain` |
 |---|---|---|---|
@@ -35,6 +35,18 @@ Le navigateur prend le WebM s'il le lit, sinon le MP3. Si un fichier manque ou n
 | `murmur` | brouhaha (café) | conversations indistinctes dans un café, sans mot compréhensible | 0.8 |
 | `espresso` | expresso (café) | machine à café qui moud, coule et fait mousser, des tasses qui tintent | 0.8 |
 | `pages` | pages (café) | bibliothèque silencieuse : pages qu'on tourne, tic-tac d'horloge, parquet qui craque | 0.8 |
+| `waves` | vagues (plage) | ressac régulier sur une plage de sable, vagues qui se brisent puis se retirent | 0.8 |
+| `gulls` | mouettes (plage) | mouettes au loin au-dessus de la plage, avec de longs silences | 0.6 |
+| `chimes` | carillon (plage) / furin (onsen) | carillon à vent de tubes ; dans l'onsen, une clochette de verre. Une boucle par pièce (`audio/beach/chimes`, `audio/onsen/chimes`) | 0.6 |
+| `rails` | le train (train de nuit) | roulement d'un train de nuit vu de l'intérieur, « ta-dam » réguliers sur les joints | 0.8 |
+| `tea` | thé (train de nuit) | cuillère qui tinte dans un verre secoué par le train | 0.6 |
+| `city` | la ville (toit-terrasse) | rumeur de grande ville depuis un toit, klaxons et sirènes lointains | 0.8 |
+| `pigeons` | pigeons (toit-terrasse) | pigeons qui roucoulent, quelques battements d'ailes | 0.6 |
+| `keys` | clavier (atelier) | clavier mécanique, quelqu'un qui écrit avec des pauses | 0.6 |
+| `pencil` | crayon (atelier) | crayon graphite sur papier, traits et hachures | 0.6 |
+| `kettle` | bouilloire (atelier) | bouilloire qui chauffe et s'arrête, thé versé, cuillère | 0.6 |
+| `spring` | source (onsen) | filet d'eau chaude qui tombe dans un bassin de pierre | 0.8 |
+| `bamboo` | shishi-odoshi (onsen) | shishi-odoshi qui frappe sa pierre, dans un jardin calme | 0.6 |
 | `birds` + `crickets` | dehors | oiseaux le jour, grillons la nuit (**les deux ensemble**, sinon le dehors reste synthétisé). Le passage de l'un à l'autre suit le bouton jour / nuit. | 0.3 à 0.5 |
 
 Les gains sont des points de départ, mesurés avec des bruits de test : règle-les à l'oreille, en gardant le mélange
@@ -102,7 +114,19 @@ Quoi chercher (mots-clés anglais, en général plus riches) :
 | `murmur` | `cafe ambience murmur`, `restaurant crowd walla` | mots nets, rires forts, musique de fond |
 | `espresso` | `espresso machine`, `coffee shop barista cups` | voix, caisse enregistreuse |
 | `pages` | `library ambience page turning clock ticking` | voix, pas, toux |
-| `wind` | `wind blizzard`, `wind snow ambience`, `howling wind` | tonnerre, voix, objets qui claquent |
+| `wind` | `wind blizzard`, `wind snow ambience`, `howling wind` (cabane) ; `rooftop breeze`, `gentle wind summer` (toit) | tonnerre, voix, objets qui claquent |
+| `waves` | `ocean waves beach gentle`, `sea shore loop` | voix, mouettes trop présentes, bateaux |
+| `gulls` | `seagulls distant beach` | voix, port bruyant |
+| `chimes` | `wind chimes gentle` ; `furin glass wind bell` (onsen) | vent trop fort, cloches d'église |
+| `rails` | `night train interior`, `train cabin ambience rhythm` | annonces nettes, voix, freins stridents |
+| `tea` | `spoon glass rattle train` | voix |
+| `city` | `city rooftop ambience night`, `distant traffic new york` | voix proches, musique, klaxons trop près |
+| `pigeons` | `pigeons cooing` | voix, circulation |
+| `keys` | `mechanical keyboard typing` | souris qui clique sans arrêt, voix |
+| `pencil` | `pencil drawing on paper` | grattements très forts, voix |
+| `kettle` | `kettle boiling pouring tea` | sifflet strident, voix |
+| `spring` | `hot spring water flowing`, `bamboo water spout` | voix, cascade trop forte |
+| `bamboo` | `shishi odoshi japanese garden` | voix, musique |
 
 Pour chaque fichier retenu, ajoute **tout de suite** sa ligne dans `public/audio/CREDITS.md` (auteur, lien, licence, date) et garde une capture de la page de licence hors du dépôt.
 Puis : `audio-src/`, `npm run audio`, déclaration dans la pièce, écoute au casque et sur le haut-parleur d'un téléphone, réglage du `gain`.

@@ -30,10 +30,11 @@ src/
   main.tsx, App.tsx
   state/store.ts            # Zustand : on/off et volume par son, mode nuit, pièce, minuteur, ambiances
   state/mixes.ts            # ambiances : modèle, stockage, lien de partage (voir docs/MIXES.md)
-  rooms/                    # types.ts (format d'une pièce), bedroom.ts (la chambre : objets, sons, ancres, ciel, lumières), index.ts
+  rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen), index.ts
   scene/
     Stage.tsx               # <Canvas>, caméra iso, lumières, cadrage, rotation au drag
-    scenes.ts, rooms/       # la scène 3D de chaque pièce (BedroomScene...) ; ajouter une pièce : docs/ROOMS.md
+    scenes.ts, rooms/, cabin/, cafe/, beach/, train/, roof/, atelier/, onsen/   # la scène 3D de chaque pièce ; ajouter une pièce : docs/ROOMS.md
+    paint.ts, walls.ts      # vues peintes qui suivent le jour / la nuit, murs percés
     materials.ts            # palette de matériaux gummy partagés
     Static.tsx              # fusionne les pièces immobiles par matériau (moins d'appels de dessin)
     objects/                # Radio, Cloud, Rain, Fan, Cat, Window, Lamp, Bed, Desk...
@@ -43,7 +44,7 @@ src/
     buffers.ts              # bruits en boucle sans couture, gouttes, crépitement, ronron
     recordings.ts           # chargement Opus/MP3, boucles en fondu, repli sur la synthèse
     session.ts              # Media Session : titre, pause / lecture depuis l'écran verrouillé
-    channels/               # radio.ts, tracks.ts (pistes lofi), rain.ts, fan.ts, purr.ts, outside.ts
+    channels/               # un canal par son : radio.ts, tracks.ts (pistes lofi), rain.ts, fan.ts, purr.ts, outside.ts, waves.ts, rails.ts…
   ui/                       # TopBar, RoomPicker, Mixer, MixerCard, SleepTimer, MixesMenu, SharedMix, InstallButton, splash.ts (écran de chargement, HTML dans index.html)
   styles/tokens.css
 scripts/encode-audio.mjs    # npm run audio : sources → Opus/WebM + MP3 dans public/audio/

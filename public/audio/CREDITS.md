@@ -39,4 +39,5 @@ Les « pops » d'allumage et d'extinction sont synthétisés dans le navigateur 
 
 ## Sons synthétisés
 
-Tant qu'un son n'a pas d'enregistrement dans `src/rooms/bedroom.ts`, il reste synthétisé en direct (moteur de la phase 1) : rien à créditer.
+Tant qu'un son n'a pas d'enregistrement dans sa pièce (`loops` de `src/rooms/*.ts`), il reste synthétisé en direct dans le navigateur : rien à créditer.
+C'est le cas aujourd'hui de tous les sons des huit pièces (vagues, mouettes, carillon, train, thé, ville, pigeons, clavier, crayon, bouilloire, source, shishi-odoshi compris).
