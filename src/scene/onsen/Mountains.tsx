@@ -34,7 +34,7 @@ const mountainGeo = (() => {
   for (let i = 0; i <= 28; i++) {
     const y = i / 28
     // pied large, flancs qui se creusent, sommet en dôme (la racine carrée arrondit la cime)
-    pts.push(new Vector2(Math.max(0.0005, Math.sqrt(1 - y) * (1 - 0.55 * y) ** 2), y))
+    pts.push(new Vector2(Math.max(0.0005, Math.sqrt(1 - y) * (1 - 0.35 * y) ** 1.5 * (1 - 0.18 * Math.max(0, y - 0.8))), y))
   }
   const g = new LatheGeometry(pts, 28)
   g.computeVertexNormals()

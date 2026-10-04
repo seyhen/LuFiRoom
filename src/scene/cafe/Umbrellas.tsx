@@ -11,7 +11,7 @@ const UMBRELLAS = [[-0.07, 0.22, K.stewartSmall], [0.05, -0.1, K.navy], [0.14, -
 /** Portemanteau de bois courbé : un caban, une écharpe en tartan, une casquette de tweed. */
 function CoatStand() {
   return (
-    <group position={[2.8, 0, -0.35]}>
+    <group position={[2.9, 0, 0.98]}>
       {[0, 1, 2, 3].map((i) => (
         <Part key={i} geo={rbox(0.36, 0.04, 0.06, 0.02)} m={K.walnut} p={[0, 0.03, 0]} rotation-y={(i / 4) * Math.PI} />
       ))}

@@ -17,6 +17,7 @@ import { ChristmasTree } from './ChristmasTree'
 import { Gifts } from './Gifts'
 import { Wreath } from './Wreath'
 import { LogBasket } from './LogBasket'
+import { KnittingBasket } from './KnittingBasket'
 import { Pouf } from './Pouf'
 import { Cocoa } from './Cocoa'
 import { Lantern } from './Lantern'
@@ -58,6 +59,7 @@ export function CabinScene() {
         <Poinsettia />
         <Armchair />
         <Pouf />
+        <KnittingBasket />
         <SideTable />
         <Lantern />
         <ChristmasTree />

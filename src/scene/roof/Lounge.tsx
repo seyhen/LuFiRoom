@@ -160,7 +160,7 @@ export function Telescope() {
 export function FrontCorner() {
   return (
     <>
-      <group position={[2.35, 0, 2.45]}>
+      <group position={[1.0, 0, 1.75]}>
         <Part geo={cyl(0.32, 0.28, 0.36, 22)} m={R.zinc} p={[0, 0.18, 0]} />
         {[-1, 1].map((s) => (
           <Part key={s} m={R.zinc} p={[s * 0.33, 0.3, 0]} rotation-y={Math.PI / 2} castShadow={false}>

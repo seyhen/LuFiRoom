@@ -153,7 +153,7 @@ export function HangingPlants() {
   )
 }
 
-/** Le coin de droite : un grand figuier dans un panier, des toiles retournées contre un carton à dessin. */
+/** Le coin de droite : un grand figuier dans un panier, des toiles rangées dans leur casier. */
 export function CanvasCorner() {
   return (
     <>
@@ -171,11 +171,18 @@ export function CanvasCorner() {
           )
         })}
       </group>
-      <group position={[2.55, 0, 1.3]} rotation-y={-0.3}>
-        {[[0, 0.75, 0.6, A.white], [0.06, 0.6, 0.5, A.oak], [0.12, 0.9, 0.7, A.white]].map(([dz, h, w, m], i) => (
-          <Part key={i} geo={rbox(0.03, h as number, w as number, 0.01)} m={m as typeof A.white} p={[0.12 - i * 0.05, (h as number) / 2, dz as number]} rotation-z={0.18 + i * 0.02} />
+      {/* le casier à toiles : un socle, deux montants, des séparations ; les toiles y sont rangées debout, de face ou retournées */}
+      <group position={[2.45, 0, 1.4]} rotation-y={-0.2}>
+        <Part geo={rbox(0.5, 0.06, 1.0, 0.02)} m={A.oakDark} p={[0, 0.03, 0]} />
+        {[-0.48, 0.48].map((z) => (
+          <Part key={z} geo={rbox(0.5, 0.55, 0.04, 0.015)} m={A.oakDark} p={[0, 0.3, z]} />
         ))}
-        <Part geo={rbox(0.04, 0.7, 0.95, 0.02)} m={A.prussian} p={[-0.12, 0.35, 0.05]} rotation-z={0.12} />
+        {[-0.24, 0, 0.24].map((z) => (
+          <Part key={z} geo={rbox(0.04, 0.4, 0.02, 0.008)} m={A.oak} p={[0.22, 0.25, z]} castShadow={false} />
+        ))}
+        {([[-0.36, 0.75, 0.62, A.white], [-0.12, 0.6, 0.5, A.oak], [0.12, 0.9, 0.72, A.prussian], [0.36, 0.7, 0.55, A.white]] as const).map(([z, h, w, m], i) => (
+          <Part key={i} geo={rbox(w, h, 0.03, 0.01)} m={m} p={[-0.02, h / 2 + 0.06, z]} rotation={[0, Math.PI / 2, (i % 2 ? 1 : -1) * 0.06]} />
+        ))}
       </group>
     </>
   )

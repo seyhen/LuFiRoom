@@ -46,7 +46,7 @@ export function FloorNook() {
           <torusGeometry args={[0.025, 0.007, 6, 12]} />
         </Part>
       </group>
-      <group position={[1.95, 0, 2.9]}>
+      <group position={[2.55, 0, 0.55]}>
         <Part geo={cyl(0.17, 0.14, 0.36, 18)} m={A.basket} p={[0, 0.18, 0]} />
         {[[0.04, 0.02, 0.62, 0.1], [-0.05, 0.03, 0.7, -0.12], [0.02, -0.06, 0.55, 0.18], [-0.03, -0.02, 0.5, -0.05]].map(([x, z, h, t], i) => (
           <Part key={i} geo={cyl(0.03, 0.03, h, 12)} m={i % 2 ? A.paper : A.white} p={[x, h / 2 + 0.02, z]} rotation-z={t} castShadow={i === 1} />
