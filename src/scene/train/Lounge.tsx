@@ -2,6 +2,7 @@ import { TAU } from '../../math'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { Cat } from '../objects/Cat'
 import { T } from './materials'
+import { Garment } from '../objects/Garment'
 import { Leaf } from '../nature/Leaf'
 
 /** Le tapis persan au milieu du compartiment, et sa frange. */
@@ -56,15 +57,14 @@ export function ChessTable() {
 /** Une malle-cabine debout, grande ouverte comme une penderie : cintres et vêtements d'un côté, tiroirs de l'autre, étiquettes de voyage. */
 export function SteamerTrunk() {
   return (
-    <group position={[-1.2, 0, 2.55]} rotation-y={0.25}>
+    <group position={[-1.2, 0, 2.55]} rotation-y={0.7}>
       {/* la moitié penderie */}
       <Part geo={rbox(0.55, 1.25, 0.5, 0.04)} m={T.leather} p={[-0.3, 0.63, 0]} />
       <Part geo={rbox(0.48, 1.15, 0.04, 0.02)} m={T.velvetDark} p={[-0.3, 0.63, 0.23]} castShadow={false} />
       <Part geo={cyl(0.01, 0.01, 0.44, 6)} m={T.brass} p={[-0.3, 1.12, 0.12]} rotation-z={Math.PI / 2} castShadow={false} />
-      {[[-0.42, T.mustard], [-0.3, T.teal], [-0.18, T.cream]].map(([x, m], i) => (
-        <group key={i} position={[x as number, 0.82, 0.14]}>
-          <Part geo={rbox(0.05, 0.55, 0.32, 0.02)} m={m as typeof T.teal} />
-        </group>
+      {/* trois vêtements sur leurs cintres, vus de profil, serrés sur la tringle */}
+      {([[-0.43, T.mustard, 'shirt'], [-0.31, T.teal, 'dress'], [-0.19, T.cream, 'shirt']] as const).map(([x, m, kind], i) => (
+        <Garment key={i} kind={kind} p={[x, 1.09, 0.12]} r={[0, 0.5 + i * 0.25, 0]} s={0.82} m={m} hanger={T.mahoganyDark} />
       ))}
       {/* la moitié aux tiroirs, ouverte en volet */}
       <group position={[0.02, 0, 0.25]} rotation-y={-1.1}>

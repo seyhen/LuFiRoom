@@ -1,3 +1,4 @@
+import { ExtrudeGeometry, Shape } from 'three'
 import { TAU } from '../../math'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { Candle } from '../objects/Candle'
@@ -5,6 +6,19 @@ import { B } from './materials'
 
 // Pochettes de disques dans la caisse : [décalage, couleur].
 const RECORDS = [[-0.3, B.coral], [-0.22, B.turquoise], [-0.15, B.butter], [-0.08, B.navy], [0, B.pink], [0.08, B.seaglass], [0.16, B.coral], [0.24, B.linen]] as const
+
+/** Le cabas : un trapèze (plus large en haut) épaissi, aux bords bien arrondis. Base au sol, ouverture à y = 0,4. */
+const totebag = (() => {
+  const sh = new Shape()
+  sh.moveTo(-0.19, 0)
+  sh.lineTo(0.19, 0)
+  sh.lineTo(0.25, 0.4)
+  sh.lineTo(-0.25, 0.4)
+  sh.closePath()
+  const g = new ExtrudeGeometry(sh, { depth: 0.12, bevelEnabled: true, bevelThickness: 0.04, bevelSize: 0.035, bevelSegments: 4 })
+  g.translate(0, 0.035, -0.06)
+  return g
+})()
 
 /** Une caisse de bois pleine de disques, au pied du mur : la radio est posée dessus. */
 export function RecordCrate() {
@@ -120,12 +134,17 @@ export function BeachBag() {
           </Part>
         </group>
       ))}
-      <group position={[2.55, 0, -2.25]} rotation-y={-0.4}>
-        <Part geo={rbox(0.5, 0.4, 0.22, 0.08)} m={B.rattan} p={[0, 0.2, 0]} />
-        <Part m={B.cane} p={[0, 0.42, 0]}>
-          <torusGeometry args={[0.15, 0.015, 6, 16, Math.PI]} />
-        </Part>
-        <Part geo={cyl(0.07, 0.07, 0.42, 16)} m={B.stripeTowel} p={[0.1, 0.42, 0]} rotation-z={0.3} />
+      {/* le cabas de paille, évasé, posé de face : deux anses de corde, la serviette rayée roulée et un livre qui dépassent */}
+      <group position={[2.45, 0, -2.3]} rotation-y={0.75}>
+        <Part geo={totebag} m={B.rattan} />
+        <Part geo={rbox(0.5, 0.03, 0.2, 0.012)} m={B.cane} p={[0, 0.41, 0]} castShadow={false} />
+        {[-1, 1].map((sd) => (
+          <Part key={sd} m={B.rope} p={[0, 0.42, sd * 0.085]} castShadow={false}>
+            <torusGeometry args={[0.11, 0.012, 6, 18, Math.PI]} />
+          </Part>
+        ))}
+        <Part geo={cyl(0.065, 0.065, 0.36, 16)} m={B.stripeTowel} p={[0.1, 0.46, 0]} rotation-z={0.45} />
+        <Part geo={rbox(0.03, 0.2, 0.14, 0.008)} m={B.coral} p={[-0.1, 0.46, 0.01]} rotation-z={-0.2} castShadow={false} />
       </group>
     </>
   )

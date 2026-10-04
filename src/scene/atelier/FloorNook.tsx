@@ -1,22 +1,40 @@
 import { Part, SPH, cyl, rbox } from '../parts'
+import { LatheGeometry, Vector2 } from 'three'
 import { A } from './materials'
 
+/** Le coussin du repose-pieds : un cylindre bas aux bords bien ronds, le dessus un peu bombé. */
+const cushion = (() => {
+  const R = 0.28, H = 0.2, K = 0.07, pts = [new Vector2(0.001, 0)]
+  for (let i = 0; i <= 6; i++) {
+    const a = -Math.PI / 2 + (i / 6) * (Math.PI / 2)
+    pts.push(new Vector2(R - K + Math.cos(a) * K, K + Math.sin(a) * K))
+  }
+  for (let i = 0; i <= 6; i++) {
+    const a = (i / 6) * (Math.PI / 2)
+    pts.push(new Vector2(R - K + Math.cos(a) * K, H - K + Math.sin(a) * K))
+  }
+  pts.push(new Vector2(0.001, H + 0.01))
+  return new LatheGeometry(pts, 32)
+})()
+
 /**
- * Par terre, devant le tapis : un gros pouf tricoté où l'on s'assoit pour feuilleter, une pile de livres d'art avec une
- * tasse dessus ; près des toiles, un panier de dessins roulés.
+ * Devant le fauteuil, son repose-pieds ; par terre, une pile de livres d'art avec une tasse dessus ; près des toiles, un
+ * panier de dessins roulés.
  */
 export function FloorNook() {
   return (
     <>
-      <group position={[-0.55, 0, 2.45]}>
-        {/* le pouf, ses côtes de tricot et son bouton */}
-        <Part geo={SPH} m={A.ochre} scale={[0.36, 0.22, 0.36]} p={[0, 0.2, 0]} />
-        {Array.from({ length: 8 }, (_, i) => {
-          const a = (i / 8) * Math.PI * 2
-          return <Part key={i} geo={SPH} m={A.ochre} scale={[0.07, 0.19, 0.07]} p={[Math.cos(a) * 0.3, 0.2, Math.sin(a) * 0.3]} castShadow={false} />
+      {/* le repose-pieds assorti au fauteuil : coussin capitonné sur quatre pieds de chêne fuselés, un carnet posé dessus */}
+      <group position={[-0.5, 0, 2.5]} rotation-y={0.4}>
+        {[0, 1, 2, 3].map((i) => {
+          const a = (i / 4) * Math.PI * 2 + Math.PI / 4
+          return <Part key={i} geo={cyl(0.018, 0.012, 0.14, 8)} m={A.oakDark} p={[Math.cos(a) * 0.2, 0.07, Math.sin(a) * 0.2]} rotation={[-Math.sin(a) * 0.18, 0, Math.cos(a) * 0.18]} />
         })}
-        <Part geo={cyl(0.035, 0.035, 0.03, 12)} m={A.terracotta} p={[0, 0.42, 0]} castShadow={false} />
-        <Part geo={rbox(0.26, 0.025, 0.2, 0.01)} m={A.prussian} p={[0.05, 0.43, 0.02]} rotation={[0, 0.5, 0.06]} castShadow={false} />
+        <Part geo={cushion} m={A.ochre} p={[0, 0.13, 0]} />
+        {[[0, 0], [0.12, 0.05], [-0.12, -0.05], [0.05, -0.12], [-0.05, 0.12]].map(([x, z], i) => (
+          <Part key={i} geo={SPH} m={A.ochreDeep} scale={[0.016, 0.008, 0.016]} p={[x, 0.335, z]} castShadow={false} />
+        ))}
+        <Part geo={rbox(0.2, 0.02, 0.15, 0.008)} m={A.prussian} p={[0.06, 0.345, 0.02]} rotation-y={0.5} castShadow={false} />
       </group>
       <group position={[0.2, 0, 2.85]} rotation-y={0.3}>
         {[[0.36, 0.05, A.prussian], [0.32, 0.04, A.sage], [0.34, 0.06, A.cream], [0.28, 0.04, A.terracotta]].map(([w, h, m], i, arr) => {

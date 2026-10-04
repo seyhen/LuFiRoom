@@ -38,8 +38,10 @@ export const O = {
   pineF: foliage(0x5f9466),
   pineDeep: foliage(0x4a7c58),
   azaleaF: foliage(0x6aa058),
-  azaleaRust: foliage(0xc89a48),
-  nantenF: foliage(0xe0603e),
+  azaleaRust: foliage(0x8a9a4e),
+  azaleaDeep: foliage(0x4f8a50),
+  nantenLeaf: leafy(0xd8503a, { roughness: 0.5 }),
+  nantenGreen: leafy(0x7a8a48, { roughness: 0.5 }),
   mossF: foliage(0x92b064, { roughness: 0.95, clearcoat: 0.04 }),
   fern: leafy(0x6fa85a),
   fernLight: leafy(0x9cc874),
@@ -62,6 +64,9 @@ export const O = {
   chochin: gummy(0xd8402e, { roughness: 0.8, emissive: 0xff7a3a, emissiveIntensity: 0.1 }),
   ink: M.ink,
   // Les montagnes au loin, dans la brume : trois plans, du plus proche au plus lointain.
-  mountains: [gummy(0x6f7f8a, { roughness: 0.9 }), gummy(0x8f9aa8, { roughness: 0.9 }), gummy(0xb2bac6, { roughness: 0.9 })],
+  mountains: [gummy(0x6f7f8a, { roughness: 0.9 }), gummy(0x8f9a8a, { roughness: 0.9, clearcoat: 0.05 }), gummy(0xaab0c8, { roughness: 0.9, clearcoat: 0.05 })],
+  // la forêt d'automne sur les collines, derrière la palissade
+  forest: [0xd8703e, 0xe8a84e, 0xc85a3a, 0xa8a050, 0xf0bc5a].map((c) => foliage(c, { roughness: 0.85, clearcoat: 0.05 })),
+  forestPine: foliage(0x4a6e50, { roughness: 0.85, clearcoat: 0.05 }),
   moon: new MeshBasicMaterial({ color: 0xfaf4e0, transparent: true, opacity: 0 }),
 }

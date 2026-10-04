@@ -116,19 +116,41 @@ export function RadioCrate() {
   )
 }
 
-/** Une lunette astronomique sur son trépied, tournée vers le ciel. */
+/**
+ * Une lunette astronomique sur son trépied de bois, tournée vers le ciel : tablette à oculaires entre les pieds, monture
+ * de laiton, tube avec son pare-buée, le petit chercheur sur le côté et l'oculaire coudé.
+ */
 export function Telescope() {
   return (
-    <group position={[1.1, 0, 2.45]} rotation-y={-0.7}>
+    <group position={[0.15, 0, 2.6]} rotation-y={0.35}>
       {[0, 1, 2].map((i) => {
-        const a = (i / 3) * Math.PI * 2
-        return <Part key={i} geo={cyl(0.014, 0.014, 1.0, 6)} m={R.teak} p={[Math.cos(a) * 0.16, 0.48, Math.sin(a) * 0.16]} rotation={[Math.sin(a) * 0.32, 0, -Math.cos(a) * 0.32]} />
+        const a = (i / 3) * Math.PI * 2 + 0.5
+        return <Part key={i} geo={cyl(0.016, 0.02, 1.02, 8)} m={R.teak} p={[Math.cos(a) * 0.17, 0.49, Math.sin(a) * 0.17]} rotation={[-Math.sin(a) * 0.34, 0, Math.cos(a) * 0.34]} />
       })}
-      <Part geo={SPH} m={R.brass} scale={0.04} p={[0, 0.98, 0]} />
-      <group position={[0, 1.02, 0]} rotation={[0, 0, 0.75]}>
-        <Part geo={cyl(0.055, 0.065, 0.8, 16)} m={R.brass} p={[0, 0.22, 0]} />
-        <Part geo={cyl(0.075, 0.075, 0.08, 16)} m={R.steel} p={[0, 0.62, 0]} castShadow={false} />
-        <Part geo={cyl(0.02, 0.025, 0.12, 8)} m={R.steel} p={[0, -0.22, 0]} castShadow={false} />
+      {/* la tablette triangulaire, à mi-hauteur, et deux oculaires posés dessus */}
+      <Part geo={cyl(0.1, 0.1, 0.015, 3)} m={R.teak} p={[0, 0.42, 0]} rotation-y={0.5} castShadow={false} />
+      {[[0.03, 0.02], [-0.03, -0.02]].map(([x, z], i) => (
+        <Part key={i} geo={cyl(0.012, 0.012, 0.04, 10)} m={R.steel} p={[x, 0.45, z]} castShadow={false} />
+      ))}
+      {/* la tête et sa monture */}
+      <Part geo={cyl(0.05, 0.06, 0.05, 12)} m={R.brass} p={[0, 1.0, 0]} />
+      <Part geo={rbox(0.03, 0.12, 0.1, 0.012)} m={R.brass} p={[0, 1.07, 0]} castShadow={false} />
+      {/* le tube, pointé vers le haut du ciel, vers le fond */}
+      <group position={[0, 1.1, 0]} rotation={[-0.9, 0, 0]}>
+        <Part geo={cyl(0.05, 0.05, 0.78, 18)} m={R.brass} p={[0, 0.12, 0]} />
+        <Part geo={cyl(0.062, 0.058, 0.2, 18)} m={R.steel} p={[0, 0.58, 0]} />
+        <Part geo={cyl(0.052, 0.052, 0.01, 18)} m={R.glass} p={[0, 0.685, 0]} castShadow={false} />
+        {[0.0, 0.3].map((y) => (
+          <Part key={y} geo={cyl(0.054, 0.054, 0.02, 18)} m={R.steel} p={[0, y, 0]} castShadow={false} />
+        ))}
+        {/* le chercheur sur ses deux bagues */}
+        <Part geo={cyl(0.016, 0.016, 0.22, 10)} m={R.steel} p={[0.075, 0.2, 0]} castShadow={false} />
+        {[0.12, 0.28].map((y) => (
+          <Part key={y} geo={rbox(0.03, 0.012, 0.012, 0.004)} m={R.steel} p={[0.055, y, 0]} castShadow={false} />
+        ))}
+        {/* le renvoi coudé et l'oculaire, en bas du tube */}
+        <Part geo={cyl(0.022, 0.022, 0.08, 10)} m={R.steel} p={[0, -0.3, 0]} castShadow={false} />
+        <Part geo={cyl(0.018, 0.02, 0.08, 10)} m={R.steel} p={[0, -0.34, 0.04]} rotation-x={Math.PI / 2} castShadow={false} />
       </group>
     </group>
   )

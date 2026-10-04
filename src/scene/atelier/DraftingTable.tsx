@@ -119,7 +119,7 @@ export function Stool() {
       <Part geo={cyl(0.025, 0.025, 0.6, 8)} m={A.steel} p={[0, 0.35, 0]} />
       {[0, 1, 2, 3].map((i) => {
         const a = (i / 4) * TAU + 0.4
-        return <Part key={i} geo={cyl(0.015, 0.015, 0.42, 6)} m={A.steel} p={[Math.cos(a) * 0.12, 0.17, Math.sin(a) * 0.12]} rotation={[Math.sin(a) * 0.65, 0, -Math.cos(a) * 0.65]} />
+        return <Part key={i} geo={cyl(0.015, 0.015, 0.42, 6)} m={A.steel} p={[Math.cos(a) * 0.12, 0.17, Math.sin(a) * 0.12]} rotation={[-Math.sin(a) * 0.65, 0, Math.cos(a) * 0.65]} />
       })}
       <Part m={A.steel} p={[0, 0.22, 0]} rotation-x={Math.PI / 2} castShadow={false}>
         <torusGeometry args={[0.17, 0.01, 6, 20]} />

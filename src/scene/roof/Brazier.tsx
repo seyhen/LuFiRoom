@@ -18,7 +18,7 @@ export function Brazier() {
       <Static>
         {[0, 1, 2].map((i) => {
           const a = (i / 3) * TAU + 0.3
-          return <Part key={i} geo={cyl(0.03, 0.03, 0.34, 8)} m={R.steel} p={[Math.cos(a) * 0.3, 0.16, Math.sin(a) * 0.3]} rotation={[Math.sin(a) * 0.25, 0, -Math.cos(a) * 0.25]} />
+          return <Part key={i} geo={cyl(0.03, 0.03, 0.34, 8)} m={R.steel} p={[Math.cos(a) * 0.3, 0.16, Math.sin(a) * 0.3]} rotation={[-Math.sin(a) * 0.25, 0, Math.cos(a) * 0.25]} />
         })}
         <Part geo={SPH} m={R.corten} scale={[0.52, 0.22, 0.52]} p={[0, 0.48, 0]} />
         <Part m={R.corten} p={[0, 0.5, 0]} rotation-x={Math.PI / 2}>

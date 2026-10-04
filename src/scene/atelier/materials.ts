@@ -27,6 +27,7 @@ export const A = {
   white: gummy(0xf6f2ea, { roughness: 0.5 }),
   sage: gummy(0x9db59a, { roughness: 0.6 }),
   ochre: gummy(0xd9a441, { roughness: 0.75, clearcoat: 0.1 }),
+  ochreDeep: gummy(0xb8842e, { roughness: 0.6, clearcoat: 0.3 }),
   terracotta: gummy(0xc7703e, { roughness: 0.6 }),
   prussian: gummy(0x2c4a6e, { roughness: 0.6 }),
   blush: gummy(0xf0c4bc, { roughness: 0.6 }),

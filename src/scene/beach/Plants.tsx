@@ -49,7 +49,7 @@ export function HangingPothos({ position }: { position: [number, number, number]
       <Part geo={cyl(0.015, 0.015, 0.36, 6)} m={B.wood} p={[0.18, 0, 0]} rotation-z={Math.PI / 2} castShadow={false} />
       {[0, 1, 2].map((i) => {
         const a = (i / 3) * TAU
-        return <Part key={i} geo={cyl(0.005, 0.005, 0.55, 4)} m={B.rope} p={[0.32 + Math.cos(a) * 0.05, -0.28, Math.sin(a) * 0.05]} rotation={[Math.sin(a) * 0.15, 0, -Math.cos(a) * 0.15]} castShadow={false} />
+        return <Part key={i} geo={cyl(0.005, 0.005, 0.55, 4)} m={B.rope} p={[0.32 + Math.cos(a) * 0.05, -0.28, Math.sin(a) * 0.05]} rotation={[-Math.sin(a) * 0.15, 0, Math.cos(a) * 0.15]} castShadow={false} />
       })}
       <Part geo={SPH} m={B.linen} scale={[0.13, 0.11, 0.13]} p={[0.32, -0.6, 0]} />
       <Vines p={[0.32, -0.52, 0]} strands={[[0.12, 0.05, 0.55], [0.06, -0.11, 0.4], [-0.1, 0.06, 0.7], [0.0, 0.12, 0.3]]} m={B.pothos} m2={B.pothosVar} size={0.075} crown={8} seed={3} />

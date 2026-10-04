@@ -32,7 +32,7 @@ export function ReadingNook() {
       <Part geo={cyl(0.27, 0.27, 0.05, 28)} m={M.woodLight} p={[2.82, 0.5, 0.5]} />
       {[0, 1, 2].map((i) => {
         const a = (i / 3) * TAU + 0.6
-        return <Part key={i} geo={cyl(0.03, 0.025, 0.5, 10)} m={M.woodLeg} p={[2.82 + Math.cos(a) * 0.17, 0.24, 0.5 + Math.sin(a) * 0.17]} rotation={[Math.sin(a) * 0.12, 0, -Math.cos(a) * 0.12]} />
+        return <Part key={i} geo={cyl(0.03, 0.025, 0.5, 10)} m={M.woodLeg} p={[2.82 + Math.cos(a) * 0.17, 0.24, 0.5 + Math.sin(a) * 0.17]} rotation={[-Math.sin(a) * 0.12, 0, Math.cos(a) * 0.12]} />
       })}
       <Batch geo={rbox(1, 1, 1, 0.1)} m={B.trim} items={BOOKS} shadow />
       <Candles items={[{ p: [2.9, 0.675, 0.58], h: 0.13, r: 0.055 }]} />

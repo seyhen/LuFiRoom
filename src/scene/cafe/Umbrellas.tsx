@@ -2,6 +2,7 @@ import { TAU } from '../../math'
 import { M } from '../materials'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { K } from './materials'
+import { Garment } from '../objects/Garment'
 
 // L'entrée est à droite, hors champ : on arrive trempé, on accroche son manteau, on laisse son parapluie s'égoutter.
 // Trois parapluies fermés dans le porte-parapluies : [x, inclinaison, matériau].
@@ -20,15 +21,19 @@ function CoatStand() {
         const a = (i / 4) * TAU + 0.4
         return <Part key={i} geo={cyl(0.012, 0.012, 0.2, 6)} m={K.brass} p={[Math.cos(a) * 0.07, 1.88, Math.sin(a) * 0.07]} rotation={[Math.sin(a) * 0.9, 0, -Math.cos(a) * 0.9]} castShadow={false} />
       })}
-      {/* le duffle-coat camel, accroché devant : épaules, corps évasé, capuche, brandebourgs */}
-      <group position={[-0.02, 1.36, 0.13]} rotation-y={-0.5}>
-        <Part geo={cyl(0.12, 0.2, 0.78, 16)} m={K.tweed} scale={[1, 1, 0.55]} p={[0, -0.04, 0]} />
-        <Part geo={SPH} m={K.tweed} scale={[0.17, 0.08, 0.1]} p={[0, 0.36, 0]} />
-        <Part geo={SPH} m={K.tweed} scale={[0.1, 0.09, 0.06]} p={[0, 0.34, -0.08]} castShadow={false} />
-        {[0.18, 0.02, -0.14].map((y) => (
-          <Part key={y} geo={rbox(0.06, 0.016, 0.016, 0.006)} m={K.wool} p={[0.01, y, 0.11 - y * 0.08]} castShadow={false} />
+      {/* le duffle-coat camel, accroché devant : sa capuche retombe dans le dos, brandebourgs et poches plaquées */}
+      <Garment p={[0.06, 1.9, 0.08]} r={[0.04, 0.75, 0]} m={K.tweed}>
+        <Part geo={SPH} m={K.tweed} scale={[0.12, 0.13, 0.06]} p={[0, -0.13, -0.06]} castShadow={false} />
+        {[-0.24, -0.38, -0.52].map((y) => (
+          <group key={y}>
+            <Part geo={rbox(0.07, 0.014, 0.014, 0.006)} m={K.wool} p={[0.02, y, 0.055]} castShadow={false} />
+            <Part geo={cyl(0.009, 0.009, 0.045, 6)} m={K.walnut} p={[-0.025, y, 0.06]} rotation-z={Math.PI / 2} castShadow={false} />
+          </group>
         ))}
-      </group>
+        {[-1, 1].map((sd) => (
+          <Part key={sd} geo={rbox(0.11, 0.1, 0.012, 0.01)} m={K.tweed} p={[sd * 0.1, -0.68, 0.055]} castShadow={false} />
+        ))}
+      </Garment>
       {/* l'écharpe en tartan qui pend du crochet */}
       <group position={[0.1, 1.82, -0.06]} rotation-y={0.9}>
         <Part geo={rbox(0.11, 0.62, 0.025, 0.012)} m={K.stewartSmall} p={[0.03, -0.3, 0]} rotation-z={0.06} />

@@ -25,7 +25,7 @@ export function RattanLamp() {
       <Part geo={cyl(0.26, 0.24, 0.07, 22)} m={B.driftwood} p={[0, 0.52, 0]} />
       {[0, 1, 2].map((i) => {
         const a = (i / 3) * TAU
-        return <Part key={i} geo={cyl(0.03, 0.025, 0.5, 8)} m={B.driftwood} p={[Math.cos(a) * 0.15, 0.25, Math.sin(a) * 0.15]} rotation={[Math.sin(a) * 0.12, 0, -Math.cos(a) * 0.12]} />
+        return <Part key={i} geo={cyl(0.03, 0.025, 0.5, 8)} m={B.driftwood} p={[Math.cos(a) * 0.15, 0.25, Math.sin(a) * 0.15]} rotation={[-Math.sin(a) * 0.12, 0, Math.cos(a) * 0.12]} />
       })}
       <group ref={g} userData={{ id: 'lamp' }} position={[0, 0.56, 0]}>
         <Part geo={SPH} m={B.turquoise} scale={[0.13, 0.15, 0.13]} p={[0, 0.14, 0]} />

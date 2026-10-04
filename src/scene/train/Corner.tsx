@@ -1,6 +1,7 @@
 import { canvasTex } from '../paint'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { T } from './materials'
+import { Garment } from '../objects/Garment'
 
 /** Une affiche de voyage à l'ancienne : un col de montagne, un train, « Les Alpes ». */
 const posterTex = canvasTex(256, 360, (x) => {
@@ -39,9 +40,16 @@ export function Sideboard() {
       {/* le crochet, le manteau camel, l'écharpe, le chapeau */}
       <group position={[-2.9, 2.0, 2.75]}>
         <Part geo={cyl(0.02, 0.02, 0.12, 6)} m={T.brass} p={[0.06, 0.32, 0]} rotation-z={Math.PI / 2 - 0.3} castShadow={false} />
-        <Part geo={cyl(0.1, 0.17, 0.95, 14)} m={T.canvas} scale={[0.6, 1, 1]} p={[0.1, -0.15, 0]} />
-        <Part geo={SPH} m={T.canvas} scale={[0.09, 0.07, 0.16]} p={[0.1, 0.32, 0]} />
-        <Part geo={rbox(0.04, 0.7, 0.1, 0.02)} m={T.velvet} p={[0.2, 0.0, 0.05]} rotation-z={0.05} castShadow={false} />
+        {/* le trench camel : ceinture nouée, boutons, col relevé, et l'écharpe bordeaux qui pend du même crochet */}
+        <Garment p={[0.07, 0.36, 0]} r={[0, Math.PI / 2, 0.04]} s={1.05} m={T.canvas}>
+          <Part geo={rbox(0.36, 0.035, 0.012, 0.01)} m={T.canvas} p={[0, -0.42, 0.056]} castShadow={false} />
+          <Part geo={rbox(0.03, 0.14, 0.012, 0.01)} m={T.canvas} p={[0.06, -0.5, 0.06]} rotation-z={0.2} castShadow={false} />
+          {[-0.16, -0.28, -0.56, -0.68].map((y) => (
+            <Part key={y} geo={cyl(0.012, 0.012, 0.01, 10)} m={T.leatherDark} p={[-0.05, y, 0.058]} rotation-x={Math.PI / 2} castShadow={false} />
+          ))}
+          <Part geo={rbox(0.15, 0.06, 0.02, 0.015)} m={T.canvas} p={[0, -0.02, 0.05]} castShadow={false} />
+          <Part geo={rbox(0.07, 0.72, 0.016, 0.012)} m={T.velvet} p={[0.07, -0.34, 0.07]} rotation-z={-0.04} castShadow={false} />
+        </Garment>
         <group position={[0.14, 0.48, 0]} rotation-z={-0.3}>
           <Part geo={cyl(0.17, 0.17, 0.015, 22)} m={T.iron} />
           <Part geo={cyl(0.1, 0.11, 0.1, 18)} m={T.iron} p={[0, 0.05, 0]} />

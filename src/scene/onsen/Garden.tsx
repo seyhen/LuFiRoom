@@ -114,12 +114,12 @@ export function Maple() {
         <Part geo={cyl(0.025, 0.035, 0.7, 8)} m={O.bark} p={[-0.6, 2.75, 0.05]} rotation={[-0.3, 0, 0.5]} />
         {/* les racines qui affleurent */}
         {[0.4, 2.2, 4.1].map((a, i) => (
-          <Part key={i} geo={cyl(0.02, 0.05, 0.36, 8)} m={O.bark} p={[Math.cos(a) * 0.14, 0.04, Math.sin(a) * 0.14]} rotation={[Math.sin(a) * 1.3, 0, -Math.cos(a) * 1.3]} castShadow={false} />
+          <Part key={i} geo={cyl(0.02, 0.05, 0.36, 8)} m={O.bark} p={[Math.cos(a) * 0.14, 0.04, Math.sin(a) * 0.14]} rotation={[-Math.sin(a) * 1.3, 0, Math.cos(a) * 1.3]} castShadow={false} />
         ))}
         {CANOPY.map(([x, y, z, w, h], i) => (
           <Foliage key={i} v={i} p={[x, y, z]} s={[w, h, w * 0.9]} ry={i * 2.1} m={O.mapleF[i % 4]} shadow={i % 2 === 0} />
         ))}
-        <Rock v={7} p={[0, -0.04, 0]} s={[0.5, 0.1, 0.44]} m={O.moss} shadow={false} />
+        <Rock v={7} p={[0, -0.03, 0]} s={[0.5, 0.05, 0.44]} m={O.moss} shadow={false} />
       </group>
       <group ref={leaves.group} />
     </>
