@@ -2,6 +2,7 @@ import { TAU } from '../../math'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { Steam } from '../objects/Steam'
 import { O } from './materials'
+import { FLAT_ROCKS, Rock } from './Rocks'
 
 const DECK = 0.42
 
@@ -70,7 +71,7 @@ export function BathThings() {
       </group>
       {/* les pas japonais, de l'engawa au bassin */}
       {[[-1.05, -0.05, 0.3], [-0.55, -0.35, 0.25]].map(([x, z, s], i) => (
-        <Part key={i} geo={cyl(s, s * 1.05, 0.06, 10)} m={O.stone[i]} p={[x, 0.03, z]} scale={[1, 1, 0.8]} />
+        <Rock key={i} v={FLAT_ROCKS[i]} p={[x, 0, z]} s={[s, 0.07, s * 0.8]} ry={i * 1.3 + 0.4} m={O.stone[i]} />
       ))}
     </>
   )

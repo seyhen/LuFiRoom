@@ -8,6 +8,7 @@ import { reduceMotion, useSquash } from '../anim'
 import { LIVE } from '../Static'
 import { O } from './materials'
 import { POOL } from './Pool'
+import { Rock } from './Rocks'
 
 const SPOUT = { x: 1.15, y: 1.0, z: -2.25 }
 
@@ -38,7 +39,7 @@ export function Spout() {
       <mesh ref={stream} userData={LIVE} geometry={cyl(0.025, 0.035, len, 10)} material={O.stream} position={[0, POOL.y + len / 2, 0.02]} raycast={noRay} />
       <Part geo={SPH} m={O.stream} scale={[0.12, 0.03, 0.12]} p={[0, POOL.y + 0.01, 0.02]} castShadow={false} />
       {/* la pierre sous le bec */}
-      <Part geo={SPH} m={O.stone[1]} scale={[0.32, 0.28, 0.26]} p={[0, 0.14, -0.38]} />
+      <Rock v={2} p={[0, 0, -0.38]} s={[0.34, 0.34, 0.28]} ry={0.6} m={O.stone[1]} moss={O.moss} />
     </group>
   )
 }
@@ -77,7 +78,7 @@ export function ShishiOdoshi() {
         <Part geo={cyl(0.055, 0.055, 0.9, 12)} m={O.bamboo} p={[0.05, 0, 0]} rotation-z={Math.PI / 2} />
         <Part geo={cyl(0.06, 0.06, 0.03, 12)} m={O.bambooDry} p={[0.0, 0, 0]} rotation-z={Math.PI / 2} castShadow={false} />
       </group>
-      <Part geo={SPH} m={O.stone[0]} scale={[0.14, 0.1, 0.14]} p={[-0.78, 0.05, 0]} />
+      <Rock v={3} p={[-0.78, 0, 0]} s={[0.15, 0.12, 0.14]} ry={1.2} m={O.stone[0]} />
     </group>
   )
 }

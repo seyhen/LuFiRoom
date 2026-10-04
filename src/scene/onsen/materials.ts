@@ -1,9 +1,9 @@
 import { DoubleSide, MeshBasicMaterial, MeshStandardMaterial } from 'three'
 import { M, gummy } from '../materials'
-import { flagTex, rippleTex, shojiTex, tileTex, yukataTex } from './textures'
+import { flagTex, mossTex, poolTex, rippleTex, shojiTex, stoneTex, tileTex, yukataTex } from './textures'
 
 const flags = flagTex.clone()
-flags.repeat.set(5, 5)
+flags.repeat.set(4, 4)
 
 /**
  * L'onsen en automne : cèdre sombre et hinoki blond, pierre grise et mousse, papier des shōji, eau laiteuse et turquoise,
@@ -12,15 +12,19 @@ flags.repeat.set(5, 5)
 export const O = {
   base: gummy(0x6a6458, { roughness: 0.85, clearcoat: 0.05 }),
   earth: gummy(0x5a5040, { roughness: 0.9 }),
-  flags: gummy(0xffffff, { map: flags, roughness: 0.6, clearcoat: 0.35, clearcoatRoughness: 0.3 }),
+  flags: gummy(0xece4d8, { map: flags, roughness: 0.6, clearcoat: 0.35, clearcoatRoughness: 0.3 }),
   cedar: gummy(0x4a3428, { roughness: 0.5 }),
   hinoki: gummy(0xd9b88a, { roughness: 0.5, clearcoat: 0.3 }),
   deck: gummy(0x8a5e3e, { roughness: 0.45, clearcoat: 0.4 }),
   shoji: new MeshStandardMaterial({ map: shojiTex, emissiveMap: shojiTex, emissive: 0xffc77a, emissiveIntensity: 0, roughness: 0.9 }),
   tiles: gummy(0xffffff, { map: tileTex, roughness: 0.5, clearcoat: 0.4 }),
-  stone: [gummy(0x8a8a86, { roughness: 0.7 }), gummy(0x77776f, { roughness: 0.7 }), gummy(0x9a968c, { roughness: 0.7 })],
-  moss: gummy(0x6f8f4a, { roughness: 0.9, clearcoat: 0.05 }),
-  water: gummy(0x6cc3b8, { roughness: 0.06, clearcoat: 1, clearcoatRoughness: 0.05, transparent: true, opacity: 0.88 }),
+  // Les pierres : gris chaud, gris bleuté, brun de rivière, basalte sombre. Mates, à peine lustrées : de la pierre, pas du bonbon.
+  stone: [0x9c968c, 0x868b92, 0x9a8676, 0x6a6662].map((c) => gummy(c, { map: stoneTex, roughness: 0.78, clearcoat: 0.14, clearcoatRoughness: 0.55 })),
+  moss: gummy(0x7d9a4e, { map: mossTex, roughness: 0.95, clearcoat: 0.04 }),
+  mossDark: gummy(0x5e7e3e, { map: mossTex, roughness: 0.95, clearcoat: 0.04 }),
+  // Les galets : blancs, chacun teinté par son instance.
+  pebble: gummy(0xffffff, { map: stoneTex, roughness: 0.6, clearcoat: 0.3 }),
+  water: gummy(0xffffff, { map: poolTex, roughness: 0.06, clearcoat: 1, clearcoatRoughness: 0.05, transparent: true, opacity: 0.9 }),
   ripples: new MeshBasicMaterial({ map: rippleTex, transparent: true, opacity: 0.5, depthWrite: false }),
   stream: gummy(0xd8f4f0, { roughness: 0.05, clearcoat: 1, transparent: true, opacity: 0.55 }),
   bamboo: gummy(0x9fb45e, { roughness: 0.4, clearcoat: 0.6 }),

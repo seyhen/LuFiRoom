@@ -3,20 +3,44 @@ import { canvasTex, rr, seeded } from '../paint'
 
 // Textures de l'onsen : dallage de pierre et sa mousse, papier des shōji, yukata indigo, feuille d'érable, ronds dans l'eau.
 
-/** Dallage de pierres plates, joints de mousse. Tuile 1 × 1 unité. */
+/**
+ * Dallage de pierres plates posées à la main (pavage de Voronoï qui se raccorde d'une tuile à l'autre) : des dalles de tailles
+ * et de teintes différentes, bombées (claires au milieu, plus sombres vers le bord), et de la mousse dans les joints. Tuile 1 × 1 unité.
+ */
 export const flagTex = canvasTex(256, 256, (x) => {
-  const r = seeded(6)
-  x.fillStyle = '#5e7046'; x.fillRect(0, 0, 256, 256)
-  for (let i = 0; i < 9; i++) {
-    const cx = (i % 3) * 85 + 42 + (r() - 0.5) * 16, cy = ((i / 3) | 0) * 85 + 42 + (r() - 0.5) * 16, rad = 34 + r() * 8
-    const t = r()
-    x.fillStyle = `rgb(${120 + t * 30},${118 + t * 28},${112 + t * 26})`
-    x.beginPath()
-    for (let k = 0; k < 9; k++) { const a = (k / 9) * TAU, rk = rad * (0.82 + r() * 0.25); x.lineTo(cx + Math.cos(a) * rk, cy + Math.sin(a) * rk) }
-    x.closePath(); x.fill()
-    x.fillStyle = 'rgba(255,255,255,.08)'; x.beginPath(); x.ellipse(cx - 8, cy - 8, rad * 0.5, rad * 0.35, 0, 0, TAU); x.fill()
+  const r = seeded(6), N = 4, S = 256, cell = S / N
+  const pts: { x: number; y: number; c: [number, number, number] }[] = []
+  for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
+    const t = r(), warm = r() < 0.4
+    pts.push({ x: (i + 0.15 + r() * 0.7) * cell, y: (j + 0.15 + r() * 0.7) * cell, c: [150 + t * 34 + (warm ? 10 : 0), 146 + t * 32 + (warm ? 4 : 0), 138 + t * 30 - (warm ? 4 : 0)] })
   }
-  for (let i = 0; i < 400; i++) { x.fillStyle = `rgba(${r() < 0.5 ? '40,50,30' : '200,200,190'},.12)`; x.fillRect(r() * 256, r() * 256, 2, 2) }
+  const img = x.createImageData(S, S), d = img.data, noise = seeded(9)
+  for (let py = 0; py < S; py++) for (let px = 0; px < S; px++) {
+    let d1 = 1e9, d2 = 1e9, best = 0
+    const ci = Math.floor(px / cell), cj = Math.floor(py / cell)
+    for (let dj = -1; dj <= 1; dj++) for (let di = -1; di <= 1; di++) {
+      const ii = (ci + di + N) % N, jj = (cj + dj + N) % N, q = pts[jj * N + ii]
+      const qx = q.x + Math.floor((ci + di) / N) * S, qy = q.y + Math.floor((cj + dj) / N) * S
+      const dd = Math.hypot(px - qx, py - qy)
+      if (dd < d1) { d2 = d1; d1 = dd; best = jj * N + ii } else if (dd < d2) d2 = dd
+    }
+    const gap = (d2 - d1) / 2, o = (py * S + px) * 4, n = noise()
+    if (gap < 3.2) {
+      // le joint de mousse, plus sombre au fond
+      const k = 0.75 + gap / 12 + n * 0.12
+      d[o] = 88 * k; d[o + 1] = 112 * k; d[o + 2] = 62 * k
+    } else {
+      const c = pts[best].c, bevel = Math.min(1, (gap - 3.2) / 9), dome = 0.84 + bevel * 0.12 - Math.min(0.05, d1 / 900) + (n - 0.5) * 0.07
+      d[o] = c[0] * dome; d[o + 1] = c[1] * dome; d[o + 2] = c[2] * dome
+    }
+    d[o + 3] = 255
+  }
+  x.putImageData(img, 0, 0)
+  // un peu de lichen et de mousse qui déborde sur les dalles
+  for (let i = 0; i < 70; i++) {
+    x.fillStyle = r() < 0.6 ? 'rgba(96,124,64,.35)' : 'rgba(210,214,170,.3)'
+    x.beginPath(); x.arc(r() * S, r() * S, 1 + r() * 3, 0, TAU); x.fill()
+  }
 }, [1, 1])
 
 /** Shōji : papier washi tendu sur une grille de bois clair. Tuile : un panneau. */
@@ -72,3 +96,59 @@ export const tileTex = canvasTex(128, 128, (x) => {
   x.fillStyle = '#3c3c46'; x.fillRect(0, 0, 128, 128)
   for (let i = 0; i < 8; i++) { x.fillStyle = i % 2 ? '#4a4a56' : '#34343e'; x.fillRect(i * 16, 0, 12, 128); x.fillStyle = 'rgba(255,255,255,.12)'; x.fillRect(i * 16 + 2, 0, 2, 128) }
 }, [6, 1])
+
+/** Dessine `f` à sa place et décalé d'une tuile de chaque côté : une tache au bord se raccorde de l'autre côté. */
+function wrap(size: number, f: (dx: number, dy: number) => void) {
+  for (const dx of [-size, 0, size]) for (const dy of [-size, 0, size]) f(dx, dy)
+}
+
+/**
+ * Pierre volcanique : marbrures douces, grain fin, quelques pores et des taches de lichen pâle. Claire, pour que la couleur
+ * du matériau la teinte (gris chaud, gris bleuté, brun, basalte).
+ */
+export const stoneTex = canvasTex(256, 256, (x) => {
+  const r = seeded(31)
+  x.fillStyle = '#dcd8d0'; x.fillRect(0, 0, 256, 256)
+  for (let i = 0; i < 46; i++) {
+    const cx = r() * 256, cy = r() * 256, rad = 18 + r() * 56, dark = r() < 0.55
+    wrap(256, (dx, dy) => {
+      const g = x.createRadialGradient(cx + dx, cy + dy, 0, cx + dx, cy + dy, rad)
+      g.addColorStop(0, dark ? 'rgba(70,64,58,.16)' : 'rgba(255,253,246,.2)'); g.addColorStop(1, 'rgba(0,0,0,0)')
+      x.fillStyle = g; x.fillRect(cx + dx - rad, cy + dy - rad, rad * 2, rad * 2)
+    })
+  }
+  for (let i = 0; i < 2600; i++) {
+    const t = r()
+    x.fillStyle = t < 0.5 ? 'rgba(50,46,42,.22)' : t < 0.85 ? 'rgba(255,255,250,.28)' : 'rgba(120,96,74,.25)'
+    x.fillRect(r() * 256, r() * 256, 1 + (r() < 0.2 ? 1 : 0), 1 + (r() < 0.2 ? 1 : 0))
+  }
+  for (let i = 0; i < 40; i++) {
+    const cx = r() * 256, cy = r() * 256, rad = 1.5 + r() * 2.5
+    x.fillStyle = 'rgba(40,36,34,.3)'; x.beginPath(); x.arc(cx, cy, rad, 0, TAU); x.fill()
+    x.fillStyle = 'rgba(255,255,255,.25)'; x.beginPath(); x.arc(cx + 0.8, cy + 0.8, rad * 0.6, 0, TAU); x.fill()
+  }
+  for (let k = 0; k < 7; k++) {
+    const cx = r() * 256, cy = r() * 256
+    for (let i = 0; i < 9; i++) {
+      const px = cx + (r() - 0.5) * 22, py = cy + (r() - 0.5) * 16, rad = 2 + r() * 5
+      wrap(256, (dx, dy) => { x.fillStyle = r() < 0.5 ? 'rgba(214,220,160,.45)' : 'rgba(236,232,200,.4)'; x.beginPath(); x.arc(px + dx, py + dy, rad, 0, TAU); x.fill() })
+    }
+  }
+}, [1, 1])
+
+/** Mousse : un velours vert moucheté de clair et de sombre. Claire, teintée par le matériau. */
+export const mossTex = canvasTex(128, 128, (x) => {
+  const r = seeded(57)
+  x.fillStyle = '#d6dccb'; x.fillRect(0, 0, 128, 128)
+  for (let i = 0; i < 1400; i++) {
+    x.fillStyle = r() < 0.5 ? 'rgba(40,70,20,.22)' : 'rgba(250,255,220,.3)'
+    x.beginPath(); x.arc(r() * 128, r() * 128, 0.6 + r() * 1.6, 0, TAU); x.fill()
+  }
+}, [2, 2])
+
+/** L'eau du bassin vue d'en haut : laiteuse au milieu, plus profonde et plus sombre sous les rochers du bord. */
+export const poolTex = canvasTex(256, 256, (x) => {
+  const g = x.createRadialGradient(128, 128, 0, 128, 128, 128)
+  g.addColorStop(0, '#c4f0e6'); g.addColorStop(0.55, '#a6e2d8'); g.addColorStop(0.82, '#78c4c0'); g.addColorStop(0.94, '#4f9a9c'); g.addColorStop(1, '#3a7a80')
+  x.fillStyle = g; x.fillRect(0, 0, 256, 256)
+})

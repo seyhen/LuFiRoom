@@ -5,6 +5,7 @@ import { smooth } from '../../math'
 import { Part, cyl, rbox } from '../parts'
 import { mood } from '../anim'
 import { O } from './materials'
+import { Rock } from './Rocks'
 
 /** La lumière chaude qui passe à travers les shōji, le soir. */
 function ShojiGlow() {
@@ -63,7 +64,7 @@ export function OnsenShell() {
         <Part geo={cyl(0.07, 0.07, 6.3, 12)} m={O.tiles} p={[0.78, 0.07, 0]} rotation-x={Math.PI / 2} castShadow={false} />
       </group>
       {/* la pierre où l'on laisse ses sandales */}
-      <Part geo={rbox(0.6, 0.18, 0.5, 0.08)} m={O.stone[2]} p={[-1.6, 0.09, -0.15]} />
+      <Rock v={7} p={[-1.6, 0, -0.15]} s={[0.34, 0.18, 0.28]} ry={0.3} m={O.stone[2]} />
       {/* la palissade de bambou */}
       {FENCE_X.map((x, i) => (
         <Part key={x} geo={cyl(0.045, 0.045, 2.05 + (i % 3) * 0.04, 10)} m={i % 4 ? O.bambooDry : O.bamboo} p={[x, 1.02 + (i % 3) * 0.02, -3.12]} castShadow={false} />
