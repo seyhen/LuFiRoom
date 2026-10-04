@@ -31,6 +31,17 @@ export const soundIcons: Record<SoundId, ReactNode> = {
   spring: svg(<><path d="M3.5 6.5h9.5l3 3" /><path d="M16 11.5c0 1.5-.8 2.2-.8 3.2" /><path d="M4 19c2 0 2.8-1.2 4.6-1.2s2.6 1.2 4.6 1.2 2.8-1.2 4.6-1.2" /></>),
   bamboo: svg(<><path d="M5 17.5 19 7.5" /><path d="M9.5 14.3 8 12.4M14.6 10.7l-1.5-1.9" /><path d="M4 20.5h16M18 19v1.5" /></>),
   outside: svg(<><rect x="4" y="3" width="16" height="18" rx="3" /><path d="M12 3v18M4 12h16" /></>),
+  foghorn: svg(<><path d="M4 9.5h3l8-4v13l-8-4H4z" /><path d="M18.5 9a4 4 0 0 1 0 6M20.5 6.5a8 8 0 0 1 0 11" /></>),
+  bell: svg(<><path d="M6 17.5h12l-1.4-2.2V11a4.6 4.6 0 0 0-9.2 0v4.3z" /><path d="M10.2 20a2 2 0 0 0 3.6 0M12 4.5V3" /></>),
+  sonar: svg(<><circle cx="12" cy="12" r="8.5" /><circle cx="12" cy="12" r="4.5" /><path d="M12 12l5.6-5.4" /><circle cx="16.2" cy="14.6" r=".6" /></>),
+  bubbles: svg(<><circle cx="9" cy="16" r="3.4" /><circle cx="16.5" cy="9.5" r="2.4" /><circle cx="10.5" cy="6" r="1.4" /></>),
+  hull: svg(<><path d="M4 13.5c0-2 2-3.5 4.5-3.5h8c2.5 0 4.5 1.5 4.5 3.5s-2 3.5-4.5 3.5h-8C6 17 4 15.5 4 13.5z" /><path d="M10 10V7h4v3M12 7V4.5h2" /></>),
+  engine: svg(<><circle cx="12" cy="12" r="3" /><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1" /></>),
+  whale: svg(<><path d="M3 13.5c0 3.5 3.8 5.5 9 5.5 4.5 0 8-2 9-5.5-1.5.8-3 .8-4.2 0-1.2-.8-1.8-2.5-1.8-4.5-3 1.5-6 .5-8 1-2.5.6-4 1.8-4 3z" /><path d="M8 5c.5 1 .5 2 0 3M12 3.5c.5 1 .5 2 0 3" /></>),
+  sizzle: svg(<><path d="M3.5 12.5h17a8.5 5 0 0 1-17 0z" /><path d="M20.5 12.5 23 11M8 4.5c-.8 1 .8 1.8 0 2.9M12 4c-.8 1 .8 1.8 0 2.9M16 4.5c-.8 1 .8 1.8 0 2.9" /></>),
+  simmer: svg(<><path d="M5 10h14v7a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z" /><path d="M3 10h18M9 6.5c0-1 1.5-1 1.5-2M14 6.5c0-1 1.5-1 1.5-2" /></>),
+  neon: svg(<path d="M13 3 6 13.5h5L10 21l8-11h-5z" />),
+  tram: svg(<><rect x="5" y="4" width="14" height="13" rx="3" /><path d="M5 11h14M9 21l1.5-4M15 21l-1.5-4M12 4V2M8 2h8" /></>),
 }
 
 /** Disque noir, étiquette au centre : le tourne-disque de la cabane. */

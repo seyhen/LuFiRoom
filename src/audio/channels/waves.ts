@@ -7,7 +7,9 @@ import type { Channel, Kit } from '../engine'
  * La mer. Enregistrée, ou synthétisée : un fond de houle grave, et des vagues qui se suivent sans régularité de machine.
  * Chaque vague enfle (le bruit s'ouvre vers les aigus), se brise, puis se retire en un long chuintement d'écume.
  */
-export default function waves(kit: Kit, out: GainNode, { loops }: Room): Channel {
+export default function waves(kit: Kit, out: GainNode, { loops, id }: Room): Channel {
+  // Au pied du phare, la houle se fracasse sur les rochers : plus grosse, plus rapprochée, avec un coup sourd à chaque choc.
+  const rocks = id === 'lighthouse'
   return kit.loopOrChannel(loops.waves, out, () => {
     const { ctx, gain, biq, osc, loop, noise } = kit
     const bus = gain(1.5)
@@ -49,6 +51,18 @@ export default function waves(kit: Kit, out: GainNode, { loops }: Room): Channel
       fg.gain.exponentialRampToValueAtTime(0.09 * size, crash + 0.3)
       fg.gain.exponentialRampToValueAtTime(0.0001, end)
       foam.connect(hp).connect(fg).connect(pan)
+      if (rocks) {
+        // le choc sur la roche : un coup grave qui s'effondre, et l'embrun qui retombe
+        const boom = osc('sine', 62), bg = gain(0.0001)
+        boom.frequency.setValueAtTime(70, crash)
+        boom.frequency.exponentialRampToValueAtTime(34, crash + 0.7)
+        bg.gain.setValueAtTime(0.0001, crash)
+        bg.gain.exponentialRampToValueAtTime(0.3 * size, crash + 0.04)
+        bg.gain.exponentialRampToValueAtTime(0.0001, crash + 0.9)
+        boom.connect(bg).connect(pan)
+        boom.start(crash)
+        boom.stop(crash + 1)
+      }
     }
 
     let next = 0
@@ -56,8 +70,8 @@ export default function waves(kit: Kit, out: GainNode, { loops }: Room): Channel
       const now = ctx.currentTime
       if (next < now) next = now + 0.2
       while (next < until) {
-        wave(next, rand(0.65, 1))
-        next += rand(4.2, 8)
+        wave(next, rocks ? rand(1, 1.45) : rand(0.65, 1))
+        next += rocks ? rand(3.4, 6.2) : rand(4.2, 8)
       }
     }, 200)
   })

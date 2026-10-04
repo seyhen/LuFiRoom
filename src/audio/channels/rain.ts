@@ -10,7 +10,12 @@ export default function rain(kit: Kit, out: GainNode, { loops }: Room) {
   // Fenêtre ouverte (sons du dehors actifs) : l'enregistrement passe sans filtre (coupure à Nyquist), la synthèse à 7500 Hz.
   let open = ctx.sampleRate / 2
   // La fenêtre de la pièce est ouverte : son objet « window » a son son allumé. Sans fenêtre (une verrière), la pluie reste étouffée.
-  const win = (s: Store) => { const t = roomById(s.room).objects.find((o) => o.id === 'window')?.target; return t && t !== 'night' ? s.on[t] : false }
+  // Au marché de nuit, la pluie tombe en plein air, sur une bâche : jamais derrière une vitre.
+  const win = (s: Store) => {
+    if (s.room === 'market') return true
+    const t = roomById(s.room).objects.find((o) => o.id === 'window')?.target
+    return t && t !== 'night' ? s.on[t] : false
+  }
   const opened = () => win(useStore.getState())
   const cutoff = () => (opened() ? open : 2300)
   // Fenêtre fermée, la pluie passe aussi 3 dB plus bas : elle reste derrière la vitre.

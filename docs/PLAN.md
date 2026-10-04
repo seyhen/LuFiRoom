@@ -39,7 +39,7 @@ Cahier des charges d'origine :
 - `public/audio/CREDITS.md` à jour.
 
 ## Phase 3 : plusieurs chambres (piste)
-État : huit pièces (chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen). Guide : `docs/ROOMS.md`.
+État : onze pièces (chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit). Guide : `docs/ROOMS.md`.
 
 - [x] Format de pièce stabilisé : `src/rooms/types.ts` (objets, sons, enregistrements, ciel, lumières), scène associée dans `src/scene/scenes.ts`.
 - [x] Moteur lu depuis la pièce courante : scène, lumières, hotspots, mixeur, audio (bus et canaux par pièce).
@@ -54,9 +54,13 @@ Cahier des charges d'origine :
 - [x] 6e pièce : toit-terrasse à Brooklyn un soir d'été (tours qui s'allument, château d'eau, braséro, guirlande, linge au vent, pigeons). Sons : la ville, les pigeons ; feu, vent (en brise), radio repris.
 - [x] 7e pièce : atelier d'illustratrice sous les toits de Paris (verrière d'acier, tour Eiffel qui scintille, table à dessin, clavier, tourne-disque, bouilloire). Sons : clavier, crayon, bouilloire ; pluie et radio repris.
 - [x] 8e pièce : onsen en automne (bassin qui fume, source, shishi-odoshi, érable, lanterne de pierre, furin, ryokan et montagnes). Sons : source, shishi-odoshi, furin ; jardin et radio repris.
+- [x] 9e pièce : phare (quartier du gardien dans la tempête : hublot de laiton sur la houle, escalier de fonte, poêle, table à cartes, baromètre, corne de brume, cloche de bouée, concertina). Sons : corne de brume, cloche ; houle (sur les rochers), tempête et poêle repris.
+- [x] 10e pièce : sous-marin (carré de légende : hublot sur l'abysse avec baleine, sonar qui balaie, tube de ballast à bulles, manomètre, télégraphe de machines, orgue de capitaine, lampe de banquier). Sons : sonar, bulles, coque, machines, baleine.
+- [x] 11e pièce : marché de nuit (ruelle sous la pluie : carriole de ramen, wok, marmite, néon, télé, distributeur, tram sur le boulevard). Sons : wok, marmite, néon, tram ; pluie et radio repris.
 - [x] Les signatures de chaque pièce (2e passe) : rais de soleil et filet de pêcheur (plage), lumières de gare et compartiment habité (train), néon, escalier de secours et vapeur (toit), poutres, mur de cadres et guirlande (atelier), noren ゆ, lanternes rouges et lucioles (onsen).
 - [x] Cabane : le tourne-disque joue sa propre liste (Noël, Veillée, Brume, Nuit douce) ; la chambre garde les cinq stations d'origine. Chaque pièce retient sa station.
 - [ ] Cabane : son de neige / bois qui craque, vraies pistes de Noël sous licence.
+- [ ] Les onze nouveaux sons (foghorn, bell, sonar, bubbles, hull, engine, whale, sizzle, simmer, neon, tram) sont synthétisés et dosés (voir `base` dans `audio/engine.ts`) ; à remplacer par des enregistrements si on en trouve.
 - [ ] Enregistrements pour les nouveaux sons (liste et mots-clés dans `docs/ASSETS.md`).
 
 Cahier des charges d'origine :

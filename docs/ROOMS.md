@@ -12,7 +12,7 @@ Le moteur (scène, audio, mixeur, sélecteur) ne change pas.
 | `sounds` | les cartes du mixeur, dans l'ordre : nom, pastille, volume par défaut, sous-titre vivant ; en option une icône (`icon: 'vinyl'`) et le nom du bouton qui change la musique (`skip`) |
 | `loops`, `playlist` | enregistrements de la pièce (voir `docs/ASSETS.md`). Un son sans enregistrement reste synthétisé |
 | `sky` | dégradé du fond, de jour et de nuit |
-| `ui` | les teintes d'interface de la pièce (accent, encre, panneau du mixeur, fond), de jour et de nuit. Chaque pièce a la sienne : canneberge et ambre pour la cabane, vert bouteille et laiton pour le café, corail pour la plage, bordeaux pour le train, brique le jour et néon rose la nuit pour le toit, bleu de Paris et ocre pour l'atelier, vermillon et lanterne pour l'onsen ; la chambre garde le teal de base |
+| `ui` | les teintes d'interface de la pièce (accent, encre, panneau du mixeur, fond), de jour et de nuit. Chaque pièce a la sienne : canneberge et ambre pour la cabane, vert bouteille et laiton pour le café, corail pour la plage, bordeaux pour le train, brique le jour et néon rose la nuit pour le toit, bleu de Paris et ocre pour l'atelier, vermillon et lanterne pour l'onsen, bleu marine et corail pour le phare, turquoise et laiton pour le sous-marin, rose néon et brique pour le marché de nuit ; la chambre garde le teal de base |
 | `stations` | les stations de la radio générative (`src/audio/stations.ts`), dans l'ordre : la première est celle d'une première visite (`noel` pour la cabane, `bureau` pour l'atelier, `brume` pour le café et l'onsen…) |
 | `light` | hémisphérique et soleil (ou lune), de jour et de nuit |
 | `dimmedBy` | l'objet dont l'activation assombrit la pièce (la pluie), s'il y en a un |
@@ -45,9 +45,24 @@ Outils pour le décor :
 Chaque maillage coûte un appel de dessin, deux s'il porte une ombre. Une pièce riche en petits objets (le café en compte des centaines) se dessine vite trop lentement sur un téléphone.
 Enveloppe le décor dans `<Static>` (`src/scene/Static.tsx`) : une fois monté, il fusionne les maillages immobiles qui partagent un matériau (le café passe de 816 à 274 appels par image).
 Il laisse de côté les objets interactifs (`userData.id`) et ce qui est marqué `userData={LIVE}` (une flamme, une aiguille d'horloge, un chien qui respire, un plan qui défile), avec leurs enfants. Une géométrie qu'on déforme à chaque image (un voilage, du linge) doit rester dans un objet interactif ou être marquée `LIVE`.
-Repères mesurés (appels de dessin par image, nuit comprise) : chambre 216, cabane 234, café 280, plage 201, train 177, toit 246, atelier 153, onsen 204. Surveille aussi les triangles (300 à 370 milliers par image pour la plupart des pièces) : une forme de la nature coûte de 1 000 à 1 600 triangles, deux fois avec l'ombre. Pour fusionner l'intérieur d'un objet interactif, place un autre `<Static>` dans son groupe, comme la cheminée du café.
+Repères mesurés (appels de dessin par image, nuit comprise) : chambre 216, cabane 234, café 280, plage 201, train 177, toit 246, atelier 153, onsen 204, phare 225, sous-marin 272, marché 261. Surveille aussi les triangles (300 à 370 milliers par image pour la plupart des pièces) : une forme de la nature coûte de 1 000 à 1 600 triangles, deux fois avec l'ombre. Pour fusionner l'intérieur d'un objet interactif, place un autre `<Static>` dans son groupe, comme la cheminée du café.
 Garde aussi au plus trois lumières ponctuelles par pièce : les bougies et les petites lampes se contentent d'un halo (sprite), sans lumière. Garde-en une pour la source chaude du soir (le lampadaire de l'atelier, la bougie de la plage) : c'est elle qui fait le cocon la nuit, avec un sol d'hémisphère tiède plutôt que bleu.
 Les boîtes arrondies (`rbox`) n'affichent que le centre d'une texture : pour un tapis, un paillasson ou un parquet qu'on veut voir à sa taille (le chevron du café), pose la texture sur un plan.
+
+### Les défauts qui reviennent (et leur cause)
+
+La liste courte est dans `CLAUDE.md` (« Le soin des ambiances ») ; voici le détail.
+
+- **Grésillement.** Deux surfaces à la même hauteur : un disque fin posé sur un cylindre dont le dessus affleure (boisson dans une tasse, terre dans un pot, glace dans un seau, eau dans une vasque), ou un volet collé sur la face d'une boîte. Mets l'élément fin 0,005 à 0,015 plus haut. Les chants arrondis en pointillés, c'est l'acné d'ombre : `shadow-bias` -0,0008 et `normalBias` 0,06 dans `Lights.tsx`. Les textures répétées vues de biais : `src/scene/anisotropy.ts` fixe le filtrage anisotrope à 8 pour toutes, il doit rester le premier import de `main.tsx`. Un damier à fort contraste scintille quand même (le cannage de la plage) : baisse le contraste.
+- **Rebond de clic.** `useSquash` met le groupe à l'échelle autour de son origine. Un groupe à l'origine du monde dont les enfants sont en coordonnées du monde glisse de ~0,3 au clic : place le groupe au pied de l'objet (`position`) et un groupe intérieur avec le décalage inverse (voir `roof/Laundry.tsx`, `beach/Curtains.tsx`).
+- **Animation qui saute.** Une phase s'additionne image après image (`phase += dt * f(k)`) ; `sin(t * f(k))` avec un `t` grand et une fréquence qui change fait sauter le tissu.
+- **Objets qui traversent.** Un bac : parois basses côté caméra (+x, +z), hautes derrière (`cabin/RecordCrate.tsx`). Une plante retombante : le pot au bord, les tiges devant le bord (`Vines`). Un plaid sur une assise : posé dessus et retombant le long de sa face, jamais enfoncé.
+- **Objets illisibles.** Un petit détail qui dépasse de quelques millimètres d'une surface se lit comme du bruit. Fais-le grand, ou supprime-le.
+- **Objet de dos.** Regarde de quel côté l'objet fait face : un plateau incliné dans le mauvais sens montre son dos.
+- **Une échelle ou un cadre « penché ».** Une échelle s'appuie contre le mur (le sommet vers le mur) ; ce qui y pend reste vertical.
+- **Vapeur.** `useParticles().emit(texture ou liste, …, { soft: true })` : `wispTexes` (fines volutes) pour une tasse, `mistTex` (nuages doux) pour un bassin, une cheminée, une bouche d'aération.
+- **Boutons.** L'`anchor` d'un objet est sur son corps, centré (x, z du centre, y vers le haut du corps). Mesure avec la boîte englobante projetée plutôt qu'à l'œil.
+- **L'objet qui joue la musique** est propre à la pièce. Il porte l'id `radio`, utilise `useBeat` (rebond sur le kick, notes qui s'envolent) et prend un libellé de la pièce dans `rooms/<nom>.ts` (objet et carte du mixeur).
 
 ## Les étapes
 

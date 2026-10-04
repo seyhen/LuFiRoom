@@ -6,11 +6,14 @@
 export type SoundId =
   | 'radio' | 'rain' | 'fan' | 'purr' | 'outside' | 'fire' | 'wind' | 'street' | 'murmur' | 'espresso' | 'pages'
   | 'waves' | 'gulls' | 'chimes' | 'rails' | 'tea' | 'city' | 'pigeons' | 'keys' | 'pencil' | 'kettle' | 'spring' | 'bamboo'
+  // le phare, le sous-marin, le marché de nuit
+  | 'foghorn' | 'bell' | 'sonar' | 'bubbles' | 'hull' | 'engine' | 'whale' | 'sizzle' | 'simmer' | 'neon' | 'tram'
 /** Un objet interactif de la scène. */
 export type ObjectId =
   | 'cloud' | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
   | 'gull' | 'chimes' | 'tea' | 'book' | 'brazier' | 'pigeons' | 'city' | 'laundry' | 'keyboard' | 'pencil' | 'kettle'
   | 'spring' | 'bamboo' | 'furin' | 'maple'
+  | 'foghorn' | 'bell' | 'stove' | 'barometer' | 'sonar' | 'valve' | 'gauge' | 'telegraph' | 'wok' | 'pot' | 'neon' | 'tram'
 /** Ce qu'un objet pilote : un son, ou le passage jour / nuit. */
 export type Target = SoundId | 'night'
 

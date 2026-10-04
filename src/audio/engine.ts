@@ -27,6 +27,17 @@ import pencil from './channels/pencil'
 import kettle from './channels/kettle'
 import spring from './channels/spring'
 import bamboo from './channels/bamboo'
+import foghorn from './channels/foghorn'
+import bell from './channels/bell'
+import sonar from './channels/sonar'
+import bubbles from './channels/bubbles'
+import hull from './channels/hull'
+import engineSound from './channels/engine'
+import whale from './channels/whale'
+import sizzle from './channels/sizzle'
+import simmer from './channels/simmer'
+import neon from './channels/neon'
+import tram from './channels/tram'
 
 // canal (bus Gain) ─┬─> master Gain 0.9 ─> compresseur ─> sortie
 // canal (bus Gain) ─┘
@@ -67,6 +78,17 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   kettle: { build: kettle, base: 0.9 },
   spring: { build: spring, base: 0.9 },
   bamboo: { build: bamboo, base: 0.9 },
+  foghorn: { build: foghorn, base: 1.1 },
+  bell: { build: bell, base: 2.2 },
+  sonar: { build: sonar, base: 2.0 },
+  bubbles: { build: bubbles, base: 4.0 },
+  hull: { build: hull, base: 1.7 },
+  engine: { build: engineSound, base: 1.8 },
+  whale: { build: whale, base: 2.0 },
+  sizzle: { build: sizzle, base: 7.5 },
+  simmer: { build: simmer, base: 1.1 },
+  neon: { build: neon, base: 1.45 },
+  tram: { build: tram, base: 3.4 },
 }
 const ids = Object.keys(CHANNELS) as SoundId[]
 

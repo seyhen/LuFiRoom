@@ -1,6 +1,6 @@
 # Chambre Lofi
 
-Webapp d'ambiance sonore : des pièces en 3D isométrique, style « gummy » (huit aujourd'hui : chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen), où chaque objet est un interrupteur de son. On touche la radio pour lancer la musique lofi, le nuage pour faire tomber la pluie, le ventilo pour le bruit blanc, etc. On compose son ambiance pour travailler, lire ou dormir.
+Webapp d'ambiance sonore : des pièces en 3D isométrique, style « gummy » (onze aujourd'hui : chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit), où chaque objet est un interrupteur de son. On touche la radio pour lancer la musique lofi, le nuage pour faire tomber la pluie, le ventilo pour le bruit blanc, etc. On compose son ambiance pour travailler, lire ou dormir.
 
 Nom de travail : « Chambre Lofi » (provisoire).
 
@@ -32,11 +32,11 @@ src/
   main.tsx, App.tsx
   state/store.ts            # Zustand : on/off et volume par son, mode nuit, pièce, minuteur, ambiances
   state/mixes.ts            # ambiances : modèle, stockage, lien de partage (voir docs/MIXES.md)
-  rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen), index.ts
+  rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen, lighthouse, submarine, market), index.ts
   scene/
     Stage.tsx               # <Canvas>, caméra iso, lumières, cadrage, rotation au drag
     scenes.ts               # associe chaque pièce à sa scène 3D ; ajouter une pièce : docs/ROOMS.md
-    bedroom/, cabin/, cafe/, beach/, train/, roof/, atelier/, onsen/   # la scène de chaque pièce, un fichier par objet, ses matériaux et ses textures
+    bedroom/, cabin/, cafe/, beach/, train/, roof/, atelier/, onsen/, lighthouse/, submarine/, market/   # la scène de chaque pièce, un fichier par objet, ses matériaux et ses textures
     objects/                # objets partagés entre pièces : Window, Radio, Lamp, Cat, FairyLights, Candles, Candle, Steam, Flames, ScrollLayer, Garment
     nature/                 # pierres, feuillages, feuilles, fougères, plantes retombantes, rosettes : formes et matériaux partagés
     parts.tsx, Static.tsx   # briques (Part, Batch, rbox, cyl, worldUV, orient) ; <Static> regroupe le décor immobile en peu de tracés
@@ -83,6 +83,29 @@ Principe clé : **une chambre est une donnée**. Les objets interactifs, les son
 - Typo : Gluten (titre), Nunito (texte), DM Mono (données).
 - L'image d'inspiration d'origine est le travail d'un autre artiste : on s'en inspire pour l'ambiance, on ne reproduit pas sa scène.
 
+## Le soin des ambiances
+
+Le cœur du projet, c'est qu'une pièce ait un thème unique et détaillé. **Chaque détail compte** et on a le temps : mieux vaut passer plus de temps sur un objet que laisser le propriétaire revenir sur le même défaut. Un objet n'est pas fini parce qu'il compile : il l'est quand on le regarde en gros plan et qu'on comprend ce que c'est.
+
+Les défauts qui reviennent le plus, à traquer avant de dire « fini » (explications et correctifs : `docs/ROOMS.md`) :
+
+- **Ça grésille** : deux surfaces à la même hauteur (une boisson dans une tasse, la terre d'un pot, l'eau d'une vasque, la glace d'un seau, un volet collé sur une boîte) se disputent le pixel. Décale-les de 0,005 à 0,015. Les arêtes en pointillés viennent des ombres (déjà réglées dans `Lights.tsx`). Un damier très contrasté scintille : baisse le contraste.
+- **Ça traverse le solide** : disques qui sortent d'un bloc plein, plaid enfoncé dans une assise, tige de plante qui passe à travers une planche, rails dans un tissu. Vérifie que rien n'entre dans un volume plein. Un bac a ses parois basses côté caméra.
+- **On ne sait pas ce que c'est** : un détail minuscule posé sur une surface se lit comme du bruit. Fais-le grand et reconnaissable (un seau de bouteilles a un corps, une épaule, un goulot et une capsule), ou supprime-le.
+- **Trop entassé** : répartis les objets dans toute la pièce (le fond et le devant, la gauche et la droite) ; ne remplis pas un seul coin.
+- **Le rebond de clic déplace l'objet** : `useSquash` agrandit le groupe autour de son origine. Un objet interactif se pose avec `position` à son pied, jamais à l'origine du monde avec des enfants en coordonnées du monde.
+- **Une animation qui saute** : n'écris jamais `sin(t * f(k))` avec une fréquence qui change ; additionne la phase image après image.
+- **Un bouton mal placé** : l'`anchor` de l'objet est sur son corps, centré, pas à côté ni sur l'objet voisin. Vérifie avec la boîte englobante projetée.
+- **Une fumée grossière** : `emit(..., { soft: true })` avec des volutes fines (`wispTexes`) pour une tasse et du brouillard doux (`mistTex`) ailleurs.
+- **Un objet à l'envers ou de dos** : regarde de quel côté il fait face (la table à dessin montrait son dos). La caméra voit les faces +x et +z.
+- **Une radio qui ne va pas avec la pièce** : l'objet qui joue la musique est propre à la pièce (tourne-disque, shamisen, boombox, gramophone, ukulélé, jukebox…), pas une radio partout. Il a son id `radio`, le hook `useBeat` (`src/scene/objects/useBeat.ts`) et son libellé.
+
+Comment travailler un objet :
+1. Imagine-le entier (forme, matière, couleur dans la palette de la pièce, ce qu'il fait quand le son joue), puis construis-le avec les briques partagées (`Part`, `Batch`, `Vines`, `Rock`, `Garment`, `Steam`, `useBeat`…).
+2. Regarde-le en **gros plan** (écran à densité 2, recadre dessus), pas seulement dans la vue d'ensemble de la pièce.
+3. Cherche chaque défaut de la liste ci-dessus, objet par objet, avant d'annoncer que c'est fini.
+4. Si une remarque du propriétaire revient, corrige la cause (ici ou dans les briques partagées) et ajoute-la à cette liste.
+
 ## Sons
 
 Le moteur synthétise tout en direct (celui du prototype) : c'est le repli de tout son sans enregistrement, et la radio est générative (`src/audio/stations.ts`, `docs/RADIO.md`). Les boucles enregistrées se déclarent dans `loops` de la pièce (`docs/ASSETS.md`).
@@ -104,6 +127,6 @@ npm run stations  # vérifie la musique des stations de la radio
 ## Avant de dire qu'une tâche est finie
 
 1. `npm run build` passe (et `npm run stations` si la musique des stations a changé).
-2. Vérifie ce que la modification touche, dans le navigateur. Pas besoin de revoir toutes les pièces, en mobile et en desktop, de jour et de nuit, à chaque fois : la vérification complète (largeur mobile 390 px et desktop, jour et nuit) est pour les gros changements de rendu ou de moteur.
+2. Vérifie ce que la modification touche, dans le navigateur, **en gros plan** pour un objet (voir « Le soin des ambiances » : chaque défaut de la liste, objet par objet). Pas besoin de revoir toutes les pièces, en mobile et en desktop, de jour et de nuit, à chaque fois : la vérification complète (largeur mobile 390 px et desktop, jour et nuit) est pour les gros changements de rendu ou de moteur.
 3. Pour un changement de moteur, compare au prototype : mêmes sons, mêmes interactions (sauf changement voulu).
 4. Ne commite et ne pousse que sur demande.
