@@ -2,6 +2,7 @@ import { Radio } from '../objects/Radio'
 import { Cloud } from '../objects/Cloud'
 import { Rain } from '../objects/Rain'
 import { Static } from '../Static'
+import { Motes } from '../Floaters'
 import { TrainShell } from './TrainShell'
 import { TrainView } from './TrainView'
 import { TrainWindow } from './TrainWindow'
@@ -40,6 +41,7 @@ export function TrainScene() {
       <SteamerTrunk />
       <CatBasket />
       <Flowers />
+      <Motes colors={[0xffe8c8, 0xffc98a]} opacity={[0.35, 0.5]} n={24} />
     </Static>
   )
 }

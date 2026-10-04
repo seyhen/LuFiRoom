@@ -1,6 +1,7 @@
 import { Cloud } from '../objects/Cloud'
 import { Rain } from '../objects/Rain'
 import { Static } from '../Static'
+import { Motes } from '../Floaters'
 import { AtelierShell } from './AtelierShell'
 import { ParisView } from './ParisView'
 import { DraftingTable, Stool } from './DraftingTable'
@@ -33,6 +34,7 @@ export function AtelierScene() {
       <CanvasCorner />
       <Rafters />
       <Gallery />
+      <Motes colors={[0xfff0d0, 0xffd28a]} opacity={[0.4, 0.55]} />
     </Static>
   )
 }

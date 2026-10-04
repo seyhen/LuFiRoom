@@ -84,3 +84,16 @@ export function useParticles() {
   }
   return { group, emit }
 }
+
+/**
+ * Taille d'un point lumineux (`pointsMaterial`) en unités de la pièce. Avec la caméra orthographique, three ignore
+ * `sizeAttenuation` et lit `size` en pixels : on la recalcule à chaque image selon le zoom et la taille de l'écran.
+ */
+export function useWorldPointSize(mat: RefObject<{ size: number } | null>, world: number) {
+  useFrame(({ camera, size, gl }) => {
+    const m = mat.current
+    const cam = camera as unknown as { top: number; bottom: number; zoom: number }
+    if (!m || !cam.top) return
+    m.size = world * (size.height / (cam.top - cam.bottom)) * cam.zoom * gl.getPixelRatio()
+  })
+}

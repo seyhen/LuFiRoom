@@ -11,12 +11,21 @@ export const onsen: Room = {
     'des rochers moussus, un bec de bambou qui verse l’eau de la source, un shishi-odoshi, un érable rouge dont les feuilles ' +
     'tombent, une lanterne de pierre, une clochette de verre sous l’avant-toit, les shōji de l’auberge, du thé sur l’engawa, ' +
     'et des montagnes dans la brume au-dessus de la palissade.',
+  ui: {
+    accent: ['#c23a2e', '#ffb35e'],
+    ink: ['#2e2622', '#fff2e2'],
+    'ink-soft': ['#6e625a', '#d8c2a8'],
+    panel: ['rgba(252, 246, 238, .84)', 'rgba(34, 28, 32, .84)'],
+    line: ['rgba(120, 70, 50, .16)', 'rgba(255, 179, 94, .18)'],
+    bg: ['#f3e6dc', '#17141e'],
+  },
   sky: { day: ['#fbe9dc', '#f2d2c6', '#d9bcc6'], night: ['#20264a', '#151a36', '#0b0e22'] },
   light: {
-    hemi: { sky: [0xfff0e2, 0x5a62a8], ground: [0x9a8a70, 0x262038], intensity: [0.62, 0.36] },
+    hemi: { sky: [0xfff0e2, 0x5a62a8], ground: [0x9a8a70, 0x3e3036], intensity: [0.62, 0.36] },
     sun: { color: [0xffdcb8, 0x9fb0ff], intensity: [0.55, 0.22] },
   },
   loops: {},
+  stations: ['brume', 'nuit-douce', 'petit-matin'],
   playlist: [],
   objects: [
     { id: 'spring', target: 'spring', label: 'Source · eau chaude', anchor: [1.15, 1.45, -2.4] },

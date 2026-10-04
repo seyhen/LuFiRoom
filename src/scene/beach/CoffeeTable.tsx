@@ -1,3 +1,8 @@
+import { useRef } from 'react'
+import { useFrame } from '@react-three/fiber'
+import type { PointLight } from 'three'
+import { smooth } from '../../math'
+import { mood } from '../anim'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { Candle } from '../objects/Candle'
 import { B } from './materials'
@@ -41,10 +46,18 @@ export function CoffeeTable() {
           <Part key={s} geo={cyl(0.04, 0.04, 0.012, 16)} m={B.ink} p={[0.02 + s * 0.045, 0.45, 0.14 - s * 0.016]} castShadow={false} />
         ))}
       </group>
+      <CandleGlow />
       {/* un pouf corail, un gros coussin de sol */}
       <Part geo={cyl(0.28, 0.3, 0.34, 24)} m={B.coral} p={[0.2, 0.17, 1.6]} />
       <Part geo={rbox(0.62, 0.16, 0.62, 0.08)} m={B.seaglass} p={[-0.75, 0.08, 1.0]} rotation-y={0.4} />
       <Part geo={rbox(0.5, 0.12, 0.5, 0.06)} m={B.stripeNavy} p={[-0.72, 0.21, 0.98]} rotation-y={0.25} />
     </>
   )
+}
+
+/** La lueur des bougies sur la table basse, le soir : une flaque de lumière dorée au milieu de la pièce. */
+function CandleGlow() {
+  const l = useRef<PointLight>(null!)
+  useFrame(({ clock }) => void (l.current.intensity = smooth(mood.night) * (1.1 + Math.sin(clock.elapsedTime * 7) * 0.06) * Math.PI)) // × π : voir materials.ts
+  return <pointLight ref={l} color={0xffb36a} intensity={0} distance={6.5} decay={1.4} position={[0.1, 0.9, 0.15]} />
 }

@@ -12,7 +12,8 @@ Le moteur (scène, audio, mixeur, sélecteur) ne change pas.
 | `sounds` | les cartes du mixeur, dans l'ordre : nom, pastille, volume par défaut, sous-titre vivant ; en option une icône (`icon: 'vinyl'`) et le nom du bouton qui change la musique (`skip`) |
 | `loops`, `playlist` | enregistrements de la pièce (voir `docs/ASSETS.md`). Un son sans enregistrement reste synthétisé |
 | `sky` | dégradé du fond, de jour et de nuit |
-| `ui` | les teintes d'interface de la pièce (accent, encre, panneau du mixeur…), de jour et de nuit : la cabane est canneberge et ambre, la chambre garde le teal de base |
+| `ui` | les teintes d'interface de la pièce (accent, encre, panneau du mixeur, fond), de jour et de nuit. Chaque pièce a la sienne : canneberge et ambre pour la cabane, vert bouteille et laiton pour le café, corail pour la plage, bordeaux pour le train, brique le jour et néon rose la nuit pour le toit, bleu de Paris et ocre pour l'atelier, vermillon et lanterne pour l'onsen ; la chambre garde le teal de base |
+| `stations` | les stations de la radio générative (`src/audio/stations.ts`), dans l'ordre : la première est celle d'une première visite (`noel` pour la cabane, `bureau` pour l'atelier, `brume` pour le café et l'onsen…) |
 | `light` | hémisphérique et soleil (ou lune), de jour et de nuit |
 | `dimmedBy` | l'objet dont l'activation assombrit la pièce (la pluie), s'il y en a un |
 
@@ -20,7 +21,6 @@ Exemples : `src/rooms/bedroom.ts` et `src/scene/bedroom/` (la chambre), `src/roo
 Les objets partagés sont dans `src/scene/objects/` : `Window` (avec une vitre en option : gouttes de pluie…), `Radio`, `Lamp`, `Cat`, `FairyLights` (couleurs au choix) et `Candles` servent aux deux pièces ; la plupart prennent une `position`.
 Les briques sont dans `src/scene/parts.tsx` : `Part` (un maillage, avec ombre sauf s'il est minuscule), `Batch` (une série de copies d'une forme en un seul tracé, avec une teinte chacune), `rbox`, `cyl`, `worldUV` (une texture à l'échelle de la pièce), `orient`.
 Et les six autres : `cafe/` (objets animés, murs de livres en instances, vue peinte, réverbère derrière la vitre), et cinq pièces qui montrent chacune une autre façon de faire le dehors : `beach/` (une grande porte sur une vue peinte, des vagues qui défilent par-dessus), `train/` (un paysage en trois bandes qui défilent), `roof/` (en plein air : la ville en volumes derrière les parapets), `atelier/` (une verrière à petits carreaux), `onsen/` (une palissade et des montagnes découpées, sans fenêtre).
-Et cinq pièces qui montrent chacune une autre façon de faire le dehors : `beach/` (une grande porte sur une vue peinte, des vagues qui défilent par-dessus), `train/` (un paysage en trois bandes qui défilent à des vitesses différentes), `roof/` (en plein air : la ville est faite de tours en volume derrière les parapets), `atelier/` (une verrière à petits carreaux), `onsen/` (une palissade et des montagnes découpées, sans fenêtre).
 `Window` prend aussi une peinture de cadre, une vitre par battant (le café y met sa buée et son enseigne) et une variante vitrine (`transom`). `Flames` fait le feu d'une cheminée (flammes, lumière, halo, braises), dans la cabane comme dans le café. Le nuage et la pluie (`Cloud`, `Rain`) se placent derrière la fenêtre : toute pièce qui garde cette fenêtre les reprend tels quels, comme le café. La pluie s'entend nette quand l'objet `window` de la pièce a son son allumé, étouffée sinon (ou s'il n'y a pas de fenêtre : une verrière).
 
 Outils pour le décor :
@@ -28,6 +28,8 @@ Outils pour le décor :
 - `usePainted(l, h, dessin)` (`src/scene/paint.ts`) : une vue peinte en canvas, redessinée seulement quand le jour, la nuit ou la pluie changent. Pose le plan juste derrière l'ouverture ; ce qui est derrière le mur remonte et glisse vers la droite à l'écran (la caméra regarde d'en haut, depuis la droite), place-le en conséquence.
 - `ScrollLayer` : un plan transparent dont la texture défile (vagues, collines vues du train), sans rien redessiner. `glow` pour des fenêtres qui s'allument la nuit.
 - `Candle`, `Steam`, `Flames`, `Cat` (position, pelage) : partagés entre les pièces.
+- `Motes` (`src/scene/Floaters.tsx`) : les poussières qui flottent dans la lumière. Passe-lui des couleurs et des opacités de jour et de nuit à l'image de la pièce (sable doré à la plage, poussière chaude dans l'atelier), sinon elles deviennent des lucioles bleutées la nuit.
+- Des points lumineux (`<points>` : lucioles, halos d'une guirlande) : la caméra est orthographique, donc la taille d'un point est en pixels et `sizeAttenuation` n'y change rien. Mets `sizeAttenuation={false}` et `useWorldPointSize(matériau, taille)` (`src/scene/anim.ts`) : la taille, donnée en unités de la pièce, suit le zoom et l'écran.
 - Un même son peut changer de timbre selon la pièce : le canal reçoit la pièce (le carillon devient un furin de verre dans l'onsen, le vent une brise sur le toit).
 
 ### Garder 60 images par seconde
@@ -35,8 +37,8 @@ Outils pour le décor :
 Chaque maillage coûte un appel de dessin, deux s'il porte une ombre. Une pièce riche en petits objets (le café en compte des centaines) se dessine vite trop lentement sur un téléphone.
 Enveloppe le décor dans `<Static>` (`src/scene/Static.tsx`) : une fois monté, il fusionne les maillages immobiles qui partagent un matériau (le café passe de 816 à 274 appels par image).
 Il laisse de côté les objets interactifs (`userData.id`) et ce qui est marqué `userData={LIVE}` (une flamme, une aiguille d'horloge, un chien qui respire, un plan qui défile), avec leurs enfants. Une géométrie qu'on déforme à chaque image (un voilage, du linge) doit rester dans un objet interactif ou être marquée `LIVE`.
-Repères mesurés (appels de dessin par image) : chambre 174, cabane 177, café 275, plage 186, train 179, toit 196, atelier 139, onsen 213. Pour fusionner l'intérieur d'un objet interactif, place un autre `<Static>` dans son groupe, comme la cheminée du café.
-Garde aussi au plus trois lumières ponctuelles par pièce : les bougies et les petites lampes se contentent d'un halo (sprite), sans lumière.
+Repères mesurés (appels de dessin par image, nuit comprise) : chambre 216, cabane 228, café 269, plage 191, train 176, toit 234, atelier 146, onsen 207. Pour fusionner l'intérieur d'un objet interactif, place un autre `<Static>` dans son groupe, comme la cheminée du café.
+Garde aussi au plus trois lumières ponctuelles par pièce : les bougies et les petites lampes se contentent d'un halo (sprite), sans lumière. Garde-en une pour la source chaude du soir (le lampadaire de l'atelier, la bougie de la plage) : c'est elle qui fait le cocon la nuit, avec un sol d'hémisphère tiède plutôt que bleu.
 Les boîtes arrondies (`rbox`) n'affichent que le centre d'une texture : pour un tapis ou un paillasson, pose la texture sur un plan.
 
 ## Les étapes

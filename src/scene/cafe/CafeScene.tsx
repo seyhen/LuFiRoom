@@ -23,6 +23,7 @@ import { FigTree } from './Plants'
 import { Umbrellas } from './Umbrellas'
 import { Sill } from './Sill'
 import { Static } from '../Static'
+import { Motes } from '../Floaters'
 
 /**
  * Un café-librairie de la vieille ville d'Édimbourg, un jour de pluie. Dehors, tout est froid : la ville grise, le réverbère,
@@ -60,6 +61,7 @@ export function CafeScene() {
       {/* la salle et l'entrée */}
       <ReadingTable />
       <Umbrellas />
+      <Motes colors={[0xfff2d8, 0xffcf8a]} opacity={[0.3, 0.5]} n={22} />
     </Static>
   )
 }

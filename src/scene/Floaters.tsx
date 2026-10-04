@@ -56,20 +56,34 @@ export function Snowfall() {
 }
 
 const MOTES = { n: 34, x: [-2.5, 2.9], y: [0.5, 3.3], z: [-2.5, 2.5] }
-const moteMat = new MeshBasicMaterial({ color: 0xfff2c8, transparent: true, opacity: 0.6, depthWrite: false })
-const DAY = new Color(0xfffaf0), NIGHT = new Color(0xc9dcff)
 
-/** Poussières qui flottent dans la pièce : elles brillent dans la lumière du jour, et deviennent de petites lucioles bleutées la nuit. */
-export function Motes() {
+interface MotesProps {
+  /** Couleur de jour, de nuit (poussière claire le jour, lucioles bleutées la nuit par défaut). */
+  colors?: [number, number]
+  /** Opacité de jour, de nuit. */
+  opacity?: [number, number]
+  n?: number
+}
+
+/**
+ * Poussières qui flottent dans la pièce : elles brillent dans la lumière du jour, et deviennent de petites lucioles bleutées
+ * la nuit. Chaque pièce peut les teinter à sa façon (sable doré à la plage, poussière chaude dans l'atelier).
+ */
+export function Motes({ colors = [0xfffaf0, 0xc9dcff], opacity = [0.3, 0.65], n: count = MOTES.n }: MotesProps = {}) {
   const ref = useRef<InstancedMesh>(null!)
+  const { mat, day, night } = useMemo(
+    () => ({ mat: new MeshBasicMaterial({ color: colors[0], transparent: true, opacity: opacity[0], depthWrite: false }), day: new Color(colors[0]), night: new Color(colors[1]) }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [colors[0], colors[1]],
+  )
   const motes = useMemo(
-    () => Array.from({ length: MOTES.n }, () => ({ x: rand(MOTES.x[0], MOTES.x[1]), y: rand(MOTES.y[0], MOTES.y[1]), z: rand(MOTES.z[0], MOTES.z[1]), s: rand(0.018, 0.04), ph: rand(0, TAU), sp: rand(0.4, 1.2) })),
-    [],
+    () => Array.from({ length: count }, () => ({ x: rand(MOTES.x[0], MOTES.x[1]), y: rand(MOTES.y[0], MOTES.y[1]), z: rand(MOTES.z[0], MOTES.z[1]), s: rand(0.018, 0.04), ph: rand(0, TAU), sp: rand(0.4, 1.2) })),
+    [count],
   )
   useFrame(({ clock }, delta) => {
-    const dt = reduceMotion ? 0 : Math.min(delta, 0.05), t = clock.elapsedTime, n = smooth(mood.night)
-    moteMat.color.copy(DAY).lerp(NIGHT, n)
-    moteMat.opacity = 0.3 + 0.35 * n
+    const dt = reduceMotion ? 0 : Math.min(delta, 0.05), t = clock.elapsedTime, k = smooth(mood.night)
+    mat.color.copy(day).lerp(night, k)
+    mat.opacity = opacity[0] + (opacity[1] - opacity[0]) * k
     motes.forEach((m, i) => {
       m.x += Math.sin(t * 0.3 * m.sp + m.ph) * 0.06 * dt
       m.y += (0.025 + Math.sin(t * 0.4 * m.sp + m.ph * 2) * 0.03) * dt
@@ -77,11 +91,11 @@ export function Motes() {
       if (m.y > MOTES.y[1]) m.y = MOTES.y[0]
       const tw = 0.55 + 0.45 * Math.sin(t * 1.4 * m.sp + m.ph)
       dummy.position.set(m.x, m.y, m.z)
-      dummy.scale.setScalar(m.s * (0.8 + n * 0.7) * (0.6 + tw * 0.6))
+      dummy.scale.setScalar(m.s * (0.8 + k * 0.7) * (0.6 + tw * 0.6))
       dummy.updateMatrix()
       ref.current.setMatrixAt(i, dummy.matrix)
     })
     ref.current.instanceMatrix.needsUpdate = true
   })
-  return <instancedMesh ref={ref} args={[dot, moteMat, MOTES.n]} frustumCulled={false} raycast={noRay} />
+  return <instancedMesh ref={ref} args={[dot, mat, count]} frustumCulled={false} raycast={noRay} />
 }

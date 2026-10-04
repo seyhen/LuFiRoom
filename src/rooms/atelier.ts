@@ -11,12 +11,21 @@ export const atelier: Room = {
     'et la tour Eiffel, une table à dessin et sa lampe d’architecte, un bureau avec un clavier, un tourne-disque, ' +
     'un coin cuisine et sa bouilloire, un chevalet, un fauteuil ocre pour lire, et la pluie sur la verrière si on veut.',
   dimmedBy: 'cloud',
+  ui: {
+    accent: ['#2c4a6e', '#f0b54a'],
+    ink: ['#252a34', '#fff3e0'],
+    'ink-soft': ['#626a78', '#d5c3a4'],
+    panel: ['rgba(252, 250, 246, .84)', 'rgba(30, 32, 44, .84)'],
+    line: ['rgba(44, 74, 110, .15)', 'rgba(240, 181, 74, .18)'],
+    bg: ['#eceef1', '#16182a'],
+  },
   sky: { day: ['#eef0f2', '#d9dee6', '#bcc6d4'], night: ['#222949', '#161b36', '#0c0f24'] },
   light: {
-    hemi: { sky: [0xf4f2ee, 0x5a62a8], ground: [0xc0a888, 0x2a2440], intensity: [0.66, 0.38] },
+    hemi: { sky: [0xf4f2ee, 0x5a62a8], ground: [0xc0a888, 0x4a3a3a], intensity: [0.66, 0.38] },
     sun: { color: [0xfff0dc, 0x9fb0ff], intensity: [0.52, 0.22] },
   },
   loops: {},
+  stations: ['bureau', 'petit-matin', 'brume', 'nuit-douce'],
   playlist: [],
   objects: [
     { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.3, 5.75, -3.85] },

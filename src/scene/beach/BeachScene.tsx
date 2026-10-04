@@ -2,6 +2,7 @@ import { Radio } from '../objects/Radio'
 import { Cat } from '../objects/Cat'
 import { FairyLights } from '../objects/FairyLights'
 import { Static } from '../Static'
+import { Motes } from '../Floaters'
 import { BeachShell } from './BeachShell'
 import { SeaView } from './SeaView'
 import { Curtains } from './Curtains'
@@ -53,6 +54,7 @@ export function BeachScene() {
       <FishingNet />
       <DeckChair />
       <SunRays />
+      <Motes colors={[0xffe2a8, 0xd8e4ff]} opacity={[0.45, 0.6]} />
     </Static>
   )
 }

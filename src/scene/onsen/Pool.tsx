@@ -5,7 +5,7 @@ import { rand } from '../../math'
 import { seeded } from '../paint'
 import { Part, SPH, cyl, noRay, rbox } from '../parts'
 import { reduceMotion, useParticles } from '../anim'
-import { puffTex } from '../textures'
+import { wispTex } from '../textures'
 import { LIVE } from '../Static'
 import { O } from './materials'
 import { leafTex } from './textures'
@@ -32,7 +32,7 @@ function SteamAndLeaves() {
     if (!reduceMotion && since.current > 0.2) {
       since.current = 0
       const a = rand(0, Math.PI * 2), k = Math.sqrt(Math.random())
-      steam.emit(puffTex, POOL.cx + Math.cos(a) * POOL.rx * 0.8 * k, POOL.y + 0.1, POOL.cz + Math.sin(a) * POOL.rz * 0.8 * k, { size: 0.55, life: 5, vy: 0.26, sway: 0.2, grow: 1.8, peak: 0.36 })
+      steam.emit(wispTex, POOL.cx + Math.cos(a) * POOL.rx * 0.8 * k, POOL.y + 0.1, POOL.cz + Math.sin(a) * POOL.rz * 0.8 * k, { size: 0.7, life: 5, vy: 0.24, sway: 0.2, grow: 1.6, peak: 0.55 })
     }
     if (!reduceMotion) floats.current.forEach((f, i) => { f.rotation.y = t * 0.1 * (i % 2 ? 1 : -1) + i; f.position.y = POOL.y + 0.012 + Math.sin(t * 1.3 + i) * 0.006 })
   })

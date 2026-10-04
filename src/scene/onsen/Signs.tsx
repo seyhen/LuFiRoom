@@ -4,7 +4,7 @@ import { AdditiveBlending, BufferGeometry, Float32BufferAttribute, PlaneGeometry
 import { TAU, smooth } from '../../math'
 import { canvasTex, seeded } from '../paint'
 import { Part, SPH, cyl, noRay } from '../parts'
-import { mood, reduceMotion } from '../anim'
+import { mood, reduceMotion, useWorldPointSize } from '../anim'
 import { bulbGlowTex } from '../textures'
 import { LIVE } from '../Static'
 import { O } from './materials'
@@ -80,6 +80,7 @@ const N = 22
 /** Des lucioles, la nuit, qui flottent au-dessus du jardin et du bassin. */
 export function Fireflies() {
   const pts = useRef<Points>(null!), mat = useRef<PointsMaterial>(null!)
+  useWorldPointSize(mat, 0.26)
   const seeds = useMemo(() => {
     const r = seeded(9)
     return Array.from({ length: N }, () => [r() * 4.5 - 1.6, 0.5 + r() * 1.8, r() * 4.5 - 2.9, r() * TAU, 0.3 + r() * 0.5] as const)
@@ -97,7 +98,7 @@ export function Fireflies() {
   })
   return (
     <points ref={pts} geometry={geo} userData={LIVE} raycast={noRay} frustumCulled={false}>
-      <pointsMaterial ref={mat} map={bulbGlowTex} color={0xd8ff7a} size={0.26} sizeAttenuation blending={AdditiveBlending} transparent depthWrite={false} />
+      <pointsMaterial ref={mat} map={bulbGlowTex} color={0xd8ff7a} sizeAttenuation={false} blending={AdditiveBlending} transparent depthWrite={false} />
     </points>
   )
 }

@@ -1,4 +1,8 @@
-import { TAU } from '../../math'
+import { useRef } from 'react'
+import { useFrame } from '@react-three/fiber'
+import type { PointLight } from 'three'
+import { TAU, smooth } from '../../math'
+import { mood } from '../anim'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { Candle } from '../objects/Candle'
 import { A } from './materials'
@@ -99,6 +103,7 @@ export function ReadingCorner() {
         <Part geo={cyl(0.15, 0.17, 0.04, 20)} m={A.steel} p={[0, 0.02, 0]} />
         <Part geo={cyl(0.014, 0.014, 1.5, 6)} m={A.brass} p={[0, 0.77, 0]} />
         <Part geo={cyl(0.2, 0.24, 0.3, 22)} m={A.lampShade} p={[0, 1.58, 0]} />
+        <FloorLampLight />
       </group>
     </>
   )
@@ -170,4 +175,11 @@ export function CanvasCorner() {
       </group>
     </>
   )
+}
+
+/** La lumière chaude du lampadaire, le soir : elle fait un cocon autour du fauteuil. */
+function FloorLampLight() {
+  const l = useRef<PointLight>(null!)
+  useFrame(() => void (l.current.intensity = smooth(mood.night) * 1.5 * Math.PI)) // × π : voir materials.ts
+  return <pointLight ref={l} color={0xffbf78} intensity={0} distance={7} decay={1.4} position={[0.3, 1.35, -0.3]} />
 }

@@ -4,7 +4,7 @@ import { AdditiveBlending, BufferGeometry, Float32BufferAttribute, type PointsMa
 import { TAU, smooth } from '../../math'
 import { dn, mix, poly, rgb, seeded, usePainted } from '../paint'
 import { noRay } from '../parts'
-import { mood } from '../anim'
+import { mood, useWorldPointSize } from '../anim'
 import { glowTex } from '../textures'
 
 // Paris par la verrière de l'atelier : les toits de zinc et leurs mitrons de terre cuite, des chiens-assis allumés le soir,
@@ -89,6 +89,7 @@ function draw(x: CanvasRenderingContext2D, n: number, rain: number) {
 /** Les toits de Paris, et la tour Eiffel qui scintille à l'heure pile... ici, toutes les quelques secondes, la nuit. */
 export function ParisView() {
   const tex = usePainted(W, H, draw), sparkle = useRef<PointsMaterial>(null!)
+  useWorldPointSize(sparkle, 0.12)
   const geo = useMemo(() => {
     const r = seeded(5), pts: number[] = []
     for (let i = 0; i < 40; i++) {
@@ -108,7 +109,7 @@ export function ParisView() {
         <meshBasicMaterial map={tex} />
       </mesh>
       <points geometry={geo} raycast={noRay}>
-        <pointsMaterial ref={sparkle} map={glowTex} color={0xfff2c8} size={0.12} sizeAttenuation blending={AdditiveBlending} transparent depthWrite={false} opacity={0} />
+        <pointsMaterial ref={sparkle} map={glowTex} color={0xfff2c8} sizeAttenuation={false} blending={AdditiveBlending} transparent depthWrite={false} opacity={0} />
       </points>
     </>
   )

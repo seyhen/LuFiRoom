@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, BufferGeometry, CatmullRomCurve3, Float32BufferAttribute, Object3D, TubeGeometry, Vector3, type Group, type InstancedMesh, type PointLight, type PointsMaterial } from 'three'
 import { smooth } from '../../math'
 import { Part, SPH, cyl, noRay } from '../parts'
-import { mood, useSquash } from '../anim'
+import { mood, useSquash, useWorldPointSize } from '../anim'
 import { bulbGlowTex } from '../textures'
 import { R } from './materials'
 
@@ -24,6 +24,7 @@ const dummy = new Object3D()
  */
 export function StringLights() {
   const bulbs = useRef<InstancedMesh>(null!), glow = useRef<PointsMaterial>(null!), light = useRef<PointLight>(null!), pole = useRef<Group>(null!)
+  useWorldPointSize(glow, 0.5)
   useSquash('lamp', pole)
   useLayoutEffect(() => {
     BULBS.forEach((b, i) => {
@@ -45,7 +46,7 @@ export function StringLights() {
       ))}
       <instancedMesh ref={bulbs} args={[SPH, R.bulb, BULBS.length]} raycast={noRay} />
       <points geometry={glowGeo} raycast={noRay}>
-        <pointsMaterial ref={glow} map={bulbGlowTex} size={0.5} sizeAttenuation blending={AdditiveBlending} transparent depthWrite={false} />
+        <pointsMaterial ref={glow} map={bulbGlowTex} sizeAttenuation={false} blending={AdditiveBlending} transparent depthWrite={false} />
       </points>
       <pointLight ref={light} color={0xffbe7a} intensity={0} distance={11} decay={1.3} position={[0.4, 2.3, 0.4]} />
       {/* les poteaux : celui de devant à droite est l'objet « lampe » */}

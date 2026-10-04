@@ -10,12 +10,21 @@ export const beach: Room = {
     'Bungalow au bord de la mer, au coucher du soleil, en 3D isométrique : grande porte ouverte sur la terrasse et la plage, ' +
     'voilages de lin, carillon de bois flotté, une mouette sur un poteau, lit de jour en rotin où dort un chat roux, ' +
     'fauteuil en éventail, lampe de rotin, table basse en bois flotté, planche de surf, et au loin un voilier et un phare.',
+  ui: {
+    accent: ['#e0705c', '#ffb38a'],
+    ink: ['#4a2e34', '#fff1ea'],
+    'ink-soft': ['#8a6a68', '#d9bfc6'],
+    panel: ['rgba(255, 248, 242, .82)', 'rgba(36, 30, 62, .8)'],
+    line: ['rgba(160, 90, 80, .16)', 'rgba(255, 190, 160, .18)'],
+    bg: ['#fbe9dc', '#1b1d42'],
+  },
   sky: { day: ['#ffe7d2', '#fbd2c3', '#eab8c3'], night: ['#232857', '#171b40', '#0d1028'] },
   light: {
-    hemi: { sky: [0xffe9d8, 0x6a70b8], ground: [0xd9b48c, 0x2c2a50], intensity: [0.58, 0.38] },
+    hemi: { sky: [0xffe9d8, 0x6a70b8], ground: [0xd9b48c, 0x4a3448], intensity: [0.58, 0.38] },
     sun: { color: [0xffd2a8, 0xa0b2ff], intensity: [0.5, 0.22] },
   },
   loops: {},
+  stations: ['petit-matin', 'nuit-douce', 'brume'],
   playlist: [],
   objects: [
     { id: 'window', target: 'waves', label: 'La mer · vagues', anchor: [1.25, 2.1, -3.0] },

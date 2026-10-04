@@ -13,12 +13,21 @@ export const cafe: Room = {
     'le Château, les toits de la vieille ville et un réverbère.',
   dimmedBy: 'cloud',
   // Dehors gris et froid ; la lumière chaude vient du dedans (feu, guirlande, lampe), pas du ciel.
+  ui: {
+    accent: ['#2f6b58', '#f2c46b'],
+    ink: ['#24302b', '#fff4e0'],
+    'ink-soft': ['#5f6f66', '#d8c8a8'],
+    panel: ['rgba(250, 247, 238, .82)', 'rgba(28, 34, 30, .82)'],
+    line: ['rgba(40, 70, 55, .16)', 'rgba(242, 196, 107, .18)'],
+    bg: ['#e6e9e4', '#151c1a'],
+  },
   sky: { day: ['#e3e7ec', '#c6ced8', '#a3afbd'], night: ['#232a47', '#151a31', '#0b0f21'] },
   light: {
     hemi: { sky: [0xe8ebf0, 0x4d548f], ground: [0xa89a8e, 0x2a2340], intensity: [0.6, 0.36] },
     sun: { color: [0xe9eefa, 0x8ea2e8], intensity: [0.42, 0.2] },
   },
   loops: {},
+  stations: ['brume', 'veillee', 'nuit-douce', 'petit-matin'],
   playlist: [],
   objects: [
     { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.3, 5.75, -3.85] },

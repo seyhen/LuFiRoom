@@ -4,7 +4,7 @@ import { AdditiveBlending, BufferGeometry, CatmullRomCurve3, Float32BufferAttrib
 import { smooth } from '../../math'
 import { M } from '../materials'
 import { SPH, cyl, noRay } from '../parts'
-import { mood } from '../anim'
+import { mood, useWorldPointSize } from '../anim'
 import { K } from './materials'
 import { bulbGlowTex } from '../textures'
 
@@ -34,6 +34,7 @@ const dummy = new Object3D()
  */
 export function Festoon() {
   const bulbs = useRef<InstancedMesh>(null!), sockets = useRef<InstancedMesh>(null!), glow = useRef<PointsMaterial>(null!)
+  useWorldPointSize(glow, 0.42)
   const light = useRef<PointLight>(null!)
   useLayoutEffect(() => {
     BULBS.forEach(([x, y, z], i) => {
@@ -57,7 +58,7 @@ export function Festoon() {
       <instancedMesh ref={sockets} args={[socketGeo, M.plum, BULBS.length]} raycast={noRay} />
       <instancedMesh ref={bulbs} args={[SPH, K.bulb, BULBS.length]} raycast={noRay} />
       <points geometry={glowGeo} raycast={noRay}>
-        <pointsMaterial ref={glow} map={bulbGlowTex} size={0.42} sizeAttenuation blending={AdditiveBlending} transparent depthWrite={false} />
+        <pointsMaterial ref={glow} map={bulbGlowTex} sizeAttenuation={false} blending={AdditiveBlending} transparent depthWrite={false} />
       </points>
       <pointLight ref={light} color={0xffbd78} intensity={0} distance={10} decay={1.3} position={[0.2, 3.5, -1.0]} />
     </>

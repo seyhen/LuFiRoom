@@ -17,16 +17,6 @@ const RANGES: [number, number[][]][] = [
 // Le rang proche est couvert de forêts d'automne ; les autres bleuissent dans la brume.
 const mists: SpriteMaterial[] = []
 const DAY = [0xa07a50, 0x8f9a72, 0xb4b6d2].map((c) => new Color(c)), NIGHT = [0x262a40, 0x283252, 0x384270].map((c) => new Color(c))
-// Des arbres en boule sur la crête du rang proche : [x, y, taille, couleur].
-const TREES = (() => {
-  const pts = RANGES[0][1], out: [number, number, number, number][] = []
-  for (let i = 0; i < 26; i++) {
-    const x = -3.1 + i * 0.245, k = pts.findIndex(([px]) => px > x), [ax, ay] = pts[Math.max(0, k - 1)], [bx, by] = pts[Math.max(1, k)]
-    out.push([x, ay + ((by - ay) * (x - ax)) / (bx - ax) - 0.04, 0.13 + (i % 3) * 0.04, i % 4])
-  }
-  return out
-})()
-
 function ridge(pts: number[][]) {
   const s = new Shape()
   s.moveTo(pts[0][0], 0)
@@ -49,9 +39,6 @@ export function Mountains() {
     <group raycast={noRay}>
       {RANGES.map(([z], i) => (
         <mesh key={z} geometry={geos[i]} material={O.mountains[i]} position={[0, 0, z]} raycast={noRay} />
-      ))}
-      {TREES.map(([x, y, s, m], i) => (
-        <mesh key={i} geometry={SPH} material={O.maple[m]} scale={[s, s * 0.8, s * 0.5]} position={[x, y, -3.47]} raycast={noRay} />
       ))}
       <mesh geometry={SPH} material={O.moon} scale={0.32} position={[-1.3, 4.6, -5.0]} raycast={noRay} />
       {/* des bancs de brume entre les rangs */}
