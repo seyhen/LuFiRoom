@@ -8,6 +8,7 @@ import { LIVE } from '../Static'
 import { A } from './materials'
 import { Foliage } from '../nature/Foliage'
 import { Rosette } from '../nature/Rosette'
+import { DraftLamp } from './DraftingTable'
 
 const X = -2.6, Z = -1.1, TOP = 0.76
 const KEYS = Array.from({ length: 4 * 12 }, (_, i) => [(i % 12) - 5.5, ((i / 12) | 0) - 1.5] as const)
@@ -40,7 +41,7 @@ function Keyboard() {
     keys.current.instanceMatrix.needsUpdate = true
   })
   return (
-    <group ref={g} userData={{ id: 'keyboard' }} position={[X + 0.38, TOP, Z]}>
+    <group ref={g} userData={{ id: 'keyboard' }} position={[X + 0.2, TOP, Z]}>
       <Part geo={rbox(0.2, 0.025, 0.54, 0.012)} m={A.cream} />
       <instancedMesh ref={keys} args={[keyGeo, A.blush, KEYS.length]} castShadow />
       <Part geo={rbox(0.034, 0.02, 0.22, 0.008)} m={A.sage} p={[-0.07, 0.025, 0]} castShadow={false} />
@@ -65,7 +66,7 @@ export function Desk() {
         <Part geo={rbox(0.05, 0.16, 0.06, 0.02)} m={A.white} p={[-0.2, TOP + 0.08, 0]} />
         <Part geo={rbox(0.18, 0.012, 0.18, 0.006)} m={A.white} p={[-0.2, TOP + 0.006, 0]} castShadow={false} />
         {/* la souris, le carnet, la tasse, le cactus */}
-        <Part geo={SPH} m={A.white} scale={[0.04, 0.02, 0.028]} p={[0.36, TOP + 0.015, 0.4]} castShadow={false} />
+        <Part geo={SPH} m={A.white} scale={[0.04, 0.02, 0.028]} p={[0.25, TOP + 0.015, 0.45]} castShadow={false} />
         <Part geo={rbox(0.2, 0.02, 0.15, 0.008)} m={A.prussian} p={[0.12, TOP + 0.01, -0.58]} rotation-y={0.2} castShadow={false} />
         <Part geo={cyl(0.045, 0.04, 0.09, 16)} m={A.terracotta} p={[0.18, TOP + 0.045, 0.62]} />
         <Part geo={cyl(0.05, 0.04, 0.08, 14)} m={A.cream} p={[-0.2, TOP + 0.04, 0.6]} />
@@ -73,6 +74,8 @@ export function Desk() {
         <Part geo={SPH} m={A.leaf} scale={[0.02, 0.035, 0.02]} p={[-0.17, TOP + 0.13, 0.62]} rotation-z={-0.6} castShadow={false} />
       </group>
       <Keyboard />
+      {/* la lampe d'architecte, au fond du bureau côté mur : son bras passe par-dessus le carnet */}
+      <DraftLamp position={[X - 0.3, TOP, Z - 0.8]} rotationY={Math.PI} />
       {/* la chaise de bureau en bois courbé, tournée vers l'écran */}
       <group position={[-1.85, 0, Z]} rotation-y={-Math.PI / 2}>
         {[[-0.17, -0.17], [0.17, -0.17], [-0.17, 0.17], [0.17, 0.17]].map(([x, z]) => (

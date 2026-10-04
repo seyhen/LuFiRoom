@@ -20,14 +20,21 @@ const totebag = (() => {
   return g
 })()
 
-/** Une caisse de bois pleine de disques, au pied du mur : la radio est posée dessus. */
+/** Une caisse de bois à lattes, au pied du mur : la radio est posée dessus, et une pile de pochettes de disques à côté. */
 export function RecordCrate() {
   return (
     <group position={[-2.45, 0, 1.55]}>
       <Part geo={rbox(0.95, 0.5, 0.52, 0.03)} m={B.wood} p={[0, 0.25, 0]} />
-      <Part geo={rbox(0.88, 0.46, 0.45, 0.02)} m={B.slab} p={[0, 0.27, 0]} castShadow={false} />
+      {/* les lattes : des rainures sur les deux faces vues de la caméra (+z et +x) */}
+      {[0.12, 0.25, 0.38].map((y) => (
+        <group key={y}>
+          <Part geo={rbox(0.9, 0.014, 0.012, 0.005)} m={B.slab} p={[0, y, 0.262]} castShadow={false} />
+          <Part geo={rbox(0.012, 0.014, 0.48, 0.005)} m={B.slab} p={[0.477, y, 0]} castShadow={false} />
+        </group>
+      ))}
+      {/* les pochettes, à plat sur le sol */}
       {RECORDS.map(([x, m], i) => (
-        <Part key={i} geo={rbox(0.025, 0.36, 0.38, 0.008)} m={m} p={[x, 0.32 + (i % 3) * 0.015, 0]} rotation-z={-0.12 + (i % 2) * 0.06} castShadow={false} />
+        <Part key={i} geo={rbox(0.31, 0.012, 0.31, 0.005)} m={m} p={[0.8 + (i % 2) * 0.01, 0.01 + i * 0.013, 0.1 + x * 0.1]} rotation-y={x * 1.1} castShadow={false} />
       ))}
     </group>
   )

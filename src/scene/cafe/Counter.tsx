@@ -6,7 +6,7 @@ import { TAU, approach, rand } from '../../math'
 import { M } from '../materials'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { useParticles, useSquash } from '../anim'
-import { puffTex } from '../textures'
+import { mistTex } from '../textures'
 import { Static } from '../Static'
 import { K } from './materials'
 
@@ -35,8 +35,8 @@ export function Counter() {
     if (on && since.current > 0.28) {
       since.current = 0
       // De la vapeur à la buse, un peu au-dessus de la tasse en dessous.
-      steam.emit(puffTex, POS[0] + 0.37 + rand(-0.02, 0.02), POS[1] + 0.12, POS[2] + 0.22, { size: 0.16, life: 1.6, vy: 0.4, sway: 0.05, grow: 1.6, peak: 0.55 })
-      if (Math.random() < 0.4) steam.emit(puffTex, POS[0] - 0.17 + rand(-0.03, 0.03), POS[1] + 0.2, POS[2] + 0.3, { size: 0.12, life: 1.8, vy: 0.3, sway: 0.04, grow: 1.4, peak: 0.4 })
+      steam.emit(mistTex, POS[0] + 0.37 + rand(-0.02, 0.02), POS[1] + 0.12, POS[2] + 0.22, { size: 0.16, life: 1.7, vy: 0.4, sway: 0.05, grow: 1.6, peak: 0.55, soft: true })
+      if (Math.random() < 0.4) steam.emit(mistTex, POS[0] - 0.17 + rand(-0.03, 0.03), POS[1] + 0.2, POS[2] + 0.3, { size: 0.12, life: 1.9, vy: 0.3, sway: 0.04, grow: 1.4, peak: 0.4, soft: true })
     }
   })
   return (

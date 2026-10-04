@@ -29,7 +29,7 @@ export function BistroChair({ position, rotation = 0, seat = M.pink }: { positio
  */
 export function ReadingTable() {
   return (
-    <group position={[0.55, 0, 0.55]}>
+    <group position={[1.1, 0, 1.3]}>
       <Part geo={cyl(0.46, 0.46, 0.05, 32)} m={K.marble} p={[0, 0.78, 0]} />
       <Part geo={cyl(0.48, 0.48, 0.02, 32)} m={K.walnut} p={[0, 0.75, 0]} castShadow={false} />
       <Part geo={cyl(0.04, 0.06, 0.72, 12)} m={K.iron} p={[0, 0.38, 0]} />

@@ -43,13 +43,18 @@ export interface EmitOptions {
   peak?: number
   /** Teinte de la texture (la fumée est grise). */
   color?: ColorRepresentation
+  /** Vapeur et fumée : fondu doux, la volute tourne lentement et dérive de plus en plus en montant, elle s'étale vite puis se calme. */
+  soft?: boolean
 }
 
-interface Particle extends Required<Omit<EmitOptions, 'color'>> {
+interface Particle extends Required<Omit<EmitOptions, 'color' | 'soft'>> {
   s: Sprite
   age: number
   phase: number
   x0: number
+  soft: boolean
+  rot0: number
+  spin: number
 }
 
 /** Petits sprites qui montent en se balançant (notes, cœurs, vapeur). Le groupe va à la racine de la pièce. */
@@ -69,18 +74,29 @@ export function useParticles() {
         continue
       }
       p.s.position.y += p.vy * dt
-      p.s.position.x = p.x0 + Math.sin(p.phase + p.age * 2.2) * p.sway
-      p.s.material.opacity = Math.sin(Math.PI * k) * p.peak
-      p.s.scale.setScalar(p.size * (1 + p.grow * k))
+      if (p.soft) {
+        // La vapeur monte droit puis se laisse porter ; elle apparaît en fondu (le quart du temps), s'étale vite puis ralentit.
+        const rise = Math.min(1, k * 4)
+        p.s.position.x = p.x0 + Math.sin(p.phase + p.age * 1.7) * p.sway * (0.4 + k * 1.3)
+        p.s.material.opacity = rise * rise * (3 - 2 * rise) * (1 - k) ** 1.6 * 1.6 * p.peak
+        p.s.material.rotation = p.rot0 + p.age * p.spin
+        p.s.scale.setScalar(p.size * (1 + p.grow * (1 - (1 - k) ** 2)))
+      } else {
+        p.s.position.x = p.x0 + Math.sin(p.phase + p.age * 2.2) * p.sway
+        p.s.material.opacity = Math.sin(Math.PI * k) * p.peak
+        p.s.scale.setScalar(p.size * (1 + p.grow * k))
+      }
     }
   })
-  const emit = (tex: Texture, x: number, y: number, z: number, o: EmitOptions) => {
-    const s = new Sprite(new SpriteMaterial({ map: tex, transparent: true, depthWrite: false, opacity: 0, ...(o.color === undefined ? {} : { color: o.color }) }))
+  /** `tex` peut être une liste : chaque particule en tire une au hasard (les volutes ne se répètent pas). */
+  const emit = (tex: Texture | Texture[], x: number, y: number, z: number, o: EmitOptions) => {
+    const map = Array.isArray(tex) ? tex[(Math.random() * tex.length) | 0] : tex
+    const s = new Sprite(new SpriteMaterial({ map, transparent: true, depthWrite: false, opacity: 0, ...(o.color === undefined ? {} : { color: o.color }) }))
     s.raycast = noRay
     s.position.set(x, y, z)
     s.scale.setScalar(o.size)
     group.current.add(s)
-    parts.current.push({ grow: 0, peak: 1, ...o, s, age: 0, phase: Math.random() * TAU, x0: x })
+    parts.current.push({ grow: 0, peak: 1, ...o, soft: o.soft === true, rot0: (Math.random() - 0.5) * 0.7, spin: (Math.random() - 0.5) * 0.22, s, age: 0, phase: Math.random() * TAU, x0: x })
   }
   return { group, emit }
 }

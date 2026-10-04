@@ -19,7 +19,7 @@ const poufGeo = new LatheGeometry(pts, 32)
 /** Pouf en grosse maille au bord du tapis. */
 export function Pouf() {
   return (
-    <group position={[0.75, 0, 0.3]}>
+    <group position={[1.2, 0, 0.95]}>
       <Part geo={poufGeo} m={C.knitPouf} />
       <Part geo={SPH} m={C.knit} scale={[0.05, 0.025, 0.05]} p={[0, H, 0]} castShadow={false} />
     </group>

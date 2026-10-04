@@ -1,4 +1,4 @@
-import { Radio } from '../objects/Radio'
+import { Ukulele } from './Ukulele'
 import { Cat } from '../objects/Cat'
 import { FairyLights } from '../objects/FairyLights'
 import { Static } from '../Static'
@@ -44,7 +44,7 @@ export function BeachScene() {
       <RattanLamp />
       <CoffeeTable />
       <RecordCrate />
-      <Radio position={[-2.45, 0.5, 1.55]} />
+      <Ukulele position={[-2.45, 0.5, 1.55]} />
       <Hats />
       <Surfboard />
       <HangingPothos position={[-2.95, 3.0, 2.15]} />

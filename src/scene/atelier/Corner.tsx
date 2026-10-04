@@ -121,15 +121,23 @@ export function RugAndLadder() {
           <Part key={`${s}${i}`} geo={cyl(0.01, 0.01, 0.1, 4)} m={A.cream} p={[0.35 + s * 1.53, 0.01, 0.55 - 1.0 + i * 0.18]} rotation-z={Math.PI / 2} castShadow={false} />
         )),
       )}
-      <group position={[-2.75, 0, 2.95]} rotation-z={-0.18}>
+      {/* appuyée au mur de gauche (x = -3) : le pied à -2,62, le sommet contre le mur */}
+      <group position={[-2.62, 0, 2.95]} rotation-z={0.18}>
         {[-0.2, 0.2].map((z) => (
           <Part key={z} geo={cyl(0.025, 0.025, 1.9, 8)} m={A.oak} p={[0, 0.95, z]} />
         ))}
         {[0.4, 0.85, 1.3, 1.7].map((y) => (
           <Part key={y} geo={cyl(0.018, 0.018, 0.42, 6)} m={A.oak} p={[0, y, 0]} rotation-x={Math.PI / 2} castShadow={false} />
         ))}
-        <Part geo={rbox(0.08, 0.6, 0.42, 0.03)} m={A.terracotta} p={[0.02, 1.15, 0]} castShadow={false} />
-        <Part geo={rbox(0.07, 0.5, 0.42, 0.03)} m={A.cream} p={[0.03, 0.62, 0]} castShadow={false} />
+        {/* deux plaids jetés sur un barreau : un pan devant, un pan derrière, étroits pour ne pas toucher les montants */}
+        {([[1.3, 0.44, A.terracotta], [0.85, 0.3, A.cream]] as const).map(([y, drop, m]) => (
+          // l'échelle est penchée de +0,18 : on contre-tourne autour du barreau pour que le tissu pende à la verticale
+          <group key={y} position={[0, y, 0]} rotation-z={-0.18}>
+            <Part geo={rbox(0.12, 0.028, 0.34, 0.012)} m={m} p={[0, 0.03, 0]} castShadow={false} />
+            <Part geo={rbox(0.022, drop, 0.34, 0.01)} m={m} p={[0.052, 0.03 - drop / 2, 0]} castShadow={false} />
+            <Part geo={rbox(0.022, drop * 0.78, 0.34, 0.01)} m={m} p={[-0.052, 0.03 - (drop * 0.78) / 2, 0]} castShadow={false} />
+          </group>
+        ))}
       </group>
     </>
   )
@@ -174,14 +182,12 @@ export function CanvasCorner() {
       {/* le casier à toiles : un socle, deux montants, des séparations ; les toiles y sont rangées debout, de face ou retournées */}
       <group position={[2.45, 0, 1.4]} rotation-y={-0.2}>
         <Part geo={rbox(0.5, 0.06, 1.0, 0.02)} m={A.oakDark} p={[0, 0.03, 0]} />
+        {/* deux montants bas aux bouts ; entre eux les toiles se tiennent debout, serrées comme des disques dans un bac */}
         {[-0.48, 0.48].map((z) => (
-          <Part key={z} geo={rbox(0.5, 0.55, 0.04, 0.015)} m={A.oakDark} p={[0, 0.3, z]} />
+          <Part key={z} geo={rbox(0.5, 0.36, 0.04, 0.015)} m={A.oakDark} p={[0, 0.21, z]} />
         ))}
-        {[-0.24, 0, 0.24].map((z) => (
-          <Part key={z} geo={rbox(0.04, 0.4, 0.02, 0.008)} m={A.oak} p={[0.22, 0.25, z]} castShadow={false} />
-        ))}
-        {([[-0.36, 0.75, 0.62, A.white], [-0.12, 0.6, 0.5, A.oak], [0.12, 0.9, 0.72, A.prussian], [0.36, 0.7, 0.55, A.white]] as const).map(([z, h, w, m], i) => (
-          <Part key={i} geo={rbox(w, h, 0.03, 0.01)} m={m} p={[-0.02, h / 2 + 0.06, z]} rotation={[0, Math.PI / 2, (i % 2 ? 1 : -1) * 0.06]} />
+        {([[A.white, 0.62], [A.prussian, 0.8], [A.oak, 0.56], [A.terracotta, 0.74], [A.white, 0.66], [A.cream, 0.84], [A.prussian, 0.6]] as const).map(([m, h], i) => (
+          <Part key={i} geo={rbox(0.44, h, 0.035, 0.012)} m={m} p={[0, h / 2 + 0.07, -0.4 + i * 0.133]} rotation={[(i % 2 ? 1 : -1) * 0.05, 0, 0]} />
         ))}
       </group>
     </>

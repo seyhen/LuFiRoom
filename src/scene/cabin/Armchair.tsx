@@ -5,7 +5,7 @@ import { C } from './materials'
 /** Fauteuil canneberge tourné vers la cheminée : plaid écossais sur le dossier (côté pièce), coussin en tricot. */
 export function Armchair() {
   return (
-    <group position={[0.1, 0, -0.95]} rotation-y={Math.PI / 4} scale={1.15}>
+    <group position={[0.55, 0, -0.15]} rotation-y={Math.PI / 4} scale={1.15}>
       {[[-0.34, -0.3], [0.34, -0.3], [-0.34, 0.3], [0.34, 0.3]].map(([x, z]) => (
         <Part key={`${x}${z}`} geo={cyl(0.05, 0.04, 0.2, 10)} m={M.toffee} p={[x, 0.1, z]} />
       ))}

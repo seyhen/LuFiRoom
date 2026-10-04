@@ -82,29 +82,53 @@ export const puffTex = spriteTex(64, (x) => {
   x.fillStyle = g; x.fillRect(0, 0, 64, 64)
 })
 /**
- * Volute de vapeur : une bande en S aux bouts arrondis, blanche, avec un léger liseré chaud autour pour qu'on la voie
- * aussi bien sur un abat-jour crème que sur un mur sombre.
+ * Volute de vapeur : un fil en S, effilé aux deux bouts et aux bords fondus, blanc, avec un liseré chaud très léger pour qu'on
+ * le voie aussi bien sur un abat-jour crème que sur un mur sombre. `flip` la retourne : deux volutes ne se ressemblent pas.
  */
-export const wispTex = spriteTex(128, (x) => {
-  const N = 60
-  const pt = (t: number) => ({ px: 64 + Math.sin(t * Math.PI * 2.2 + 0.4) * 19 * (0.45 + t * 0.55), py: 116 - t * 104, r: 6 + 9 * Math.pow(Math.sin(Math.PI * t), 0.6) })
-  const dot = (px: number, py: number, r: number, rgb: string, a: number, hard: number) => {
-    const g = x.createRadialGradient(px, py, 0, px, py, r)
-    g.addColorStop(0, `rgba(${rgb},${a.toFixed(3)})`)
-    g.addColorStop(hard, `rgba(${rgb},${(a * 0.9).toFixed(3)})`)
-    g.addColorStop(1, `rgba(${rgb},0)`)
-    x.fillStyle = g
-    x.fillRect(px - r, py - r, 2 * r, 2 * r)
-  }
-  for (let i = 0; i <= N; i++) {
-    const { px, py, r } = pt(i / N)
-    dot(px, py, r * 1.45, '150,95,80', 0.075, 0.2)
-  }
-  for (let i = 0; i <= N; i++) {
-    const t = i / N, { px, py, r } = pt(t)
-    dot(px, py, r, '255,255,255', 0.16 + 0.12 * Math.sin(Math.PI * t), 0.55)
-  }
-})
+function wisp(flip: 1 | -1) {
+  return spriteTex(128, (x) => {
+    if (flip < 0) x.setTransform(-1, 0, 0, 1, 128, 0)
+    const N = 90
+    const pt = (t: number) => ({ px: 64 + Math.sin(t * Math.PI * 2.4 + 0.4) * 21 * (0.3 + t * 0.7), py: 118 - t * 108, r: 2.5 + 7 * Math.pow(Math.sin(Math.PI * t), 0.9) })
+    const dot = (px: number, py: number, r: number, rgb: string, a: number, hard: number) => {
+      const g = x.createRadialGradient(px, py, 0, px, py, r)
+      g.addColorStop(0, `rgba(${rgb},${a.toFixed(3)})`)
+      g.addColorStop(hard, `rgba(${rgb},${(a * 0.9).toFixed(3)})`)
+      g.addColorStop(1, `rgba(${rgb},0)`)
+      x.fillStyle = g
+      x.fillRect(px - r, py - r, 2 * r, 2 * r)
+    }
+    for (let i = 0; i <= N; i++) {
+      const { px, py, r } = pt(i / N)
+      dot(px, py, r * 1.7, '150,95,80', 0.018, 0.2)
+    }
+    for (let i = 0; i <= N; i++) {
+      const t = i / N, { px, py, r } = pt(t)
+      dot(px, py, r, '255,255,255', 0.07 + 0.05 * Math.sin(Math.PI * t), 0.45)
+    }
+  })
+}
+export const wispTexes = [wisp(1), wisp(-1)]
+export const wispTex = wispTexes[0]
+
+/**
+ * Un nuage de brouillard : une quinzaine de taches douces qui se recouvrent, irrégulières, sans bord net. Trois variantes
+ * (graines différentes) pour que la vapeur d'un bassin ou d'une cheminée ne répète pas la même forme.
+ */
+function mist(seed: number) {
+  return spriteTex(128, (x) => {
+    let s = seed
+    const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647
+    for (let i = 0; i < 16; i++) {
+      const a = rnd() * TAU, d = Math.sqrt(rnd()) * 34, px = 64 + Math.cos(a) * d, py = 64 + Math.sin(a) * d * 0.8, r = 16 + rnd() * 18
+      const g = x.createRadialGradient(px, py, 0, px, py, r)
+      g.addColorStop(0, 'rgba(255,255,255,.2)'); g.addColorStop(0.5, 'rgba(255,255,255,.09)'); g.addColorStop(1, 'rgba(255,255,255,0)')
+      x.fillStyle = g
+      x.fillRect(px - r, py - r, 2 * r, 2 * r)
+    }
+  })
+}
+export const mistTex = [mist(7), mist(19), mist(31)]
 export const glowTex = spriteTex(128, (x) => {
   const g = x.createRadialGradient(64, 64, 0, 64, 64, 62)
   g.addColorStop(0, 'rgba(255,205,140,.9)'); g.addColorStop(0.35, 'rgba(255,180,110,.35)'); g.addColorStop(1, 'rgba(255,170,100,0)')

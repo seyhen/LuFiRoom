@@ -26,7 +26,8 @@ function Sheer({ x, side, wind }: { x: number; side: 1 | -1; wind: { current: nu
     p.needsUpdate = true
     geo.computeVertexNormals()
   })
-  return <mesh geometry={geo} material={B.sheer} position={[x, -H / 2 - 0.05, Z]} raycast={noRay} />
+  // z = 0 : le groupe parent est déjà à Z, pour que le rebond de clic se fasse autour des rideaux et non autour de l'origine du monde
+  return <mesh geometry={geo} material={B.sheer} position={[x, -H / 2 - 0.05, 0]} raycast={noRay} />
 }
 
 /** Les voilages de la grande porte : ils respirent doucement, et gonflent dans la brise quand on écoute la mer. */
@@ -40,7 +41,7 @@ export function Curtains() {
   return (
     <group userData={{ id: 'window' }}>
       <Part geo={cyl(0.025, 0.025, x1 - x0 + 0.9, 10)} m={B.wood} p={[(x0 + x1) / 2, TOP, Z - 0.02]} rotation-z={Math.PI / 2} castShadow={false} />
-      <group ref={g} position={[(x0 + x1) / 2, TOP, 0]}>
+      <group ref={g} position={[(x0 + x1) / 2, TOP, Z]}>
         <Sheer x={x0 + W / 2 - 0.32 - (x0 + x1) / 2} side={-1} wind={wind} />
         <Sheer x={x1 - W / 2 + 0.32 - (x0 + x1) / 2} side={1} wind={wind} />
       </group>

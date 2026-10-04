@@ -1,7 +1,7 @@
 import { Window } from '../objects/Window'
 import { Cloud } from '../objects/Cloud'
 import { Rain } from '../objects/Rain'
-import { Radio } from '../objects/Radio'
+import { Jukebox } from './Jukebox'
 import { K, shopGlass } from './materials'
 import { CafeShell } from './CafeShell'
 import { Skyline } from './Skyline'
@@ -46,7 +46,7 @@ export function CafeScene() {
       <Chalkboard />
       <Clock />
       <Counter />
-      <Radio position={[-0.62, 1.08, -2.55]} />
+      <Jukebox position={[-0.45, 1.08, -2.55]} />
       <Guests />
       <FigTree />
       {/* le mur de gauche : bibliothèques et coin du feu */}

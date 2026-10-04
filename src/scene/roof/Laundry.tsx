@@ -17,12 +17,15 @@ const CLOTHES: [number, number, number, Material][] = [[-1.5, 1.0, 1.1, R.sheet]
 function Cloth({ z, w, h, m, wind, i }: { z: number; w: number; h: number; m: Material; wind: { current: number }; i: number }) {
   const geo = useMemo(() => new PlaneGeometry(w, h, 8, 8), [w, h])
   const rest = useMemo(() => Float32Array.from(geo.attributes.position.array), [geo])
-  useFrame(({ clock }) => {
+  // La phase s'additionne image après image : multiplier le temps par une fréquence qui change ferait sauter le tissu.
+  const phase = useRef(i * 1.7)
+  useFrame(({ clock }, delta) => {
     if (reduceMotion) return
     const t = clock.elapsedTime, p = geo.attributes.position, k = wind.current
+    phase.current += Math.min(delta, 0.05) * (1.5 + k * 3)
     for (let j = 0; j < p.count; j++) {
       const u = rest[j * 3] / w + 0.5, v = 0.5 - rest[j * 3 + 1] / h
-      const flap = v * (0.03 + k * 0.32) * Math.sin(t * (1.5 + k * 3) + u * 3 + i) + v * v * k * 0.12
+      const flap = v * (0.03 + k * 0.32) * Math.sin(phase.current + u * 3 + i) + v * v * k * 0.12
       p.setZ(j, flap)
       p.setY(j, rest[j * 3 + 1] + v * k * 0.08 * Math.sin(t * 4 + u * 5))
     }
@@ -48,17 +51,20 @@ export function Laundry() {
     wind.current = approach(wind.current, isActive(useStore.getState(), 'laundry') ? 1 : 0, Math.min(delta, 0.05) * 0.7)
   })
   return (
-    <group ref={g} userData={{ id: 'laundry' }} position={[0, 0, 0]}>
-      {[Z0, Z1].map((z) => (
-        <group key={z}>
-          <Part geo={cyl(0.04, 0.05, TOP + 0.1, 10)} m={R.teak} p={[X, (TOP + 0.1) / 2, z]} />
-          <Part geo={rbox(0.06, 0.06, 0.24, 0.02)} m={R.teak} p={[X, TOP, z]} castShadow={false} />
-        </group>
-      ))}
-      <mesh geometry={rope} material={R.rope} raycast={noRay} />
-      {CLOTHES.map(([z, w, h, m], i) => (
-        <Cloth key={i} z={z} w={w} h={h} m={m} wind={wind} i={i} />
-      ))}
+    // Le rebond du clic agrandit le groupe autour de son origine : au pied du fil, pas à l'origine du monde (le linge glissait de 0,3).
+    <group ref={g} userData={{ id: 'laundry' }} position={[X, 0, (Z0 + Z1) / 2]}>
+      <group position={[-X, 0, -(Z0 + Z1) / 2]}>
+        {[Z0, Z1].map((z) => (
+          <group key={z}>
+            <Part geo={cyl(0.04, 0.05, TOP + 0.1, 10)} m={R.teak} p={[X, (TOP + 0.1) / 2, z]} />
+            <Part geo={rbox(0.06, 0.06, 0.24, 0.02)} m={R.teak} p={[X, TOP, z]} castShadow={false} />
+          </group>
+        ))}
+        <mesh geometry={rope} material={R.rope} raycast={noRay} />
+        {CLOTHES.map(([z, w, h, m], i) => (
+          <Cloth key={i} z={z} w={w} h={h} m={m} wind={wind} i={i} />
+        ))}
+      </group>
     </group>
   )
 }

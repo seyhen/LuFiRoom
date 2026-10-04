@@ -72,7 +72,7 @@ export function CabinScene() {
       <Candles items={WINDOW_CANDLES} />
       <Fireplace />
       <Turntable position={[1.9, 0.71, -2.64]} />
-      <Lamp position={[1.05, 0.62, -1.7]} />
+      <Lamp position={[1.55, 0.62, -0.73]} />
       <Cocoa />
       <Cat position={[-1.55, 0.12, -1.3]} rotation={0.1} />
     </>

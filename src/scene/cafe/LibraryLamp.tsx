@@ -12,7 +12,7 @@ import { bulbGlowTex } from '../textures'
 import { Steam } from '../objects/Steam'
 
 const dome = new SphereGeometry(1, 28, 10, 0, TAU, 0, Math.PI / 2)
-const AT: V3 = [-1.0, 0, -1.2]
+const AT: V3 = [-0.45, 0, -0.75]
 
 /** Guéridon de noyer à côté du fauteuil : une tasse de thé, deux livres. */
 function SideTable() {

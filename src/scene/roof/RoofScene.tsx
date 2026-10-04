@@ -1,4 +1,4 @@
-import { Radio } from '../objects/Radio'
+import { Boombox } from './Boombox'
 import { Static } from '../Static'
 import { RoofShell } from './RoofShell'
 import { Skyline } from './Skyline'
@@ -30,7 +30,7 @@ export function RoofScene() {
       <FireCorner />
       <Brazier />
       <RadioCrate />
-      <Radio position={[-2.55, 0.5, 2.35]} />
+      <Boombox position={[-2.55, 0.5, 2.35]} />
       <Telescope />
       <FrontCorner />
       <Laundry />

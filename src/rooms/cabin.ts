@@ -36,9 +36,9 @@ export const cabin: Room = {
   objects: [
     { id: 'fireplace', target: 'fire', label: 'Cheminée · feu', anchor: [-1.9, 1.3, -2.25] },
     { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-1.4, 0.58, -1.2] },
-    { id: 'turntable', target: 'radio', label: 'Tourne-disque · lofi', anchor: [1.75, 1.3, -2.5] },
+    { id: 'turntable', target: 'radio', label: 'Tourne-disque · lofi', anchor: [1.9, 1.05, -2.6] },
     { id: 'window', target: 'wind', label: 'Fenêtre · vent', anchor: [1.4, 3.35, -3.0] },
-    { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [1.05, 1.56, -1.7] },
+    { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [1.55, 1.12, -0.73] },
   ],
   sounds: [
     { id: 'fire', name: 'Feu de bois', chip: 'var(--c-fire)', volume: 0.7, sub: (s) => (s.on.fire ? 'ça crépite' : 'cheminée') },

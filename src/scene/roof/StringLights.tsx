@@ -54,7 +54,14 @@ export function StringLights() {
         <group key={i} ref={i === 1 ? pole : undefined} userData={i === 1 ? { id: 'lamp' } : undefined} position={[p.x, 0, p.z]}>
           <Part geo={cyl(0.04, 0.05, p.y + 0.12, 10)} m={R.teak} p={[0, (p.y + 0.12) / 2, 0]} />
           <Part geo={SPH} m={R.steel} scale={0.05} p={[0, p.y + 0.14, 0]} castShadow={false} />
-          {i === 1 && <Part geo={cyl(0.22, 0.24, 0.3, 18)} m={R.terracotta} p={[0, 0.15, 0]} />}
+          {i === 1 && (
+            <>
+              {/* le poteau est calé dans un seau de terre cuite rempli de béton, avec un collier de métal à sa base */}
+              <Part geo={cyl(0.22, 0.24, 0.3, 18)} m={R.terracotta} p={[0, 0.15, 0]} />
+              <Part geo={cyl(0.2, 0.2, 0.02, 18)} m={R.tar} p={[0, 0.31, 0]} castShadow={false} />
+              <Part geo={cyl(0.075, 0.1, 0.06, 12)} m={R.steel} p={[0, 0.34, 0]} castShadow={false} />
+            </>
+          )}
         </group>
       ))}
     </>

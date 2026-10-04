@@ -5,7 +5,7 @@ import { smooth } from '../../math'
 import { canvasTex } from '../paint'
 import { Part, SPH, cyl, noRay, rbox } from '../parts'
 import { mood, reduceMotion, useParticles } from '../anim'
-import { glowTex, puffTex } from '../textures'
+import { glowTex, mistTex } from '../textures'
 import { LIVE } from '../Static'
 import { R } from './materials'
 
@@ -87,7 +87,7 @@ export function Vent() {
     since.current += Math.min(delta, 0.05)
     if (since.current > 0.6) {
       since.current = 0
-      puffs.emit(puffTex, -0.68 + Math.random() * 0.05, 2.88, -3.75, { size: 0.35, life: 3.5, vy: 0.25, sway: 0.12, grow: 1.6, peak: 0.35 })
+      puffs.emit(mistTex, -0.68 + Math.random() * 0.05, 2.88, -3.75, { size: 0.35, life: 3.5, vy: 0.25, sway: 0.12, grow: 1.5, peak: 0.4, soft: true })
     }
   })
   return (

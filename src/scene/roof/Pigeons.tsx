@@ -53,10 +53,13 @@ export function Pigeons() {
   useSquash('pigeons', g)
   useFrame(() => void (coo.current = isActive(useStore.getState(), 'pigeons')))
   return (
-    <group ref={g} userData={{ id: 'pigeons' }}>
-      {BIRDS.map(([x, rot, ph]) => (
-        <Pigeon key={x} x={x} rot={rot} ph={ph} coo={coo} />
-      ))}
+    // Le rebond agrandit le groupe autour de son origine : on la met au milieu des oiseaux, sur le parapet.
+    <group ref={g} userData={{ id: 'pigeons' }} position={[1.1, 1.0, -3.18]}>
+      <group position={[-1.1, -1.0, 3.18]}>
+        {BIRDS.map(([x, rot, ph]) => (
+          <Pigeon key={x} x={x} rot={rot} ph={ph} coo={coo} />
+        ))}
+      </group>
     </group>
   )
 }

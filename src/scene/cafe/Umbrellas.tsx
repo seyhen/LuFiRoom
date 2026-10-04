@@ -6,7 +6,7 @@ import { Garment } from '../objects/Garment'
 
 // L'entrée est à droite, hors champ : on arrive trempé, on accroche son manteau, on laisse son parapluie s'égoutter.
 // Trois parapluies fermés dans le porte-parapluies : [x, inclinaison, matériau].
-const UMBRELLAS = [[-0.07, 0.22, K.stewartSmall], [0.05, -0.1, K.navy], [0.14, -0.3, K.burgundy]] as const
+const UMBRELLAS = [[-0.07, 0.22, K.stewartSmall], [0.05, -0.1, K.navy], [0.12, -0.26, K.burgundy]] as const
 
 /** Portemanteau de bois courbé : un caban, une écharpe en tartan, une casquette de tweed. */
 function CoatStand() {
@@ -79,12 +79,14 @@ export function Umbrellas() {
         <Part geo={cyl(0.205, 0.205, 0.035, 22)} m={K.brass} p={[0, 0.54, 0]} />
         {UMBRELLAS.map(([x, tilt, m], i) => (
           <group key={i} position={[x, 0.3, 0]} rotation-z={tilt} rotation-x={i === 1 ? 0.1 : -0.06}>
-            <Part geo={cyl(0.011, 0.011, 1.0, 8)} m={M.plum} p={[0, 0.5, 0]} />
-            <Part m={m} p={[0, 0.82, 0]} rotation-x={Math.PI}>
-              <coneGeometry args={[0.06, 0.5, 14]} />
+            <Part geo={cyl(0.012, 0.012, 0.92, 8)} m={M.plum} p={[0, 0.46, 0]} />
+            {/* la toile roulée, large vers la poignée, serrée par son lien de laiton */}
+            <Part m={m} p={[0, 0.42, 0]} rotation-x={Math.PI}>
+              <coneGeometry args={[0.08, 0.6, 8]} />
             </Part>
-            <Part m={M.plum} p={[0.045, 1.0, 0]}>
-              <torusGeometry args={[0.045, 0.011, 8, 14, Math.PI]} />
+            <Part geo={cyl(0.066, 0.066, 0.035, 8)} m={K.brass} p={[0, 0.58, 0]} castShadow={false} />
+            <Part m={K.walnut} p={[0.05, 0.92, 0]}>
+              <torusGeometry args={[0.05, 0.017, 8, 16, Math.PI]} />
             </Part>
           </group>
         ))}

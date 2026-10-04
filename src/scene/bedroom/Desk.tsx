@@ -4,7 +4,7 @@ import { rand } from '../../math'
 import { M } from '../materials'
 import { Batch, Part, cyl, noRay, rbox, type Item } from '../parts'
 import { reduceMotion, useParticles } from '../anim'
-import { wispTex } from '../textures'
+import { wispTex, wispTexes } from '../textures'
 import { B } from './materials'
 
 const LEGS = [[0.42, -2.9], [0.42, -2.1], [2.78, -2.9], [2.78, -2.1]]
@@ -24,9 +24,9 @@ export function Desk() {
   useFrame((_, delta) => {
     if (reduceMotion) return
     since.current += Math.min(delta, 0.05)
-    if (since.current > 0.6) {
+    if (since.current > 0.45) {
       since.current = 0
-      steam.emit(wispTex, MUG[0] + rand(-0.02, 0.02), MUG[1] + 0.33, MUG[2], { size: 0.3, life: 2.8, vy: 0.2, sway: 0.05, grow: 0.7, peak: 0.85 })
+      steam.emit(wispTexes, MUG[0] + rand(-0.03, 0.03), MUG[1] + 0.3, MUG[2] + rand(-0.02, 0.02), { size: 0.3, life: 2.9, vy: 0.2, sway: 0.05, grow: 0.8, peak: 0.85, soft: true })
     }
   })
   return (
@@ -41,10 +41,12 @@ export function Desk() {
       <Part geo={cyl(0.08, 0.065, 0.17, 18)} m={M.mint} p={[POT[0], POT[1] + 0.085, POT[2]]} />
       <Batch geo={cyl(1, 1, 1, 6)} m={B.trim} items={PENCILS} />
       <Part geo={cyl(0.095, 0.085, 0.2, 22)} m={M.mug} p={[MUG[0], MUG[1] + 0.1, MUG[2]]} />
-      <Part m={M.mug} p={[MUG[0] + 0.08, MUG[1] + 0.11, MUG[2] + 0.08]} rotation-y={Math.PI / 4}>
+      {/* l'anse sur le côté droit de l'écran (la caméra regarde vers -x, -z) : de face, elle se lit comme un anneau, pas comme une pastille collée */}
+      <Part m={M.mug} p={[MUG[0] + 0.085, MUG[1] + 0.11, MUG[2] - 0.085]} rotation-y={Math.PI / 4}>
         <torusGeometry args={[0.055, 0.017, 8, 18]} />
       </Part>
-      <Part geo={cyl(0.08, 0.08, 0.01, 20)} m={M.toffee} p={[MUG[0], MUG[1] + 0.195, MUG[2]]} />
+      {/* la boisson dépasse d'un cheveu du bord : à la même hauteur que lui, les deux surfaces se disputent le pixel et grésillent */}
+      <Part geo={cyl(0.08, 0.08, 0.01, 20)} m={M.toffee} p={[MUG[0], MUG[1] + 0.2, MUG[2]]} castShadow={false} />
       <group ref={steam.group} />
       {reduceMotion && (
         <sprite scale={0.34} position={[MUG[0], MUG[1] + 0.5, MUG[2]]} raycast={noRay}>

@@ -22,9 +22,9 @@ export function Sofa() {
       <Part geo={rbox(0.14, 0.34, 0.38, 0.08)} m={R.mustard} p={[-0.1, 0.68, -0.95]} rotation={[0.15, 0.2, -0.25]} />
       <Part geo={rbox(0.14, 0.32, 0.36, 0.08)} m={R.rust} p={[-0.1, 0.67, 0.92]} rotation={[-0.15, -0.2, -0.25]} />
       <Part geo={rbox(0.14, 0.3, 0.34, 0.08)} m={R.teal} p={[-0.08, 0.66, 0.15]} rotation={[0, 0.1, -0.2]} />
-      {/* le plaid, en vrac au bout du canapé */}
-      <Part geo={rbox(0.62, 0.06, 0.6, 0.03)} m={R.plaid} p={[0.1, 0.54, 0.95]} rotation={[0.08, 0.3, 0.05]} />
-      <Part geo={rbox(0.05, 0.3, 0.55, 0.02)} m={R.plaid} p={[0.42, 0.36, 1.0]} rotation-z={0.1} castShadow={false} />
+      {/* le plaid, jeté sur le coussin du bout : il retombe devant l'assise, contre sa face (le bord du siège est à x = 0,46) */}
+      <Part geo={rbox(0.56, 0.04, 0.58, 0.02)} m={R.plaid} p={[0.19, 0.53, 0.93]} />
+      <Part geo={rbox(0.04, 0.26, 0.56, 0.02)} m={R.plaid} p={[0.485, 0.4, 0.93]} castShadow={false} />
     </group>
   )
 }
@@ -103,14 +103,17 @@ export function Lantern({ position, scale = 1 }: { position: [number, number, nu
   )
 }
 
-/** Une caisse de disques au bout du canapé, la radio dessus. */
+/** Une caisse de bois à lattes au bout du canapé, la radio dessus. */
 export function RadioCrate() {
   return (
     <group position={[-2.55, 0, 2.35]}>
       <Part geo={rbox(0.95, 0.5, 0.55, 0.03)} m={R.teak} p={[0, 0.25, 0]} />
-      <Part geo={rbox(0.88, 0.46, 0.48, 0.02)} m={R.tar} p={[0, 0.28, 0]} castShadow={false} />
-      {[-0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3].map((x, i) => (
-        <Part key={x} geo={rbox(0.025, 0.38, 0.42, 0.008)} m={[R.rust, R.teal, R.mustard, R.cushion, R.plaid, R.teal, R.pink][i]} p={[x, 0.34, 0]} rotation-z={-0.1 + (i % 2) * 0.08} castShadow={false} />
+      {/* les lattes : des rainures sur les deux faces vues de la caméra (+z et +x) */}
+      {[0.12, 0.25, 0.38].map((y) => (
+        <group key={y}>
+          <Part geo={rbox(0.9, 0.014, 0.012, 0.005)} m={R.tar} p={[0, y, 0.275]} castShadow={false} />
+          <Part geo={rbox(0.012, 0.014, 0.5, 0.005)} m={R.tar} p={[0.477, y, 0]} castShadow={false} />
+        </group>
       ))}
     </group>
   )
@@ -167,11 +170,14 @@ export function FrontCorner() {
             <torusGeometry args={[0.05, 0.012, 6, 12, Math.PI]} />
           </Part>
         ))}
-        <Part geo={cyl(0.29, 0.29, 0.04, 22)} m={R.ice} p={[0, 0.34, 0]} castShadow={false} />
+        <Part geo={cyl(0.29, 0.29, 0.04, 22)} m={R.ice} p={[0, 0.355, 0]} castShadow={false} />
         {[[-0.1, 0.05, R.wine], [0.08, -0.06, R.leafDark], [0.12, 0.12, R.mustard], [-0.05, -0.14, R.leafDark]].map(([x, z, m], i) => (
-          <group key={i} position={[x as number, 0.38, z as number]} rotation={[0.2 * (i % 2 ? 1 : -1), 0, 0.15]}>
-            <Part geo={cyl(0.035, 0.035, 0.2, 10)} m={m as typeof R.wine} p={[0, 0.06, 0]} castShadow={false} />
-            <Part geo={cyl(0.014, 0.02, 0.06, 8)} m={m as typeof R.wine} p={[0, 0.19, 0]} castShadow={false} />
+          <group key={i} position={[x as number, 0.2, z as number]} rotation={[0.2 * (i % 2 ? 1 : -1), 0, 0.15]}>
+            {/* une bouteille plantée dans la glace : corps, épaule, goulot et capsule dorée dépassent du bac */}
+            <Part geo={cyl(0.045, 0.045, 0.2, 12)} m={m as typeof R.wine} p={[0, 0.1, 0]} castShadow={false} />
+            <Part geo={SPH} m={m as typeof R.wine} scale={[0.045, 0.045, 0.045]} p={[0, 0.2, 0]} castShadow={false} />
+            <Part geo={cyl(0.016, 0.022, 0.12, 10)} m={m as typeof R.wine} p={[0, 0.27, 0]} castShadow={false} />
+            <Part geo={cyl(0.02, 0.02, 0.035, 10)} m={R.brass} p={[0, 0.34, 0]} castShadow={false} />
           </group>
         ))}
       </group>

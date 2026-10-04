@@ -7,7 +7,7 @@ import { K } from './materials'
  */
 export function Armchair() {
   return (
-    <group position={[-1.78, 0, -1.25]} rotation-y={-0.42}>
+    <group position={[-1.23, 0, -0.8]} rotation-y={-0.42}>
       {/* pieds tournés */}
       {[[-0.36, -0.3], [0.36, -0.3], [-0.36, 0.3], [0.36, 0.3]].map(([x, z]) => (
         <Part key={`${x}${z}`} geo={cyl(0.045, 0.03, 0.16, 10)} m={K.walnut} p={[x, 0.08, z]} />

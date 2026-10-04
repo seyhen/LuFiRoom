@@ -5,7 +5,7 @@ import { rand } from '../../math'
 import { seeded } from '../paint'
 import { Batch, Part, SPH, cyl, noRay, rbox, type V3 } from '../parts'
 import { reduceMotion, useParticles } from '../anim'
-import { wispTex } from '../textures'
+import { mistTex } from '../textures'
 import { LIVE } from '../Static'
 import { O } from './materials'
 import { leafTex } from './textures'
@@ -84,10 +84,11 @@ function SteamAndLeaves() {
   useFrame(({ clock }, delta) => {
     const dt = Math.min(delta, 0.05), t = clock.elapsedTime
     since.current += dt
-    if (!reduceMotion && since.current > 0.2) {
+    if (!reduceMotion && since.current > 0.16) {
       since.current = 0
+      // Un brouillard plutôt qu'une fumée : beaucoup de petits nuages doux qui montent lentement du bassin entier.
       const a = rand(0, Math.PI * 2), k = Math.sqrt(Math.random())
-      steam.emit(wispTex, POOL.cx + Math.cos(a) * POOL.rx * 0.8 * k, POOL.y + 0.1, POOL.cz + Math.sin(a) * POOL.rz * 0.8 * k, { size: 0.7, life: 5, vy: 0.24, sway: 0.2, grow: 1.6, peak: 0.55 })
+      steam.emit(mistTex, POOL.cx + Math.cos(a) * POOL.rx * 0.8 * k, POOL.y + 0.08, POOL.cz + Math.sin(a) * POOL.rz * 0.8 * k, { size: rand(0.55, 0.95), life: 5.5, vy: 0.17, sway: 0.14, grow: 0.9, peak: 0.75, soft: true })
     }
     if (!reduceMotion) floats.current.forEach((f, i) => { f.rotation.y = t * 0.1 * (i % 2 ? 1 : -1) + i; f.position.y = POOL.y + 0.012 + Math.sin(t * 1.3 + i) * 0.006 })
   })

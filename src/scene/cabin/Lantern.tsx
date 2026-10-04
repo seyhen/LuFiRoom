@@ -3,8 +3,8 @@ import { Batch, Part, SPH, cyl, rbox, type Item } from '../parts'
 import { C } from './materials'
 import { Candles, type Candle } from '../objects/Candles'
 
-// Par terre, entre la table d'appoint et le meuble du tourne-disque : deux livres, la lanterne posée dessus.
-const [X, Z] = [2.55, -1.5]
+// Par terre, devant à droite, loin du meuble du tourne-disque : deux livres, la lanterne posée dessus.
+const [X, Z] = [2.5, 1.7]
 const TOP = 0.195
 
 // Couverture, puis les pages en retrait (elles dépassent un peu sur la tranche).

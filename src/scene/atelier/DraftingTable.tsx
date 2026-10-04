@@ -10,11 +10,12 @@ import { LIVE } from '../Static'
 import { A } from './materials'
 
 const AT: [number, number, number] = [0.2, 0, -2.05]
-const TILT = -0.62
+// Positif : le plateau regarde la pièce (vers +z) et l'auget à crayons est au bord bas. Négatif, on ne voyait que son dos.
+const TILT = 0.62
 const head = new SphereGeometry(0.11, 22, 10, 0, TAU, 0, Math.PI / 2)
 
-/** La lampe d'architecte, pincée au bord de la table : deux bras, un ressort, une tête qui éclaire le dessin. Jour / nuit. */
-function DraftLamp() {
+/** La lampe d'architecte, posée sur le bureau : deux bras, un ressort, une tête qui éclaire (le bras part vers -x, `rotationY` π le retourne). Jour / nuit. */
+export function DraftLamp({ position, rotationY = 0 }: { position: [number, number, number]; rotationY?: number }) {
   const g = useRef<Group>(null!), light = useRef<PointLight>(null!), glow = useRef<Sprite>(null!)
   useSquash('lamp', g)
   useFrame(() => {
@@ -26,7 +27,7 @@ function DraftLamp() {
     glow.current.material.opacity = e * 0.7
   })
   return (
-    <group ref={g} userData={{ id: 'lamp' }} position={[0.62, 1.05, 0.05]}>
+    <group ref={g} userData={{ id: 'lamp' }} position={position} rotation-y={rotationY}>
       <Part geo={rbox(0.08, 0.1, 0.08, 0.02)} m={A.steel} />
       <group rotation-z={0.35}>
         <Part geo={cyl(0.012, 0.012, 0.6, 6)} m={A.steel} p={[0, 0.3, 0]} />
@@ -95,7 +96,6 @@ export function DraftingTable() {
           <Part key={i} geo={cyl(0.007, 0.007, 0.2, 6)} m={m as typeof A.sage} p={[x as number, 0.07, 0.45]} rotation-z={Math.PI / 2} castShadow={false} />
         ))}
       </group>
-      <DraftLamp />
       {/* le pot à crayons et la tasse, sur une petite desserte */}
       <group position={[-0.85, 0, 0.1]}>
         <Part geo={cyl(0.2, 0.2, 0.03, 18)} m={A.oak} p={[0, 0.82, 0]} />

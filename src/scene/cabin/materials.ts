@@ -27,6 +27,10 @@ export const C = {
   wool: gummy(0xfffaf3, { roughness: 0.85, clearcoat: 0.05 }),
   pine: gummy(0x3f9474),
   pineLight: gummy(0x6db492),
+  /** Rameaux de sapin (guirlandes, couronne, branches du sapin), teintés un à un. */
+  needle: gummy(0xffffff, { roughness: 0.55, clearcoat: 0.25, clearcoatRoughness: 0.3 }),
+  /** Le cœur du sapin, sombre, sous les branches. */
+  firCore: gummy(0x2b6e55, { roughness: 0.7, clearcoat: 0.1 }),
   // le sapin : ses rameaux d'aiguilles, en chevrons
   fir: gummy(0x52a884, { map: firTex, roughness: 0.55, clearcoat: 0.4 }),
   cranberry: gummy(0xd25c72),

@@ -44,7 +44,7 @@ export function OliveTree() {
   return (
     <group position={[2.25, 0, -2.55]}>
       <Part geo={cyl(0.32, 0.26, 0.55, 22)} m={R.terracotta} p={[0, 0.275, 0]} />
-      <Part geo={cyl(0.3, 0.3, 0.03, 20)} m={R.log} p={[0, 0.535, 0]} castShadow={false} />
+      <Part geo={cyl(0.3, 0.3, 0.03, 20)} m={R.log} p={[0, 0.55, 0]} castShadow={false} />
       <Part geo={cyl(0.05, 0.075, 0.7, 10)} m={R.log} p={[0.03, 0.88, 0]} rotation-z={0.12} />
       <Part geo={cyl(0.035, 0.05, 0.6, 10)} m={R.log} p={[-0.1, 1.42, 0.04]} rotation={[0.15, 0, 0.35]} />
       <Part geo={cyl(0.03, 0.045, 0.55, 10)} m={R.log} p={[0.14, 1.4, -0.03]} rotation={[-0.1, 0, -0.4]} />

@@ -67,10 +67,14 @@ export function stripes(a: string, b: string, n: number, repeat: [number, number
 
 /** Cannage de rotin : un tressage serré, clair et miel. */
 export const weaveTex = canvasTex(128, 128, (x) => {
-  x.fillStyle = '#d9b27c'; x.fillRect(0, 0, 128, 128)
+  // Joints sombres, brins clairs qui alternent horizontal / vertical : un tressage, pas un damier (peu de contraste, il ne scintille pas).
+  x.fillStyle = '#c8975a'; x.fillRect(0, 0, 128, 128)
   for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) {
-    x.fillStyle = (i + j) % 2 ? '#e8c894' : '#c99a5e'
-    rr(x, i * 16 + 1, j * 16 + 1, 14, 14, 5); x.fill()
+    const flat = (i + j) % 2
+    x.fillStyle = flat ? '#e6c690' : '#dcb982'
+    if (flat) rr(x, i * 16 + 0.5, j * 16 + 3, 15, 10, 4)
+    else rr(x, i * 16 + 3, j * 16 + 0.5, 10, 15, 4)
+    x.fill()
   }
 }, [3, 3])
 

@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { AdditiveBlending, Color, ExtrudeGeometry, LatheGeometry, Shape, Vector2, type InstancedMesh, type Sprite } from 'three'
+import { AdditiveBlending, CatmullRomCurve3, Color, ExtrudeGeometry, LatheGeometry, Shape, TubeGeometry, Vector2, Vector3, type InstancedMesh, type Sprite } from 'three'
 import { TAU, smooth } from '../../math'
 import { Batch, Part, SPH, cyl, noRay, type Item } from '../parts'
 import { mood, reduceMotion } from '../anim'
@@ -84,27 +84,54 @@ const hash = (i: number) => {
   const v = Math.sin(i * 12.9898) * 43758.5453
   return v - Math.floor(v)
 }
-const on = (t: Tier, a: number, u: number, out: number): [number, number, number] => {
-  const [rad, y] = flank(t, u)
-  return [POS[0] + Math.cos(a) * (rad + out), t.y + y, POS[2] + Math.sin(a) * (rad + out)]
+// Chaque étage est une jupe lisse dont le bord bas forme des lobes qui retombent (style gummy : rien de pointu, pas d'écailles).
+const LOBES = 7
+const lobed = (g: LatheGeometry, t: Tier, phase: number) => {
+  const c = g.clone(), p = c.attributes.position
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i), y = p.getY(i), z = p.getZ(i)
+    if (Math.hypot(x, z) < t.r * 0.8) continue
+    const l = 0.5 + 0.5 * Math.cos(Math.atan2(z, x) * LOBES + phase), f = Math.max(0, 1 - y / (t.h * 0.5))
+    const k = 1 + 0.1 * l * f
+    p.setXYZ(i, x * k, y - 0.17 * l * l * f, z * k)
+  }
+  c.computeVertexNormals()
+  return c
 }
+const skirts = tiers.map((g, i) => lobed(g, TIERS[i], i * 0.55))
+const SKIN = [C.firCore, C.pine, C.pine, C.pine]
 
-// Boules : rouge canneberge, or, crème, rose, bleu canard.
+/** Rayon du sapin à la hauteur y (le plus large des étages à cette hauteur). */
+const envelope = (y: number) => {
+  let r = 0
+  for (const t of TIERS) {
+    if (y < t.y || y > t.y + t.h) continue
+    for (let i = 0; i < 20; i++) {
+      const [x0, y0] = flank(t, i / 20), [x1, y1] = flank(t, (i + 1) / 20), yy = y - t.y
+      if (yy >= Math.min(y0, y1) && yy <= Math.max(y0, y1)) r = Math.max(r, x0 + ((x1 - x0) * (yy - y0)) / (y1 - y0 || 1))
+    }
+  }
+  return r
+}
+/** Un point de la spirale : s de 0 (le bas) à 1 (la cime). */
+const spiral = (s: number, out: number): [number, number, number] => {
+  const y = 0.55 + s * 1.7, a = s * TAU * 4.2, r = envelope(y) + out
+  return [POS[0] + Math.cos(a) * r, y, POS[2] + Math.sin(a) * r]
+}
+const garland = new TubeGeometry(new CatmullRomCurve3(Array.from({ length: 100 }, (_, i) => new Vector3(...spiral(i / 99, 0.035)))), 260, 0.03, 6, false)
+
+// Boules : rouge canneberge, or, crème, rose, bleu canard. Elles pendent aux lobes des étages.
 const BAUBLE = [0xd9506a, 0xf3c14e, 0xfff4e6, 0xf3a3b8, 0x4fb0bf]
-const baubles: Item[] = TIERS.flatMap((t, k) => {
-  const n = [7, 6, 5, 3][k]
-  return Array.from({ length: n }, (_, i) => {
-    const j = k * 10 + i, a = ((i + hash(j) * 0.5) / n) * TAU + k * 0.9
-    return { p: on(t, a, 0.06 + hash(j + 50) * 0.16, 0.02), s: 0.065 + hash(j + 90) * 0.025, c: BAUBLE[(i + k) % BAUBLE.length] }
-  })
-})
+const baubles: Item[] = TIERS.flatMap((t, k) =>
+  Array.from({ length: 4 }, (_, i): Item => {
+    const j = (i * 2 + k) % LOBES, a = (j * TAU - k * 0.55) / LOBES + 0.05
+    return { p: [POS[0] + Math.cos(a) * t.r * 1.08, t.y - 0.19, POS[2] + Math.sin(a) * t.r * 1.08], s: 0.07 + hash(k * 10 + i) * 0.02, c: BAUBLE[(i + k) % BAUBLE.length] }
+  }),
+)
 
-// Ampoules : une spirale par étage. Or et blanc chaud surtout, un peu de rose et de menthe.
+// Ampoules : sur la spirale, entre les anneaux de la guirlande. Or et blanc chaud surtout, un peu de rose et de menthe.
 const BULB = [0xffd36b, 0xfff0c8, 0xffd36b, 0xff9fb0, 0xfff0c8, 0x9ff0d4]
-const bulbs: Item[] = TIERS.flatMap((t, k) => {
-  const n = [15, 12, 9, 6][k]
-  return Array.from({ length: n }, (_, i) => ({ p: on(t, (i / n) * TAU + k * 1.7, 0.1 + (0.45 * i) / n, 0.015), s: 0.036, c: BULB[(i + k * 2) % BULB.length] }))
-})
+const bulbs: Item[] = Array.from({ length: 44 }, (_, i): Item => ({ p: spiral((i + 0.5) / 44, 0.06), s: 0.038, c: BULB[i % BULB.length] }))
 const bulbBase = bulbs.map((b) => new Color(b.c))
 
 const lit = new Color()
@@ -134,9 +161,10 @@ export function ChristmasTree() {
       <mesh geometry={cyl(0.96, 0.96, 0.03, 40)} material={C.wool} position={[POS[0], 0.015, POS[2]]} receiveShadow />
       <mesh geometry={cyl(0.84, 0.86, 0.04, 40)} material={C.cranberry} position={[POS[0], 0.02, POS[2]]} receiveShadow />
       <Part geo={cyl(0.12, 0.15, 0.46, 14)} m={C.log} p={[POS[0], 0.23, POS[2]]} />
-      {tiers.map((g, i) => (
-        <Part key={i} geo={g} m={C.fir} p={[POS[0], TIERS[i].y, POS[2]]} rotation-y={i * 0.7} />
+      {skirts.map((g, i) => (
+        <Part key={i} geo={g} m={SKIN[i]} p={[POS[0], TIERS[i].y, POS[2]]} />
       ))}
+      <Part geo={garland} m={C.gold} castShadow={false} />
       <Batch geo={SPH} m={C.tint} items={baubles} />
       <Batch ref={lights} geo={SPH} m={C.bulb} items={bulbs} />
       <Part geo={STAR} m={C.gold} p={[POS[0], STAR_Y, POS[2]]} rotation-y={Math.PI / 4} castShadow={false} />

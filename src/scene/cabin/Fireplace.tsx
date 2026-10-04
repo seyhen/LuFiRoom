@@ -5,7 +5,7 @@ import { isActive, useStore } from '../../state/store'
 import { approach, rand } from '../../math'
 import { Batch, Part, cyl, noRay, rbox, worldUV, type Item } from '../parts'
 import { useParticles, useSquash } from '../anim'
-import { glowTex, puffTex } from '../textures'
+import { glowTex, mistTex } from '../textures'
 import { C } from './materials'
 import { emberTex } from './textures'
 import { Stockings } from './Stockings'
@@ -50,7 +50,7 @@ export function Fireplace() {
     // un filet de fumée sort de la cheminée tant que le feu brûle
     if (k > 0.6 && puff.current > 0.7) {
       puff.current = 0
-      smoke.emit(puffTex, POS[0] + rand(-0.12, 0.12), 4.32, POS[2] - 0.07, { size: 0.4, life: 5.5, vy: 0.3, sway: 0.28, grow: 2.4, peak: 0.42, color: 0xb9b2bd })
+      smoke.emit(mistTex, POS[0] + rand(-0.12, 0.12), 4.32, POS[2] - 0.07, { size: 0.4, life: 5.5, vy: 0.3, sway: 0.28, grow: 2.2, peak: 0.5, color: 0xb9b2bd, soft: true })
     }
     if (k > 0.6 && since.current > 0.22) {
       since.current = 0

@@ -1,6 +1,7 @@
 import { M } from '../materials'
-import { Batch, Part, SPH, cyl, rbox, type Item } from '../parts'
+import { Part, cyl, rbox } from '../parts'
 import { Candles } from '../objects/Candles'
+import { Vines } from '../nature/Vines'
 import { B } from './materials'
 
 // Livres serrés de gauche à droite ; le dernier penche.
@@ -15,16 +16,6 @@ const BOOKS = (() => {
   })
 })()
 
-// La plante qui retombe du bord de l'étagère : des feuilles le long d'une courbe qui descend.
-const VINE: Item[] = Array.from({ length: 13 }, (_, i) => {
-  const t = i / 12, side = i % 2 ? 1 : -1
-  return {
-    p: [-0.8 + side * 0.07 + Math.sin(t * 4) * 0.03, 2.46 - t * 0.8, -2.74],
-    s: [0.09 - t * 0.02, 0.02, 0.06 - t * 0.012],
-    r: [0.3, side * 0.5, side * (0.9 - t * 0.2)],
-    c: i % 3 === 0 ? 0x8ed59b : i % 3 === 1 ? 0x67bb7c : 0x4aa885,
-  }
-})
 const CANDLE = [{ p: [-1.12, 2.34, -2.8] as [number, number, number], h: 0.15, r: 0.065 }]
 
 /** Étagère sur équerres : livres, cadre photo, bougie, pot d'où retombe une plante. Trois cadres au mur au-dessus. */
@@ -43,9 +34,9 @@ export function Shelf() {
       <mesh position={[-1.4, 2.5, -2.832]} rotation-y={0.2} material={B.moonPrint}>
         <planeGeometry args={[0.19, 0.24]} />
       </mesh>
-      <Part geo={cyl(0.09, 0.075, 0.15, 18)} m={M.terracotta} p={[-0.75, 2.415, -2.83]} />
-      <Part geo={SPH} m={M.leaf} scale={[0.07, 0.07, 0.07]} p={[-0.75, 2.52, -2.83]} />
-      <Batch geo={SPH} m={B.trim} items={VINE} />
+      {/* le pothos : le pot au bord de la planche (le bord avant est à z = -2,66), les tiges pendent dans le vide, devant */}
+      <Part geo={cyl(0.09, 0.075, 0.15, 18)} m={M.terracotta} p={[-0.75, 2.415, -2.73]} />
+      <Vines p={[-0.75, 2.48, -2.73]} strands={[[-0.07, 0.12, 0.75], [0.0, 0.13, 0.5], [0.07, 0.12, 0.9]]} m={M.leaf} m2={B.leafDeep} size={0.085} crown={7} seed={4} />
       <Candles items={CANDLE} />
       {/* au mur : trois cadres, le grand au milieu */}
       <Part geo={rbox(0.9, 1.1, 0.06, 0.04)} m={M.plum} p={[-1.3, 3.42, -2.97]} />

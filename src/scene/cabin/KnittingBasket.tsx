@@ -7,7 +7,7 @@ import { C } from './materials'
  */
 export function KnittingBasket() {
   return (
-    <group position={[1.3, 0, 0.75]} rotation-y={0.5}>
+    <group position={[-0.2, 0, 1.6]} rotation-y={0.5}>
       <Part geo={cyl(0.2, 0.16, 0.22, 20)} m={C.wicker} p={[0, 0.11, 0]} />
       <Part m={C.log} p={[0, 0.22, 0]} rotation-x={Math.PI / 2} castShadow={false}>
         <torusGeometry args={[0.2, 0.015, 6, 24]} />

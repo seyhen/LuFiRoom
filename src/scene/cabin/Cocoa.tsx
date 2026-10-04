@@ -5,12 +5,12 @@ import { rand } from '../../math'
 import { M } from '../materials'
 import { Part, cyl, noRay, rbox } from '../parts'
 import { reduceMotion, useParticles } from '../anim'
-import { wispTex } from '../textures'
+import { wispTex, wispTexes } from '../textures'
 import { C } from './materials'
 import { starGeo } from './ChristmasTree'
 
 // Sur la table d'appoint, côté pièce : un gros mug (plus gros que nature, pour qu'on le voie), un napperon, deux biscuits.
-const P = [1.9, 0.62, -1.5] as const
+const P = [2.4, 0.62, -0.53] as const
 const COOKIE = starGeo(0.085, 0.048, 0.03)
 
 // Sucre d'orge qui trempe dans le chocolat : une tige et sa crosse, tournée vers l'avant.
@@ -29,9 +29,9 @@ export function Cocoa() {
   useFrame((_, delta) => {
     if (reduceMotion) return
     since.current += Math.min(delta, 0.05)
-    if (since.current > 0.55) {
+    if (since.current > 0.4) {
       since.current = 0
-      steam.emit(wispTex, P[0] + rand(-0.03, 0.03), P[1] + 0.42, P[2] + rand(-0.03, 0.03), { size: 0.5, life: 3.2, vy: 0.2, sway: 0.07, grow: 0.7, peak: 0.95 })
+      steam.emit(wispTexes, P[0] + rand(-0.04, 0.04), P[1] + 0.4, P[2] + rand(-0.03, 0.03), { size: 0.42, life: 3.4, vy: 0.2, sway: 0.08, grow: 0.8, peak: 0.85, soft: true })
     }
   })
   const still = useMemo(() => [[0, 0.62, 0.5, 0.9], [0.03, 0.95, 0.42, 0.55]], [])
@@ -45,7 +45,7 @@ export function Cocoa() {
         <Part m={M.cream} p={[0, 0.256, 0]} rotation-x={Math.PI / 2} castShadow={false}>
           <torusGeometry args={[0.122, 0.014, 8, 26]} />
         </Part>
-        <mesh geometry={cyl(0.114, 0.114, 0.01, 26)} material={C.cocoa} position={[0, 0.252, 0]} />
+        <mesh geometry={cyl(0.114, 0.114, 0.01, 26)} material={C.cocoa} position={[0, 0.262, 0]} />
         <Part m={C.cranberry} p={[0.1, 0.14, -0.1]} rotation-y={Math.PI / 4} castShadow={false}>
           <torusGeometry args={[0.065, 0.02, 10, 20]} />
         </Part>

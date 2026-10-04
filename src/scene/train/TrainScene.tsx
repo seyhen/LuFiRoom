@@ -1,4 +1,4 @@
-import { Radio } from '../objects/Radio'
+import { Gramophone } from './Gramophone'
 import { Cloud } from '../objects/Cloud'
 import { Rain } from '../objects/Rain'
 import { Static } from '../Static'
@@ -31,7 +31,7 @@ export function TrainScene() {
       <Bunks />
       <ClubChair />
       <Sideboard />
-      <Radio position={[-2.58, 0.76, 1.6]} />
+      <Gramophone position={[-2.55, 0.76, 1.5]} />
       <OpenSuitcase />
       <TeaTrolley />
       <Slippers />

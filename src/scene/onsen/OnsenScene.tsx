@@ -1,5 +1,5 @@
-import { Radio } from '../objects/Radio'
 import { Static } from '../Static'
+import { Shamisen } from './Shamisen'
 import { OnsenShell } from './OnsenShell'
 import { Mountains } from './Mountains'
 import { Pool } from './Pool'
@@ -26,7 +26,7 @@ export function OnsenScene() {
       <StoneLantern />
       <Furin />
       <TeaTray />
-      <Radio position={[-2.45, 0.42, 2.0]} />
+      <Shamisen position={[-2.45, 0.42, 2.0]} />
       <BathThings />
       <Shrubs />
       <Noren />

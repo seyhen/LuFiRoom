@@ -30,7 +30,7 @@ export function Lights({ room }: { room: Room }) {
   return (
     <>
       <hemisphereLight ref={hemi} />
-      <directionalLight ref={sun} position={[5, 10, 7]} castShadow shadow-mapSize={[2048, 2048]} shadow-bias={-0.0004} shadow-normalBias={0.03}>
+      <directionalLight ref={sun} position={[5, 10, 7]} castShadow shadow-mapSize={[2048, 2048]} shadow-bias={-0.0008} shadow-normalBias={0.06}>
         <orthographicCamera attach="shadow-camera" args={[-8, 8, 8, -8, 1, 30]} />
       </directionalLight>
     </>

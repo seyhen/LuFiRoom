@@ -74,7 +74,7 @@ export function ClubChair() {
 /** La valise ouverte sur son porte-bagages pliant : des pulls pliés, un appareil photo, une carte. */
 export function OpenSuitcase() {
   return (
-    <group position={[1.3, 0, 1.9]} rotation-y={-0.5}>
+    <group position={[1.75, 0, 1.55]} rotation-y={-0.5}>
       {[-0.32, 0.32].map((x) => (
         <group key={x}>
           <Part geo={cyl(0.015, 0.015, 0.62, 6)} m={T.mahoganyDark} p={[x, 0.28, 0]} rotation-x={0.45} />
@@ -86,7 +86,7 @@ export function OpenSuitcase() {
       ))}
       <group position={[0, 0.57, 0]}>
         <Part geo={rbox(0.8, 0.14, 0.5, 0.04)} m={T.leather} p={[0, 0.07, 0]} />
-        <Part geo={rbox(0.74, 0.02, 0.44, 0.02)} m={T.velvetDark} p={[0, 0.13, 0]} castShadow={false} />
+        <Part geo={rbox(0.74, 0.02, 0.44, 0.02)} m={T.velvetDark} p={[0, 0.145, 0]} castShadow={false} />
         {/* le couvercle grand ouvert, doublé de velours, une poche d'étiquettes */}
         <Part geo={rbox(0.8, 0.5, 0.05, 0.04)} m={T.leather} p={[0, 0.3, -0.38]} rotation-x={-0.55} />
         <Part geo={rbox(0.72, 0.42, 0.02, 0.02)} m={T.velvet} p={[0, 0.31, -0.35]} rotation-x={-0.55} castShadow={false} />

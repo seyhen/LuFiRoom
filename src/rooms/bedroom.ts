@@ -27,12 +27,12 @@ export const bedroom: Room = {
   playlist,
   stations: ['nuit-douce', 'petit-matin', 'brume', 'veillee', 'bureau'],
   objects: [
-    { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.3, 5.75, -3.85] },
-    { id: 'radio', target: 'radio', label: 'Radio · lofi', anchor: [2.3, 2.05, -2.5] },
+    { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.35, 5.2, -3.85] },
+    { id: 'radio', target: 'radio', label: 'Radio · lofi', anchor: [2.2, 1.8, -2.55] },
     { id: 'window', target: 'outside', label: 'Fenêtre · dehors', anchor: [1.4, 3.35, -3.0] },
-    { id: 'fan', target: 'fan', label: 'Ventilo · bruit blanc', anchor: [0.62, 2.35, -2.6] },
+    { id: 'fan', target: 'fan', label: 'Ventilo · bruit blanc', anchor: [0.6, 1.85, -2.6] },
     { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-1.15, 1.45, -0.5] },
-    { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-2.68, 1.75, -2.72] },
+    { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-2.68, 1.2, -2.72] },
   ],
   sounds: [
     {

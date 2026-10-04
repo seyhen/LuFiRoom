@@ -67,7 +67,7 @@ export function ShishiOdoshi() {
     <group ref={g} userData={{ id: 'bamboo' }} position={[-1.05, 0, -2.4]}>
       {/* la vasque de pierre et son eau */}
       <Part geo={cyl(0.32, 0.36, 0.34, 20)} m={O.stone[2]} p={[0.25, 0.17, 0.2]} />
-      <Part geo={cyl(0.24, 0.24, 0.02, 20)} m={O.water} p={[0.25, 0.33, 0.2]} castShadow={false} />
+      <Part geo={cyl(0.24, 0.24, 0.02, 20)} m={O.water} p={[0.25, 0.345, 0.2]} castShadow={false} />
       {/* le petit bec qui l'alimente, depuis la palissade */}
       <Part geo={cyl(0.03, 0.03, 0.7, 10)} m={O.bamboo} p={[-0.42, 0.98, -0.32]} rotation={[0.9, 0, 0.1]} castShadow={false} />
       {/* les montants et le tube qui bascule */}

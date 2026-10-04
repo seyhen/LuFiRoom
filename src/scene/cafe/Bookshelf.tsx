@@ -109,7 +109,7 @@ export function BackShelf() {
   return (
     <>
       <Shelf z0={-2.12} z1={-1.04} seed={11} />
-      <Pothos at={[-2.72, 3.79, -1.55]} />
+      <Pothos at={[-2.55, 3.79, -1.55]} />
     </>
   )
 }
@@ -130,7 +130,9 @@ export function Bookshelf() {
   })
   return (
     <>
-      <group ref={g} userData={{ id: 'books' }}>
+      {/* le rebond agrandit le groupe autour de son origine : au pied de la travée, pas à l'origine du monde */}
+      <group ref={g} userData={{ id: 'books' }} position={[X, 0, (Z0 + Z1) / 2]}>
+        <group position={[-X, 0, -(Z0 + Z1) / 2]}>
         <Static>
           <Shelf z0={Z0} z1={Z1} seed={7} />
           {/* l'échelle, appuyée contre les étagères, et sa barre de laiton */}
@@ -148,6 +150,7 @@ export function Bookshelf() {
           <Part geo={cyl(0.02, 0.02, Z1 - Z0 + 0.1, 10)} m={K.brass} p={[-2.42, 3.55, (Z0 + Z1) / 2]} rotation-x={Math.PI / 2} />
           <Globe at={[-2.74, 3.79, 2.35]} />
         </Static>
+        </group>
       </group>
       <group ref={pages.group} />
     </>
@@ -179,7 +182,8 @@ export function Pothos({ at, drop = 0.9 }: { at: [number, number, number]; drop?
   return (
     <group position={[x, y, z]}>
       <Part geo={cyl(0.12, 0.09, 0.18, 16)} m={K.pot} p={[0, 0.09, 0]} />
-      <Vines p={[0, 0.17, 0]} strands={[[0.15, -0.12, drop], [0.16, 0.04, drop * 0.65], [0.14, 0.13, drop * 1.2]]} m={K.leafV} m2={K.leafVDark} size={0.085} crown={7} seed={Math.round((x + z) * 10)} />
+      {/* les tiges tombent dans le vide, devant la corniche (dont le bord est à x = -2,45) : le pot est au bord, elles ne traversent pas la planche */}
+      <Vines p={[0, 0.17, 0]} strands={[[0.17, -0.12, drop], [0.18, 0.04, drop * 0.65], [0.16, 0.13, drop * 1.2]]} m={K.leafV} m2={K.leafVDark} size={0.085} crown={7} seed={Math.round((x + z) * 10)} />
     </group>
   )
 }

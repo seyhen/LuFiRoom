@@ -28,12 +28,12 @@ export const atelier: Room = {
   stations: ['bureau', 'petit-matin', 'brume', 'nuit-douce'],
   playlist: [],
   objects: [
-    { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.3, 5.75, -3.85] },
-    { id: 'radio', target: 'radio', label: 'Tourne-disque · lofi', anchor: [2.25, 1.05, -2.5] },
+    { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.35, 5.2, -3.85] },
+    { id: 'radio', target: 'radio', label: 'Tourne-disque · lofi', anchor: [2.3, 0.85, -2.6] },
     { id: 'pencil', target: 'pencil', label: 'Table à dessin · crayon', anchor: [0.1, 1.55, -2.0] },
-    { id: 'keyboard', target: 'keys', label: 'Clavier · on écrit', anchor: [-2.2, 1.2, -1.1] },
+    { id: 'keyboard', target: 'keys', label: 'Clavier · on écrit', anchor: [-2.4, 1.0, -1.1] },
     { id: 'kettle', target: 'kettle', label: 'Bouilloire · thé', anchor: [-2.6, 1.45, 0.95] },
-    { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [0.65, 2.05, -1.95] },
+    { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-2.6, 1.1, -1.9] },
   ],
   sounds: [
     { id: 'radio', name: 'Vinyle lofi', chip: 'var(--c-radio)', volume: 0.7, sub: (s) => (s.on.radio && s.onAir) || 'lofi · 72 bpm' },

@@ -59,16 +59,19 @@ function TeaGlass() {
   })
   return (
     <group ref={g} userData={{ id: 'tea' }} position={[0.75, TOP, Z + 0.05]}>
-      <Part geo={cyl(0.1, 0.1, 0.012, 22)} m={T.brass} p={[0, 0.006, 0]} castShadow={false} />
-      <Part geo={cyl(0.058, 0.05, 0.08, 18)} m={T.brass} p={[0, 0.05, 0]} />
-      <Part geo={cyl(0.05, 0.046, 0.15, 18)} m={T.tea} p={[0, 0.1, 0]} castShadow={false} />
-      <Part geo={cyl(0.056, 0.05, 0.17, 18)} m={T.glass} p={[0, 0.11, 0]} castShadow={false} />
-      <Part m={T.brass} p={[0.07, 0.09, 0]} castShadow={false}>
-        <torusGeometry args={[0.035, 0.008, 6, 14, Math.PI * 1.2]} />
-      </Part>
-      <mesh ref={spoon} userData={LIVE} geometry={cyl(0.004, 0.004, 0.24, 5)} material={T.brass} position={[-0.015, 0.2, 0]} rotation-z={0.18} />
-      <Part geo={cyl(0.03, 0.03, 0.006, 14)} m={T.mustard} p={[0.03, 0.18, 0.02]} rotation-z={0.8} castShadow={false} />
-      <TeaSteam on={on} />
+      {/* plus gros que nature, pour qu'on le reconnaisse : soucoupe, porte-verre de laiton, verre en tulipe plein de thé, cuillère courte */}
+      <group scale={1.4}>
+        <Part geo={cyl(0.1, 0.1, 0.012, 22)} m={T.brass} p={[0, 0.006, 0]} castShadow={false} />
+        <Part geo={cyl(0.058, 0.048, 0.1, 18)} m={T.brass} p={[0, 0.062, 0]} />
+        <Part geo={cyl(0.064, 0.052, 0.15, 18)} m={T.glass} p={[0, 0.145, 0]} castShadow={false} />
+        <Part geo={cyl(0.056, 0.047, 0.1, 18)} m={T.tea} p={[0, 0.125, 0]} castShadow={false} />
+        <Part m={T.brass} p={[0.07, 0.07, 0]} castShadow={false}>
+          <torusGeometry args={[0.035, 0.008, 6, 14, Math.PI * 1.2]} />
+        </Part>
+        <mesh ref={spoon} userData={LIVE} geometry={cyl(0.004, 0.004, 0.17, 5)} material={T.brass} position={[-0.02, 0.17, 0]} rotation-z={0.18} />
+        <Part geo={cyl(0.03, 0.03, 0.006, 14)} m={T.mustard} p={[0.075, 0.018, 0.02]} castShadow={false} />
+        <TeaSteam on={on} />
+      </group>
     </group>
   )
 }
