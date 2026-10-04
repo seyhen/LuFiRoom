@@ -1,6 +1,8 @@
 import { Part, SPH, cyl, rbox } from '../parts'
 import { Candle } from '../objects/Candle'
 import { R } from './materials'
+import { Foliage } from '../nature/Foliage'
+import { Aloe } from './Planters'
 
 /** Le canapé d'extérieur en teck contre le parapet : gros coussins, un plaid, un coussin moutarde et un rouille. */
 export function Sofa() {
@@ -155,12 +157,11 @@ export function FrontCorner() {
         <Part geo={rbox(0.55, 0.32, 0.4, 0.02)} m={R.teak} p={[0, 0.16, 0]} />
         <Part geo={rbox(0.45, 0.3, 0.36, 0.02)} m={R.teak} p={[0.05, 0.47, 0.0]} rotation-y={0.2} />
         <Part geo={cyl(0.12, 0.1, 0.16, 14)} m={R.terracotta} p={[0.05, 0.7, 0]} />
-        {Array.from({ length: 7 }, (_, i) => (
-          <Part key={i} geo={SPH} m={i % 2 ? R.leaf : R.olive} scale={[0.07, 0.14, 0.07]} p={[0.05 + Math.cos(i) * 0.06, 0.88, Math.sin(i) * 0.06]} rotation={[Math.sin(i) * 0.4, 0, Math.cos(i) * 0.4]} castShadow={false} />
-        ))}
+        <Aloe position={[0.05, 0.77, 0]} />
         <Part geo={cyl(0.1, 0.09, 0.14, 14)} m={R.terracotta} p={[-0.15, 0.39, 0.1]} />
+        <Foliage v={3} p={[-0.15, 0.44, 0.1]} s={[0.12, 0.12, 0.11]} m={R.herbF[0]} shadow={false} />
         {[0, 1, 2, 3].map((i) => (
-          <Part key={i} geo={SPH} m={R.tomato} scale={0.035} p={[-0.15 + Math.cos(i * 1.6) * 0.05, 0.5, 0.1 + Math.sin(i * 1.6) * 0.05]} castShadow={false} />
+          <Part key={i} geo={SPH} m={R.tomato} scale={0.03} p={[-0.15 + Math.cos(i * 1.6) * 0.08, 0.53 + (i % 2) * 0.03, 0.1 + Math.sin(i * 1.6) * 0.08]} castShadow={false} />
         ))}
         {/* l'arrosoir */}
         <group position={[0.45, 0, 0.2]}>

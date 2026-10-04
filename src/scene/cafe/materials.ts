@@ -1,5 +1,6 @@
 import { DoubleSide, MeshBasicMaterial, MeshStandardMaterial } from 'three'
 import { M, gummy } from '../materials'
+import { leafy } from '../nature/materials'
 import { WIN } from '../parts'
 import { paneH, paneW } from '../objects/Window'
 import { cafeFloorTex, cafeWallTex, chalkTex, glassTex, paintingTex, tartanChairTex, tartanRugTex, tartanSmallTex, tilesTex, matTex, wallpaperTex } from './textures'
@@ -54,6 +55,9 @@ export const K = {
   thistle: gummy(0x9a6cc8, { roughness: 0.6 }),
   leaf: gummy(0x4f9a6a),
   leafDark: gummy(0x3a7a52),
+  leafV: leafy(0x55a272),
+  leafVDark: leafy(0x3c7e56),
+  fig: leafy(0x4a8a5a, { roughness: 0.35, clearcoat: 0.7 }),
   pot: gummy(0xc9764f),
   dog: gummy(0x8d8794, { roughness: 0.85, clearcoat: 0.05 }),
   dogLight: gummy(0xb9b3bd, { roughness: 0.85, clearcoat: 0.05 }),

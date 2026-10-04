@@ -9,6 +9,7 @@ import { glowTex } from '../textures'
 import { Steam } from '../objects/Steam'
 import { LIVE } from '../Static'
 import { T } from './materials'
+import { Leaf } from '../nature/Leaf'
 
 const TOP = 1.0, Z = -2.68
 
@@ -103,7 +104,11 @@ export function Table() {
       <Part geo={cyl(0.025, 0.035, 0.16, 12)} m={T.brass} p={[1.85, TOP + 0.08, Z - 0.08]} />
       <Part geo={cyl(0.004, 0.004, 0.16, 4)} m={T.leaf} p={[1.85, TOP + 0.22, Z - 0.08]} castShadow={false} />
       <Part geo={SPH} m={T.rose} scale={[0.04, 0.035, 0.04]} p={[1.85, TOP + 0.31, Z - 0.08]} />
-      <Part geo={SPH} m={T.leaf} scale={[0.035, 0.008, 0.02]} p={[1.87, TOP + 0.24, Z - 0.07]} rotation-z={0.5} castShadow={false} />
+      {[[0, 0.21, 0.5], [2.6, 0.26, 0.7]].map(([ry, y, tilt], i) => (
+        <group key={i} position={[1.85, TOP + y, Z - 0.08]} rotation-y={ry}>
+          <Leaf kind="ovate" r={[-tilt, 0, 0]} w={0.02} l={0.055} m={T.leafV} />
+        </group>
+      ))}
       {/* le billet et la montre de gousset */}
       <Part geo={rbox(0.2, 0.004, 0.09, 0.002)} m={T.cream} p={[1.55, TOP + 0.012, Z + 0.15]} rotation-y={0.3} castShadow={false} />
       <Part geo={cyl(0.04, 0.04, 0.015, 18)} m={T.gold} p={[1.0, TOP + 0.015, Z + 0.17]} castShadow={false} />

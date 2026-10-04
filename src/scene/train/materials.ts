@@ -1,5 +1,6 @@
 import { DoubleSide, MeshBasicMaterial } from 'three'
 import { M, gummy } from '../materials'
+import { leafy } from '../nature/materials'
 import { boardTex, carpetTex, panelTex, persianTex, streakTex } from './textures'
 
 // Le mur du fond est une extrusion : ses UV sont ses coordonnées (1 unité de large, 4.4 de haut par tuile).
@@ -36,6 +37,7 @@ export const T = {
   mustard: gummy(0xd9a441),
   rose: gummy(0xd9536a),
   leaf: gummy(0x4f8a5a),
+  leafV: leafy(0x5a9a68),
   croissant: gummy(0xd99a52, { roughness: 0.55 }),
   tea: gummy(0xb5552a, { transparent: true, opacity: 0.85, roughness: 0.1, clearcoat: 1 }),
   glass: M.glass,

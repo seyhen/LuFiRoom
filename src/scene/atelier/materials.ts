@@ -1,5 +1,6 @@
 import { MeshStandardMaterial } from 'three'
 import { M, gummy } from '../materials'
+import { foliage, leafy } from '../nature/materials'
 import { berberTex, corkTex, parquetTex, plasterTex, screenTex, sketchTex, watercolorTex } from './textures'
 
 const wallPlaster = plasterTex.clone()
@@ -32,6 +33,13 @@ export const A = {
   cream: gummy(0xf6ead6, { roughness: 0.55 }),
   leaf: gummy(0x5a9a68),
   leafDark: gummy(0x3a7a52),
+  leafV: leafy(0x5fa46c),
+  leafVDark: leafy(0x3f8058),
+  rubber: leafy(0x3a6e50, { roughness: 0.3, clearcoat: 0.8 }),
+  rubberLight: leafy(0x5a9468, { roughness: 0.3, clearcoat: 0.8 }),
+  succulent: leafy(0x9ab8a0, { roughness: 0.6, clearcoat: 0.3 }),
+  succulentPink: leafy(0xc8a4a8, { roughness: 0.6, clearcoat: 0.3 }),
+  herbF: foliage(0x7ab468),
   pot: M.terracotta,
   rug: gummy(0xffffff, { map: berberTex, roughness: 0.95, clearcoat: 0 }),
   sketch: new MeshStandardMaterial({ map: sketchTex, roughness: 0.9 }),

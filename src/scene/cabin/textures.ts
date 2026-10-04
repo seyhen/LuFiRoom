@@ -333,3 +333,29 @@ export const braidTex = braidTexture()
 export const tartanTex = tartanTexture()
 export const wickerTex = wickerTexture()
 export const emberTex = emberTexture()
+
+/** Rameaux de sapin : rangées de petits chevrons d'aiguilles, pointes plus claires, creux plus sombres. Clair, teinté par le matériau. */
+function firTexture() {
+  const S = 256, [c, x] = makeCanvas(S, S)
+  let seed = 3
+  const r = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+  x.fillStyle = '#c6d8cc'; x.fillRect(0, 0, S, S)
+  x.lineCap = 'round'
+  for (let row = 0; row < 18; row++) {
+    const y = row * 15 + 4
+    for (let k = 0; k < 15; k++) {
+      const cx = k * 18 + (row % 2) * 9 + (r() - 0.5) * 4, w = 7 + r() * 3
+      for (const dx of [-S, 0, S]) {
+        x.strokeStyle = 'rgba(20,52,36,.38)'; x.lineWidth = 2.6
+        x.beginPath(); x.moveTo(cx + dx - w, y); x.lineTo(cx + dx, y + 9); x.lineTo(cx + dx + w, y); x.stroke()
+        x.strokeStyle = 'rgba(255,255,240,.42)'; x.lineWidth = 1.3
+        x.beginPath(); x.moveTo(cx + dx - w * 0.6, y + 3); x.lineTo(cx + dx, y + 10); x.lineTo(cx + dx + w * 0.6, y + 3); x.stroke()
+      }
+    }
+  }
+  const t = new CanvasTexture(c)
+  t.wrapS = t.wrapT = RepeatWrapping
+  t.repeat.set(3, 1.1)
+  return t
+}
+export const firTex = firTexture()

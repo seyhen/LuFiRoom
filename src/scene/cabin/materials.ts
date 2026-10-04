@@ -1,7 +1,7 @@
 import { MeshBasicMaterial, MeshStandardMaterial } from 'three'
 import { gummy } from '../materials'
 import { knitTex } from '../textures'
-import { braidTex, candyTex, floorTex, labelTex, lidTex, snowPrintTex, stoneTex, tartanTex, vinylTex, wallTex, wickerTex } from './textures'
+import { braidTex, candyTex, floorTex, labelTex, lidTex, snowPrintTex, stoneTex, tartanTex, vinylTex, wallTex, wickerTex, firTex } from './textures'
 
 const knitPouf = knitTex.clone()
 knitPouf.repeat.set(3, 2)
@@ -27,6 +27,8 @@ export const C = {
   wool: gummy(0xfffaf3, { roughness: 0.85, clearcoat: 0.05 }),
   pine: gummy(0x3f9474),
   pineLight: gummy(0x6db492),
+  // le sapin : ses rameaux d'aiguilles, en chevrons
+  fir: gummy(0x52a884, { map: firTex, roughness: 0.55, clearcoat: 0.4 }),
   cranberry: gummy(0xd25c72),
   cranberryLight: gummy(0xe98c9b),
   gold: gummy(0xf4c75a, { emissive: 0xffb43d, emissiveIntensity: 0.2, roughness: 0.3, clearcoat: 0.9 }),

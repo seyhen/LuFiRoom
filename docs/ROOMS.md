@@ -28,7 +28,12 @@ Outils pour le décor :
 - `usePainted(l, h, dessin)` (`src/scene/paint.ts`) : une vue peinte en canvas, redessinée seulement quand le jour, la nuit ou la pluie changent. Pose le plan juste derrière l'ouverture ; ce qui est derrière le mur remonte et glisse vers la droite à l'écran (la caméra regarde d'en haut, depuis la droite), place-le en conséquence.
 - `ScrollLayer` : un plan transparent dont la texture défile (vagues, collines vues du train), sans rien redessiner. `glow` pour des fenêtres qui s'allument la nuit.
 - `Candle`, `Steam`, `Flames`, `Cat` (position, pelage) : partagés entre les pièces.
-- `Rock` (`src/scene/onsen/Rocks.tsx`) : une pierre naturelle (bosses, faces taillées aux arêtes arrondies, dessous à plat), avec en option sa mousse qui épouse le dessus. Huit formes, dont deux plates (pas japonais) ; l'échelle donne la demi-largeur et la hauteur. Préfère-la à une sphère étirée dès qu'une pierre se voit.
+- La nature (`src/scene/nature/`) : jamais une sphère étirée pour une pierre, une feuille ou un buisson.
+  - `Rock` : une pierre (bosses, faces taillées aux arêtes arrondies, dessous à plat), avec sa mousse en option ; huit formes dont deux plates (pas japonais).
+  - `Foliage` : une masse de feuillage, `wild` (houppier, olivier) ou `clipped` (azalée taillée, coussin de pin, herbes en pot). Ses UV portent la lumière : la texture peint l'ombre dessous et le soleil dessus.
+  - `Leaf` : une feuille bombée et pliée sur sa nervure, `ovate`, `heart`, `lance`, `round`, `pinnate` (palme, fougère) ou `split` (monstera). Elle part le long de +z : pour l'incliner, place-la dans un groupe qui la tourne d'abord autour de y.
+  - `Fern`, `Vines` (plante retombante : pothos, lierre), `Rosette` (aloès, échévéria) : assemblés à partir de `Leaf`.
+  - Les matériaux viennent des fabriques de `nature/materials.ts` (`stone`, `moss`, `foliage`, `leafy`), appelées avec les couleurs de la pièce dans son `materials.ts`.
 - `Motes` (`src/scene/Floaters.tsx`) : les poussières qui flottent dans la lumière. Passe-lui des couleurs et des opacités de jour et de nuit à l'image de la pièce (sable doré à la plage, poussière chaude dans l'atelier), sinon elles deviennent des lucioles bleutées la nuit.
 - Des points lumineux (`<points>` : lucioles, halos d'une guirlande) : la caméra est orthographique, donc la taille d'un point est en pixels et `sizeAttenuation` n'y change rien. Mets `sizeAttenuation={false}` et `useWorldPointSize(matériau, taille)` (`src/scene/anim.ts`) : la taille, donnée en unités de la pièce, suit le zoom et l'écran.
 - Un même son peut changer de timbre selon la pièce : le canal reçoit la pièce (le carillon devient un furin de verre dans l'onsen, le vent une brise sur le toit).
@@ -38,9 +43,9 @@ Outils pour le décor :
 Chaque maillage coûte un appel de dessin, deux s'il porte une ombre. Une pièce riche en petits objets (le café en compte des centaines) se dessine vite trop lentement sur un téléphone.
 Enveloppe le décor dans `<Static>` (`src/scene/Static.tsx`) : une fois monté, il fusionne les maillages immobiles qui partagent un matériau (le café passe de 816 à 274 appels par image).
 Il laisse de côté les objets interactifs (`userData.id`) et ce qui est marqué `userData={LIVE}` (une flamme, une aiguille d'horloge, un chien qui respire, un plan qui défile), avec leurs enfants. Une géométrie qu'on déforme à chaque image (un voilage, du linge) doit rester dans un objet interactif ou être marquée `LIVE`.
-Repères mesurés (appels de dessin par image, nuit comprise) : chambre 216, cabane 228, café 269, plage 191, train 176, toit 234, atelier 146, onsen 211. Pour fusionner l'intérieur d'un objet interactif, place un autre `<Static>` dans son groupe, comme la cheminée du café.
+Repères mesurés (appels de dessin par image, nuit comprise) : chambre 216, cabane 230, café 271, plage 200, train 177, toit 246, atelier 152, onsen 198. Surveille aussi les triangles (300 à 370 milliers par image pour la plupart des pièces) : une forme de la nature coûte de 1 000 à 1 600 triangles, deux fois avec l'ombre. Pour fusionner l'intérieur d'un objet interactif, place un autre `<Static>` dans son groupe, comme la cheminée du café.
 Garde aussi au plus trois lumières ponctuelles par pièce : les bougies et les petites lampes se contentent d'un halo (sprite), sans lumière. Garde-en une pour la source chaude du soir (le lampadaire de l'atelier, la bougie de la plage) : c'est elle qui fait le cocon la nuit, avec un sol d'hémisphère tiède plutôt que bleu.
-Les boîtes arrondies (`rbox`) n'affichent que le centre d'une texture : pour un tapis ou un paillasson, pose la texture sur un plan.
+Les boîtes arrondies (`rbox`) n'affichent que le centre d'une texture : pour un tapis, un paillasson ou un parquet qu'on veut voir à sa taille (le chevron du café), pose la texture sur un plan.
 
 ## Les étapes
 

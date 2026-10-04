@@ -5,7 +5,7 @@ import { smooth } from '../../math'
 import { Part, cyl, rbox } from '../parts'
 import { mood } from '../anim'
 import { O } from './materials'
-import { Rock } from './Rocks'
+import { Rock } from '../nature/Rock'
 
 /** La lumière chaude qui passe à travers les shōji, le soir. */
 function ShojiGlow() {

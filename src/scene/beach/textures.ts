@@ -97,3 +97,25 @@ export function crestTex(seed: number, foam = false) {
     }
   }, [1.4, 1])
 }
+
+/** Kilim de coton tissé à plat : bandes sable, corail et turquoise, losanges, une frange claire aux deux bouts. */
+export const kilimTex = canvasTex(256, 384, (x) => {
+  const W = 256, H = 384
+  x.fillStyle = '#f2e3c8'; x.fillRect(0, 0, W, H)
+  const bands: [number, number, string][] = [[24, 14, '#e07a62'], [46, 6, '#3aa8a2'], [60, 18, '#f2b8a0'], [96, 10, '#e07a62'], [H - 110, 10, '#e07a62'], [H - 78, 18, '#f2b8a0'], [H - 56, 6, '#3aa8a2'], [H - 40, 14, '#e07a62']]
+  bands.forEach(([y, h, c]) => { x.fillStyle = c; x.fillRect(16, y, W - 32, h) })
+  // les losanges du milieu
+  for (let k = 0; k < 3; k++) {
+    const cy = 150 + k * 42
+    for (let i = 0; i < 4; i++) {
+      const cx = 44 + i * 56
+      x.fillStyle = k === 1 ? '#3aa8a2' : '#e07a62'
+      x.beginPath(); x.moveTo(cx, cy - 16); x.lineTo(cx + 18, cy); x.lineTo(cx, cy + 16); x.lineTo(cx - 18, cy); x.closePath(); x.fill()
+      x.fillStyle = '#f2e3c8'; x.beginPath(); x.moveTo(cx, cy - 6); x.lineTo(cx + 7, cy); x.lineTo(cx, cy + 6); x.lineTo(cx - 7, cy); x.closePath(); x.fill()
+    }
+  }
+  // la trame, et la frange
+  x.fillStyle = 'rgba(120,80,50,.06)'; for (let y = 0; y < H; y += 3) x.fillRect(0, y, W, 1)
+  x.clearRect(0, 0, W, 10); x.clearRect(0, H - 10, W, 10)
+  x.fillStyle = '#efe4d0'; for (let i = 18; i < W - 16; i += 6) { x.fillRect(i, 0, 2, 10); x.fillRect(i, H - 10, 2, 10) }
+})

@@ -18,6 +18,7 @@ import { SunRays } from './SunRays'
 import { HangingPothos, Kentia, Monstera } from './Plants'
 import { EggChair } from './EggChair'
 import { B } from './materials'
+import { Hearthside } from './Hearthside'
 
 const ginger = { fur: B.butter, light: B.linen, dark: B.coral }
 
@@ -50,6 +51,7 @@ export function BeachScene() {
       <Kentia position={[2.98, 0, -2.72]} />
       <Monstera position={[2.85, 0, -1.25]} />
       <EggChair />
+      <Hearthside />
       <BeachBag />
       <FishingNet />
       <DeckChair />

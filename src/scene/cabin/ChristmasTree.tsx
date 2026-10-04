@@ -135,7 +135,7 @@ export function ChristmasTree() {
       <mesh geometry={cyl(0.84, 0.86, 0.04, 40)} material={C.cranberry} position={[POS[0], 0.02, POS[2]]} receiveShadow />
       <Part geo={cyl(0.12, 0.15, 0.46, 14)} m={C.log} p={[POS[0], 0.23, POS[2]]} />
       {tiers.map((g, i) => (
-        <Part key={i} geo={g} m={C.pine} p={[POS[0], TIERS[i].y, POS[2]]} rotation-y={i * 0.7} />
+        <Part key={i} geo={g} m={C.fir} p={[POS[0], TIERS[i].y, POS[2]]} rotation-y={i * 0.7} />
       ))}
       <Batch geo={SPH} m={C.tint} items={baubles} />
       <Batch ref={lights} geo={SPH} m={C.bulb} items={bulbs} />

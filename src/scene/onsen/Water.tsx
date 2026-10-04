@@ -8,7 +8,7 @@ import { reduceMotion, useSquash } from '../anim'
 import { LIVE } from '../Static'
 import { O } from './materials'
 import { POOL } from './Pool'
-import { Rock } from './Rocks'
+import { Rock } from '../nature/Rock'
 
 const SPOUT = { x: 1.15, y: 1.0, z: -2.25 }
 

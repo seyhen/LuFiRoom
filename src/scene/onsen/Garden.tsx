@@ -3,13 +3,14 @@ import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, SphereGeometry, type Group, type PointLight, type Sprite } from 'three'
 import { isActive, useStore } from '../../state/store'
 import { TAU, approach, rand, smooth } from '../../math'
-import { seeded } from '../paint'
 import { Part, SPH, cyl, noRay, rbox } from '../parts'
 import { mood, reduceMotion, useParticles, useSquash } from '../anim'
 import { glowTex } from '../textures'
 import { LIVE } from '../Static'
 import { O } from './materials'
 import { leafTex } from './textures'
+import { Foliage } from '../nature/Foliage'
+import { Rock } from '../nature/Rock'
 
 const bell = new SphereGeometry(0.075, 20, 10, 0, TAU, 0, Math.PI / 2)
 
@@ -78,12 +79,12 @@ export function StoneLantern() {
   )
 }
 
-// Les bouquets de feuilles de l'érable : position, taille, couleur.
-const CLUSTERS = (() => {
-  const r = seeded(71), out: [number, number, number, number, number][] = []
-  for (let i = 0; i < 26; i++) out.push([0.9 + r() * 2.3, 2.3 + r() * 1.4, -3.3 + r() * 1.7, 0.28 + r() * 0.24, (r() * 4) | 0])
-  return out
-})()
+// Le houppier de l'érable, penché vers le bassin : des masses de feuillage (relatives au pied), [x, bas, z, demi-largeur, hauteur].
+const CANOPY: [number, number, number, number, number][] = [
+  [-1.3, 2.25, 0.75, 0.48, 0.55], [-0.55, 2.5, 0.35, 0.6, 0.7], [0.1, 2.4, -0.2, 0.5, 0.6], [-0.95, 2.95, 0.0, 0.52, 0.6],
+  [-0.2, 3.1, 0.45, 0.48, 0.55], [-1.7, 2.65, 1.05, 0.36, 0.42], [0.35, 2.9, 0.35, 0.4, 0.48], [-0.6, 2.15, 1.1, 0.4, 0.42],
+  [-0.4, 3.45, -0.05, 0.36, 0.4],
+]
 
 /**
  * L'érable du Japon (momiji) penché au-dessus du bassin, rouge et orange : ses feuilles tombent doucement, un peu plus
@@ -98,21 +99,27 @@ export function Maple() {
     const every = isActive(useStore.getState(), 'maple') ? 0.6 : 1.6
     if (since.current > every) {
       since.current = 0
-      const [x, y, z] = CLUSTERS[(Math.random() * CLUSTERS.length) | 0]
-      leaves.emit(leafTex, x + rand(-0.2, 0.2), y - 0.2, z + rand(-0.1, 0.4), { size: 0.13, life: 5.5, vy: -0.42, sway: 0.25, peak: 1 })
+      const [x, y, z, w] = CANOPY[(Math.random() * CANOPY.length) | 0]
+      leaves.emit(leafTex, 2.75 + x + rand(-w, w) * 0.7, y, -2.75 + z + rand(-w, w) * 0.7, { size: 0.13, life: 5.5, vy: -0.42, sway: 0.25, peak: 1 })
     }
   })
   return (
     <>
       <group ref={g} userData={{ id: 'maple' }} position={[2.75, 0, -2.75]}>
         {/* le tronc qui s'incline vers le bassin, deux branches */}
-        <Part geo={cyl(0.07, 0.12, 1.5, 10)} m={O.bark} p={[-0.1, 0.72, 0.05]} rotation-z={0.15} />
-        <Part geo={cyl(0.05, 0.07, 1.2, 8)} m={O.bark} p={[-0.55, 1.8, 0.25]} rotation={[0.25, 0, 0.75]} />
-        <Part geo={cyl(0.04, 0.06, 1.0, 8)} m={O.bark} p={[0.1, 2.0, -0.05]} rotation-z={-0.2} />
-        {CLUSTERS.map(([x, y, z, s, m], i) => (
-          <Part key={i} geo={SPH} m={O.maple[m]} scale={[s, s * 0.6, s]} p={[x - 2.75, y, z + 2.75]} castShadow={i % 3 === 0} />
+        <Part geo={cyl(0.07, 0.13, 1.5, 12)} m={O.bark} p={[-0.1, 0.72, 0.05]} rotation-z={0.15} />
+        <Part geo={cyl(0.05, 0.075, 1.2, 10)} m={O.bark} p={[-0.55, 1.8, 0.25]} rotation={[0.25, 0, 0.75]} />
+        <Part geo={cyl(0.04, 0.06, 1.0, 10)} m={O.bark} p={[0.1, 2.0, -0.05]} rotation-z={-0.2} />
+        <Part geo={cyl(0.025, 0.04, 0.8, 8)} m={O.bark} p={[-1.15, 2.35, 0.7]} rotation={[0.6, 0, 1.0]} />
+        <Part geo={cyl(0.025, 0.035, 0.7, 8)} m={O.bark} p={[-0.6, 2.75, 0.05]} rotation={[-0.3, 0, 0.5]} />
+        {/* les racines qui affleurent */}
+        {[0.4, 2.2, 4.1].map((a, i) => (
+          <Part key={i} geo={cyl(0.02, 0.05, 0.36, 8)} m={O.bark} p={[Math.cos(a) * 0.14, 0.04, Math.sin(a) * 0.14]} rotation={[Math.sin(a) * 1.3, 0, -Math.cos(a) * 1.3]} castShadow={false} />
         ))}
-        <Part geo={SPH} m={O.moss} scale={[0.4, 0.08, 0.35]} p={[0, 0.03, 0]} castShadow={false} />
+        {CANOPY.map(([x, y, z, w, h], i) => (
+          <Foliage key={i} v={i} p={[x, y, z]} s={[w, h, w * 0.9]} ry={i * 2.1} m={O.mapleF[i % 4]} shadow={i % 2 === 0} />
+        ))}
+        <Rock v={7} p={[0, -0.04, 0]} s={[0.5, 0.1, 0.44]} m={O.moss} shadow={false} />
       </group>
       <group ref={leaves.group} />
     </>

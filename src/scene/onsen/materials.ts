@@ -1,6 +1,8 @@
 import { DoubleSide, MeshBasicMaterial, MeshStandardMaterial } from 'three'
 import { M, gummy } from '../materials'
-import { flagTex, mossTex, poolTex, rippleTex, shojiTex, stoneTex, tileTex, yukataTex } from './textures'
+import { flagTex, poolTex, rippleTex, shojiTex, tileTex, yukataTex } from './textures'
+import { stoneTex } from '../nature/textures'
+import { foliage, leafy, moss, stone } from '../nature/materials'
 
 const flags = flagTex.clone()
 flags.repeat.set(4, 4)
@@ -19,9 +21,9 @@ export const O = {
   shoji: new MeshStandardMaterial({ map: shojiTex, emissiveMap: shojiTex, emissive: 0xffc77a, emissiveIntensity: 0, roughness: 0.9 }),
   tiles: gummy(0xffffff, { map: tileTex, roughness: 0.5, clearcoat: 0.4 }),
   // Les pierres : gris chaud, gris bleuté, brun de rivière, basalte sombre. Mates, à peine lustrées : de la pierre, pas du bonbon.
-  stone: [0x9c968c, 0x868b92, 0x9a8676, 0x6a6662].map((c) => gummy(c, { map: stoneTex, roughness: 0.78, clearcoat: 0.14, clearcoatRoughness: 0.55 })),
-  moss: gummy(0x7d9a4e, { map: mossTex, roughness: 0.95, clearcoat: 0.04 }),
-  mossDark: gummy(0x5e7e3e, { map: mossTex, roughness: 0.95, clearcoat: 0.04 }),
+  stone: [0x9c968c, 0x868b92, 0x9a8676, 0x6a6662].map((c) => stone(c)),
+  moss: moss(0x7d9a4e),
+  mossDark: moss(0x5e7e3e),
   // Les galets : blancs, chacun teinté par son instance.
   pebble: gummy(0xffffff, { map: stoneTex, roughness: 0.6, clearcoat: 0.3 }),
   water: gummy(0xffffff, { map: poolTex, roughness: 0.06, clearcoat: 1, clearcoatRoughness: 0.05, transparent: true, opacity: 0.9 }),
@@ -31,6 +33,18 @@ export const O = {
   bambooDry: gummy(0xcdb27a, { roughness: 0.5, clearcoat: 0.3 }),
   rope: gummy(0x2a2420, { roughness: 0.8 }),
   maple: [gummy(0xd9442e, { roughness: 0.7 }), gummy(0xe8763a, { roughness: 0.7 }), gummy(0xc23628, { roughness: 0.7 }), gummy(0xeaa040, { roughness: 0.7 })],
+  // Le jardin : feuillages (masses peintes d'ombre et de soleil) et feuilles. Couleurs franches, la texture les assombrit.
+  mapleF: [0xff5a3c, 0xff8c48, 0xe8402e, 0xffb84e].map((c) => foliage(c)),
+  pineF: foliage(0x5f9466),
+  pineDeep: foliage(0x4a7c58),
+  azaleaF: foliage(0x6aa058),
+  azaleaRust: foliage(0xc89a48),
+  nantenF: foliage(0xe0603e),
+  mossF: foliage(0x92b064, { roughness: 0.95, clearcoat: 0.04 }),
+  fern: leafy(0x6fa85a),
+  fernLight: leafy(0x9cc874),
+  grass: leafy(0xc4cc66, { roughness: 0.6, clearcoat: 0.3 }),
+  berry: gummy(0xe0281e, { roughness: 0.25, clearcoat: 0.9 }),
   bark: gummy(0x4a3a30, { roughness: 0.8 }),
   pine: gummy(0x3f6a4a, { roughness: 0.8 }),
   azalea: gummy(0x5a8a4a),

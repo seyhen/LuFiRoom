@@ -9,7 +9,8 @@ import { wispTex } from '../textures'
 import { LIVE } from '../Static'
 import { O } from './materials'
 import { leafTex } from './textures'
-import { Rock, rockGeo } from './Rocks'
+import { Rock } from '../nature/Rock'
+import { rockGeo } from '../nature/shapes'
 
 /** Le bassin : une ellipse de centre (CX, CZ). */
 export const POOL = { cx: 0.75, cz: -0.75, rx: 1.55, rz: 1.3, y: 0.05 }

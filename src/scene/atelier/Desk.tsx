@@ -2,11 +2,12 @@ import { useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Object3D, type Group, type InstancedMesh } from 'three'
 import { isActive, useStore } from '../../state/store'
-import { TAU } from '../../math'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { reduceMotion, useSquash } from '../anim'
 import { LIVE } from '../Static'
 import { A } from './materials'
+import { Foliage } from '../nature/Foliage'
+import { Rosette } from '../nature/Rosette'
 
 const X = -2.6, Z = -1.1, TOP = 0.76
 const KEYS = Array.from({ length: 4 * 12 }, (_, i) => [(i % 12) - 5.5, ((i / 12) | 0) - 1.5] as const)
@@ -103,7 +104,7 @@ export function Desk() {
               [0, 1, 2].map((k) => (
                 <Part key={k} geo={cyl(0.006, 0.006, 0.22, 5)} m={[A.ochre, A.prussian, A.sage][k]} p={[Math.cos(k * 2) * 0.02, (h as number) + 0.06, Math.sin(k * 2) * 0.02]} rotation-z={(k - 1) * 0.15} castShadow={false} />
               ))}
-            {i % 2 === 1 && <Part geo={SPH} m={A.leaf} scale={[0.06, 0.05, 0.06]} p={[0, (h as number) + 0.03, 0]} castShadow={false} />}
+            {i % 2 === 1 && <Foliage v={i} p={[0, (h as number) - 0.01, 0]} s={[0.06, 0.08, 0.06]} m={A.herbF} shadow={false} />}
           </group>
         ))}
       </group>
@@ -153,9 +154,7 @@ export function Turntable() {
       </group>
       {/* une plante grasse et une pochette posée contre la vitre */}
       <Part geo={cyl(0.07, 0.06, 0.1, 14)} m={A.terracotta} p={[1.7, 0.55, -2.65]} />
-      {[0, 1, 2, 3, 4].map((i) => (
-        <Part key={i} geo={SPH} m={A.leaf} scale={[0.025, 0.07, 0.025]} p={[1.7 + Math.cos(i * 1.3) * 0.03, 0.66, -2.65 + Math.sin(i * 1.3) * 0.03]} rotation={[Math.sin(i * TAU / 5) * 0.4, 0, Math.cos(i * TAU / 5) * 0.4]} castShadow={false} />
-      ))}
+      <Rosette p={[1.7, 0.6, -2.65]} size={0.08} n={14} kind="round" rise={1.0} m={A.succulent} m2={A.succulentPink} />
       <Part geo={rbox(0.3, 0.3, 0.015, 0.006)} m={A.prussian} p={[2.62, 0.66, -2.78]} rotation={[-0.12, 0, 0.05]} castShadow={false} />
     </>
   )

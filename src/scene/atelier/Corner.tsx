@@ -6,6 +6,8 @@ import { mood } from '../anim'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { Candle } from '../objects/Candle'
 import { A } from './materials'
+import { Leaf } from '../nature/Leaf'
+import { Vines } from '../nature/Vines'
 
 // Dos de livres d'art, d'une étagère à l'autre : [largeur, hauteur, couleur].
 const BOOKS: [number, number, keyof typeof A][] = [[0.06, 0.32, 'prussian'], [0.05, 0.28, 'terracotta'], [0.08, 0.34, 'cream'], [0.05, 0.3, 'sage'], [0.07, 0.26, 'ochre'], [0.05, 0.33, 'blush'], [0.09, 0.3, 'white']]
@@ -41,9 +43,7 @@ export function Bookcase() {
       <Candle position={[0.3, 1.8, 0.05]} holder="jar" height={0.1} radius={0.035} />
       {/* une plante qui retombe du haut du meuble */}
       <Part geo={cyl(0.12, 0.09, 0.16, 16)} m={A.pot} p={[0.35, 2.48, 0.02]} />
-      {Array.from({ length: 16 }, (_, i) => (
-        <Part key={i} geo={SPH} m={i % 3 ? A.leaf : A.leafDark} scale={[0.04, 0.012, 0.035]} p={[0.35 + Math.cos(i * 2.2) * 0.12, 2.55 - (i % 6) * 0.13, 0.1 + Math.sin(i * 2.2) * 0.06 + (i % 6) * 0.02]} rotation={[0.6, i, 0.3]} castShadow={false} />
-      ))}
+      <Vines p={[0.35, 2.55, 0.02]} strands={[[0.04, 0.13, 0.7], [-0.09, 0.11, 0.5], [0.11, 0.08, 0.9]]} m={A.leafV} m2={A.leafVDark} size={0.075} seed={5} />
     </group>
   )
 }
@@ -146,9 +146,7 @@ export function HangingPlants() {
             return <Part key={k} geo={cyl(0.004, 0.004, drop, 4)} m={A.paper} p={[Math.cos(a) * 0.06, -drop / 2, Math.sin(a) * 0.06]} castShadow={false} />
           })}
           <Part geo={SPH} m={i ? A.terracotta : A.cream} scale={[0.13, 0.1, 0.13]} p={[0, -drop - 0.05, 0]} />
-          {Array.from({ length: 14 }, (_, k) => (
-            <Part key={k} geo={SPH} m={k % 3 ? A.leaf : A.leafDark} scale={[0.04, 0.012, 0.035]} p={[Math.cos(k * 2.3) * 0.12, -drop + 0.02 - (k % 5) * 0.08, Math.sin(k * 2.3) * 0.12]} rotation={[0.5, k, 0.2]} castShadow={false} />
-          ))}
+          <Vines p={[0, -drop + 0.03, 0]} strands={i ? [[0.1, 0.05, 0.45], [-0.08, 0.07, 0.3], [0.02, -0.1, 0.55]] : [[0.09, 0.06, 0.35], [-0.1, -0.02, 0.5], [0.0, 0.11, 0.25], [0.05, -0.09, 0.4]]} m={A.leafV} m2={A.leafVDark} size={0.065} crown={7} seed={i + 8} />
         </group>
       ))}
     </>
@@ -162,9 +160,15 @@ export function CanvasCorner() {
       <group position={[2.7, 0, 2.55]}>
         <Part geo={cyl(0.3, 0.25, 0.42, 22)} m={A.basket} p={[0, 0.21, 0]} />
         <Part geo={cyl(0.03, 0.045, 1.25, 8)} m={A.oakDark} p={[0, 0.95, 0]} rotation-z={0.06} />
-        {Array.from({ length: 15 }, (_, i) => {
-          const a = i * 2.4, h = 0.85 + (i % 5) * 0.17, r = 0.12 + (i % 3) * 0.06
-          return <Part key={i} geo={SPH} m={i % 2 ? A.leaf : A.leafDark} scale={[0.11, 0.03, 0.15]} p={[Math.cos(a) * r, h, Math.sin(a) * r]} rotation={[0.5, a, 0.2]} />
+        {/* un caoutchouc (ficus elastica) : grandes feuilles vernies, les jeunes plus claires en haut */}
+        {Array.from({ length: 16 }, (_, i) => {
+          const a = i * 2.4, h = 0.62 + i * 0.062
+          return (
+            <group key={i} position={[0, h, 0]} rotation-y={a}>
+              <Part geo={cyl(0.007, 0.009, 0.08, 5)} m={A.oakDark} p={[0, 0.0, 0.035]} rotation-x={1.1} castShadow={false} />
+              <Leaf kind="ovate" p={[0, 0.02, 0.07]} r={[-0.25 - (i % 3) * 0.12, 0, (i % 2 ? 1 : -1) * 0.1]} w={0.075} l={0.24 - (i > 12 ? 0.06 : 0)} m={i > 11 ? A.rubberLight : A.rubber} shadow={i % 2 === 0} />
+            </group>
+          )
         })}
       </group>
       <group position={[2.55, 0, 1.3]} rotation-y={-0.3}>

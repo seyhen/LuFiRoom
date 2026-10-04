@@ -1,6 +1,7 @@
 import { DoubleSide, MeshStandardMaterial } from 'three'
 import { M, gummy } from '../materials'
-import { boardTex, juteTex, plankTex, stripes, weaveTex } from './textures'
+import { leafy } from '../nature/materials'
+import { boardTex, juteTex, kilimTex, plankTex, stripes, weaveTex } from './textures'
 
 // Le mur du fond est une extrusion : ses UV sont ses coordonnées (1 unité de large, 4.4 de haut par tuile).
 const wallBoards = boardTex.clone()
@@ -39,7 +40,15 @@ export const B = {
   leaf: gummy(0x4fa877),
   leafLight: gummy(0x7fc98f),
   leafDark: gummy(0x2f7d58),
+  palm: leafy(0x5aae78),
+  palmLight: leafy(0x86c88e),
+  monstera: leafy(0x3f9a6e, { roughness: 0.35, clearcoat: 0.7 }),
+  monsteraDark: leafy(0x2f7d58, { roughness: 0.35, clearcoat: 0.7 }),
+  pothos: leafy(0x68b878),
+  pothosVar: leafy(0xa8cc78),
   jute: gummy(0xffffff, { map: juteTex, roughness: 0.9, clearcoat: 0 }),
+  kilim: gummy(0xffffff, { map: kilimTex, roughness: 0.92, clearcoat: 0, alphaTest: 0.5 }),
+  throwKnit: gummy(0xf2b8a0, { roughness: 0.95, clearcoat: 0.02 }),
   stripeCoral: gummy(0xffffff, { map: stripes('#f6efe4', '#f08a76', 8), roughness: 0.8, clearcoat: 0.05 }),
   stripeNavy: gummy(0xffffff, { map: stripes('#f6efe4', '#2f4a6b', 10), roughness: 0.8, clearcoat: 0.05 }),
   stripeTowel: gummy(0xffffff, { map: stripes('#3fb8b0', '#f6d071', 6), roughness: 0.85, clearcoat: 0.03 }),

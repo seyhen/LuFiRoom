@@ -35,6 +35,13 @@ function Tower({ x, z, w, d, h, m, kind, seed, far }: { x: number; z: number; w:
       <Part geo={rbox(w, h, d, 0.06)} m={mat} p={[0, h / 2, 0]} castShadow={false} />
       <mesh geometry={front} material={R.windows} position={[0, h / 2 - 0.05, d / 2 + 0.005]} />
       <mesh geometry={side} material={R.windows} position={[w / 2 + 0.005, h / 2 - 0.05, 0]} rotation-y={Math.PI / 2} />
+      {!far && (
+        <>
+          {/* la corniche qui couronne la façade, et le bandeau au-dessus du rez-de-chaussée */}
+          <Part geo={rbox(w + 0.08, 0.09, d + 0.08, 0.03)} m={R.towerTrim} p={[0, h - 0.02, 0]} castShadow={false} />
+          <Part geo={rbox(w + 0.04, 0.05, d + 0.04, 0.02)} m={R.towerTrim} p={[0, Math.min(1.1, h * 0.35), 0]} castShadow={false} />
+        </>
+      )}
       {kind === 'deco' && (
         <>
           <Part geo={rbox(w * 0.7, 0.35, d * 0.7, 0.05)} m={mat} p={[0, h + 0.17, 0]} castShadow={false} />

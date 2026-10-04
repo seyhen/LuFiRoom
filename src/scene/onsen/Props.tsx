@@ -1,8 +1,7 @@
-import { TAU } from '../../math'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { Steam } from '../objects/Steam'
 import { O } from './materials'
-import { FLAT_ROCKS, Rock } from './Rocks'
+import { FLAT_ROCKS, Rock } from '../nature/Rock'
 
 const DECK = 0.42
 
@@ -72,40 +71,6 @@ export function BathThings() {
       {/* les pas japonais, de l'engawa au bassin */}
       {[[-1.05, -0.05, 0.3], [-0.55, -0.35, 0.25]].map(([x, z, s], i) => (
         <Rock key={i} v={FLAT_ROCKS[i]} p={[x, 0, z]} s={[s, 0.07, s * 0.8]} ry={i * 1.3 + 0.4} m={O.stone[i]} />
-      ))}
-    </>
-  )
-}
-
-/** Un petit pin taillé en nuages, des azalées en boule, des fougères et de la mousse. */
-export function Plants() {
-  return (
-    <>
-      <group position={[0.05, 0, 1.75]}>
-        <Part geo={SPH} m={O.moss} scale={[0.6, 0.12, 0.5]} p={[0, 0.04, 0]} />
-        <Part geo={cyl(0.05, 0.08, 0.7, 8)} m={O.bark} p={[0.05, 0.35, 0]} rotation-z={-0.25} />
-        <Part geo={cyl(0.035, 0.05, 0.5, 8)} m={O.bark} p={[0.25, 0.75, 0.05]} rotation-z={-0.9} />
-        {[[0.25, 0.75, 0.0, 0.32], [-0.1, 0.95, 0.05, 0.26], [0.5, 0.95, 0.1, 0.22], [0.15, 1.15, -0.05, 0.2]].map(([x, y, z, s], i) => (
-          <Part key={i} geo={SPH} m={O.pine} scale={[s, s * 0.45, s * 0.9]} p={[x, y, z]} />
-        ))}
-      </group>
-      {[[2.55, 0.55, 0.3], [1.85, 1.5, 0.26], [-0.3, -2.75, 0.3], [2.95, 2.2, 0.34]].map(([x, z, s], i) => (
-        <Part key={i} geo={SPH} m={O.azalea} scale={[s, s * 0.75, s]} p={[x, s * 0.6, z]} />
-      ))}
-      {[[2.85, 2.2], [-0.35, -2.7]].map(([x, z], i) => (
-        <group key={i}>
-          {Array.from({ length: 7 }, (_, k) => {
-            const a = (k / 7) * TAU
-            return <Part key={k} geo={SPH} m={O.maple[(k + i) % 4]} scale={0.035} p={[x + Math.cos(a) * 0.2, 0.42 + (k % 2) * 0.05, z + Math.sin(a) * 0.2]} castShadow={false} />
-          })}
-        </group>
-      ))}
-      {[[2.0, -2.6], [-1.6, 2.3], [1.0, 2.9]].map(([x, z], i) => (
-        <group key={i} position={[x, 0, z]}>
-          {Array.from({ length: 6 }, (_, k) => (
-            <Part key={k} geo={SPH} m={k % 2 ? O.azalea : O.pine} scale={[0.04, 0.02, 0.22]} p={[Math.cos(k) * 0.1, 0.12, Math.sin(k) * 0.1]} rotation={[0.5, k * 1.05, 0]} castShadow={false} />
-          ))}
-        </group>
       ))}
     </>
   )

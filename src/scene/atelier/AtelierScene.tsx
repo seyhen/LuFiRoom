@@ -8,6 +8,7 @@ import { DraftingTable, Stool } from './DraftingTable'
 import { Desk, Turntable } from './Desk'
 import { Kitchenette } from './Kitchenette'
 import { Gallery, Rafters } from './Rafters'
+import { FloorNook } from './FloorNook'
 import { Bookcase, CanvasCorner, Easel, HangingPlants, ReadingCorner, RugAndLadder } from './Corner'
 
 /**
@@ -32,6 +33,7 @@ export function AtelierScene() {
       <RugAndLadder />
       <ReadingCorner />
       <CanvasCorner />
+      <FloorNook />
       <Rafters />
       <Gallery />
       <Motes colors={[0xfff0d0, 0xffd28a]} opacity={[0.4, 0.55]} />

@@ -97,55 +97,6 @@ export const tileTex = canvasTex(128, 128, (x) => {
   for (let i = 0; i < 8; i++) { x.fillStyle = i % 2 ? '#4a4a56' : '#34343e'; x.fillRect(i * 16, 0, 12, 128); x.fillStyle = 'rgba(255,255,255,.12)'; x.fillRect(i * 16 + 2, 0, 2, 128) }
 }, [6, 1])
 
-/** Dessine `f` à sa place et décalé d'une tuile de chaque côté : une tache au bord se raccorde de l'autre côté. */
-function wrap(size: number, f: (dx: number, dy: number) => void) {
-  for (const dx of [-size, 0, size]) for (const dy of [-size, 0, size]) f(dx, dy)
-}
-
-/**
- * Pierre volcanique : marbrures douces, grain fin, quelques pores et des taches de lichen pâle. Claire, pour que la couleur
- * du matériau la teinte (gris chaud, gris bleuté, brun, basalte).
- */
-export const stoneTex = canvasTex(256, 256, (x) => {
-  const r = seeded(31)
-  x.fillStyle = '#dcd8d0'; x.fillRect(0, 0, 256, 256)
-  for (let i = 0; i < 46; i++) {
-    const cx = r() * 256, cy = r() * 256, rad = 18 + r() * 56, dark = r() < 0.55
-    wrap(256, (dx, dy) => {
-      const g = x.createRadialGradient(cx + dx, cy + dy, 0, cx + dx, cy + dy, rad)
-      g.addColorStop(0, dark ? 'rgba(70,64,58,.16)' : 'rgba(255,253,246,.2)'); g.addColorStop(1, 'rgba(0,0,0,0)')
-      x.fillStyle = g; x.fillRect(cx + dx - rad, cy + dy - rad, rad * 2, rad * 2)
-    })
-  }
-  for (let i = 0; i < 2600; i++) {
-    const t = r()
-    x.fillStyle = t < 0.5 ? 'rgba(50,46,42,.22)' : t < 0.85 ? 'rgba(255,255,250,.28)' : 'rgba(120,96,74,.25)'
-    x.fillRect(r() * 256, r() * 256, 1 + (r() < 0.2 ? 1 : 0), 1 + (r() < 0.2 ? 1 : 0))
-  }
-  for (let i = 0; i < 40; i++) {
-    const cx = r() * 256, cy = r() * 256, rad = 1.5 + r() * 2.5
-    x.fillStyle = 'rgba(40,36,34,.3)'; x.beginPath(); x.arc(cx, cy, rad, 0, TAU); x.fill()
-    x.fillStyle = 'rgba(255,255,255,.25)'; x.beginPath(); x.arc(cx + 0.8, cy + 0.8, rad * 0.6, 0, TAU); x.fill()
-  }
-  for (let k = 0; k < 7; k++) {
-    const cx = r() * 256, cy = r() * 256
-    for (let i = 0; i < 9; i++) {
-      const px = cx + (r() - 0.5) * 22, py = cy + (r() - 0.5) * 16, rad = 2 + r() * 5
-      wrap(256, (dx, dy) => { x.fillStyle = r() < 0.5 ? 'rgba(214,220,160,.45)' : 'rgba(236,232,200,.4)'; x.beginPath(); x.arc(px + dx, py + dy, rad, 0, TAU); x.fill() })
-    }
-  }
-}, [1, 1])
-
-/** Mousse : un velours vert moucheté de clair et de sombre. Claire, teintée par le matériau. */
-export const mossTex = canvasTex(128, 128, (x) => {
-  const r = seeded(57)
-  x.fillStyle = '#d6dccb'; x.fillRect(0, 0, 128, 128)
-  for (let i = 0; i < 1400; i++) {
-    x.fillStyle = r() < 0.5 ? 'rgba(40,70,20,.22)' : 'rgba(250,255,220,.3)'
-    x.beginPath(); x.arc(r() * 128, r() * 128, 0.6 + r() * 1.6, 0, TAU); x.fill()
-  }
-}, [2, 2])
-
 /** L'eau du bassin vue d'en haut : laiteuse au milieu, plus profonde et plus sombre sous les rochers du bord. */
 export const poolTex = canvasTex(256, 256, (x) => {
   const g = x.createRadialGradient(128, 128, 0, 128, 128, 128)

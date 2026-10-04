@@ -5,7 +5,8 @@ import { Mountains } from './Mountains'
 import { Pool } from './Pool'
 import { ShishiOdoshi, Spout } from './Water'
 import { Furin, Maple, StoneLantern } from './Garden'
-import { BathThings, Plants, TeaTray } from './Props'
+import { BathThings, TeaTray } from './Props'
+import { Shrubs } from './Shrubs'
 import { Chochin, Fireflies, Noren } from './Signs'
 
 /**
@@ -27,7 +28,7 @@ export function OnsenScene() {
       <TeaTray />
       <Radio position={[-2.45, 0.42, 2.0]} />
       <BathThings />
-      <Plants />
+      <Shrubs />
       <Noren />
       <Chochin />
       <Fireflies />

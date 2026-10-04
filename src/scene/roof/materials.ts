@@ -1,5 +1,6 @@
 import { DoubleSide, MeshBasicMaterial, MeshStandardMaterial } from 'three'
 import { M, gummy } from '../materials'
+import { foliage, leafy } from '../nature/materials'
 import { brickTex, deckTex, facadeGlowTex, facadeTex, rugTex, staveTex } from './textures'
 
 const wallBricks = (rx: number, ry: number) => {
@@ -41,7 +42,16 @@ export const R = {
   leaf: gummy(0x5a8f5a),
   leafDark: gummy(0x3f6f48),
   olive: gummy(0x8fa37a),
-  lavender: gummy(0x9a86c8),
+  lavender: gummy(0xa48ce0, { roughness: 0.6 }),
+  lavenderDeep: gummy(0x7a66b0),
+  // Le jardin du toit : feuillages et feuilles (nature/materials.ts).
+  oliveF: foliage(0xb4c296),
+  oliveDeep: foliage(0x8aa278),
+  herbF: [foliage(0x74b45e), foliage(0x9cc46a), foliage(0x5e9a62)],
+  lavBush: foliage(0x9cb48e, { roughness: 0.85 }),
+  tomatoF: foliage(0x6aa456),
+  leafV: leafy(0x62a05a),
+  aloe: leafy(0x8aac7a, { roughness: 0.55 }),
   tomato: gummy(0xe0503a),
   terracotta: M.terracotta,
   sheet: gummy(0xfbf7ef, { roughness: 0.85, clearcoat: 0.02, side: DoubleSide, emissive: 0x3a3632, emissiveIntensity: 0.6 }),
@@ -61,7 +71,9 @@ export const R = {
   bulb: M.bulb,
   ink: M.ink,
   // La ville : façades (bleu de soirée) et leurs fenêtres, qui s'allument la nuit.
-  tower: [gummy(0x7d8aa8, { roughness: 0.7 }), gummy(0x8f97b0, { roughness: 0.7 }), gummy(0x6f7c9c, { roughness: 0.7 }), gummy(0xa29aa8, { roughness: 0.7 })],
+  // Brique brune, calcaire couleur sable, gris chaud, bleu de soirée : la ville a plusieurs âges.
+  tower: [gummy(0xa8705e, { roughness: 0.8, clearcoat: 0.08 }), gummy(0xcab89c, { roughness: 0.75, clearcoat: 0.08 }), gummy(0x7d88a6, { roughness: 0.7 }), gummy(0x9c8f96, { roughness: 0.75, clearcoat: 0.08 })],
+  towerTrim: gummy(0xe6dccb, { roughness: 0.6 }),
   far: gummy(0xa9b2c8, { roughness: 0.8 }),
   windows: new MeshStandardMaterial({ map: facadeTex, emissiveMap: facadeGlowTex, emissive: 0xffffff, emissiveIntensity: 0, transparent: true, roughness: 0.6 }),
   beacon: new MeshBasicMaterial({ color: 0xff4a4a }),

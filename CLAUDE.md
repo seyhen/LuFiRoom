@@ -36,6 +36,7 @@ src/
     scenes.ts               # associe chaque pièce à sa scène 3D ; ajouter une pièce : docs/ROOMS.md
     bedroom/, cabin/, cafe/, beach/, train/, roof/, atelier/, onsen/   # la scène de chaque pièce, un fichier par objet, ses matériaux et ses textures
     objects/                # objets partagés entre pièces : Window, Radio, Lamp, Cat, FairyLights, Candles, Candle, Steam, Flames, ScrollLayer
+    nature/                 # pierres, feuillages, feuilles, fougères, plantes retombantes, rosettes : formes et matériaux partagés
     parts.tsx, Static.tsx   # briques (Part, Batch, rbox, cyl, worldUV, orient) ; <Static> regroupe le décor immobile en peu de tracés
     paint.ts, walls.ts      # vues peintes qui suivent le jour / la nuit, murs percés
     materials.ts            # palette de matériaux gummy partagés

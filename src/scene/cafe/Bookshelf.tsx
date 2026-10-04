@@ -9,6 +9,7 @@ import { useParticles, useSquash } from '../anim'
 import { pageTex } from './textures'
 import { Static } from '../Static'
 import { K } from './materials'
+import { Vines } from '../nature/Vines'
 
 // Les bibliothèques encadrent la cheminée, contre le mur de gauche (face intérieure à x = -3).
 // Six planches, cinq rangées de livres tirées une fois pour toutes (graine fixe : la même étagère à chaque visite).
@@ -175,27 +176,10 @@ function Globe({ at }: { at: [number, number, number] }) {
 /** Un pothos en pot dont les tiges retombent le long de la corniche. */
 export function Pothos({ at, drop = 0.9 }: { at: [number, number, number]; drop?: number }) {
   const [x, y, z] = at
-  // Trois tiges qui retombent en se balançant un peu ; les feuilles alternent de part et d'autre.
-  const vines = useMemo(() => {
-    const r = seeded(Math.round((x + z) * 100)), out: [number, number, number, number, number][] = []
-    for (const [dz, len, k] of [[-0.14, drop, 0], [0.04, drop * 0.65, 1], [0.15, drop * 1.2, 2]]) {
-      const n = Math.round(len / 0.085)
-      for (let i = 0; i < n; i++) {
-        const side = i % 2 ? 1 : -1, f = i / n
-        out.push([0.2 + f * 0.1 + side * 0.02, -i * 0.085, dz + Math.sin(f * 3 + k) * 0.05 + side * 0.035, side * 0.7 + (r() - 0.5) * 0.4, 0.8 + r() * 0.4])
-      }
-    }
-    return out
-  }, [x, z, drop])
   return (
     <group position={[x, y, z]}>
       <Part geo={cyl(0.12, 0.09, 0.18, 16)} m={K.pot} p={[0, 0.09, 0]} />
-      {[[-0.05, 0.04], [0.04, -0.05], [0.02, 0.06], [-0.04, -0.04], [0.06, 0.01]].map(([dx, dz], i) => (
-        <Part key={i} geo={SPH} m={i % 2 ? K.leaf : K.leafDark} scale={[0.07, 0.03, 0.05]} p={[dx, 0.2, dz]} rotation-y={i} castShadow={false} />
-      ))}
-      {vines.map(([dx, dy, dz, a, s], i) => (
-        <Part key={i} geo={SPH} m={i % 3 ? K.leaf : K.leafDark} scale={[0.015 * s, 0.04 * s, 0.05 * s]} p={[dx, 0.14 + dy, dz]} rotation={[a, 0, 0.5]} castShadow={false} />
-      ))}
+      <Vines p={[0, 0.17, 0]} strands={[[0.15, -0.12, drop], [0.16, 0.04, drop * 0.65], [0.14, 0.13, drop * 1.2]]} m={K.leafV} m2={K.leafVDark} size={0.085} crown={7} seed={Math.round((x + z) * 10)} />
     </group>
   )
 }

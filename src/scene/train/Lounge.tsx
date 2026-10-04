@@ -2,6 +2,7 @@ import { TAU } from '../../math'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { Cat } from '../objects/Cat'
 import { T } from './materials'
+import { Leaf } from '../nature/Leaf'
 
 /** Le tapis persan au milieu du compartiment, et sa frange. */
 export function PersianRug() {
@@ -115,6 +116,11 @@ export function Flowers() {
             <group key={i}>
               <Part geo={cyl(0.004, 0.004, 0.3, 4)} m={T.leaf} p={[Math.cos(a) * r * 0.5, 0.32, Math.sin(a) * r * 0.5]} rotation={[Math.sin(a) * 0.3, 0, -Math.cos(a) * 0.3]} castShadow={false} />
               <Part geo={SPH} m={i % 3 ? T.lilac : T.daisy} scale={[0.04, 0.06, 0.04]} p={[Math.cos(a) * r, 0.47 + (i % 2) * 0.04, Math.sin(a) * r]} castShadow={false} />
+              {i % 2 === 0 && (
+                <group position={[0, 0.24, 0]} rotation-y={a}>
+                  <Leaf kind="lance" r={[-0.7, 0, 0]} w={0.018} l={0.13} m={T.leafV} />
+                </group>
+              )}
             </group>
           )
         })}
