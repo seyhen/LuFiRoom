@@ -15,7 +15,7 @@ function siteMeta(): Plugin {
   return {
     name: 'site-meta',
     transformIndexHtml() {
-      const site = (process.env.SITE_URL || process.env.URL || '').replace(/\/$/, '')
+      const site = (process.env.SITE_URL || process.env.URL || process.env.CF_PAGES_URL || '').replace(/\/$/, '')
       const tags: { tag: string; attrs: Record<string, string | boolean>; injectTo: 'head' }[] = []
       const add = (tag: string, attrs: Record<string, string | boolean>) => tags.push({ tag, attrs, injectTo: 'head' })
       if (site) {

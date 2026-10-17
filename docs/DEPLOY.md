@@ -1,3 +1,19 @@
+# Mise en ligne gratuite (Cloudflare Pages)
+
+Alternative à Netlify, gratuite, sans plafond de bande passante : adaptée à un site qui sert beaucoup d'audio (124 Mo de musique). Les conditions des offres gratuites changent : relis-les au moment de t'inscrire.
+
+1. Crée un compte sur [dash.cloudflare.com](https://dash.cloudflare.com), puis « Workers & Pages », « Create application », « Pages », « Connect to Git » : choisis GitHub et le dépôt `seyhen/LuFiRoom`.
+2. Réglages de construction : framework « None », commande `npm run build`, dossier de sortie `dist`.
+3. Variable d'environnement (Production) : `NODE_VERSION` = `22` (Vite 8 veut Node 20.19 ou plus).
+4. « Save and Deploy ». Tu obtiens une adresse en `.pages.dev` (HTTPS), et chaque push sur `main` republie.
+5. Domaine à toi : « Custom domains » du projet.
+
+Cloudflare ne lit pas `netlify.toml` : c'est `public/_headers` (copié dans `dist/`) qui règle le cache et le type `audio/webm`. Les deux fichiers disent la même chose.
+L'adresse absolue des aperçus de liens vient de `CF_PAGES_URL` (fournie par Cloudflare) ; `SITE_URL` la remplace si tu as un domaine.
+Limites de l'offre gratuite (à revérifier) : 25 Mo par fichier (ici le plus gros fait environ 2,6 Mo), 20 000 fichiers, 500 constructions par mois.
+
+---
+
 # Mise en ligne (Netlify)
 
 L'app est un site statique : `npm run build` produit `dist/`, et `netlify.toml` dit à Netlify quoi lancer, quoi publier et comment mettre les fichiers en cache.
