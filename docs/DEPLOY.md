@@ -8,6 +8,8 @@ Alternative à Netlify, gratuite, sans plafond de bande passante : adaptée à u
 4. « Save and Deploy ». Tu obtiens une adresse en `.pages.dev` (HTTPS), et chaque push sur `main` republie.
 5. Domaine à toi : « Custom domains » du projet.
 
+**Si Cloudflare t'a créé un Worker** (« Workers & Pages », « Create », import GitHub) plutôt qu'un projet Pages : c'est `wrangler.jsonc` à la racine qui compte (nom `lufiroom`, dossier publié `dist`, adresse `workers.dev` activée). La commande de déploiement est `npx wrangler deploy` ; si l'adresse reste « No URLs enabled », active `workers.dev` dans « Settings », « Domains & Routes ».
+
 Cloudflare ne lit pas `netlify.toml` : c'est `public/_headers` (copié dans `dist/`) qui règle le cache et le type `audio/webm`. Les deux fichiers disent la même chose.
 L'adresse absolue des aperçus de liens vient de `CF_PAGES_URL` (fournie par Cloudflare) ; `SITE_URL` la remplace si tu as un domaine.
 Limites de l'offre gratuite (à revérifier) : 25 Mo par fichier (ici le plus gros fait environ 2,6 Mo), 20 000 fichiers, 500 constructions par mois.
