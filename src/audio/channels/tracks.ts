@@ -45,6 +45,10 @@ export default function tracks(kit: Kit, out: GainNode, { playlist }: Room): Cha
   }
 
   el.onended = next
+  // Le bouton « morceau suivant » (ou la touche multimédia) : tant que la radio joue.
+  kit.watch((s, p) => {
+    if (s.skips !== p.skips && s.on.radio && timer) next()
+  })
   el.onplaying = () => {
     misses = 0
     const t = track()

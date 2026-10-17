@@ -15,3 +15,13 @@ export function StationButton({ noun = 'Station suivante' }: { noun?: string }) 
     </button>
   )
 }
+
+/** Morceau suivant de la radio sur pistes enregistrées (le « disque suivant » du tourne-disque), à côté du curseur de volume. */
+export function TrackButton({ noun = 'Morceau suivant' }: { noun?: string }) {
+  const t = useT()
+  return (
+    <button className="skip" type="button" aria-label={t(noun)} title={t(noun)} onClick={() => useStore.getState().skipTrack()}>
+      {skipIcon}
+    </button>
+  )
+}

@@ -66,12 +66,33 @@ Pas encore déclarés dans une pièce (voir `docs/ASSETS.md`).
 | `radio/dusty-keys` | Dusty Keys | RhythmicInk | idem (172 s) | idem | 82 | 2026-10-17 |
 | `radio/midnight-drift` | Midnight Drift | RhythmicInk | idem (176 s) | idem | 74 | 2026-10-17 |
 | `radio/melancholic-jazz` | Melancholic Lo-Fi Jazz Cover | RhythmicInk | idem (176 s) | idem | 74 | 2026-10-17 |
+| `radio/quiet-corner` | Quiet Corner | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 75 | 2026-10-18 |
+| `radio/quiet-corner-2` | Quiet Corner II | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 60 | 2026-10-18 |
+| `radio/quiet-corner-3` | Quiet Corner III | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 73 | 2026-10-18 |
+| `radio/soft-focus` | Soft Focus | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 64 | 2026-10-18 |
+| `radio/soft-focus-2` | Soft Focus II | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 75 | 2026-10-18 |
+| `radio/soft-focus-3` | Soft Focus III | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 90 | 2026-10-18 |
+| `radio/warm-cadence` | Warm Cadence | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 60 | 2026-10-18 |
+| `radio/warm-vinyl` | Warm Vinyl | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 75 | 2026-10-18 |
+| `radio/velvet-keys` | Velvet Keys | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 60 | 2026-10-18 |
+| `radio/velvet-drift` | Velvet Drift | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 90 | 2026-10-18 |
+| `radio/dusty-keys-2` | Dusty Keys II | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 75 | 2026-10-18 |
+| `radio/corner-booth` | Corner Booth | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 60 | 2026-10-18 |
+| `radio/corner-seat` | Corner Seat | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 81 | 2026-10-18 |
+| `radio/quiet-desk` | Quiet Desk | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 76 | 2026-10-18 |
+| `radio/dusk-in-kyoto` | Dusk in Kyoto | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 76 | 2026-10-18 |
+| `radio/tokyo-dusk` | Tokyo Dusk | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 60 | 2026-10-18 |
+| `radio/shibuya-drizzle` | Shibuya Drizzle | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 75 | 2026-10-18 |
+| `radio/rain-on-glass` | Rain On Glass | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 90 | 2026-10-18 |
+| `radio/tokyo-drizzle` | Tokyo Drizzle | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 60 | 2026-10-18 |
+| `radio/kyoto-drizzle` | Kyoto Drizzle | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 60 | 2026-10-18 |
+| `radio/gentle-drizzle` | Gentle Drizzle | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 64 | 2026-10-18 |
 
 ## Sons d'interface
 
 Les « pops » d'allumage et d'extinction sont synthétisés dans le navigateur (`src/audio/engine.ts`) : aucun fichier.
 
-Les sept morceaux sont ceux que le propriétaire a fournis le 2026-10-17 (artiste affiché dans les fichiers : « RhythmicInk »). Leur licence d'usage commercial est à renseigner (outil de génération, plan, date) avant toute mise en vente : voir docs/ASSETS.md. Tempo et premier temps mesurés par analyse du signal.
+Les vingt-huit morceaux sont ceux que le propriétaire a fournis (sept le 2026-10-17, vingt et un le 2026-10-18) (artiste affiché dans les fichiers : « RhythmicInk »). Leur licence d'usage commercial est à renseigner (outil de génération, plan, date) avant toute mise en vente : voir docs/ASSETS.md. Tempo et premier temps mesurés par analyse du signal.
 
 ## Sons synthétisés
 

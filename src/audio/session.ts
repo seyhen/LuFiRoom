@@ -34,12 +34,12 @@ if ('mediaSession' in navigator) {
     const name = (x: { id: SoundId; name: string }) => (x.id === 'radio' && stations ? `${tr(x.name)} · ${tr(stationById(s.station).name)}` : tr(x.name))
     const title = (s.on.radio && room.playlist.length && s.onAir) || on.map(name).join(' · ') || tr('Silence')
     const key = `${title}|${room.name}|${useLang.getState().lang}`
-    // Suivant / précédent sur l'écran verrouillé : les stations, tant que la radio joue.
-    const hop = !!s.on.radio && stations
+    // Suivant sur l'écran verrouillé : le morceau suivant (pistes) ou la station (générative) ; précédent : les stations seulement.
+    const hop = !!s.on.radio
     if (hop !== hopping) {
       hopping = hop
-      ms.setActionHandler('nexttrack', hop ? () => useStore.getState().nextStation(1) : null)
-      ms.setActionHandler('previoustrack', hop ? () => useStore.getState().nextStation(-1) : null)
+      ms.setActionHandler('nexttrack', hop ? () => (roomById(useStore.getState().room).playlist.length ? useStore.getState().skipTrack() : useStore.getState().nextStation(1)) : null)
+      ms.setActionHandler('previoustrack', hop ? () => !roomById(useStore.getState().room).playlist.length && useStore.getState().nextStation(-1) : null)
     }
     if (key !== shown) {
       shown = key

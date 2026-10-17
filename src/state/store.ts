@@ -25,6 +25,8 @@ export interface Store {
   /** Publiés par la radio : ce qu'elle joue (sous-titre du mixeur, pour les pistes enregistrées), nombre de kicks joués. */
   onAir: string
   kicks: number
+  /** Demandes de « morceau suivant » (un compteur : la radio sur pistes passe à la suivante quand il change). */
+  skips: number
   /** Station de la radio générative (identifiant, voir src/audio/stations.ts). */
   station: string
   /** Écran de chargement : fichiers préchargés, et scène dessinée une première fois. */
@@ -57,6 +59,8 @@ export interface Store {
   /** Choisit la station de la radio ; `nextStation` passe à la suivante (ou à la précédente avec -1), en tournant. */
   setStation: (id: string) => void
   nextStation: (dir?: 1 | -1) => void
+  /** Radio sur pistes enregistrées : passe au morceau suivant (la scène rebondit comme au toucher). */
+  skipTrack: () => void
 }
 
 const hour = new Date().getHours()
@@ -116,6 +120,7 @@ export const useStore = create<Store>()((set, get, api) => ({
   squashAt: {},
   onAir: '',
   kicks: 0,
+  skips: 0,
   station: savedStation(firstRoom),
   loading: { done: 0, total: 0, scene: false },
   insets: { top: 0, bottom: 0 },
@@ -193,6 +198,11 @@ export const useStore = create<Store>()((set, get, api) => ({
       return { station, squashAt: radio ? { ...s.squashAt, [radio.id]: performance.now() } : s.squashAt }
     })
   },
+  skipTrack: () =>
+    set((s) => {
+      const radio = roomById(s.room).objects.find((o) => o.target === 'radio')
+      return { skips: s.skips + 1, squashAt: radio ? { ...s.squashAt, [radio.id]: performance.now() } : s.squashAt }
+    }),
   nextStation: (dir = 1) => get().setStation(stationAfter(get().station, dir, roomById(get().room).stations).id),
   goto: (id) => {
     const s = get()

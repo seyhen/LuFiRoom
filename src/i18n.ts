@@ -65,7 +65,8 @@ const EN: Record<string, string> = {
   'Non merci': 'No thanks',
   'Station suivante': 'Next station',
   'Disque suivant': 'Next record',
-  'lofi · 7 morceaux': 'lofi · 7 tracks',
+  'Morceau suivant': 'Next track',
+  'lofi · 28 morceaux': 'lofi · 28 tracks',
   nuit: 'night',
   'de nuit': 'at night',
   // pièces
