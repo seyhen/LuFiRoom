@@ -48,7 +48,9 @@ export function Stage({ hotspotLayer }: { hotspotLayer: Layer }) {
 
 /** Prévient l'écran de chargement quand la scène a été dessinée (la première image compile les shaders). */
 function Ready() {
-  const frames = useRef(0)
+  const frames = useRef(0), get = useThree((s) => s.get)
+  // Pont de développement (retiré du build) : `window.__lofi.three()` rend la scène, le rendu et la caméra, pour compter les tracés et inspecter les maillages.
+  if (import.meta.env.DEV) ((window as unknown as { __lofi?: Record<string, unknown> }).__lofi ??= {}).three = get
   useFrame(() => {
     if (++frames.current === 2) useStore.setState((s) => ({ loading: { ...s.loading, scene: true } }))
   })

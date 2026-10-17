@@ -1,10 +1,9 @@
 import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { AdditiveBlending, CatmullRomCurve3, TubeGeometry, Vector3, type Group, type Sprite } from 'three'
+import { CatmullRomCurve3, TubeGeometry, Vector3, type Group } from 'three'
 import { smooth } from '../../math'
-import { Part, SPH, cyl, noRay, type V3 } from '../parts'
+import { Part, SPH, cyl, type V3 } from '../parts'
 import { mood, reduceMotion } from '../anim'
-import { glowTex } from '../textures'
 import { LIVE } from '../Static'
 import { K } from './materials'
 import { YATAI } from './Yatai'
@@ -17,39 +16,32 @@ const catenary = (a: V3, b: V3, sag: number, n: number): V3[] =>
 
 const POLE_L = YATAI.x - 1.12, POLE_R = YATAI.x + 1.12, BEAM = 2.55
 const STRINGS: [V3, V3, number, number][] = [
-  [[-2.93, 3.75, -1.7], [POLE_L, BEAM, YATAI.z - 0.52], 0.4, 7],
+  [[-2.93, 4.05, -0.9], [POLE_L, BEAM, YATAI.z - 0.52], 0.3, 7],
   [[-2.93, 3.85, 1.9], [POLE_L, BEAM, YATAI.z - 0.52], 0.5, 9],
   [[POLE_R, BEAM, YATAI.z - 0.52], [2.93, 3.6, -2.9], 0.3, 5],
 ]
 
 /** Des guirlandes de lanternes en papier, rouges et blanches tour à tour, tendues entre les murs et les poteaux de la carriole. */
 function Lanterns() {
-  const halos = useRef<Sprite[]>([])
   const wires = useMemo(() => STRINGS.map(([a, b, sag]) => new TubeGeometry(new CatmullRomCurve3(catenary(a, b, sag, 14).map((p) => new Vector3(...p))), 28, 0.009, 4)), [])
   const all = useMemo(() => STRINGS.flatMap(([a, b, sag, n], s) => catenary(a, b, sag, n).slice(1, -1).map((p, i) => ({ p, white: (i + s) % 2 === 1, i: s * 10 + i }))), [])
-  useFrame(({ clock }) => {
-    const e = smooth(mood.night), t = clock.elapsedTime
+  useFrame(() => {
+    const e = smooth(mood.night)
     K.lanternWhite.emissiveIntensity = 0.15 + e * 1.0
-    halos.current.forEach((h, i) => (h.material.opacity = (0.1 + e * 0.5) * (0.92 + (reduceMotion ? 0 : Math.sin(t * 1.7 + i) * 0.08))))
   })
   return (
     <>
       {wires.map((g, i) => (
         <Part key={i} geo={g} m={K.iron} castShadow={false} />
       ))}
-      <group userData={LIVE}>
-        {all.map(({ p, white }, i) => (
-          <group key={i} position={p}>
+      {all.map(({ p, white }, i) => (
+        <group key={i} position={p}>
             <Part geo={cyl(0.004, 0.004, 0.06, 4)} m={K.iron} p={[0, -0.03, 0]} castShadow={false} />
             <Part geo={SPH} m={white ? K.lanternWhite : K.lantern} scale={[0.085, 0.115, 0.085]} p={[0, -0.18, 0]} rotation-y={i} castShadow={false} />
             <Part geo={cyl(0.04, 0.04, 0.014, 10)} m={K.lanternCap} p={[0, -0.07, 0]} castShadow={false} />
             <Part geo={cyl(0.04, 0.04, 0.014, 10)} m={K.lanternCap} p={[0, -0.29, 0]} castShadow={false} />
-            <sprite ref={(el) => void (el && (halos.current[i] = el))} scale={0.55} position={[0, -0.18, 0.03]} raycast={noRay}>
-              <spriteMaterial map={glowTex} color={white ? 0xffe0a0 : 0xff6a4a} blending={AdditiveBlending} transparent depthWrite={false} opacity={0.1} />
-            </sprite>
-          </group>
-        ))}
-      </group>
+        </group>
+      ))}
     </>
   )
 }

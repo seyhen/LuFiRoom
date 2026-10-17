@@ -33,8 +33,8 @@ export const market: Room = {
     { id: 'neon', target: 'neon', label: 'Enseigne · néon', anchor: [-1.45, 2.5, -2.55] },
     { id: 'wok', target: 'sizzle', label: 'Wok · ça saute', anchor: [0.28, 1.45, -0.87] },
     { id: 'pot', target: 'simmer', label: 'Marmite · bouillon', anchor: [1.4, 1.6, -0.87] },
-    { id: 'lamp', target: 'night', label: 'Lanterne · jour / nuit', anchor: [1.25, 2.2, -0.73] },
-    { id: 'radio', target: 'radio', label: 'Télé · lofi', anchor: [-2.35, 1.0, 2.45] },
+    { id: 'lamp', target: 'night', label: 'Lanterne · jour / nuit', anchor: [1.4, 2.2, -0.73] },
+    { id: 'radio', target: 'radio', label: 'Télé · lofi', anchor: [-2.35, 1.0, 2.7] },
   ],
   sounds: [
     { id: 'radio', name: 'Télé lofi', chip: 'var(--c-radio)', volume: 0.7, sub: (s) => (s.on.radio && s.onAir) || 'lofi · 70 bpm' },

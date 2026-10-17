@@ -30,27 +30,76 @@ function Wheel({ position }: { position: V3 }) {
   )
 }
 
-/** Un bol de ramen prêt à manger : bouillon, nouilles en nid, œuf mollet coupé, chashu, algue, oignon vert. Fume doucement. */
+/**
+ * Un bol de ramen prêt à manger, grand et lisible : bol blanc à liseré rouge, bouillon doré piqué de gouttes d'huile, nid de nouilles,
+ * deux tranches de chashu, un œuf mollet coupé en deux (jaune orangé), un narutomaki rose, des pousses de bambou, une feuille de nori
+ * dressée, des rondelles d'oignon vert, des baguettes en travers et une cuillère de porcelaine. Il fume doucement.
+ */
 function Bowl({ position, rotation = 0 }: { position: V3; rotation?: number }) {
   return (
-    <group position={position} rotation-y={rotation}>
+    <group position={position} rotation-y={rotation} scale={1.35}>
       <Part geo={cyl(0.15, 0.085, 0.11, 24)} m={K.bowl} p={[0, 0.055, 0]} />
-      <Part geo={cyl(0.152, 0.152, 0.02, 24)} m={K.red} p={[0, 0.1, 0]} castShadow={false} />
-      <Part geo={cyl(0.13, 0.13, 0.01, 24)} m={K.broth} p={[0, 0.105, 0]} castShadow={false} />
-      <Part geo={SPH} m={K.noodle} scale={[0.1, 0.045, 0.1]} p={[0, 0.115, 0]} castShadow={false} />
-      <Part geo={SPH} m={K.egg} scale={[0.04, 0.026, 0.03]} p={[0.04, 0.14, 0.04]} castShadow={false} />
-      <Part geo={SPH} m={K.yolk} scale={[0.02, 0.014, 0.015]} p={[0.04, 0.155, 0.04]} castShadow={false} />
-      {[-0.05, 0, 0.05].map((z, i) => (
-        <Part key={i} geo={cyl(0.04, 0.04, 0.008, 14)} m={K.pork} p={[-0.06, 0.135 + i * 0.006, z]} rotation-z={0.2} castShadow={false} />
-      ))}
-      <Part geo={rbox(0.05, 0.07, 0.008, 0.003)} m={K.nori} p={[0.0, 0.15, -0.075]} rotation-x={-0.25} castShadow={false} />
+      <Part geo={cyl(0.058, 0.07, 0.014, 18)} m={K.red} p={[0, 0.007, 0]} castShadow={false} />
+      <Part geo={cyl(0.152, 0.152, 0.018, 24)} m={K.red} p={[0, 0.1, 0]} castShadow={false} />
+      <Part geo={cyl(0.1, 0.1, 0.005, 24)} m={K.cream} p={[0, 0.05, 0]} rotation-z={0} castShadow={false} />
+      <Part geo={cyl(0.134, 0.134, 0.01, 24)} m={K.broth} p={[0, 0.108, 0]} castShadow={false} />
+      {/* le nid de nouilles : une masse jaune pâle et des mèches qui retombent */}
+      <Part geo={SPH} m={K.noodle} scale={[0.1, 0.045, 0.095]} p={[0.0, 0.118, 0.0]} castShadow={false} />
       {[0, 1, 2, 3, 4, 5].map((i) => {
         const a = (i / 6) * TAU
-        return <Part key={i} geo={cyl(0.01, 0.01, 0.006, 6)} m={K.scallion} p={[Math.cos(a) * 0.04 + 0.01, 0.152, Math.sin(a) * 0.04 + 0.03]} castShadow={false} />
+        return <Part key={i} m={K.noodle} p={[Math.cos(a) * 0.05, 0.145, Math.sin(a) * 0.05]} rotation={[Math.PI / 2, 0, a]} castShadow={false}>
+          <torusGeometry args={[0.03, 0.006, 5, 10, Math.PI * 1.3]} />
+        </Part>
       })}
-      <Part geo={cyl(0.004, 0.004, 0.26, 4)} m={K.woodPale} p={[0.04, 0.2, 0.0]} rotation={[0.1, 0.5, 1.15]} castShadow={false} />
-      <Part geo={cyl(0.004, 0.004, 0.26, 4)} m={K.woodPale} p={[0.07, 0.2, 0.02]} rotation={[0.1, 0.5, 1.15]} castShadow={false} />
-      <Steam at={[0, 0.2, 0]} every={0.7} />
+      {/* deux tranches de chashu à bord brun, posées en éventail contre le bord */}
+      {[-1, 1].map((s) => (
+        <group key={s} position={[-0.075, 0.138 + (s > 0 ? 0.006 : 0), s * 0.04]} rotation={[0, s * 0.3, 0.35]}>
+          <Part geo={cyl(0.05, 0.05, 0.01, 18)} m={K.pork} castShadow={false} />
+          <Part geo={cyl(0.05, 0.05, 0.004, 18)} m={K.woodPale} p={[0, 0.006, 0]} castShadow={false} />
+          <Part m={K.redDark} p={[0, 0.002, 0]} rotation-x={Math.PI / 2} castShadow={false}>
+            <torusGeometry args={[0.049, 0.004, 4, 18]} />
+          </Part>
+        </group>
+      ))}
+      {/* l'œuf mollet coupé en deux, jaune orangé au centre */}
+      {[0, 1].map((i) => (
+        <group key={i} position={[0.07, 0.14, 0.03 - i * 0.052]} rotation={[0.2, 0, -0.25]}>
+          <Part geo={SPH} m={K.egg} scale={[0.036, 0.028, 0.026]} castShadow={false} />
+          <Part geo={SPH} m={K.yolk} scale={[0.02, 0.016, 0.015]} p={[0, 0.014, 0]} castShadow={false} />
+        </group>
+      ))}
+      {/* le narutomaki : un disque blanc à volute rose */}
+      <group position={[0.0, 0.148, -0.085]} rotation={[0.45, 0, 0]}>
+        <Part geo={cyl(0.034, 0.034, 0.008, 16)} m={K.cream} castShadow={false} />
+        <Part m={K.red} p={[0, 0.005, 0]} rotation-x={Math.PI / 2} castShadow={false}>
+          <torusGeometry args={[0.02, 0.004, 4, 14]} />
+        </Part>
+        <Part m={K.red} p={[0, 0.005, 0]} rotation-x={Math.PI / 2} castShadow={false}>
+          <torusGeometry args={[0.01, 0.004, 4, 10]} />
+        </Part>
+      </group>
+      {/* les pousses de bambou, la feuille de nori dressée contre le bord, l'oignon vert */}
+      {[0, 1, 2].map((i) => (
+        <Part key={i} geo={rbox(0.045, 0.012, 0.012, 0.004)} m={K.woodPale} p={[0.0 + i * 0.02, 0.15 + i * 0.004, 0.085 - i * 0.012]} rotation-y={0.3 + i * 0.5} castShadow={false} />
+      ))}
+      <Part geo={rbox(0.07, 0.1, 0.006, 0.003)} m={K.nori} p={[0.02, 0.18, 0.125]} rotation-x={-0.25} castShadow={false} />
+      {Array.from({ length: 9 }, (_, i) => {
+        const a = i * 2.3
+        return (
+          <Part key={i} m={K.scallion} p={[Math.cos(a) * (0.03 + (i % 3) * 0.02) + 0.02, 0.156, Math.sin(a) * (0.03 + (i % 3) * 0.02)]} rotation-x={Math.PI / 2} castShadow={false}>
+            <torusGeometry args={[0.0085, 0.0035, 4, 8]} />
+          </Part>
+        )
+      })}
+      {[[0.06, -0.03], [-0.03, 0.06], [0.0, -0.06]].map(([x, z], i) => (
+        <Part key={i} geo={cyl(0.012 + i * 0.002, 0.012 + i * 0.002, 0.003, 10)} m={K.yolk} p={[x, 0.114, z]} castShadow={false} />
+      ))}
+      {/* les baguettes en travers, la cuillère de porcelaine */}
+      <Part geo={cyl(0.004, 0.004, 0.3, 5)} m={K.woodPale} p={[0.06, 0.168, -0.0]} rotation={[0.05, 0.4, 1.5]} castShadow={false} />
+      <Part geo={cyl(0.004, 0.004, 0.3, 5)} m={K.woodPale} p={[0.075, 0.164, 0.02]} rotation={[0.05, 0.4, 1.5]} castShadow={false} />
+      <Part geo={cyl(0.006, 0.006, 0.12, 6)} m={K.bowl} p={[-0.1, 0.12, 0.09]} rotation={[0.3, -0.5, 1.2]} castShadow={false} />
+      <Part geo={SPH} m={K.bowl} scale={[0.035, 0.014, 0.025]} p={[-0.04, 0.115, 0.13]} castShadow={false} />
+      <Steam at={[0, 0.2, 0]} every={1.5} />
     </group>
   )
 }
@@ -141,7 +190,7 @@ export function Yatai() {
         ))}
         <Part geo={cyl(0.14, 0.12, 0.03, 18)} m={K.wood} p={[0, 0.26, 0]} castShadow={false} />
         <Part geo={SPH} m={K.woodDark} scale={0.022} p={[0, 0.29, 0]} castShadow={false} />
-        <Steam at={[0, 0.34, 0]} every={0.5} />
+        <Steam at={[0, 0.34, 0]} every={1.1} />
       </group>
       <group position={[0.2, top, -0.36]}>
         {[0, 1, 2, 3].map((i) => (
@@ -178,11 +227,20 @@ export function Yatai() {
         ))}
       </group>
       <group position={[-1.0, top, 0.3]}>
-        <Part geo={cyl(0.07, 0.08, 0.1, 16)} m={K.teal} p={[0, 0.05, 0]} />
-        <Part geo={cyl(0.04, 0.05, 0.03, 14)} m={K.teal} p={[0, 0.115, 0]} castShadow={false} />
-        <Part geo={SPH} m={K.teal} scale={0.02} p={[0, 0.14, 0]} castShadow={false} />
+        {/* la théière de fonte : ventre rond, couvercle à bouton, bec, anse, pied */}
+        <Part geo={cyl(0.05, 0.055, 0.015, 16)} m={K.iron} p={[0, 0.0075, 0]} castShadow={false} />
+        <Part geo={SPH} m={K.teal} scale={[0.082, 0.065, 0.082]} p={[0, 0.07, 0]} />
+        <Part geo={cyl(0.04, 0.05, 0.02, 16)} m={K.iron} p={[0, 0.13, 0]} castShadow={false} />
+        <Part geo={SPH} m={K.iron} scale={[0.016, 0.014, 0.016]} p={[0, 0.15, 0]} castShadow={false} />
+        <Part geo={cyl(0.009, 0.02, 0.1, 8)} m={K.teal} p={[0.1, 0.1, 0]} rotation-z={-0.9} castShadow={false} />
+        <Part m={K.iron} p={[-0.08, 0.08, 0]} castShadow={false}>
+          <torusGeometry args={[0.045, 0.009, 6, 14, Math.PI * 1.1]} />
+        </Part>
         {[0.13, 0.21].map((x, i) => (
-          <Part key={x} geo={cyl(0.03, 0.025, 0.05, 12)} m={K.bowl} p={[x, 0.025, i * 0.04 - 0.02]} castShadow={false} />
+          <group key={x} position={[x + 0.02, 0, i * 0.06 - 0.03]}>
+            <Part geo={cyl(0.05, 0.05, 0.008, 14)} m={K.bowl} p={[0, 0.004, 0]} castShadow={false} />
+            <Part geo={cyl(0.03, 0.022, 0.05, 12)} m={K.bowl} p={[0, 0.033, 0]} castShadow={false} />
+          </group>
         ))}
       </group>
       {/* la bombonne de gaz, un seau et une caisse de bouteilles, au flanc de la carriole */}
@@ -208,7 +266,7 @@ export function Yatai() {
           <Part geo={cyl(0.07, 0.07, 0.025, 14)} m={K.lanternCap} p={[0, -0.54, 0]} castShadow={false} />
         </group>
       ))}
-      <Lantern position={[0.35, 2.55, -0.3]} />
+      <Lantern position={[0.5, 2.55, -0.3]} />
     </group>
   )
 }

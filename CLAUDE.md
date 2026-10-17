@@ -89,15 +89,20 @@ Le cœur du projet, c'est qu'une pièce ait un thème unique et détaillé. **Ch
 
 Les défauts qui reviennent le plus, à traquer avant de dire « fini » (explications et correctifs : `docs/ROOMS.md`) :
 
-- **Ça grésille** : deux surfaces à la même hauteur (une boisson dans une tasse, la terre d'un pot, l'eau d'une vasque, la glace d'un seau, un volet collé sur une boîte) se disputent le pixel. Décale-les de 0,005 à 0,015. Les arêtes en pointillés viennent des ombres (déjà réglées dans `Lights.tsx`). Un damier très contrasté scintille : baisse le contraste.
+- **Ça grésille** : deux surfaces à la même hauteur (une boisson dans une tasse, la terre d'un pot, l'eau d'une vasque, la glace d'un seau, un volet collé sur une boîte) se disputent le pixel. Décale-les de 0,005 à 0,015. Un tiroir ou un panneau au ras de la façade d'un meuble grésille aussi : fais-le dépasser de 0,02. Les arêtes en pointillés viennent des ombres (déjà réglées dans `Lights.tsx`). Un damier très contrasté scintille : baisse le contraste.
 - **Ça traverse le solide** : disques qui sortent d'un bloc plein, plaid enfoncé dans une assise, tige de plante qui passe à travers une planche, rails dans un tissu. Vérifie que rien n'entre dans un volume plein. Un bac a ses parois basses côté caméra.
 - **On ne sait pas ce que c'est** : un détail minuscule posé sur une surface se lit comme du bruit. Fais-le grand et reconnaissable (un seau de bouteilles a un corps, une épaule, un goulot et une capsule), ou supprime-le.
-- **Trop entassé** : répartis les objets dans toute la pièce (le fond et le devant, la gauche et la droite) ; ne remplis pas un seul coin.
+- **Trop entassé** : répartis les objets dans toute la pièce (le fond et le devant, la gauche et la droite) ; ne remplis pas un seul coin. Garde au moins 0,15 de jeu entre deux objets posés au sol (un banc contre une télé, une poubelle dans un distributeur) et fais courir tuyaux et guirlandes en dehors des meubles : le skill `audit-room` a un détecteur de chevauchements.
 - **Le rebond de clic déplace l'objet** : `useSquash` agrandit le groupe autour de son origine. Un objet interactif se pose avec `position` à son pied, jamais à l'origine du monde avec des enfants en coordonnées du monde.
 - **Une animation qui saute** : n'écris jamais `sin(t * f(k))` avec une fréquence qui change ; additionne la phase image après image.
 - **Un bouton mal placé** : l'`anchor` de l'objet est sur son corps, centré, pas à côté ni sur l'objet voisin. Vérifie avec la boîte englobante projetée.
 - **Une fumée grossière** : `emit(..., { soft: true })` avec des volutes fines (`wispTexes`) pour une tasse et du brouillard doux (`mistTex`) ailleurs.
+- **Une pièce animée qui quitte sa place** : un `useBeat` ou `useFrame` qui écrit `position.y = -dip` remplace la hauteur du JSX (touches d'orgue tombées au sol). Écris toujours `BASE + décalage`.
+- **Des pieds pas droits** : une inclinaison de pieds au mauvais signe fait converger les pieds vers le bas ; vérifie de face que l'évasement va vers l'extérieur.
+- **Des commandes qui touchent l'écran** : garde 0,05 de jeu entre le bord d'une lunette ou d'un cadran et les boutons voisins, et ne laisse pas la rangée du bas s'enterrer dans le coffre.
+- **Du contenu caché par du transparent** : l'eau ou le verre qui écrit la profondeur masque ses bulles et ses poissons ; matériau du contenant en `depthWrite: false`, teinte distincte du mur derrière.
 - **Un objet à l'envers ou de dos** : regarde de quel côté il fait face (la table à dessin montrait son dos). La caméra voit les faces +x et +z.
+- **Quelque chose qui tombe dans un lieu couvert** : une pièce qui a un toit ou des murs n'a pas de gouttes, de ronds dans l'eau ni de flocons à l'intérieur. La pluie se voit dehors (par la baie, autour du diorama, sous le nuage) ; à l'intérieur on montre l'humidité par des reflets et des flaques calmes.
 - **Une radio qui ne va pas avec la pièce** : l'objet qui joue la musique est propre à la pièce (tourne-disque, shamisen, boombox, gramophone, ukulélé, jukebox…), pas une radio partout. Il a son id `radio`, le hook `useBeat` (`src/scene/objects/useBeat.ts`) et son libellé.
 
 Comment travailler un objet :
@@ -127,6 +132,7 @@ npm run stations  # vérifie la musique des stations de la radio
 ## Avant de dire qu'une tâche est finie
 
 1. `npm run build` passe (et `npm run stations` si la musique des stations a changé).
-2. Vérifie ce que la modification touche, dans le navigateur, **en gros plan** pour un objet (voir « Le soin des ambiances » : chaque défaut de la liste, objet par objet). Pas besoin de revoir toutes les pièces, en mobile et en desktop, de jour et de nuit, à chaque fois : la vérification complète (largeur mobile 390 px et desktop, jour et nuit) est pour les gros changements de rendu ou de moteur.
+2. Pour une pièce nouvelle ou beaucoup retouchée : lance le skill **`audit-room`** (`.claude/skills/audit-room/SKILL.md`) et colle son rapport dans ta réponse. Une pièce n'est pas finie sans lui.
+   Sinon, vérifie ce que la modification touche, dans le navigateur, **en gros plan** pour un objet (voir « Le soin des ambiances » : chaque défaut de la liste, objet par objet). Pas besoin de revoir toutes les pièces, en mobile et en desktop, de jour et de nuit, à chaque fois : la vérification complète (largeur mobile 390 px et desktop, jour et nuit) est pour les gros changements de rendu ou de moteur.
 3. Pour un changement de moteur, compare au prototype : mêmes sons, mêmes interactions (sauf changement voulu).
 4. Ne commite et ne pousse que sur demande.

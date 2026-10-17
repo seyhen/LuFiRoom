@@ -53,18 +53,18 @@ export function Sonar() {
         <Part key={x} geo={SPH} m={S.brass} scale={0.025} p={[x, 0.5, 0.46]} castShadow={false} />
       ))}
       {/* le pupitre incliné */}
-      <group position={[0, 1.07, 0.04]} rotation-x={-TILT}>
-        <Part geo={rbox(1.7, 0.9, 0.1, 0.04)} m={S.iron} />
-        {/* l'écran : lunette de laiton, verre, cadran, balayage, échos */}
-        <group position={[0, 0.06, 0.05]}>
+      <group position={[0, 1.3, 0.04]} rotation-x={-TILT}>
+        <Part geo={rbox(1.7, 1.05, 0.1, 0.04)} m={S.iron} />
+        {/* l'écran : lunette de laiton, verre, cadran, balayage, échos (le bas de la lunette reste à 0,05 au-dessus des manettes) */}
+        <group position={[0, 0.13, 0.05]}>
           <Part m={S.brass}>
-            <torusGeometry args={[0.35, 0.05, 12, 40]} />
+            <torusGeometry args={[0.33, 0.045, 12, 40]} />
           </Part>
           <mesh material={S.crt} position={[0, 0, 0.005]}>
-            <circleGeometry args={[0.32, 40]} />
+            <circleGeometry args={[0.3, 40]} />
           </mesh>
           <mesh ref={sweep} material={S.sweep} position={[0, 0, 0.012]}>
-            <circleGeometry args={[0.32, 40]} />
+            <circleGeometry args={[0.3, 40]} />
           </mesh>
           {BLIPS.map(([a, r], i) => (
             <mesh key={i} ref={(el) => void (el && (blips.current[i] = el))} position={[Math.cos(a) * r * 0.3, Math.sin(a) * r * 0.3, 0.02]}>
@@ -72,17 +72,17 @@ export function Sonar() {
               <meshBasicMaterial color={0xbfffd8} transparent depthWrite={false} opacity={0} />
             </mesh>
           ))}
-          <Part geo={cyl(0.33, 0.33, 0.012, 40)} m={S.glass} p={[0, 0, 0.03]} rotation-x={Math.PI / 2} castShadow={false} />
+          <Part geo={cyl(0.3, 0.3, 0.012, 40)} m={S.glass} p={[0, 0, 0.03]} rotation-x={Math.PI / 2} castShadow={false} />
         </group>
         {/* les boutons, les interrupteurs et les voyants du bandeau du bas */}
         {[-0.62, -0.42, 0.42, 0.62].map((x, i) => (
-          <group key={x} position={[x, -0.3, 0.05]}>
+          <group key={x} position={[x, -0.34, 0.05]}>
             <Part geo={cyl(0.055, 0.06, 0.04, 16)} m={S.brass} rotation-x={Math.PI / 2} castShadow={false} />
             <Part geo={rbox(0.014, 0.05, 0.03, 0.005)} m={S.iron} p={[0, 0.02, 0.025]} rotation-z={i * 0.9 - 0.8} castShadow={false} />
           </group>
         ))}
         {[-0.12, 0.04, 0.2].map((x, i) => (
-          <group key={x} position={[x, -0.3, 0.05]}>
+          <group key={x} position={[x, -0.36, 0.05]}>
             <Part geo={cyl(0.012, 0.012, 0.1, 6)} m={S.steel} p={[0, 0.03, 0.03]} rotation-x={0.35 + i * 0.2} castShadow={false} />
             <Part geo={SPH} m={S.red} scale={0.022} p={[0, 0.065, 0.06]} castShadow={false} />
           </group>

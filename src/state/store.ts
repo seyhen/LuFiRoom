@@ -217,6 +217,9 @@ export function preload(p: Promise<unknown>) {
   p.then(done, done)
 }
 
+// Pont de développement (retiré du build) : `window.__lofi.store` pour changer de pièce, de nuit ou de sons sans recharger la page.
+if (import.meta.env.DEV) ((window as unknown as { __lofi?: Record<string, unknown> }).__lofi ??= {}).store = useStore
+
 /** L'objet de la pièce est-il actif : son allumé, ou nuit pour la lampe ? Faux s'il n'est pas dans la pièce. */
 export function isActive(s: Store, id: ObjectId) {
   const target = roomById(s.room).objects.find((o) => o.id === id)?.target

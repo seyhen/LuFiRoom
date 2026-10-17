@@ -9,7 +9,7 @@ import { LIVE } from '../Static'
 import { K } from './materials'
 
 /** Le distributeur : son pied au sol, contre le mur de gauche, près de l'angle du fond. */
-export const VENDING = { x: -2.55, z: -1.75 }
+export const VENDING = { x: -2.55, z: -2.1 }
 const day = new Color(0xb4b0c8), night = new Color(0xffffff)
 
 /**

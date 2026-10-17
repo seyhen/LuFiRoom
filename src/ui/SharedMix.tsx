@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { roomById } from '../rooms'
 import { unlockAudio } from '../audio/engine'
 import { mixName } from '../state/mixes'
@@ -7,6 +8,14 @@ import { useStore } from '../state/store'
 export function SharedMix() {
   const shared = useStore((s) => s.shared)
   const bottom = useStore((s) => s.insets.bottom)
+  // Raccourci de développement (retiré du build) : `?room=…&mix=…&night=1&go` joue l'ambiance tout de suite, sans geste, pour les captures.
+  useEffect(() => {
+    if (import.meta.env.DEV && shared && new URLSearchParams(location.search).has('go')) {
+      const s = useStore.getState()
+      s.applyMix(shared)
+      s.dismissShared()
+    }
+  }, [shared])
   if (!shared) return null
   const listen = () => {
     unlockAudio()

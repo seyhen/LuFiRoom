@@ -6,7 +6,7 @@ import { approach } from '../../math'
 import { gummy } from '../materials'
 import { Part, SPH, cyl, orient, rbox, type V3 } from '../parts'
 import { reduceMotion } from '../anim'
-import { LIVE } from '../Static'
+import { LIVE, Static } from '../Static'
 import { K } from './materials'
 
 const skin = gummy(0xf4c7a0, { roughness: 0.5, clearcoat: 0.35 })
@@ -46,6 +46,7 @@ export function Chef({ position }: { position: V3 }) {
   })
   return (
     <group ref={g} userData={LIVE} position={position}>
+      <Static>
       {/* le bassin et les jambes (cachés derrière la carriole), le buste, le tablier */}
       <Part geo={cyl(0.17, 0.17, 0.5, 14)} m={K.iron} p={[0, 0.72, 0]} castShadow={false} />
       <Part geo={cyl(0.17, 0.21, 0.5, 18)} m={K.cream} p={[0, 1.12, 0]} />
@@ -54,8 +55,13 @@ export function Chef({ position }: { position: V3 }) {
         <Part key={y} geo={SPH} m={K.brass} scale={0.014} p={[0, y, 0.205]} castShadow={false} />
       ))}
       <Part geo={cyl(0.07, 0.08, 0.06, 12)} m={skin} p={[0, 1.4, 0]} castShadow={false} />
+      {/* le bras droit tend la poignée du wok, le gauche pend au flanc */}
+      <Arm from={[-0.2, 1.3, 0.0]} to={[-0.28, 1.42, 0.56]} />
+      <Arm from={[0.2, 1.3, 0]} to={[0.26, 1.02, 0.16]} />
+      </Static>
       {/* la tête : visage rond, joues, yeux, sourire, tenugui noué */}
-      <group ref={head} position={[0, 1.58, 0]}>
+      <group ref={head} userData={LIVE} position={[0, 1.58, 0]}>
+        <Static>
         <Part geo={SPH} m={skin} scale={[0.17, 0.16, 0.16]} />
         {[-1, 1].map((s) => (
           <group key={s}>
@@ -63,11 +69,6 @@ export function Chef({ position }: { position: V3 }) {
             <Part geo={SPH} m={skin} scale={0.035} p={[s * 0.168, -0.01, 0]} castShadow={false} />
           </group>
         ))}
-        <group ref={eyes}>
-          {[-1, 1].map((s) => (
-            <Part key={s} geo={SPH} m={eye} scale={[0.017, 0.024, 0.012]} p={[s * 0.055, 0.02, 0.152]} castShadow={false} />
-          ))}
-        </group>
         <Part m={eye} p={[0, -0.04, 0.152]} rotation-z={Math.PI} castShadow={false}>
           <torusGeometry args={[0.03, 0.005, 5, 10, Math.PI * 0.8]} />
         </Part>
@@ -81,10 +82,13 @@ export function Chef({ position }: { position: V3 }) {
         {Array.from({ length: 5 }, (_, i) => (
           <Part key={i} geo={SPH} m={K.cream} scale={0.008} p={[Math.sin((i - 2) * 0.55) * 0.158, 0.1, Math.cos((i - 2) * 0.55) * 0.158]} castShadow={false} />
         ))}
+        </Static>
+        <group ref={eyes} userData={LIVE}>
+          {[-1, 1].map((s) => (
+            <Part key={s} geo={SPH} m={eye} scale={[0.017, 0.024, 0.012]} p={[s * 0.055, 0.02, 0.152]} castShadow={false} />
+          ))}
+        </group>
       </group>
-      {/* le bras droit tend la poignée du wok, le gauche pend au flanc */}
-      <Arm from={[-0.2, 1.3, 0.0]} to={[-0.28, 1.42, 0.56]} />
-      <Arm from={[0.2, 1.3, 0]} to={[0.26, 1.02, 0.16]} />
     </group>
   )
 }
@@ -140,6 +144,7 @@ export function Customer({ position, coat, hair, hood = false, ph = 0 }: { posit
   })
   return (
     <group position={position} userData={LIVE}>
+      <Static>
       {/* les cuisses vers le comptoir, les mollets pendus, les chaussures */}
       {[-0.08, 0.08].map((x) => (
         <group key={x}>
@@ -148,12 +153,16 @@ export function Customer({ position, coat, hair, hood = false, ph = 0 }: { posit
           <Part geo={SPH} m={K.iron} scale={[0.05, 0.03, 0.08]} p={[x, 0.22, -0.34]} castShadow={false} />
         </group>
       ))}
-      <group ref={body} position={[0, 0.62, 0]}>
+      </Static>
+      <group ref={body} userData={LIVE} position={[0, 0.62, 0]}>
+        <Static>
         <Part geo={cyl(0.155, 0.175, 0.46, 16)} m={coat} p={[0, 0.25, 0]} />
         <Part geo={SPH} m={coat} scale={[0.19, 0.09, 0.13]} p={[0, 0.47, 0]} castShadow={false} />
         <Arm from={[-0.19, 0.44, -0.02]} to={[-0.12, 0.4, -0.5]} r={0.045} />
         <Arm from={[0.19, 0.44, -0.02]} to={[0.12, 0.4, -0.5]} r={0.045} />
-        <group ref={head} position={[0, 0.62, 0]}>
+        </Static>
+        <group ref={head} userData={LIVE} position={[0, 0.62, 0]}>
+          <Static>
           <Part geo={SPH} m={skin} scale={[0.12, 0.125, 0.12]} />
           {hood ? (
             <>
@@ -166,6 +175,7 @@ export function Customer({ position, coat, hair, hood = false, ph = 0 }: { posit
               <Part geo={SPH} m={hair} scale={0.055} p={[0, 0.14, 0.01]} castShadow={false} />
             </>
           )}
+          </Static>
         </group>
       </group>
     </group>

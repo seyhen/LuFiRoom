@@ -4,10 +4,11 @@ import { Part, SPH, cyl, rbox } from '../parts'
 import { reduceMotion } from '../anim'
 import { useBeat } from '../objects/useBeat'
 import { makeCanvas } from '../textures'
+import { Static } from '../Static'
 import { K } from './materials'
 
 /** Le meuble télé : son pied au sol, contre le mur de gauche, tourné vers la caméra. */
-export const TV = { x: -2.4, z: 2.3 }
+export const TV = { x: -2.4, z: 2.55 }
 const SW = 96, SH = 72
 
 /**
@@ -48,12 +49,13 @@ export function TVSet() {
   return (
     <>
       <group position={[TV.x, 0, TV.z]} rotation-y={Math.PI / 4}>
+        <Static>
         {/* le meuble bas : caisson, tablette, cassettes vidéo, pieds */}
         <Part geo={rbox(0.86, 0.5, 0.62, 0.05)} m={K.wood} p={[0, 0.34, 0]} />
-        <Part geo={rbox(0.78, 0.2, 0.5, 0.03)} m={K.woodDark} p={[0, 0.31, 0.06]} castShadow={false} />
-        {[-0.28, -0.2, -0.13, -0.05].map((x, i) => (
-          <Part key={x} geo={rbox(0.05, 0.16, 0.18, 0.008)} m={[K.red, K.teal, K.yellow, K.cream][i]} p={[x, 0.31, 0.18]} castShadow={false} />
-        ))}
+        {/* le tiroir, en saillie de 3 cm sur la façade (jamais au ras : ça grésille), avec sa poignée de laiton et deux joints */}
+        <Part geo={rbox(0.72, 0.17, 0.03, 0.012)} m={K.woodPale} p={[0, 0.34, 0.325]} castShadow={false} />
+        <Part geo={rbox(0.2, 0.025, 0.03, 0.01)} m={K.brass} p={[0, 0.34, 0.352]} castShadow={false} />
+        <Part geo={rbox(0.8, 0.012, 0.03, 0.004)} m={K.woodDark} p={[0, 0.2, 0.322]} castShadow={false} />
         {[-0.36, 0.36].flatMap((x) => [-0.24, 0.24].map((z) => <Part key={`${x}${z}`} geo={cyl(0.03, 0.022, 0.1, 8)} m={K.woodDark} p={[x, 0.05, z]} />))}
         <group position={[0, 0.6, 0]}>
           <group ref={g} userData={{ id: 'radio' }}>
@@ -74,6 +76,7 @@ export function TVSet() {
             <Part geo={cyl(0.005, 0.005, 0.46, 4)} m={K.steel} p={[0.12, 0.83, 0.02]} rotation-z={-0.5} castShadow={false} />
           </group>
         </group>
+        </Static>
       </group>
       <group ref={notes.group} />
     </>

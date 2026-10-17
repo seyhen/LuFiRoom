@@ -2,11 +2,15 @@ import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, type MeshBasicMaterial, type Sprite } from 'three'
 import { TAU, smooth } from '../../math'
-import { Part, SPH, cyl, noRay, orient, rbox, type V3 } from '../parts'
+import { Part, SPH, cyl, noRay, rbox, type V3 } from '../parts'
 import { mood } from '../anim'
 import { glowTex } from '../textures'
 import { LIVE } from '../Static'
+import { Fern } from '../nature/Fern'
+import { leafy } from '../nature/materials'
 import { S } from './materials'
+
+const fernDark = leafy(0x3f8a74), fernLight = leafy(0x6fb89a)
 
 /** Le tapis rond, au centre de la pièce. */
 const RUG = { x: 0.55, z: -0.1, r: 1.75 }
@@ -47,20 +51,13 @@ function Helmet() {
 }
 
 /** Une fougère de mer dans un pot de cuivre : des frondes en arc, un peu de sable. */
-function Fern({ position }: { position: V3 }) {
+function FernPot({ position }: { position: V3 }) {
   return (
     <group position={position}>
       <Part geo={cyl(0.19, 0.15, 0.3, 22)} m={S.copperDark} p={[0, 0.15, 0]} />
       <Part geo={cyl(0.2, 0.2, 0.03, 22)} m={S.brass} p={[0, 0.3, 0]} castShadow={false} />
       <Part geo={cyl(0.17, 0.17, 0.02, 22)} m={S.cream} p={[0, 0.29, 0]} castShadow={false} />
-      {Array.from({ length: 9 }, (_, i) => {
-        const a = (i / 9) * TAU + 0.3, lean = 0.55 + (i % 3) * 0.28, len = 0.5 + (i % 2) * 0.18 + (i % 3) * 0.08
-        const dir: V3 = [Math.cos(a) * lean, 1, Math.sin(a) * lean]
-        const mid = Math.hypot(...dir)
-        return (
-          <Part key={i} geo={SPH} m={S.verdigris} scale={[0.075, len / 2, 0.016]} p={[(dir[0] / mid) * len * 0.5, 0.3 + (dir[1] / mid) * len * 0.5, (dir[2] / mid) * len * 0.5]} rotation={orient(dir, [0, 1, 0])} castShadow={false} />
-        )
-      })}
+      <Fern p={[0, 0.3, 0]} size={0.5} n={9} m={fernDark} m2={fernLight} />
     </group>
   )
 }
@@ -106,7 +103,7 @@ export function Decor() {
         <circleGeometry args={[RUG.r, 56]} />
       </mesh>
       <Helmet />
-      <Fern position={[-2.45, 0, -1.45]} />
+      <FernPot position={[-2.45, 0, -1.45]} />
       <Sconce position={[-1.05, 2.4, -2.93]} />
       <Sconce position={[-2.93, 3.0, -1.2]} rotation={Math.PI / 2} />
       {/* la bouée de sauvetage, accrochée au mur du fond à droite du hublot, au-dessus de la banquette */}

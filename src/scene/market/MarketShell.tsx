@@ -82,14 +82,14 @@ export function MarketShell() {
       </group>
       <AirCon position={[-1.95, 3.7, -2.78]} />
       <AirCon position={[-0.55, 3.85, -2.78]} />
-      {/* une descente d'eau et son collier, un tuyau de gaz rouillé qui court le long du mur de gauche */}
+      {/* une descente d'eau et son collier, un tuyau de gaz rouillé qui monte le long du mur de gauche, entre le distributeur et le vélo */}
       <Part geo={cyl(0.06, 0.06, 4.2, 12)} m={K.steelDark} p={[2.88, 2.15, -2.88]} />
       {[0.7, 1.9, 3.1].map((y) => (
         <Part key={y} geo={cyl(0.08, 0.08, 0.05, 12)} m={K.iron} p={[2.88, y, -2.88]} castShadow={false} />
       ))}
-      <Part geo={cyl(0.05, 0.05, 2.5, 12)} m={K.rust} p={[-2.86, 0.62, -1.75]} rotation-x={Math.PI / 2} />
-      {[-2.7, -1.7, -0.7].map((z) => (
-        <Part key={z} geo={cyl(0.07, 0.07, 0.05, 12)} m={K.iron} p={[-2.86, 0.62, z]} rotation-x={Math.PI / 2} castShadow={false} />
+      <Part geo={cyl(0.05, 0.05, 4.1, 12)} m={K.rust} p={[-2.86, 2.0, -1.15]} />
+      {[0.6, 1.8, 3.0].map((y) => (
+        <Part key={y} geo={cyl(0.07, 0.07, 0.05, 12)} m={K.iron} p={[-2.86, y, -1.15]} castShadow={false} />
       ))}
       {/* un compteur électrique, une boîte de dérivation et leurs câbles qui pendent */}
       <Part geo={rbox(0.5, 0.62, 0.14, 0.04)} m={K.steelDark} p={[-2.55, 2.0, -2.9]} />

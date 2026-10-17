@@ -322,3 +322,6 @@ useStore.subscribe((s, p) => {
     useStore.setState({ sleepEnd: null })
   }
 })
+
+// Pont de développement (retiré du build) : les bus de chaque son et le kit, pour mesurer les niveaux (skill audit-room).
+if (import.meta.env.DEV) ((window as unknown as { __lofi?: Record<string, unknown> }).__lofi ??= {}).audio = { bus, getKit: () => kit }

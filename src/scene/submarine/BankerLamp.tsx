@@ -66,9 +66,9 @@ function Goldfish() {
     <group userData={LIVE}>
       {[0, 1].map((i) => (
         <group key={i} ref={(el) => void (el && (fish.current[i] = el))}>
-          <Part geo={SPH} m={S.fish} scale={[0.04, 0.024, 0.02]} castShadow={false} />
-          <group position={[-0.036, 0, 0]}>
-            <Part geo={SPH} m={S.fish} scale={[0.03, 0.026, 0.006]} p={[-0.02, 0, 0]} castShadow={false} />
+          <Part geo={SPH} m={S.fish} scale={[0.058, 0.036, 0.03]} castShadow={false} />
+          <group position={[-0.052, 0, 0]}>
+            <Part geo={SPH} m={S.fish} scale={[0.044, 0.04, 0.008]} p={[-0.03, 0, 0]} castShadow={false} />
           </group>
         </group>
       ))}
@@ -101,7 +101,7 @@ export function Table() {
       {/* le bocal : sable, rocaille, algue ; eau et verre transparents ; deux poissons rouges */}
       <group position={[x + 0.24, top, z + 0.12]}>
         <Part geo={cyl(0.1, 0.12, 0.03, 20)} m={S.woodDark} p={[0, 0.015, 0]} castShadow={false} />
-        <Part geo={SPH} m={S.water} scale={[0.155, 0.135, 0.155]} p={[0, 0.17, 0]} castShadow={false} />
+        <Part geo={SPH} m={S.bowl} scale={[0.155, 0.135, 0.155]} p={[0, 0.17, 0]} castShadow={false} />
         <Part geo={SPH} m={S.glass} scale={[0.17, 0.15, 0.17]} p={[0, 0.17, 0]} castShadow={false} />
         <Part geo={cyl(0.11, 0.11, 0.026, 20)} m={S.cream} p={[0, 0.045, 0]} castShadow={false} />
         <Part geo={SPH} m={S.steel} scale={[0.035, 0.025, 0.03]} p={[0.04, 0.06, 0.03]} castShadow={false} />

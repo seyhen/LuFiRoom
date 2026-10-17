@@ -6,7 +6,7 @@ import { gummy } from '../materials'
 import { Part, SPH, cyl, noRay, rbox, type V3 } from '../parts'
 import { mood, reduceMotion, useParticles } from '../anim'
 import { glowTex, mistTex } from '../textures'
-import { LIVE } from '../Static'
+import { LIVE, Static } from '../Static'
 import { K } from './materials'
 import { smallNeon } from './textures'
 
@@ -18,7 +18,7 @@ function Manhole({ position }: { position: V3 }) {
   useFrame((_, delta) => {
     if (reduceMotion) return
     since.current += Math.min(delta, 0.05)
-    if (since.current > 0.55) {
+    if (since.current > 1.0) {
       since.current = 0
       mist.emit(mistTex, position[0] + rand(-0.06, 0.06), 0.06, position[2] + rand(-0.06, 0.06), { size: 0.7, life: 4.5, vy: 0.26, sway: 0.16, grow: 2.0, peak: 0.7, color: 0xe6d4ff, soft: true })
     }
@@ -64,7 +64,7 @@ function Blade({ position, lines, color, glow, ph, w = 0.34, h = 0.68 }: { posit
   )
 }
 
-const furBlack = gummy(0x1f1a2c, { roughness: 0.6, clearcoat: 0.3 })
+const furBlack = gummy(0x3a3360, { roughness: 0.6, clearcoat: 0.3 }), furBib = gummy(0x4a4266, { roughness: 0.6, clearcoat: 0.2 }), furEar = gummy(0x7a4a70, { roughness: 0.6, clearcoat: 0.2 })
 const eyeGlow = gummy(0xffe14a, { roughness: 0.3, emissive: 0xffd02a, emissiveIntensity: 0.8 })
 
 /** Un chat noir assis sur l'arête du mur de gauche : il regarde la ruelle, bat de la queue, tourne la tête, cligne de ses yeux jaunes. */
@@ -72,31 +72,52 @@ function RoofCat({ position }: { position: V3 }) {
   const tail = useRef<Group[]>([]), head = useRef<Group>(null!), eyes = useRef<Group>(null!)
   useFrame(({ clock }) => {
     const t = reduceMotion ? 0 : clock.elapsedTime
-    tail.current.forEach((s, i) => s.position.set(-0.07 * (i + 1) * 0.9, 0.02 + i * 0.03 + Math.sin(t * 1.6 - i * 0.5) * 0.012 * i, Math.sin(t * 1.6 - i * 0.55) * 0.028 * i))
+    tail.current.forEach((s, i) => s.position.set(Math.sin(t * 1.6 - i * 0.55) * 0.03 * i, 0.02 + i * 0.024 + Math.sin(t * 1.6 - i * 0.5) * 0.006 * i, -0.024 * (i + 1)))
     head.current.rotation.y = Math.sin(t * 0.3) * 0.5
     head.current.rotation.z = Math.sin(t * 0.2 + 1) * 0.05
     eyes.current.scale.y = reduceMotion ? 1 : Math.max(0.1, 1 - Math.max(0, Math.sin(t * 1.3 + 2) - 0.985) * 70)
   })
   return (
     <group position={position} rotation-y={0.9} userData={LIVE}>
-      <Part geo={SPH} m={furBlack} scale={[0.15, 0.19, 0.13]} p={[0, 0.19, 0]} />
-      <Part geo={SPH} m={furBlack} scale={[0.07, 0.05, 0.09]} p={[0.07, 0.03, 0.07]} castShadow={false} />
-      <Part geo={SPH} m={furBlack} scale={[0.07, 0.05, 0.09]} p={[-0.07, 0.03, 0.07]} castShadow={false} />
-      <group ref={head} position={[0, 0.43, 0.02]}>
-        <Part geo={SPH} m={furBlack} scale={[0.115, 0.1, 0.105]} />
+      <Static>
+        {/* assis, vu de trois quarts : cuisses repliées, buste, plastron plus clair, deux pattes avant bien droites, pattes arrière */}
+        <Part geo={SPH} m={furBlack} scale={[0.14, 0.11, 0.17]} p={[0, 0.11, -0.02]} />
+        <Part geo={SPH} m={furBlack} scale={[0.1, 0.17, 0.1]} p={[0, 0.26, 0.02]} />
+        <Part geo={SPH} m={furBib} scale={[0.055, 0.1, 0.03]} p={[0, 0.26, 0.108]} castShadow={false} />
         {[-1, 1].map((s) => (
-          <Part key={s} geo={cyl(0.002, 0.042, 0.08, 4)} m={furBlack} p={[s * 0.07, 0.1, 0]} rotation-z={s * -0.2} castShadow={false} />
+          <group key={s}>
+            <Part geo={cyl(0.03, 0.036, 0.2, 10)} m={furBlack} p={[s * 0.052, 0.1, 0.1]} castShadow={false} />
+            <Part geo={SPH} m={furBlack} scale={[0.04, 0.024, 0.055]} p={[s * 0.052, 0.014, 0.125]} castShadow={false} />
+            <Part geo={SPH} m={furBlack} scale={[0.045, 0.025, 0.06]} p={[s * 0.11, 0.02, 0.05]} castShadow={false} />
+          </group>
         ))}
-        <group ref={eyes}>
+      </Static>
+      <group ref={head} userData={LIVE} position={[0, 0.5, 0.04]}>
+        <Static>
+          <Part geo={SPH} m={furBlack} scale={[0.115, 0.1, 0.1]} />
           {[-1, 1].map((s) => (
-            <Part key={s} geo={SPH} m={eyeGlow} scale={[0.017, 0.022, 0.01]} p={[s * 0.045, 0.012, 0.098]} castShadow={false} />
+            <group key={s}>
+              <Part geo={SPH} m={furBlack} scale={[0.04, 0.032, 0.04]} p={[s * 0.085, -0.035, 0.04]} castShadow={false} />
+              <Part geo={cyl(0.002, 0.052, 0.11, 4)} m={furBlack} p={[s * 0.07, 0.11, -0.005]} rotation-z={s * -0.18} castShadow={false} />
+              <Part geo={cyl(0.002, 0.03, 0.075, 4)} m={furEar} p={[s * 0.069, 0.1, 0.015]} rotation-z={s * -0.18} castShadow={false} />
+            </group>
+          ))}
+          <Part geo={SPH} m={furBib} scale={[0.04, 0.027, 0.025]} p={[0, -0.04, 0.092]} castShadow={false} />
+          <Part geo={SPH} m={furEar} scale={0.01} p={[0, -0.025, 0.115]} castShadow={false} />
+        </Static>
+        <group ref={eyes} userData={LIVE}>
+          {[-1, 1].map((s) => (
+            <group key={s} position={[s * 0.048, 0.012, 0.088]}>
+              <Part geo={SPH} m={eyeGlow} scale={[0.021, 0.026, 0.012]} castShadow={false} />
+              <Part geo={SPH} m={furBlack} scale={[0.005, 0.022, 0.013]} p={[0, 0, 0.005]} castShadow={false} />
+            </group>
           ))}
         </group>
       </group>
-      <group position={[-0.08, 0.06, -0.06]} rotation-y={-0.5}>
-        {Array.from({ length: 7 }, (_, i) => (
+      <group position={[0, 0.05, -0.17]}>
+        {Array.from({ length: 10 }, (_, i) => (
           <group key={i} ref={(el) => void (el && (tail.current[i] = el))}>
-            <Part geo={SPH} m={furBlack} scale={0.036 - i * 0.002} castShadow={false} />
+            <Part geo={SPH} m={furBlack} scale={0.05 - i * 0.002} castShadow={false} />
           </group>
         ))}
       </group>

@@ -6,11 +6,12 @@ import { TAU, approach } from '../../math'
 import { Part, SPH, cyl, noRay, rbox, type V3 } from '../parts'
 import { reduceMotion, useSquash } from '../anim'
 import { Steam } from '../objects/Steam'
+import { Static } from '../Static'
 import { K } from './materials'
 import { ringTex } from './textures'
 
 const R = 0.27, H = 0.44
-const BUBBLES = 7
+const BUBBLES = 4
 
 /**
  * La marmite de bouillon, sur son réchaud : un grand faitout d'acier plein à ras bord d'un bouillon doré, deux anses, un couvercle
@@ -34,6 +35,7 @@ export function Pot({ position }: { position: V3 }) {
   })
   return (
     <group ref={g} userData={{ id: 'pot' }} position={position}>
+      <Static>
       {/* le réchaud : une couronne de fonte, un tuyau de gaz */}
       <Part geo={cyl(0.2, 0.22, 0.07, 22)} m={K.iron} p={[0, 0.035, 0]} />
       {/* le faitout */}
@@ -48,18 +50,10 @@ export function Pot({ position }: { position: V3 }) {
           <torusGeometry args={[0.05, 0.012, 6, 14, Math.PI]} />
         </Part>
       ))}
-      {/* les bulles qui crèvent la surface */}
-      <group position={[0, 0.07, 0]}>
-        {Array.from({ length: BUBBLES }, (_, i) => (
-          <mesh key={i} ref={(el) => void (el && (bubbles.current[i] = el))} rotation-x={-Math.PI / 2} raycast={noRay}>
-            <planeGeometry args={[1, 1]} />
-            <meshBasicMaterial map={ringTex} color={0xffe6b0} transparent depthWrite={false} opacity={0} blending={AdditiveBlending} />
-          </mesh>
-        ))}
-      </group>
       {/* le couvercle, appuyé contre la panse côté client, et sa poignée de bois */}
-      <group position={[0.2, 0.3, 0.3]} rotation={[0.9, 0.5, 0]}>
-        <Part geo={cyl(0.27, 0.27, 0.02, 28)} m={K.steel} />
+      <group position={[0.22, 0.36, 0.3]} rotation={[1.15, 0.6, 0]}>
+        <Part geo={cyl(0.22, 0.22, 0.02, 28)} m={K.steelDark} />
+        <Part geo={cyl(0.235, 0.235, 0.012, 28)} m={K.steel} p={[0, -0.012, 0]} castShadow={false} />
         <Part geo={SPH} m={K.woodDark} scale={[0.04, 0.03, 0.04]} p={[0, 0.03, 0]} castShadow={false} />
       </group>
       {/* la louche posée en travers de la marmite */}
@@ -69,8 +63,17 @@ export function Pot({ position }: { position: V3 }) {
       </group>
       {/* le tuyau d'arrivée du gaz et sa manette */}
       <Part geo={rbox(0.06, 0.06, 0.5, 0.02)} m={K.iron} p={[0.1, 0.03, 0.4]} castShadow={false} />
-      <Steam at={[0, H + 0.2, 0]} every={on ? 0.28 : 1.5} />
-      {on && <Steam at={[0.08, H + 0.22, 0.05]} every={0.4} />}
+      </Static>
+      {/* les bulles qui crèvent la surface */}
+      <group position={[0, 0.07, 0]}>
+        {Array.from({ length: BUBBLES }, (_, i) => (
+          <mesh key={i} ref={(el) => void (el && (bubbles.current[i] = el))} rotation-x={-Math.PI / 2} raycast={noRay}>
+            <planeGeometry args={[1, 1]} />
+            <meshBasicMaterial map={ringTex} color={0xffe6b0} transparent depthWrite={false} opacity={0} blending={AdditiveBlending} />
+          </mesh>
+        ))}
+      </group>
+      <Steam at={[0, H + 0.2, 0]} every={on ? 0.5 : 1.8} />
     </group>
   )
 }

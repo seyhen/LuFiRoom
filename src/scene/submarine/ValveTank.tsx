@@ -51,9 +51,9 @@ export function ValveTank() {
       <Part geo={cyl(0.34, 0.36, 0.2, 32)} m={S.brass} p={[0, 0.27, 0]} />
       {/* l'eau et la vitre : l'eau est dessous, la vitre un peu plus large */}
       <group ref={water} position={[0, 0.37, 0]}>
-        <Part geo={cyl(0.265, 0.265, wh - 0.55, 28)} m={S.water} p={[0, (wh - 0.55) / 2, 0]} castShadow={false} />
+        <Part geo={cyl(0.265, 0.265, wh - 0.55, 28)} m={S.ballast} p={[0, (wh - 0.55) / 2, 0]} castShadow={false} />
       </group>
-      <Part geo={cyl(0.29, 0.29, wh - 0.5, 28)} m={S.glass} p={[0, 0.37 + (wh - 0.5) / 2, 0]} castShadow={false} />
+      <Part geo={cyl(0.29, 0.29, wh - 0.5, 28)} m={S.tube} p={[0, 0.37 + (wh - 0.5) / 2, 0]} castShadow={false} />
       {/* le chapeau du haut, avec sa soupape et son anneau */}
       <Part geo={cyl(0.34, 0.36, 0.2, 32)} m={S.brass} p={[0, wh - 0.1, 0]} />
       <Part geo={cyl(0.4, 0.4, 0.07, 32)} m={S.band} p={[0, wh + 0.04, 0]} castShadow={false} />
@@ -65,7 +65,7 @@ export function ValveTank() {
         return <Part key={i} geo={cyl(0.015, 0.015, wh - 0.1, 8)} m={S.steel} p={[Math.cos(a) * 0.37, 0.35 + (wh - 0.1) / 2 - 0.25, Math.sin(a) * 0.37]} castShadow={false} />
       })}
       {/* les bulles qui montent dans l'eau */}
-      <instancedMesh ref={bubbles} args={[dot, bubbleMat, N]} frustumCulled={false} raycast={noRay} />
+      <instancedMesh ref={bubbles} args={[dot, bubbleMat, N]} frustumCulled={false} raycast={noRay} renderOrder={2} />
       {/* le tuyau de cuivre vers l'avant, le coude et la vanne à volant rouge */}
       <Part geo={cyl(0.05, 0.05, 0.55, 14)} m={S.copper} p={[0, 0.27, 0.46]} rotation-x={Math.PI / 2} />
       <Part geo={SPH} m={S.copper} scale={0.075} p={[0, 0.27, 0.74]} />

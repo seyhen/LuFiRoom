@@ -42,6 +42,14 @@ export const K = {
   /** Le disque d'une flaque : miroir sombre, un peu bleuté. */
   puddle: gummy(0x3a3560, { roughness: 0.05, clearcoat: 1, transparent: true, opacity: 0.5 }),
   posters: [gummy(0xffffff, { map: posterTex('#ff7a9c', '#5a3a8a', 5), roughness: 0.8, clearcoat: 0.1 }), gummy(0xffffff, { map: posterTex('#5ad0d8', '#27358c', 9), roughness: 0.8, clearcoat: 0.1 }), gummy(0xffffff, { map: posterTex('#ffd36a', '#c4323f', 13), roughness: 0.8, clearcoat: 0.1 })],
+  /** Verre de bouteille (vert, brun), papier kraft, pain, poireau, émail du pot de bonsaï, pneu de vélo. */
+  bottleGreen: gummy(0x2d7a4c, { roughness: 0.12, clearcoat: 1 }),
+  bottleBrown: gummy(0x7a4418, { roughness: 0.12, clearcoat: 1 }),
+  kraft: gummy(0xc9a878, { roughness: 0.85, clearcoat: 0.05 }),
+  baguette: gummy(0xd9a45a, { roughness: 0.7, clearcoat: 0.15 }),
+  leekWhite: gummy(0xeef3d8, { roughness: 0.5, clearcoat: 0.3 }),
+  glazeBlue: gummy(0x2f6f8a, { roughness: 0.2, clearcoat: 0.95 }),
+  tire: gummy(0x1b1824, { roughness: 0.8, clearcoat: 0.1 }),
   yakisugi: gummy(0xffffff, { map: yakisugiTex, roughness: 0.7, clearcoat: 0.2 }),
   nobori: gummy(0xffffff, { map: noboriTex, roughness: 0.8, clearcoat: 0.05, side: DoubleSide }),
   sakeSign: gummy(0xffffff, { map: sakeSignTex, roughness: 0.6, clearcoat: 0.3 }),

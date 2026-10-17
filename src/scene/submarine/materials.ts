@@ -29,6 +29,11 @@ export const S = {
   rugEdge: gummy(0x2a0f16, { roughness: 0.9, clearcoat: 0.03 }),
   glass: gummy(0xcdeff0, { roughness: 0.05, clearcoat: 1, transparent: true, opacity: 0.2 }),
   water: gummy(0x4fd0dc, { roughness: 0.1, clearcoat: 1, transparent: true, opacity: 0.62 }),
+  // l'eau du bocal : claire, pour qu'on voie les poissons rouges
+  bowl: gummy(0x8fe6ee, { roughness: 0.1, clearcoat: 1, transparent: true, opacity: 0.3, depthWrite: false }),
+  tube: gummy(0xcdeff0, { roughness: 0.05, clearcoat: 1, transparent: true, opacity: 0.2, depthWrite: false }),
+  // l'eau du tube de ballast : plus profonde que le mur vert-de-gris pour se lire, sans écriture de profondeur (les bulles restent visibles)
+  ballast: gummy(0x1f9fd0, { roughness: 0.1, clearcoat: 1, transparent: true, opacity: 0.7, depthWrite: false }),
   gauge: gummy(0xffffff, { map: gaugeTex, roughness: 0.4, clearcoat: 0.7 }),
   telegraph: gummy(0xffffff, { map: telegraphTex, roughness: 0.4, clearcoat: 0.7 }),
   gold: gummy(0xf0c24e, { roughness: 0.3, clearcoat: 0.9 }),

@@ -10,6 +10,7 @@ import { S } from './materials'
 export const ORGAN = { x: -2.62, z: 0.5 }
 const PIPES = 13
 const KEYS = 14
+const KEY_Y = 0.95 // hauteur de repos d'une touche : le rebond (useBeat) la réécrit à chaque image, il part de là
 
 /**
  * L'orgue du capitaine : un coffre d'acajou contre la paroi, treize tuyaux de laiton en éventail qui montent vers la corniche,
@@ -25,7 +26,7 @@ export function Organ({ position }: { position: V3 }) {
     })
     keys.current.forEach((k, i) => {
       const dip = on && !reduceMotion ? Math.max(0, Math.sin(t * 3.1 + i * 2.4)) ** 7 * 0.022 + (i % 5 === 0 ? pulse * 0.016 : 0) : 0
-      k.position.y = -dip
+      k.position.y = KEY_Y - dip
     })
   }, 0.03)
   return (
@@ -66,7 +67,7 @@ export function Organ({ position }: { position: V3 }) {
           </group>
         ))}
         {Array.from({ length: KEYS }, (_, i) => (
-          <group key={i} ref={(el) => void (el && (keys.current[i] = el))} userData={LIVE} position={[0.5, 0.95, (i - (KEYS - 1) / 2) * 0.11]}>
+          <group key={i} ref={(el) => void (el && (keys.current[i] = el))} userData={LIVE} position={[0.5, KEY_Y, (i - (KEYS - 1) / 2) * 0.11]}>
             <Part geo={rbox(0.38, 0.045, 0.1, 0.012)} m={S.cream} castShadow={false} />
             {[1, 3, 4, 6, 8, 9, 11].includes(i) && <Part geo={rbox(0.2, 0.05, 0.062, 0.01)} m={S.iron} p={[-0.08, 0.04, 0.055]} castShadow={false} />}
           </group>
@@ -83,7 +84,7 @@ export function Organ({ position }: { position: V3 }) {
         <Part geo={cyl(0.245, 0.245, 0.025, 24)} m={S.brass} p={[0, 0.5, 0]} castShadow={false} />
         {[0, 1, 2].map((i) => {
           const a = (i / 3) * Math.PI * 2 + 0.5
-          return <Part key={i} geo={cyl(0.026, 0.02, 0.5, 8)} m={S.brass} p={[Math.cos(a) * 0.14, 0.25, Math.sin(a) * 0.14]} rotation={[Math.sin(a) * 0.14, 0, -Math.cos(a) * 0.14]} />
+          return <Part key={i} geo={cyl(0.026, 0.02, 0.5, 8)} m={S.brass} p={[Math.cos(a) * 0.14, 0.25, Math.sin(a) * 0.14]} rotation={[-Math.sin(a) * 0.14, 0, Math.cos(a) * 0.14]} />
         })}
       </group>
     </>
