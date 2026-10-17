@@ -24,7 +24,13 @@ export const submarine: Room = {
     hemi: { sky: [0xdff8f2, 0x2a6a88], ground: [0x7a6a50, 0x1a2a30], intensity: [0.58, 0.3] },
     sun: { color: [0xfff0c8, 0x6fe0d0], intensity: [0.5, 0.22] },
   },
-  loops: {},
+  loops: {
+    sonar: { src: 'audio/submarine/sonar', gain: 0.8 },
+    bubbles: { src: 'audio/submarine/bubbles', gain: 0.8 },
+    hull: { src: 'audio/submarine/hull', gain: 0.8 },
+    engine: { src: 'audio/submarine/engine', gain: 0.8 },
+    whale: { src: 'audio/submarine/whale', gain: 0.9 },
+  },
   stations: ['brume', 'nuit-douce', 'veillee'],
   playlist: [],
   objects: [

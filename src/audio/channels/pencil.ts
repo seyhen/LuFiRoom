@@ -8,12 +8,12 @@ import type { Channel, Kit } from '../engine'
  * parfois la feuille qu'on fait glisser ou une gomme. Le grain du papier : du bruit blanc filtré, qui tremble un peu.
  */
 export default function pencil(kit: Kit, out: GainNode, { loops }: Room): Channel {
-  return kit.loopOrChannel(loops.pencil, out, () => {
-    const { ctx, gain, biq, osc, noise } = kit
+  return kit.grainsOr(loops.pencil, out, { len: [8, 16], fade: 0.8, rate: 0.02, level: 0.15 }, () => {
+    const { ctx, gain, biq, noise } = kit
     const bus = gain(12)
     bus.connect(out)
     function stroke(t: number, dur: number, v: number, f: number) {
-      const s = ctx.createBufferSource(), bp = biq('bandpass', f, 1.3), g = gain(0.0001), grain = osc('sine', rand(30, 55))
+      const s = ctx.createBufferSource(), bp = biq('bandpass', f, 1.3), g = gain(0.0001), grain = ctx.createBufferSource()
       s.buffer = noise.white
       s.start(t, rand(0, 4))
       s.stop(t + dur + 0.03)
@@ -23,9 +23,12 @@ export default function pencil(kit: Kit, out: GainNode, { loops }: Room): Channe
       g.gain.exponentialRampToValueAtTime(v, t + Math.min(0.03, dur * 0.3))
       g.gain.setValueAtTime(v * rand(0.7, 1), t + dur * 0.7)
       g.gain.exponentialRampToValueAtTime(0.0001, t + dur)
-      grain.connect(gain(v * 0.35)).connect(g.gain)
+      // Le grain du papier : le trait crépite (du bruit lent qui module le niveau), il ne bourdonne pas.
+      grain.buffer = noise.white
+      grain.loop = true
+      grain.connect(biq('lowpass', rand(260, 520), 0.5)).connect(gain(v * 1.6)).connect(g.gain)
       s.connect(bp).connect(g).connect(bus)
-      grain.start(t)
+      grain.start(t, rand(0, 4))
       grain.stop(t + dur + 0.03)
     }
     function hatch(t: number) {

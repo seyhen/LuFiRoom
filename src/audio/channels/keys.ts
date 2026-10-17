@@ -8,7 +8,7 @@ import type { Channel, Kit } from '../engine'
  * hésitations. Chaque touche est un clic net et un petit « toc » ; la barre d'espace et Entrée sonnent plus grave.
  */
 export default function keys(kit: Kit, out: GainNode, { loops }: Room): Channel {
-  return kit.loopOrChannel(loops.keys, out, () => {
+  return kit.grainsOr(loops.keys, out, { len: [3, 6], fade: 0.4, rate: 0.03, level: 0.2 }, () => {
     const { ctx, gain, biq, osc, noise } = kit
     const bus = gain(6)
     bus.connect(out)

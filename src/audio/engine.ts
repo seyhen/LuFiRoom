@@ -2,7 +2,7 @@ import { preload, useStore } from '../state/store'
 import { roomById } from '../rooms'
 import type { Loop, Room, SoundId } from '../rooms/types'
 import { brownGen, loopBuffer, pinkGen, whiteGen } from './buffers'
-import { crossLoop, decode, later, missing, prefetch } from './recordings'
+import { crossLoop, decode, grainLoop, later, missing, prefetch, shots } from './recordings'
 import radio from './channels/radio'
 import tracks from './channels/tracks'
 import rain from './channels/rain'
@@ -67,28 +67,28 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   espresso: { build: espresso, base: 0.9 },
   pages: { build: pages, base: 0.9 },
   waves: { build: waves, base: 0.9 },
-  gulls: { build: gulls, base: 0.9 },
-  chimes: { build: chimes, base: 0.9 },
-  rails: { build: rails, base: 0.9 },
+  gulls: { build: gulls, base: 0.65 },
+  chimes: { build: chimes, base: 1.2 },
+  rails: { build: rails, base: 0.45 },
   tea: { build: tea, base: 0.9 },
-  city: { build: city, base: 0.9 },
+  city: { build: city, base: 0.63 },
   pigeons: { build: pigeons, base: 0.9 },
   keys: { build: keys, base: 0.9 },
   pencil: { build: pencil, base: 0.9 },
   kettle: { build: kettle, base: 0.9 },
-  spring: { build: spring, base: 0.9 },
+  spring: { build: spring, base: 0.3 },
   bamboo: { build: bamboo, base: 0.9 },
-  foghorn: { build: foghorn, base: 1.1 },
+  foghorn: { build: foghorn, base: 1.75 },
   bell: { build: bell, base: 2.2 },
-  sonar: { build: sonar, base: 2.0 },
-  bubbles: { build: bubbles, base: 4.0 },
-  hull: { build: hull, base: 1.7 },
-  engine: { build: engineSound, base: 1.8 },
-  whale: { build: whale, base: 2.0 },
-  sizzle: { build: sizzle, base: 7.5 },
-  simmer: { build: simmer, base: 1.1 },
-  neon: { build: neon, base: 1.45 },
-  tram: { build: tram, base: 3.4 },
+  sonar: { build: sonar, base: 1.5 },
+  bubbles: { build: bubbles, base: 1.3 },
+  hull: { build: hull, base: 0.8 },
+  engine: { build: engineSound, base: 0.7 },
+  whale: { build: whale, base: 0.7 },
+  sizzle: { build: sizzle, base: 1.05 },
+  simmer: { build: simmer, base: 0.65 },
+  neon: { build: neon, base: 1.3 },
+  tram: { build: tram, base: 0.6 },
 }
 const ids = Object.keys(CHANNELS) as SoundId[]
 
@@ -155,7 +155,46 @@ function makeKit(ctx: AudioContext, master: GainNode) {
     }
     return ch
   }
-  return { ctx, master, gain, biq, osc, loop, noise, sample, loopOr, loopOrChannel }
+  // Comme loopOrChannel, mais l'enregistrement est joué en grains (segments tirés au hasard, jamais deux fois la même suite) :
+  // pour les sons qu'on entendrait « boucler » (la pluie de 30 s, le ronron de 7 s). `start` et `stop` pilotent la programmation.
+  const grainsOr = (rec: Loop | undefined, dest: AudioNode, opts: Parameters<typeof grainLoop>[3], synth: () => Channel | void): Channel => {
+    const ch = later()
+    if (!rec) ch.use(synth())
+    else {
+      sample(rec.src).then(
+        (b) => {
+          const g = gain(rec.gain)
+          g.connect(dest)
+          ch.use(grainLoop(ctx, b, g, opts))
+        },
+        (e) => {
+          missing(rec.src, e)
+          ch.use(synth())
+        },
+      )
+    }
+    return ch
+  }
+  // Pour un son ponctuel enregistré (corne de brume, pigeon) : un tir de temps en temps, jamais en boucle.
+  const shotsOr = (rec: Loop | undefined, dest: AudioNode, opts: Parameters<typeof shots>[3], synth: () => Channel | void): Channel => {
+    const ch = later()
+    if (!rec) ch.use(synth())
+    else {
+      sample(rec.src).then(
+        (b) => {
+          const g = gain(rec.gain)
+          g.connect(dest)
+          ch.use(shots(ctx, b, g, opts))
+        },
+        (e) => {
+          missing(rec.src, e)
+          ch.use(synth())
+        },
+      )
+    }
+    return ch
+  }
+  return { ctx, master, gain, biq, osc, loop, noise, sample, loopOr, loopOrChannel, grainsOr, shotsOr }
 }
 
 // Les boucles de la pièce se téléchargent dès l'ouverture, pendant l'écran de chargement. On les décode à leur premier

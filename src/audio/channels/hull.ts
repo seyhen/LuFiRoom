@@ -10,7 +10,7 @@ import type { Channel, Kit } from '../engine'
  * Enregistrée, ou synthétisée.
  */
 export default function hull(kit: Kit, out: GainNode, { loops }: Room): Channel {
-  return kit.loopOrChannel(loops.hull, out, () => {
+  return kit.grainsOr(loops.hull, out, { len: [2.5, 4.5], fade: 1, rate: 0.05, level: 0.2 }, () => {
     const { ctx, gain, biq, osc, loop, noise } = kit
     const bus = gain(1)
     bus.connect(out)

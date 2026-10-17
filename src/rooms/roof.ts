@@ -23,7 +23,12 @@ export const roof: Room = {
     hemi: { sky: [0xffe8d6, 0x5a62a8], ground: [0xb08a70, 0x42303a], intensity: [0.6, 0.36] },
     sun: { color: [0xffcf9e, 0x9fb0ff], intensity: [0.58, 0.22] },
   },
-  loops: {},
+  loops: {
+    city: { src: 'audio/roof/city', gain: 0.8 },
+    pigeons: { src: 'audio/roof/pigeons', gain: 0.8 },
+    wind: { src: 'audio/roof/wind', gain: 0.8 },
+    fire: { src: 'audio/cafe/fire', gain: 0.8 },
+  },
   stations: ['veillee', 'nuit-douce', 'bureau'],
   playlist: [],
   objects: [

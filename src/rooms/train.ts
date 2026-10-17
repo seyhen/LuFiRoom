@@ -24,7 +24,11 @@ export const train: Room = {
     hemi: { sky: [0xf6ead8, 0x565c9c], ground: [0x9a6a5a, 0x4a2a2a], intensity: [0.6, 0.36] },
     sun: { color: [0xffe6c6, 0x9aa8f0], intensity: [0.48, 0.2] },
   },
-  loops: {},
+  loops: {
+    rails: { src: 'audio/train/rails', gain: 0.9 },
+    tea: { src: 'audio/train/tea', gain: 0.9 },
+    rain: { src: 'audio/train/rain', gain: 1 },
+  },
   stations: ['nuit-douce', 'veillee', 'brume'],
   playlist: [],
   objects: [

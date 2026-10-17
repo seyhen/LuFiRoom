@@ -24,7 +24,11 @@ export const onsen: Room = {
     hemi: { sky: [0xfff0e2, 0x5a62a8], ground: [0x9a8a70, 0x3e3036], intensity: [0.62, 0.36] },
     sun: { color: [0xffdcb8, 0x9fb0ff], intensity: [0.55, 0.22] },
   },
-  loops: {},
+  loops: {
+    spring: { src: 'audio/onsen/spring', gain: 0.8 },
+    chimes: { src: 'audio/beach/chimes', gain: 0.7 },
+    garden: { src: 'audio/onsen/outside', gain: 0.5 },
+  },
   stations: ['brume', 'nuit-douce', 'petit-matin'],
   playlist: [],
   objects: [

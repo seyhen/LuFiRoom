@@ -23,7 +23,11 @@ export const beach: Room = {
     hemi: { sky: [0xffe9d8, 0x6a70b8], ground: [0xd9b48c, 0x4a3448], intensity: [0.58, 0.38] },
     sun: { color: [0xffd2a8, 0xa0b2ff], intensity: [0.5, 0.22] },
   },
-  loops: {},
+  loops: {
+    gulls: { src: 'audio/beach/gulls', gain: 0.8 },
+    chimes: { src: 'audio/beach/chimes', gain: 0.7 },
+    waves: { src: 'audio/beach/waves', gain: 0.8 },
+  },
   stations: ['petit-matin', 'nuit-douce', 'brume'],
   playlist: [],
   objects: [

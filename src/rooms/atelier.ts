@@ -24,7 +24,12 @@ export const atelier: Room = {
     hemi: { sky: [0xf4f2ee, 0x5a62a8], ground: [0xc0a888, 0x4a3a3a], intensity: [0.66, 0.38] },
     sun: { color: [0xfff0dc, 0x9fb0ff], intensity: [0.52, 0.22] },
   },
-  loops: {},
+  loops: {
+    pencil: { src: 'audio/atelier/pencil', gain: 0.8 },
+    keys: { src: 'audio/atelier/keys', gain: 0.6 },
+    kettle: { src: 'audio/atelier/kettle', gain: 0.6 },
+    rain: { src: 'audio/atelier/rain', gain: 1 },
+  },
   stations: ['bureau', 'petit-matin', 'brume', 'nuit-douce'],
   playlist: [],
   objects: [

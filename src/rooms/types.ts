@@ -56,7 +56,7 @@ export interface Loop {
   gain: number
 }
 
-export type Loops = Partial<Record<Exclude<SoundId, 'radio' | 'outside'> | 'birds' | 'crickets', Loop>>
+export type Loops = Partial<Record<Exclude<SoundId, 'radio' | 'outside'> | 'birds' | 'crickets' | 'garden', Loop>>
 
 /** Une piste de la radio. */
 export interface Track {

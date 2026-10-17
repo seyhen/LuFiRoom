@@ -85,6 +85,86 @@ export function crossLoop(ctx: BaseAudioContext, buf: AudioBuffer, dest: AudioNo
   next = play(next, 0, F)
 }
 
+interface Grains {
+  /** Durée d'un segment, en secondes (min, max). Tirée au hasard à chaque fois. */
+  len?: [number, number]
+  /** Fondu entre deux segments, en secondes. */
+  fade?: number
+  /** Écart de vitesse, en fraction (0,04 : de 96 % à 104 %) : le grain change un peu de hauteur à chaque segment. */
+  rate?: number
+  /** Écart de niveau entre segments, en fraction (0,2 : de 80 % à 120 %). */
+  level?: number
+}
+
+/**
+ * Joue un enregistrement en « grains » : des segments de longueur variable tirés à des endroits différents, fondus les uns dans
+ * les autres, à une vitesse et un niveau qui varient un peu. Jamais deux fois la même suite : on n'entend plus la boucle de 7 ou 30
+ * secondes revenir, ce que `crossLoop` ne peut pas éviter (il rejoue toujours le fichier dans le même ordre).
+ * Renvoie de quoi mettre en pause (`stop`) et reprendre (`start`) la programmation des segments.
+ */
+export function grainLoop(ctx: BaseAudioContext, buf: AudioBuffer, dest: AudioNode, { len = [4, 9], fade = 1.5, rate = 0.04, level = 0.2 }: Grains = {}) {
+  const dur = buf.duration
+  let next = 0, timer = 0
+  const rand = (a: number, b: number) => a + Math.random() * (b - a)
+  const schedule = () => {
+    const now = ctx.currentTime
+    if (next < now) next = now + 0.05
+    while (next < now + (document.hidden ? 4 : 1.5)) {
+      const r = 1 + rand(-rate, rate), want = Math.min(rand(len[0], len[1]), dur * 0.9), f = Math.min(fade, want / 3)
+      const from = rand(0, Math.max(0, dur - want * r)), s = ctx.createBufferSource(), g = ctx.createGain(), v = 1 + rand(-level, level)
+      s.buffer = buf
+      s.playbackRate.value = r
+      g.gain.value = 0 // pas d'autre évènement sur la même plage qu'une courbe : sinon le navigateur refuse
+      g.gain.setValueCurveAtTime(UP.map((x) => x * v), next, f)
+      g.gain.setValueCurveAtTime(DOWN.map((x) => x * v), next + want - f, f)
+      s.connect(g).connect(dest)
+      s.start(next, from, want * r)
+      s.onended = () => g.disconnect()
+      next += want - f
+    }
+  }
+  return {
+    start() {
+      if (timer) return
+      next = 0
+      schedule()
+      timer = window.setInterval(schedule, 400)
+    },
+    stop() {
+      clearInterval(timer)
+      timer = 0
+    },
+  }
+}
+
+/**
+ * Rejoue un court enregistrement (une corne de brume, un roucoulement) à intervalles irréguliers : un tir, puis un silence de
+ * `gap` secondes (min, max). Chaque tir change un peu de vitesse et de niveau. `start` / `stop` pilotent la suite.
+ */
+export function shots(ctx: BaseAudioContext, buf: AudioBuffer, dest: AudioNode, { gap = [10, 25], rate = 0.05, level = 0.15 } = {}) {
+  let timer = 0
+  const rand = (a: number, b: number) => a + Math.random() * (b - a)
+  const fire = () => {
+    const s = ctx.createBufferSource(), g = ctx.createGain(), r = 1 + rand(-rate, rate)
+    s.buffer = buf
+    s.playbackRate.value = r
+    g.gain.value = 1 + rand(-level, level)
+    s.connect(g).connect(dest)
+    s.start()
+    s.onended = () => g.disconnect()
+    timer = window.setTimeout(fire, (buf.duration / r + rand(gap[0], gap[1])) * 1000)
+  }
+  return {
+    start() {
+      if (!timer) timer = window.setTimeout(fire, 300)
+    },
+    stop() {
+      clearTimeout(timer)
+      timer = 0
+    },
+  }
+}
+
 /**
  * Canal dont le contenu arrive plus tard (enregistrements à décoder, ou synthèse de repli) :
  * il retient s'il doit jouer et transmet l'allumage à ce qu'on lui branche.

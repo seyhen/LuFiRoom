@@ -9,6 +9,17 @@ import type { Channel, Kit } from '../engine'
 export default function outside(kit: Kit, out: GainNode, { loops }: Room): Channel {
   const ch = later(), { birds, crickets } = loops
   const synth = () => ch.use(synthOutside(kit, out))
+  // Le filet d'eau du jardin (un jet de bambou dans la vasque) coule sous les oiseaux et les grillons.
+  const { garden } = loops
+  if (garden)
+    kit.sample(garden.src).then(
+      (b) => {
+        const g = kit.gain(garden.gain)
+        g.connect(out)
+        crossLoop(kit.ctx, b, g)
+      },
+      (e) => missing(garden.src, e),
+    )
   if (!birds || !crickets) synth()
   else {
     Promise.all([kit.sample(birds.src), kit.sample(crickets.src)]).then(([day, night]) => {

@@ -24,7 +24,12 @@ export const market: Room = {
     hemi: { sky: [0xffd8e0, 0x7a58c8], ground: [0x7a5a58, 0x2a1a3a], intensity: [0.55, 0.34] },
     sun: { color: [0xffc6a0, 0xb48cff], intensity: [0.45, 0.22] },
   },
-  loops: {},
+  loops: {
+    sizzle: { src: 'audio/market/sizzle', gain: 0.8 },
+    simmer: { src: 'audio/market/simmer', gain: 0.8 },
+    neon: { src: 'audio/market/neon', gain: 0.8 },
+    tram: { src: 'audio/market/tram', gain: 0.8 },
+  },
   stations: ['nuit-douce', 'bureau', 'petit-matin'],
   playlist: [],
   objects: [

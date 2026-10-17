@@ -10,7 +10,7 @@ import type { Channel, Kit } from '../engine'
  * plus loin et plus grave, lui répond. Enregistrée, ou synthétisée.
  */
 export default function foghorn(kit: Kit, out: GainNode, { loops }: Room): Channel {
-  return kit.loopOrChannel(loops.foghorn, out, () => {
+  return kit.shotsOr(loops.foghorn, out, { gap: [14, 32], rate: 0.04, level: 0.12 }, () => {
     const { ctx, gain, biq, osc } = kit
     const bus = gain(1.2)
     bus.connect(out)

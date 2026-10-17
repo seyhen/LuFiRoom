@@ -1,11 +1,12 @@
 import { useStore, type Store } from '../../state/store'
 import { roomById } from '../../rooms'
 import type { Room } from '../../rooms/types'
+import { rand } from '../../math'
 import { dropletBuffer } from '../buffers'
-import type { Kit } from '../engine'
+import type { Channel, Kit } from '../engine'
 
 /** Pluie, étouffée quand la fenêtre est fermée. Enregistrée, ou synthétisée : souffle rose, gouttes sur la vitre, grondement grave. */
-export default function rain(kit: Kit, out: GainNode, { loops }: Room) {
+export default function rain(kit: Kit, out: GainNode, { loops }: Room): Channel {
   const { ctx, gain, biq, loop, noise } = kit
   // Fenêtre ouverte (sons du dehors actifs) : l'enregistrement passe sans filtre (coupure à Nyquist), la synthèse à 7500 Hz.
   let open = ctx.sampleRate / 2
@@ -27,11 +28,31 @@ export default function rain(kit: Kit, out: GainNode, { loops }: Room) {
     lp.frequency.setTargetAtTime(cutoff(), ctx.currentTime, 0.4)
     trim.gain.setTargetAtTime(level(), ctx.currentTime, 0.4)
   })
-  kit.loopOr(loops.rain, lp, () => {
+  // La pluie enregistrée dure une trentaine de secondes : jouée en boucle, on l'entendrait revenir. On la joue en segments de 7 à 14 s
+  // tirés au hasard, fondus sur 3 s, et son niveau respire (rafales plus fortes, accalmies) toutes les 4 à 9 secondes.
+  const gust = gain(1)
+  gust.connect(lp)
+  let sway = 0
+  const swell = () => {
+    gust.gain.setTargetAtTime(rand(0.72, 1.28), ctx.currentTime, 2.5)
+    sway = window.setTimeout(swell, rand(4000, 9000))
+  }
+  const rec = kit.grainsOr(loops.rain, gust, { len: [7, 14], fade: 3, rate: 0.03, level: 0.15 }, () => {
     open = 7500
     lp.frequency.value = cutoff()
     loop(noise.pink, 0.7).connect(biq('highpass', 450, 0.5)).connect(gain(0.5)).connect(lp)
     loop(dropletBuffer(ctx), 0).connect(biq('highpass', 900, 0.5)).connect(gain(0.55)).connect(lp)
     loop(noise.brown, 2.1).connect(biq('lowpass', 220, 0.6)).connect(gain(0.45)).connect(out) // hors passe-bas
   })
+  return {
+    start() {
+      rec.start()
+      clearTimeout(sway)
+      swell()
+    },
+    stop() {
+      clearTimeout(sway)
+      setTimeout(() => rec.stop(), 1500)
+    },
+  }
 }

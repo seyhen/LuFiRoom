@@ -9,7 +9,7 @@ import type { Channel, Kit } from '../engine'
  * à cinq, plus ou moins loin, dans l'air ouvert (un peu d'écho). Entre deux, le silence et le vent.
  */
 export default function gulls(kit: Kit, out: GainNode, { loops }: Room): Channel {
-  return kit.loopOrChannel(loops.gulls, out, () => {
+  return kit.grainsOr(loops.gulls, out, { len: [6, 11], fade: 0.8, rate: 0.04, level: 0.2 }, () => {
     const { ctx, gain, biq, osc, loop, noise } = kit
     const bus = gain(7)
     bus.connect(out)

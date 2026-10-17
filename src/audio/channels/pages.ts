@@ -5,7 +5,7 @@ import type { Channel, Kit } from '../engine'
 
 /** La bibliothèque. Enregistrée, ou synthétisée : des pages qu'on tourne, le tic-tac d'une horloge, un parquet qui craque de temps en temps. */
 export default function pages(kit: Kit, out: GainNode, { loops }: Room): Channel {
-  return kit.loopOrChannel(loops.pages, out, () => {
+  return kit.grainsOr(loops.pages, out, { len: [6, 12], fade: 0.5, rate: 0.015, level: 0.15 }, () => {
     const { ctx, gain, biq, osc, noise } = kit
     // Niveau de la synthèse : réglé pour valoir les autres sons du mixeur (des évènements brefs et discrets).
     const bus = gain(4.5)
@@ -17,26 +17,36 @@ export default function pages(kit: Kit, out: GainNode, { loops }: Room): Channel
       s.stop(t + dur + 0.05)
       return s
     }
-    // Une page : un souffle de papier, d'abord un frottement léger puis le claquement doux de la feuille qui retombe.
+    // Une page qu'on tourne : un souffle d'air quand elle se soulève, puis le froissement du papier (une dizaine à une vingtaine de
+    // petits claquements secs de fibres, de plus en plus serrés), et le tassement sourd de la feuille qui retombe sur les autres.
     function turn(t: number) {
-      const dur = rand(0.22, 0.42), bp = biq('bandpass', rand(1600, 2400), 0.7), g = gain(0.0001)
-      bp.frequency.setValueAtTime(rand(1600, 2200), t)
-      bp.frequency.exponentialRampToValueAtTime(rand(3200, 4800), t + dur)
-      g.gain.setValueAtTime(0.0001, t)
-      g.gain.exponentialRampToValueAtTime(rand(0.07, 0.12), t + dur * 0.35)
-      g.gain.exponentialRampToValueAtTime(0.0001, t + dur)
-      burst(t, dur).connect(bp).connect(g).connect(bus)
-      const pat = burst(t + dur * 0.8, 0.09), pg = gain(0.0001)
-      pg.gain.setValueAtTime(0.0001, t + dur * 0.8)
-      pg.gain.exponentialRampToValueAtTime(0.05, t + dur * 0.8 + 0.01)
-      pg.gain.exponentialRampToValueAtTime(0.0001, t + dur * 0.8 + 0.09)
-      pat.connect(biq('bandpass', 700, 1.2)).connect(pg).connect(bus)
+      const dur = rand(0.22, 0.42)
+      const air = gain(0.0001), ab = biq('bandpass', 700, 0.8)
+      ab.frequency.setValueAtTime(700, t)
+      ab.frequency.exponentialRampToValueAtTime(2100, t + dur * 0.7)
+      air.gain.setValueAtTime(0.0001, t)
+      air.gain.exponentialRampToValueAtTime(rand(0.07, 0.11), t + dur * 0.4)
+      air.gain.exponentialRampToValueAtTime(0.0001, t + dur)
+      burst(t, dur).connect(ab).connect(air).connect(bus)
+      const n = 10 + ((Math.random() * 12) | 0)
+      for (let i = 0; i < n; i++) {
+        const k = i / n, at = t + dur * (0.15 + 0.85 * Math.pow(k, 0.7)) + rand(0, 0.012), g = gain(0.0001), len = rand(0.003, 0.009)
+        g.gain.setValueAtTime(0.0001, at)
+        g.gain.exponentialRampToValueAtTime(rand(0.05, 0.16) * (0.5 + k * 0.5), at + 0.0008)
+        g.gain.exponentialRampToValueAtTime(0.0001, at + len)
+        burst(at, len).connect(biq('bandpass', rand(2600, 7200), 1.1)).connect(g).connect(bus)
+      }
+      const tt = t + dur * 1.02, pg = gain(0.0001)
+      pg.gain.setValueAtTime(0.0001, tt)
+      pg.gain.exponentialRampToValueAtTime(0.1, tt + 0.008)
+      pg.gain.exponentialRampToValueAtTime(0.0001, tt + 0.11)
+      burst(tt, 0.12).connect(biq('lowpass', 420, 0.8)).connect(pg).connect(bus)
     }
     // Tic, tac : un petit clic sec, plus grave au « tac ».
     function tick(t: number, tock: boolean) {
       const g = gain(0.0001), o = osc('sine', tock ? 1500 : 1950)
       g.gain.setValueAtTime(0.0001, t)
-      g.gain.exponentialRampToValueAtTime(tock ? 0.07 : 0.085, t + 0.002)
+      g.gain.exponentialRampToValueAtTime(tock ? 0.025 : 0.03, t + 0.002)
       g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05)
       o.connect(g).connect(bus)
       o.start(t)
@@ -63,13 +73,13 @@ export default function pages(kit: Kit, out: GainNode, { loops }: Room): Channel
     let nextPage = 0, nextTick = 0, nextCreak = 0, tock = false
     return scheduled(ctx, (until) => {
       const now = ctx.currentTime
-      if (nextPage < now) nextPage = now + rand(0.5, 2.5)
+      if (nextPage < now) nextPage = now + rand(0.4, 1.8)
       if (nextTick < now) nextTick = now + 0.1
       if (nextCreak < now) nextCreak = now + rand(6, 14)
       while (nextPage < until) {
         turn(nextPage)
-        if (Math.random() < 0.25) turn(nextPage + rand(0.5, 0.9)) // parfois deux pages de suite
-        nextPage += rand(3.5, 9)
+        if (Math.random() < 0.3) turn(nextPage + rand(0.6, 1.1)) // parfois deux pages de suite
+        nextPage += rand(2.8, 7)
       }
       while (nextTick < until) {
         tick(nextTick, tock)

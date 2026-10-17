@@ -9,7 +9,7 @@ import type { Channel, Kit } from '../engine'
  * un battement d'ailes. La nuit, ils dorment à moitié : quelques roucoulements ensommeillés, plus rares.
  */
 export default function pigeons(kit: Kit, out: GainNode, { loops }: Room): Channel {
-  return kit.loopOrChannel(loops.pigeons, out, () => {
+  return kit.shotsOr(loops.pigeons, out, { gap: [2, 7], rate: 0.08, level: 0.25 }, () => {
     const { ctx, gain, biq, osc, noise } = kit
     const bus = gain(5.5)
     bus.connect(out)

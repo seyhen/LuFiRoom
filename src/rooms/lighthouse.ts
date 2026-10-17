@@ -24,7 +24,11 @@ export const lighthouse: Room = {
     hemi: { sky: [0xfff1de, 0x4a6aa8], ground: [0xa88c6c, 0x2a3040], intensity: [0.7, 0.34] },
     sun: { color: [0xffe6c4, 0x9db8ff], intensity: [0.5, 0.22] },
   },
-  loops: {},
+  loops: {
+    wind: { src: 'audio/roof/wind', gain: 0.9 },
+    fire: { src: 'audio/lighthouse/fire', gain: 0.8 },
+    foghorn: { src: 'audio/lighthouse/foghorn', gain: 0.9 },
+  },
   stations: ['veillee', 'brume', 'nuit-douce'],
   playlist: [],
   objects: [

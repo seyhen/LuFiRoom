@@ -26,7 +26,14 @@ export const cafe: Room = {
     hemi: { sky: [0xe8ebf0, 0x4d548f], ground: [0xa89a8e, 0x2a2340], intensity: [0.6, 0.36] },
     sun: { color: [0xe9eefa, 0x8ea2e8], intensity: [0.42, 0.2] },
   },
-  loops: {},
+  loops: {
+    murmur: { src: 'audio/cafe/murmur', gain: 0.8 },
+    espresso: { src: 'audio/cafe/espresso', gain: 0.8 },
+    pages: { src: 'audio/cafe/pages', gain: 0.8 },
+    street: { src: 'audio/cafe/street', gain: 0.7 },
+    rain: { src: 'audio/cafe/rain', gain: 1 },
+    fire: { src: 'audio/cafe/fire', gain: 0.8 },
+  },
   stations: ['brume', 'veillee', 'nuit-douce', 'petit-matin'],
   playlist: [],
   objects: [
