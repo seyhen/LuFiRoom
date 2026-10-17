@@ -77,24 +77,6 @@ export function dropletBuffer(ctx: BaseAudioContext, sec = 8) {
   return normalize(buf, 0.8)
 }
 
-/** Crépitement de vinyle. */
-export function crackleBuffer(ctx: BaseAudioContext, sec = 7) {
-  const sr = ctx.sampleRate, N = Math.floor(sec * sr), buf = ctx.createBuffer(2, N, sr)
-  for (let c = 0; c < 2; c++) {
-    const d = buf.getChannelData(c)
-    let lp = 0
-    for (let i = 0; i < N; i++) {
-      lp += (Math.random() * 2 - 1 - lp) * 0.25
-      d[i] = lp * 0.035
-    }
-    for (let k = 0; k < sec * 16; k++) {
-      const i0 = (Math.random() * N) | 0, a = Math.pow(Math.random(), 3) * 0.9 * (Math.random() < 0.5 ? -1 : 1), len = 2 + ((Math.random() * 30) | 0)
-      for (let n = 0; n < len; n++) d[(i0 + n) % N] += a * Math.exp(-n / (len * 0.3))
-    }
-  }
-  return normalize(buf, 0.7)
-}
-
 /**
  * Feu de bois : un lit de petits craquements, des éclats plus nets, un « pop » de temps en temps.
  * Chaque craquement est une courte salve de bruit filtré qui s'éteint vite.

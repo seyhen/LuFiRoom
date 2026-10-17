@@ -59,16 +59,24 @@ Pas encore déclarés dans une pièce (voir `docs/ASSETS.md`).
 
 | Fichier | Titre | Artiste | Source (lien) | Licence | Tempo (bpm) | Ajouté le |
 |---|---|---|---|---|---|---|
-| | | | | | | |
+| `radio/velvet-lounge` | Velvet Lounge | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 177 s) | à confirmer par le propriétaire | 78 | 2026-10-17 |
+| `radio/tape-drift` | Tape Drift | RhythmicInk | idem (177 s) | idem | 64 | 2026-10-17 |
+| `radio/matcha-groove` | Matcha Groove | RhythmicInk | idem (181 s) | idem | 82 | 2026-10-17 |
+| `radio/matcha-groove-2` | Matcha Groove II | RhythmicInk | idem (177 s, seconde version) | idem | 82 | 2026-10-17 |
+| `radio/dusty-keys` | Dusty Keys | RhythmicInk | idem (172 s) | idem | 82 | 2026-10-17 |
+| `radio/midnight-drift` | Midnight Drift | RhythmicInk | idem (176 s) | idem | 74 | 2026-10-17 |
+| `radio/melancholic-jazz` | Melancholic Lo-Fi Jazz Cover | RhythmicInk | idem (176 s) | idem | 74 | 2026-10-17 |
 
 ## Sons d'interface
 
 Les « pops » d'allumage et d'extinction sont synthétisés dans le navigateur (`src/audio/engine.ts`) : aucun fichier.
 
+Les sept morceaux sont ceux que le propriétaire a fournis le 2026-10-17 (artiste affiché dans les fichiers : « RhythmicInk »). Leur licence d'usage commercial est à renseigner (outil de génération, plan, date) avant toute mise en vente : voir docs/ASSETS.md. Tempo et premier temps mesurés par analyse du signal.
+
 ## Sons synthétisés
 
 Tant qu'un son n'a pas d'enregistrement dans `loops` de sa pièce (`src/rooms/`), il reste synthétisé en direct (moteur de la phase 1) : rien à créditer. C'est le cas de la radio, tant qu'aucune piste n'est déclarée : ses cinq stations sont calculées en direct (`src/audio/stations.ts`).
-Les sons des pièces ajoutées depuis (café, plage, train de nuit, toit-terrasse, atelier, onsen) sont tous synthétisés pour l'instant, sauf ceux qu'elles reprennent à la chambre ou à la cabane.
+Chaque pièce a désormais des enregistrements pour ses sons (voir les sections ci-dessus). Restent synthétisés : la cloche de bouée du phare, les oiseaux et les grillons du jardin de l'onsen, la pluie du marché et les vagues du phare, ainsi que la radio.
 
 ## Boucles ajoutées le 2026-10-17 (toit, onsen, phare, sous-marin, marché, plage, train)
 

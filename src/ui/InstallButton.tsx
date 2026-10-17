@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { installIcon } from './icons'
+import { useT } from '../i18n'
 
 // Chrome, Edge et Android proposent l'installation par un évènement : on le garde pour l'offrir quand l'utilisateur le veut.
 // (Safari sur iPhone n'en a pas : on y passe par « Partager » puis « Sur l'écran d'accueil ».)
@@ -25,16 +26,17 @@ const subscribe = (l: () => void) => {
   return () => void listeners.delete(l)
 }
 
-/** Bouton « Installer l'app » : n'apparaît que si le navigateur sait l'installer, et pas déjà installée. */
+/** Bouton « Installer l’app » : n'apparaît que si le navigateur sait l'installer, et pas déjà installée. */
 export function InstallButton() {
+  const t = useT()
   const available = useSyncExternalStore(subscribe, () => deferred !== null)
   if (!available) return null
   return (
     <button
       className="mode"
       type="button"
-      aria-label="Installer l'app"
-      title="Installer l'app"
+      aria-label={t("Installer l’app")}
+      title={t("Installer l’app")}
       onClick={async () => {
         const d = deferred
         deferred = null // l'évènement ne sert qu'une fois

@@ -1,3 +1,4 @@
+import { useT } from '../i18n'
 import { useEffect, useLayoutEffect, useRef, type MutableRefObject } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Raycaster, Vector2, Vector3, type Group, type Object3D, type OrthographicCamera } from 'three'
@@ -20,12 +21,13 @@ const CAM_POS = LOOK.clone().addScaledVector(new Vector3(1, 0.8, 1).normalize(),
 // `legacy linear flat` : rendu de three r128 comme le prototype (couleurs telles quelles, pas de tone mapping).
 export function Stage({ hotspotLayer }: { hotspotLayer: Layer }) {
   const room = useStore((s) => roomById(s.room))
+  const t = useT()
   return (
     <Canvas
       className="scene"
       style={{ position: 'fixed', inset: 0 }}
       role="img"
-      aria-label={room.description}
+      aria-label={t(room.description)}
       orthographic
       camera={{ manual: true, near: 0.1, far: 120 }}
       shadows

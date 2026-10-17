@@ -1,10 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { rooms } from '../rooms'
 import { useStore } from '../state/store'
+import { useT } from '../i18n'
 
 /** Choix de la pièce : une puce par pièce, de vrais boutons, sur une ligne qui défile. Rien à choisir tant qu'il n'y en a qu'une. */
 export function RoomPicker() {
   const current = useStore((s) => (s.leaving ?? s.room))
+  const t = useT()
   const row = useRef<HTMLDivElement>(null)
   // La pièce choisie reste visible dans la ligne (au chargement, ou si on la choisit à moitié cachée).
   useEffect(() => {
@@ -15,10 +17,10 @@ export function RoomPicker() {
   }, [current])
   if (rooms.length < 2) return null
   return (
-    <div ref={row} className="rooms" role="group" aria-label="Choisir une pièce">
+    <div ref={row} className="rooms" role="group" aria-label={t('Choisir une pièce')}>
       {rooms.map((r) => (
         <button key={r.id} type="button" className="room" aria-pressed={r.id === current} onClick={() => useStore.getState().goto(r.id)}>
-          {r.name}
+          {t(r.name)}
         </button>
       ))}
     </div>

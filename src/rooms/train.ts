@@ -1,3 +1,5 @@
+import { radioSub } from '../audio/stations'
+import { PLAYLIST } from './playlist'
 import type { Room } from './types'
 
 // Un compartiment de voiture-lits, la nuit. Les enregistrements sont à déclarer dans `loops`
@@ -29,18 +31,18 @@ export const train: Room = {
     tea: { src: 'audio/train/tea', gain: 0.9 },
     rain: { src: 'audio/train/rain', gain: 1 },
   },
-  stations: ['nuit-douce', 'veillee', 'brume'],
-  playlist: [],
+  stations: ['minuit', 'pluie-fine', 'nuit-douce'],
+  playlist: PLAYLIST,
   objects: [
     { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.35, 5.2, -3.85] },
     { id: 'window', target: 'rails', label: 'Fenêtre · le train', anchor: [0.9, 2.4, -3.0] },
     { id: 'radio', target: 'radio', label: 'Gramophone · lofi', anchor: [-2.55, 1.1, 1.5] },
-    { id: 'tea', target: 'tea', label: 'Verre de thé', anchor: [0.75, 1.45, -2.55] },
+    { id: 'tea', target: 'tea', label: 'Verre de thé · cuillère', anchor: [0.75, 1.45, -2.55] },
     { id: 'book', target: 'pages', label: 'Livre · pages', anchor: [-2.35, 1.05, -1.1] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-0.05, 1.6, -2.68] },
   ],
   sounds: [
-    { id: 'radio', name: 'Gramophone lofi', chip: 'var(--c-radio)', volume: 0.7, sub: (s) => (s.on.radio && s.onAir) || 'lofi · 72 bpm' },
+    { id: 'radio', name: 'Gramophone lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'rails', name: 'Le train', chip: 'var(--c-rails)', volume: 0.7, sub: (s) => (s.on.rails ? 'ta-dam, ta-dam' : 'vitre fermée') },
     { id: 'rain', name: 'Pluie', chip: 'var(--c-rain)', volume: 0.7, sub: () => 'sur la vitre' },
     { id: 'tea', name: 'Thé', chip: 'var(--c-tea)', volume: 0.5, sub: () => 'la cuillère qui tinte' },

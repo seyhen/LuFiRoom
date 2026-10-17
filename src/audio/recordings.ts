@@ -50,6 +50,12 @@ export function decode(ctx: BaseAudioContext, src: string) {
   return p
 }
 
+/** Libère un enregistrement (octets compressés et son décodé) : il se retéléchargera, depuis le cache, au prochain besoin. */
+export function release(src: string) {
+  bytes.delete(src)
+  buffers.delete(src)
+}
+
 /** Un enregistrement n'a pas pu être chargé : on le signale, et le son se rabat sur la synthèse du prototype. */
 export const missing = (what: string, e?: unknown) => console.warn(`Enregistrement indisponible (${what}), on synthétise.`, e ?? '')
 
@@ -65,24 +71,53 @@ const DOWN = UP.slice().reverse()
 export function crossLoop(ctx: BaseAudioContext, buf: AudioBuffer, dest: AudioNode, fade = 2) {
   // Tout se compte en échantillons : un départ entre deux échantillons serait interpolé, ce qui assourdit les aigus.
   const sr = ctx.sampleRate, N = buf.length, F = Math.round(Math.min(fade * sr, N / 4))
-  // Programme un passage qui démarre à l'échantillon `t`, lu depuis `from`, et renvoie le départ du suivant.
-  // Chaque passage, en finissant, programme celui d'après le suivant : il y en a toujours un d'avance.
-  const play = (t: number, from: number, rise: number) => {
-    const s = ctx.createBufferSource(), g = ctx.createGain(), end = t + N - from
-    s.buffer = buf
-    g.gain.setValueCurveAtTime(UP, t / sr, rise / sr)
-    g.gain.setValueCurveAtTime(DOWN, (end - F) / sr, F / sr)
-    s.connect(g).connect(dest)
-    s.start(t / sr, from / sr)
-    s.stop(end / sr)
-    s.onended = () => {
-      g.disconnect()
-      next = play(next, 0, F)
+  let gen = 0, out: GainNode | null = null, kill = 0
+  const live = new Set<AudioBufferSourceNode>()
+  const start = () => {
+    clearTimeout(kill)
+    if (out) return // déjà en route (ou en train de s'éteindre : on la garde)
+    const me = ++gen, m = ctx.createGain()
+    m.connect(dest)
+    out = m
+    // Programme un passage qui démarre à l'échantillon `t`, lu depuis `from`, et renvoie le départ du suivant.
+    // Chaque passage, en finissant, programme celui d'après le suivant : il y en a toujours un d'avance.
+    const play = (t: number, from: number, rise: number): number => {
+      const s = ctx.createBufferSource(), g = ctx.createGain(), end = t + N - from
+      s.buffer = buf
+      g.gain.setValueCurveAtTime(UP, t / sr, rise / sr)
+      g.gain.setValueCurveAtTime(DOWN, (end - F) / sr, F / sr)
+      s.connect(g).connect(m)
+      s.start(t / sr, from / sr)
+      s.stop(end / sr)
+      live.add(s)
+      s.onended = () => {
+        g.disconnect()
+        live.delete(s)
+        if (gen === me) next = play(next, 0, F)
+      }
+      return end - F
     }
-    return end - F
+    let next = play(Math.round(ctx.currentTime * sr), Math.floor(Math.random() * (N - 2 * F)), Math.min(Math.round(0.3 * sr), F))
+    next = play(next, 0, F)
   }
-  let next = play(Math.round(ctx.currentTime * sr), Math.floor(Math.random() * (N - 2 * F)), Math.min(Math.round(0.3 * sr), F))
-  next = play(next, 0, F)
+  // Le bus du son est déjà en fondu vers zéro : on laisse finir, puis on arrête vraiment les sources (plus de travail en fond).
+  const stop = () => {
+    clearTimeout(kill)
+    kill = window.setTimeout(() => {
+      gen++
+      live.forEach((s) => {
+        try {
+          s.stop()
+        } catch {
+          // déjà arrêtée
+        }
+      })
+      live.clear()
+      out?.disconnect()
+      out = null
+    }, 1500)
+  }
+  return { start, stop }
 }
 
 interface Grains {

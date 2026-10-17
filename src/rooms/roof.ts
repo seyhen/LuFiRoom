@@ -1,3 +1,5 @@
+import { radioSub } from '../audio/stations'
+import { PLAYLIST } from './playlist'
 import type { Room } from './types'
 
 // Un toit-terrasse de Brooklyn, un soir d'été. Les enregistrements sont à déclarer dans `loops`
@@ -29,8 +31,8 @@ export const roof: Room = {
     wind: { src: 'audio/roof/wind', gain: 0.8 },
     fire: { src: 'audio/cafe/fire', gain: 0.8 },
   },
-  stations: ['veillee', 'nuit-douce', 'bureau'],
-  playlist: [],
+  stations: ['soleil-bas', 'nuit-douce', 'bureau', 'rosee'],
+  playlist: PLAYLIST,
   objects: [
     { id: 'city', target: 'city', label: 'La ville · rumeur', anchor: [0.6, 4.6, -3.9] },
     { id: 'brazier', target: 'fire', label: 'Braséro · feu', anchor: [-0.85, 0.85, 0.35] },
@@ -40,7 +42,7 @@ export const roof: Room = {
     { id: 'lamp', target: 'night', label: 'Guirlande · jour / nuit', anchor: [3.0, 2.8, 0.4] },
   ],
   sounds: [
-    { id: 'radio', name: 'Boombox lofi', chip: 'var(--c-radio)', volume: 0.7, sub: (s) => (s.on.radio && s.onAir) || 'lofi · 72 bpm' },
+    { id: 'radio', name: 'Boombox lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'city', name: 'La ville', chip: 'var(--c-city)', volume: 0.6, sub: (s) => (s.night ? 'sirènes au loin' : 'klaxons, rumeur') },
     { id: 'fire', name: 'Braséro', chip: 'var(--c-fire)', volume: 0.7, sub: (s) => (s.on.fire ? 'ça crépite' : 'éteint') },
     { id: 'wind', name: 'Vent', chip: 'var(--c-wind)', volume: 0.6, sub: () => 'sur les toits' },

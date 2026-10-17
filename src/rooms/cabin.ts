@@ -1,4 +1,5 @@
 import { radioSub } from '../audio/stations'
+import { PLAYLIST } from './playlist'
 import type { Room } from './types'
 
 // La cabane de Noël sous la neige : un feu qui crépite, le vent dehors, le chat qui ronronne, la radio. Les enregistrements sont à déclarer dans `loops`
@@ -31,19 +32,19 @@ export const cabin: Room = {
     purr: { src: 'audio/bedroom/purr', gain: 0.5 },
   },
   // Le tourne-disque joue d'abord le disque de Noël, puis les stations les plus douces.
-  stations: ['noel', 'veillee', 'brume', 'nuit-douce'],
-  playlist: [],
+  stations: ['noel', 'veillee', 'minuit', 'nuit-douce'],
+  playlist: PLAYLIST,
   objects: [
     { id: 'fireplace', target: 'fire', label: 'Cheminée · feu', anchor: [-1.9, 1.3, -2.25] },
     { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-1.4, 0.58, -1.2] },
     { id: 'turntable', target: 'radio', label: 'Tourne-disque · lofi', anchor: [1.9, 1.05, -2.6] },
-    { id: 'window', target: 'wind', label: 'Fenêtre · vent', anchor: [1.4, 3.35, -3.0] },
+    { id: 'window', target: 'wind', label: 'Fenêtre · le vent', anchor: [1.4, 3.35, -3.0] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [1.55, 1.12, -0.73] },
   ],
   sounds: [
     { id: 'fire', name: 'Feu de bois', chip: 'var(--c-fire)', volume: 0.7, sub: (s) => (s.on.fire ? 'ça crépite' : 'cheminée') },
     { id: 'wind', name: 'Vent', chip: 'var(--c-wind)', volume: 0.6, sub: (s) => (s.night ? 'tempête' : 'rafales') },
-    { id: 'radio', name: 'Tourne-disque', chip: 'var(--c-radio)', icon: 'vinyl', skip: 'Disque suivant', volume: 0.75, sub: radioSub(0) },
+    { id: 'radio', name: 'Tourne-disque', chip: 'var(--c-radio)', icon: 'vinyl', skip: 'Disque suivant', volume: 0.75, sub: radioSub(PLAYLIST.length) },
     { id: 'purr', name: 'Ronron', chip: 'var(--c-cat)', volume: 0.7, sub: () => 'près du feu' },
   ],
 }

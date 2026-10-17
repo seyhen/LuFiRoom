@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../state/store'
+import { useLang, useT } from '../i18n'
 import { timerIcon } from './icons'
 
 const CHOICES = [{ min: 15, label: '15 min' }, { min: 30, label: '30 min' }, { min: 60, label: '1 h' }, { min: 120, label: '2 h' }]
@@ -14,6 +15,7 @@ function remaining(ms: number) {
 /** Minuteur de sommeil : au bout du temps choisi, tous les sons s'éteignent en fondu. */
 export function SleepTimer() {
   const end = useStore((s) => s.sleepEnd)
+  const t = useT(), en = useLang((s) => s.lang) === 'en'
   const [open, setOpen] = useState(false)
   const [left, setLeft] = useState(0)
   const root = useRef<HTMLDivElement>(null)
@@ -52,14 +54,14 @@ export function SleepTimer() {
         type="button"
         aria-haspopup="true"
         aria-expanded={open}
-        aria-label={end === null ? 'Minuteur de sommeil' : `Minuteur de sommeil, il reste ${remaining(left)}`}
+        aria-label={end === null ? t('Minuteur de sommeil') : en ? `Sleep timer, ${remaining(left)} left` : `Minuteur de sommeil, il reste ${remaining(left)}`}
         onClick={() => setOpen((o) => !o)}
       >
         {timerIcon}
-        <span className={end === null ? 'lbl' : undefined}>{end === null ? 'Minuteur' : remaining(left)}</span>
+        <span className={end === null ? 'lbl' : undefined}>{end === null ? t('Minuteur') : remaining(left)}</span>
       </button>
       {open && (
-        <div className="pop-menu" role="group" aria-label="Éteindre en fondu dans…">
+        <div className="pop-menu" role="group" aria-label={t('Éteindre en fondu dans…')}>
           {CHOICES.map((c) => (
             <button key={c.min} type="button" onClick={() => choose(c.min)}>
               {c.label}
@@ -67,7 +69,7 @@ export function SleepTimer() {
           ))}
           {end !== null && (
             <button type="button" className="cancel" onClick={() => choose(null)}>
-              Annuler le minuteur
+              {t('Annuler le minuteur')}
             </button>
           )}
         </div>

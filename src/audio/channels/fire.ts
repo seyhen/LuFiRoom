@@ -5,7 +5,7 @@ import type { Kit } from '../engine'
 /** Feu de cheminée. Enregistré, ou synthétisé : un grondement grave qui respire, des craquements, un souffle de flammes. */
 export default function fire(kit: Kit, out: GainNode, { loops }: Room) {
   const { ctx, gain, biq, osc, loop, noise } = kit
-  kit.loopOr(loops.fire, out, () => {
+  return kit.loopOrChannel(loops.fire, out, () => {
     // Grondement : le feu qui tire, avec une respiration lente.
     const roar = gain(0.5)
     loop(noise.brown, 4.2).connect(biq('lowpass', 420, 0.5)).connect(roar).connect(out)

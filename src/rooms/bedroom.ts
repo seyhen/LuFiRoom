@@ -1,10 +1,9 @@
 import { radioSub } from '../audio/stations'
-import type { Room, Track } from './types'
+import type { Room } from './types'
+import { PLAYLIST } from './playlist'
 
 // La chambre. Les enregistrements sont à déclarer dans `loops` et `playlist` (docs/ASSETS.md) ; sources et licences :
 // public/audio/CREDITS.md.
-
-const playlist: Track[] = []
 
 export const bedroom: Room = {
   id: 'bedroom',
@@ -24,8 +23,8 @@ export const bedroom: Room = {
     birds: { src: 'audio/bedroom/birds', gain: 0.16 },
     crickets: { src: 'audio/bedroom/crickets', gain: 0.25 },
   },
-  playlist,
-  stations: ['nuit-douce', 'petit-matin', 'brume', 'veillee', 'bureau'],
+  playlist: PLAYLIST,
+  stations: ['pluie-fine', 'nuit-douce', 'soleil-bas', 'petit-matin', 'veillee', 'bureau'],
   objects: [
     { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.35, 5.2, -3.85] },
     { id: 'radio', target: 'radio', label: 'Radio · lofi', anchor: [2.2, 1.8, -2.55] },
@@ -40,7 +39,7 @@ export const bedroom: Room = {
       name: 'Radio lofi',
       chip: 'var(--c-radio)',
       volume: 0.75,
-      sub: radioSub(playlist.length),
+      sub: radioSub(PLAYLIST.length),
     },
     { id: 'rain', name: 'Pluie', chip: 'var(--c-rain)', volume: 0.7, sub: (s) => (s.on.outside ? 'vitre ouverte' : 'vitre fermée') },
     { id: 'fan', name: 'Bruit blanc', chip: 'var(--c-fan)', volume: 0.55, sub: () => 'ventilateur' },

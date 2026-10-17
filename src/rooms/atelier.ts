@@ -1,3 +1,5 @@
+import { radioSub } from '../audio/stations'
+import { PLAYLIST } from './playlist'
 import type { Room } from './types'
 
 // Un atelier sous les toits de Paris. Les enregistrements sont à déclarer dans `loops`
@@ -30,8 +32,8 @@ export const atelier: Room = {
     kettle: { src: 'audio/atelier/kettle', gain: 0.6 },
     rain: { src: 'audio/atelier/rain', gain: 1 },
   },
-  stations: ['bureau', 'petit-matin', 'brume', 'nuit-douce'],
-  playlist: [],
+  stations: ['bureau', 'rosee', 'pluie-fine', 'brume'],
+  playlist: PLAYLIST,
   objects: [
     { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.35, 5.2, -3.85] },
     { id: 'radio', target: 'radio', label: 'Tourne-disque · lofi', anchor: [2.3, 0.85, -2.6] },
@@ -41,7 +43,7 @@ export const atelier: Room = {
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-2.6, 1.1, -1.9] },
   ],
   sounds: [
-    { id: 'radio', name: 'Vinyle lofi', chip: 'var(--c-radio)', volume: 0.7, sub: (s) => (s.on.radio && s.onAir) || 'lofi · 72 bpm' },
+    { id: 'radio', name: 'Vinyle lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'rain', name: 'Pluie', chip: 'var(--c-rain)', volume: 0.7, sub: () => 'sur la verrière' },
     { id: 'pencil', name: 'Crayon', chip: 'var(--c-pencil)', volume: 0.5, sub: () => 'sur le papier' },
     { id: 'keys', name: 'Clavier', chip: 'var(--c-keys)', volume: 0.45, sub: () => 'quelqu’un écrit' },

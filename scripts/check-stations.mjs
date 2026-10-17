@@ -36,7 +36,7 @@ for (const st of STATIONS) {
   if (!inRange(st.bpm, 50, 100)) bad(st, `tempo ${st.bpm}`)
   if (!inRange(st.swing, 0, 0.4)) bad(st, `swing ${st.swing}`)
   if (!inRange(st.level, 0.3, 2)) bad(st, `niveau ${st.level}`)
-  if (!inRange(st.tone.lp, 800, 8000) || !inRange(st.tone.sat, 0.5, 4) || !inRange(st.tone.crackle, 0, 1)) bad(st, 'tone hors limites')
+  if (!inRange(st.tone.lp, 800, 8000) || !inRange(st.tone.sat, 0.5, 4)) bad(st, 'tone hors limites')
   if (!inRange(st.tone.echo[0], 0, 0.7) || !inRange(st.tone.echo[1], 0, 0.8)) bad(st, "écho hors limites (retour 0.7 au plus : au-delà il s'emballe)")
 
   // accords

@@ -8,10 +8,16 @@ autrement ; elles sont décrites dans `src/audio/stations.ts`. Tout est calculé
 |---|---|---|---|
 | Nuit douce | 72 | Cmaj9 - Am9 - Dm9 - G13 | piano électrique, clochette : la radio du prototype, inchangée |
 | Petit matin | 82 | Bbmaj9 - Am9 - Gm9 - Fmaj9 | guitare pincée, shaker, cross-stick, boîte à musique |
-| Brume | 66 | Am9 - Fmaj9 - Cmaj9 - G13 | piano voilé, shaker doux, beaucoup de vinyle et d'écho |
+| Brume | 66 | Am9 - Fmaj9 - Cmaj9 - G13 | piano voilé, shaker doux, beaucoup d'écho |
 | Veillée | 62 | Dm9 - Bbmaj9 - Fmaj9 - C6/9 | nappes, balais, boîte à musique |
 | Bureau | 86 | Dm9 - G13 - Cmaj9 - Am9 | piano électrique, batterie sèche, peu de mélodie |
-| Noël | 70 | Gmaj9 - Em9 - Cmaj9 - D13 | piano électrique, boîte à musique, grelots de traîneau, vinyle |
+| Noël | 70 | Gmaj9 - Em9 - Cmaj9 - D13 | piano électrique, boîte à musique, grelots de traîneau |
+| Soleil bas | 78 | Ebmaj9 - Cm9 - Abmaj9 - Bb13 | piano électrique chaud, shaker, cross-stick, clochette |
+| Minuit | 60 | Cm9 - Abmaj9 - Ebmaj9 - Bb13 | nappes lentes, balais, une seule note de basse par mesure |
+| Rosée | 74 | Dmaj9 - Bm9 - Gmaj9 - A13 | guitare pincée, shaker, clochette |
+| Pluie fine | 68 | Fmaj9 - Am9 - Dm9 - G13 | piano électrique tendre, boîte à musique, shaker léger |
+
+Il n'y a plus de crépitement de vinyle : il grésillait (octobre 2026), il a été retiré de toutes les stations.
 
 ## Changer de station
 

@@ -1,8 +1,8 @@
-# Chambre Lofi
+# LufiRoom
 
 Webapp d'ambiance sonore : des pièces en 3D isométrique, style « gummy » (onze aujourd'hui : chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit), où chaque objet est un interrupteur de son. On touche la radio pour lancer la musique lofi, le nuage pour faire tomber la pluie, le ventilo pour le bruit blanc, etc. On compose son ambiance pour travailler, lire ou dormir.
 
-Nom de travail : « Chambre Lofi » (provisoire).
+Nom : « LufiRoom » (le dossier et les clés de stockage gardent « chambre-lofi »).
 
 ## Point de départ
 
@@ -31,6 +31,7 @@ Le développement se fait sous Windows : les commandes doivent fonctionner dans 
 src/
   main.tsx, App.tsx
   state/store.ts            # Zustand : on/off et volume par son, mode nuit, pièce, minuteur, ambiances
+  i18n.ts                   # langue (fr / en), dictionnaire des traductions, `tr` et `useT`
   state/mixes.ts            # ambiances : modèle, stockage, lien de partage (voir docs/MIXES.md)
   rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen, lighthouse, submarine, market), index.ts
   scene/
@@ -65,7 +66,7 @@ Principe clé : **une chambre est une donnée**. Les objets interactifs, les son
 
 ## Conventions
 
-- Interface en français. Ton simple et chaleureux, tutoiement.
+- Interface en français (ton simple et chaleureux, tutoiement) et en anglais : les textes s'écrivent en français dans le code, et chaque texte visible a sa traduction dans le dictionnaire de `src/i18n.ts` (clé = le texte français ; un texte absent reste en français). Nouvelle pièce ou nouveau son : ajoute ses libellés, ses noms et ses sous-titres au dictionnaire.
 - Mobile-first : tout doit marcher au doigt sur un téléphone de milieu de gamme à 60 fps.
 - L'audio ne démarre qu'après un geste utilisateur (règle d'autoplay des navigateurs). Le premier toucher crée ou relance l'`AudioContext`.
 - Chaque hotspot est un vrai `<button>` avec `aria-label` et `aria-pressed`. Le mixeur reste utilisable sans toucher la 3D.

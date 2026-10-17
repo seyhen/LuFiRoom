@@ -1,3 +1,5 @@
+import { radioSub } from '../audio/stations'
+import { PLAYLIST } from './playlist'
 import type { Room } from './types'
 
 // Un bain en plein air au bord d'un ryokan, en automne. Les enregistrements sont à déclarer dans `loops`
@@ -29,8 +31,8 @@ export const onsen: Room = {
     chimes: { src: 'audio/beach/chimes', gain: 0.7 },
     garden: { src: 'audio/onsen/outside', gain: 0.5 },
   },
-  stations: ['brume', 'nuit-douce', 'petit-matin'],
-  playlist: [],
+  stations: ['rosee', 'minuit', 'brume'],
+  playlist: PLAYLIST,
   objects: [
     { id: 'spring', target: 'spring', label: 'Source · eau chaude', anchor: [1.15, 1.45, -2.4] },
     { id: 'bamboo', target: 'bamboo', label: 'Shishi-odoshi · bambou', anchor: [-1.1, 1.1, -2.35] },
@@ -40,7 +42,7 @@ export const onsen: Room = {
     { id: 'lamp', target: 'night', label: 'Lanterne · jour / nuit', anchor: [2.78, 1.4, -0.55] },
   ],
   sounds: [
-    { id: 'radio', name: 'Shamisen lofi', chip: 'var(--c-radio)', volume: 0.7, sub: (s) => (s.on.radio && s.onAir) || 'lofi · 72 bpm' },
+    { id: 'radio', name: 'Shamisen lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'spring', name: 'Source', chip: 'var(--c-spring)', volume: 0.65, sub: () => 'eau chaude qui coule' },
     { id: 'bamboo', name: 'Shishi-odoshi', chip: 'var(--c-bamboo)', volume: 0.45, sub: () => 'le bambou bascule' },
     { id: 'chimes', name: 'Furin', chip: 'var(--c-chimes)', volume: 0.45, sub: () => 'clochette de verre' },

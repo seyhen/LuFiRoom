@@ -2,6 +2,7 @@ import { roomById } from '../rooms'
 import type { SoundId } from '../rooms/types'
 import { useStore } from '../state/store'
 import { stationById } from './stations'
+import { tr, useLang } from '../i18n'
 
 // Media Session : ce que le système affiche (écran verrouillé, notification, touches multimédia) et ce qu'il peut commander.
 // Pause coupe l'ambiance en retenant ce qui jouait ; Lecture le remet.
@@ -30,9 +31,9 @@ if ('mediaSession' in navigator) {
     const s = useStore.getState(), room = roomById(s.room), on = active()
     // La radio joue des stations (générative) ou des pistes enregistrées, qui ont un titre.
     const stations = !room.playlist.length
-    const name = (x: { id: SoundId; name: string }) => (x.id === 'radio' && stations ? `${x.name} · ${stationById(s.station).name}` : x.name)
-    const title = (s.on.radio && room.playlist.length && s.onAir) || on.map(name).join(' · ') || 'Silence'
-    const key = `${title}|${room.name}`
+    const name = (x: { id: SoundId; name: string }) => (x.id === 'radio' && stations ? `${tr(x.name)} · ${tr(stationById(s.station).name)}` : tr(x.name))
+    const title = (s.on.radio && room.playlist.length && s.onAir) || on.map(name).join(' · ') || tr('Silence')
+    const key = `${title}|${room.name}|${useLang.getState().lang}`
     // Suivant / précédent sur l'écran verrouillé : les stations, tant que la radio joue.
     const hop = !!s.on.radio && stations
     if (hop !== hopping) {
@@ -43,9 +44,10 @@ if ('mediaSession' in navigator) {
     if (key !== shown) {
       shown = key
       const art = (src: string, sizes: string) => ({ src: `${import.meta.env.BASE_URL}${src}`, sizes, type: 'image/png' })
-      ms.metadata = new MediaMetadata({ title, artist: room.name, album: 'Chambre Lofi', artwork: [art('icon-192.png', '192x192'), art('icon-512.png', '512x512')] })
+      ms.metadata = new MediaMetadata({ title, artist: tr(room.name), album: 'LufiRoom', artwork: [art('icon-192.png', '192x192'), art('icon-512.png', '512x512')] })
     }
     ms.playbackState = on.length ? 'playing' : 'paused'
   }
   useStore.subscribe(update)
+  useLang.subscribe(update)
 }

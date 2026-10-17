@@ -10,7 +10,7 @@ export default function wind(kit: Kit, out: GainNode, { loops, id }: Room) {
   // Au phare : la tempête qui s'engouffre dans l'escalier, un sifflement plus fort et un grondement plus plein.
   const storm = id === 'lighthouse'
   const { gain, biq, osc, loop, noise } = kit
-  kit.loopOr(loops.wind, out, () => {
+  return kit.loopOrChannel(loops.wind, out, () => {
     // Souffle : bruit rose en passe-bande, balayé lentement par deux oscillateurs qui ne retombent jamais en phase.
     const body = biq('bandpass', 520, 0.8), bodyGain = gain(0.55)
     loop(noise.pink, 1.1).connect(body).connect(bodyGain).connect(out)

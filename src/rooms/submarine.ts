@@ -1,3 +1,5 @@
+import { radioSub } from '../audio/stations'
+import { PLAYLIST } from './playlist'
 import type { Room } from './types'
 
 // La cabine d'un sous-marin de légende, au fond de l'abîme. Les enregistrements sont à déclarer dans `loops`
@@ -31,8 +33,8 @@ export const submarine: Room = {
     engine: { src: 'audio/submarine/engine', gain: 0.8 },
     whale: { src: 'audio/submarine/whale', gain: 0.9 },
   },
-  stations: ['brume', 'nuit-douce', 'veillee'],
-  playlist: [],
+  stations: ['minuit', 'brume', 'veillee'],
+  playlist: PLAYLIST,
   objects: [
     { id: 'window', target: 'whale', label: 'Hublot · chant de baleine', anchor: [0.45, 2.45, -2.9] },
     { id: 'sonar', target: 'sonar', label: 'Sonar · ping', anchor: [-1.75, 1.2, -2.1] },
@@ -43,7 +45,7 @@ export const submarine: Room = {
     { id: 'radio', target: 'radio', label: 'Orgue · lofi', anchor: [-2.4, 1.5, 0.5] },
   ],
   sounds: [
-    { id: 'radio', name: 'Orgue lofi', chip: 'var(--c-radio)', volume: 0.7, sub: (s) => (s.on.radio && s.onAir) || 'lofi · 60 bpm' },
+    { id: 'radio', name: 'Orgue lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'sonar', name: 'Sonar', chip: 'var(--c-sonar)', volume: 0.45, sub: () => 'un ping dans le noir' },
     { id: 'bubbles', name: 'Bulles', chip: 'var(--c-bubbles)', volume: 0.5, sub: () => 'le ballast qui respire' },
     { id: 'hull', name: 'Coque', chip: 'var(--c-hull)', volume: 0.5, sub: () => 'la pression qui gémit' },

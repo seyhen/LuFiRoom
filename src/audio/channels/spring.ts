@@ -9,7 +9,7 @@ import type { Kit } from '../engine'
  */
 export default function spring(kit: Kit, out: GainNode, { loops }: Room) {
   const { ctx, gain, biq, osc, loop, noise } = kit
-  kit.loopOr(loops.spring, out, () => {
+  return kit.loopOrChannel(loops.spring, out, () => {
     const bus = gain(2)
     bus.connect(out)
     const garden = ctx.createConvolver()

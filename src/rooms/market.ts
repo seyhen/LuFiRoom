@@ -1,3 +1,5 @@
+import { radioSub } from '../audio/stations'
+import { PLAYLIST } from './playlist'
 import type { Room } from './types'
 
 // Une ruelle de marché de nuit sous la pluie. Les enregistrements sont à déclarer dans `loops`
@@ -30,8 +32,8 @@ export const market: Room = {
     neon: { src: 'audio/market/neon', gain: 0.8 },
     tram: { src: 'audio/market/tram', gain: 0.8 },
   },
-  stations: ['nuit-douce', 'bureau', 'petit-matin'],
-  playlist: [],
+  stations: ['pluie-fine', 'bureau', 'soleil-bas'],
+  playlist: PLAYLIST,
   objects: [
     { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.35, 5.2, -3.85] },
     { id: 'tram', target: 'tram', label: 'Baie · le tram', anchor: [1.4, 2.95, -2.9] },
@@ -42,7 +44,7 @@ export const market: Room = {
     { id: 'radio', target: 'radio', label: 'Télé · lofi', anchor: [-2.35, 1.0, 2.7] },
   ],
   sounds: [
-    { id: 'radio', name: 'Télé lofi', chip: 'var(--c-radio)', volume: 0.7, sub: (s) => (s.on.radio && s.onAir) || 'lofi · 70 bpm' },
+    { id: 'radio', name: 'Télé lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'rain', name: 'Pluie', chip: 'var(--c-rain)', volume: 0.7, sub: () => 'sur la bâche' },
     { id: 'sizzle', name: 'Wok', chip: 'var(--c-sizzle)', volume: 0.5, sub: () => 'ça saute à feu vif' },
     { id: 'simmer', name: 'Marmite', chip: 'var(--c-simmer)', volume: 0.5, sub: () => 'le bouillon qui frémit' },

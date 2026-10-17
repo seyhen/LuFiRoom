@@ -1,9 +1,9 @@
 ---
 name: audit-room
-description: Audit d'une pièce de Chambre Lofi (nouvelle ou retravaillée) avant de dire qu'elle est finie. À lancer dès qu'on crée, refait ou retouche beaucoup une pièce, un objet ou une ambiance, ou quand l'utilisateur parle de bug de texture, d'objet qui scintille, qui traverse un autre, d'objet « pas assez travaillé » ou d'ambiance pas unique. Vérifie les bugs mécaniques (tracés, lumières, sons, ancres, interpénétrations), regarde chaque objet en gros plan, jour et nuit, mobile compris, et note la profondeur de travail par rapport à la plage et au toit-terrasse.
+description: Audit d'une pièce de LufiRoom (nouvelle ou retravaillée) avant de dire qu'elle est finie. À lancer dès qu'on crée, refait ou retouche beaucoup une pièce, un objet ou une ambiance, ou quand l'utilisateur parle de bug de texture, d'objet qui scintille, qui traverse un autre, d'objet « pas assez travaillé » ou d'ambiance pas unique. Vérifie les bugs mécaniques (tracés, lumières, sons, ancres, interpénétrations), regarde chaque objet en gros plan, jour et nuit, mobile compris, et note la profondeur de travail par rapport à la plage et au toit-terrasse.
 ---
 
-# Auditer une pièce de Chambre Lofi
+# Auditer une pièce de LufiRoom
 
 Une pièce n'est **pas finie parce qu'elle compile**. Elle l'est quand chaque objet, vu en gros plan, se comprend et que la pièce a une ambiance qu'aucune autre n'a. Ce skill rend ça mécanique : on ne dit « fini » qu'avec le rapport de la dernière étape, rempli avec des **preuves** (captures recadrées, chiffres), pas des impressions.
 

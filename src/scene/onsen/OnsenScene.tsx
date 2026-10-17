@@ -5,7 +5,9 @@ import { Mountains } from './Mountains'
 import { Pool } from './Pool'
 import { ShishiOdoshi, Spout } from './Water'
 import { Furin, Maple, StoneLantern } from './Garden'
-import { BathThings, TeaTray } from './Props'
+import { BathThings, TeaTray, TowelRack } from './Props'
+import { Macaque } from './Macaque'
+import { POOL } from './Pool'
 import { Shrubs } from './Shrubs'
 import { Chochin, Fireflies, Noren } from './Signs'
 
@@ -28,6 +30,10 @@ export function OnsenScene() {
       <TeaTray />
       <Shamisen position={[-2.45, 0.42, 2.0]} />
       <BathThings />
+      <TowelRack />
+      {/* le baigneur : un macaque, et son petit près du bord */}
+      <Macaque p={[POOL.cx - 0.55, POOL.y - 0.1, POOL.cz - 0.4]} />
+      <Macaque p={[POOL.cx - 0.05, POOL.y - 0.07, POOL.cz - 0.55]} s={0.6} ry={0.5} />
       <Shrubs />
       <Noren />
       <Chochin />

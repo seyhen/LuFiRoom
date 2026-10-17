@@ -2,7 +2,7 @@ import { useStore } from '../../state/store'
 import type { Room } from '../../rooms/types'
 import { EXTS, fileUrl, keepOffline, later, missing } from '../recordings'
 import type { Channel, Kit } from '../engine'
-import radio, { tuneStatic } from './radio'
+import radio from './radio'
 
 /** Indices 0..n-1 mélangés, sans recommencer par `last` (pas deux fois la même piste d'affilée). */
 function shuffled(n: number, last: number) {
@@ -22,7 +22,8 @@ function shuffled(n: number, last: number) {
 export default function tracks(kit: Kit, out: GainNode, { playlist }: Room): Channel {
   const el = new Audio()
   el.crossOrigin = 'anonymous' // au cas où les fichiers passeraient un jour par un autre domaine
-  kit.ctx.createMediaElementSource(el).connect(out)
+  // Les fichiers sont à -20 LUFS, comme les boucles d'ambiance : la musique doit passer au-dessus d'elles, d'où ce gain.
+  kit.ctx.createMediaElementSource(el).connect(kit.gain(2.2)).connect(out)
   const ch = later()
   let order: number[] = [], pos = -1, ext = 0, misses = 0, beat = -1, timer = 0, stopT = 0
 
@@ -76,7 +77,6 @@ export default function tracks(kit: Kit, out: GainNode, { playlist }: Room): Cha
     start() {
       clearTimeout(stopT)
       if (timer) return // rallumée pendant le fondu : elle n'a pas cessé de jouer
-      tuneStatic(kit)
       if (pos < 0) next()
       else play()
       timer = window.setInterval(tick, 50)

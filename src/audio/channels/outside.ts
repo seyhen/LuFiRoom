@@ -7,16 +7,15 @@ import type { Channel, Kit } from '../engine'
 
 /** Dehors : des oiseaux le jour, des grillons la nuit. Enregistrés, ou synthétisés. */
 export default function outside(kit: Kit, out: GainNode, { loops }: Room): Channel {
-  const ch = later(), { birds, crickets } = loops
+  const ch = later(), bed = later(), { birds, crickets, garden } = loops
   const synth = () => ch.use(synthOutside(kit, out))
   // Le filet d'eau du jardin (un jet de bambou dans la vasque) coule sous les oiseaux et les grillons.
-  const { garden } = loops
   if (garden)
     kit.sample(garden.src).then(
       (b) => {
         const g = kit.gain(garden.gain)
         g.connect(out)
-        crossLoop(kit.ctx, b, g)
+        bed.use(crossLoop(kit.ctx, b, g))
       },
       (e) => missing(garden.src, e),
     )
@@ -25,8 +24,7 @@ export default function outside(kit: Kit, out: GainNode, { loops }: Room): Chann
     Promise.all([kit.sample(birds.src), kit.sample(crickets.src)]).then(([day, night]) => {
       // Les deux boucles tournent ; on passe de l'une à l'autre en même temps que la pièce.
       const gDay = kit.gain(0), gNight = kit.gain(0)
-      crossLoop(kit.ctx, day, gDay)
-      crossLoop(kit.ctx, night, gNight)
+      const d = crossLoop(kit.ctx, day, gDay), n = crossLoop(kit.ctx, night, gNight)
       gDay.connect(out)
       gNight.connect(out)
       const mix = (isNight: boolean, tau: number) => {
@@ -35,15 +33,34 @@ export default function outside(kit: Kit, out: GainNode, { loops }: Room): Chann
         gNight.gain.setTargetAtTime(isNight ? crickets.gain : 0, t, tau)
       }
       mix(useStore.getState().night, 0.01)
-      useStore.subscribe((s, p) => {
+      kit.watch((s, p) => {
         if (s.night !== p.night) mix(s.night, 0.4)
+      })
+      ch.use({
+        start() {
+          d.start()
+          n.start()
+        },
+        stop() {
+          d.stop()
+          n.stop()
+        },
       })
     }, (e) => {
       missing('dehors', e)
       synth()
     })
   }
-  return ch
+  return {
+    start() {
+      ch.start()
+      bed.start()
+    },
+    stop() {
+      ch.stop()
+      bed.stop()
+    },
+  }
 }
 
 /** Synthèse du prototype : fond d'air, et des oiseaux le jour ou des grillons la nuit, avec un peu de réverbération. */

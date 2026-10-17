@@ -6,35 +6,9 @@ import { Fern } from '../nature/Fern'
 import { Leaf } from '../nature/Leaf'
 import { O } from './materials'
 
-/**
- * Le pin taillé en nuages (niwaki) : un tronc qui se tord, des branches qui portent chacune un coussin d'aiguilles,
- * sur son lit de mousse.
- */
-function Pine() {
-  return (
-    <group position={[0.05, 0, 1.75]}>
-      <Rock v={6} p={[0, -0.03, 0]} s={[0.62, 0.06, 0.5]} m={O.moss} shadow={false} />
-      <Part geo={cyl(0.05, 0.085, 0.55, 10)} m={O.bark} p={[0.03, 0.26, 0]} rotation-z={-0.2} />
-      <Part geo={cyl(0.04, 0.055, 0.5, 10)} m={O.bark} p={[0.02, 0.68, 0.02]} rotation-z={0.35} />
-      <Part geo={cyl(0.03, 0.04, 0.45, 8)} m={O.bark} p={[0.25, 0.72, 0.04]} rotation-z={-1.0} />
-      <Part geo={cyl(0.025, 0.035, 0.36, 8)} m={O.bark} p={[-0.2, 0.92, 0.0]} rotation-z={0.9} />
-      <Part geo={cyl(0.025, 0.03, 0.3, 8)} m={O.bark} p={[0.0, 1.05, -0.08]} rotation-x={-0.5} />
-      {([
-        [0.45, 0.72, 0.06, 0.3, 0.15, 0, O.pineF],
-        [-0.36, 0.95, 0.02, 0.25, 0.13, 1, O.pineDeep],
-        [0.02, 1.16, -0.16, 0.24, 0.13, 2, O.pineF],
-        [0.08, 0.88, 0.2, 0.2, 0.11, 4, O.pineDeep],
-        [0.1, 1.36, 0.02, 0.15, 0.1, 5, O.pineF],
-      ] as const).map(([x, y, z, w, h, v, m], i) => (
-        <Foliage key={i} v={v} p={[x, y, z]} s={[w, h, w * 0.85]} ry={i * 1.7} m={m} style="clipped" />
-      ))}
-    </group>
-  )
-}
-
 /** Les azalées taillées en coussins (karikomi), en massifs de deux ou trois ; l'une roussit avec l'automne. */
 function Azaleas() {
-  const groups: [number, number, number, boolean][] = [[2.55, 0.6, 0.32, false], [1.8, 1.5, 0.28, true], [-0.3, -2.72, 0.3, false], [2.92, 2.2, 0.36, false]]
+  const groups: [number, number, number, boolean][] = [[-0.3, -2.72, 0.3, false], [2.92, 2.2, 0.36, false]]
   return (
     <>
       {groups.map(([x, z, s, rust], g) => (
@@ -108,7 +82,6 @@ function Grass({ p, s = 1, ry = 0 }: { p: V3; s?: number; ry?: number }) {
 export function Shrubs() {
   return (
     <>
-      <Pine />
       <Azaleas />
       <Nanten p={[-0.15, 0, -2.85]} />
       <Fern p={[2.05, 0, -2.62]} size={0.62} n={9} m={O.fern} m2={O.fernLight} />
@@ -118,7 +91,7 @@ export function Shrubs() {
       <Grass p={[-0.55, 0, 0.25]} s={1.3} ry={0.8} />
       <Grass p={[1.85, 0, 0.75]} s={1.15} ry={-0.6} />
       <Grass p={[2.55, 0, -1.6]} s={1.1} ry={2.4} />
-      {([[1.15, 2.35, 0.3, 0.22], [-1.2, 1.3, 0.28, 0.2], [2.95, 1.05, 0.22, 0.18], [-0.95, -2.6, 0.3, 0.25]] as const).map(([x, z, w, d], i) => (
+      {([[-0.95, -2.6, 0.3, 0.25]] as const).map(([x, z, w, d], i) => (
         <Rock key={i} v={i % 2 ? 6 : 7} p={[x, -0.03, z]} s={[w, 0.045, d]} ry={i} m={O.moss} shadow={false} />
       ))}
     </>

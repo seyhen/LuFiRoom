@@ -12,7 +12,7 @@ export default function purr(kit: Kit, out: GainNode, { loops }: Room): Channel 
   const { ctx, gain, biq, loop } = kit
   const gate = gain(0)
   gate.connect(out)
-  let timer = 0
+  let timer = 0, halt = 0
   // Une phase de ronron (on) ou de silence (off), puis la suivante.
   const phase = (on: boolean) => {
     const t = ctx.currentTime
@@ -27,6 +27,7 @@ export default function purr(kit: Kit, out: GainNode, { loops }: Room): Channel 
   })
   return {
     start() {
+      clearTimeout(halt)
       rec.start()
       clearTimeout(timer)
       phase(true) // le chat ronronne tout de suite quand on le touche
@@ -35,7 +36,7 @@ export default function purr(kit: Kit, out: GainNode, { loops }: Room): Channel 
       clearTimeout(timer)
       gate.gain.cancelScheduledValues(ctx.currentTime)
       gate.gain.setTargetAtTime(0, ctx.currentTime, 0.25)
-      setTimeout(() => rec.stop(), 1500)
+      halt = window.setTimeout(() => rec.stop(), 1500)
     },
   }
 }

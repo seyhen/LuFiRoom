@@ -26,7 +26,7 @@ export default function city(kit: Kit, out: GainNode, { loops }: Room): Channel 
     wave.start()
     const level = () => hum.gain.setTargetAtTime(useStore.getState().night ? 0.28 : 0.4, ctx.currentTime, 1)
     level()
-    useStore.subscribe((s, p) => s.night !== p.night && level())
+    kit.watch((s, p) => s.night !== p.night && level())
 
     function far(pan: number) {
       const p = ctx.createStereoPanner(), lp = biq('lowpass', rand(1200, 2200), 0.6)

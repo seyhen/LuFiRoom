@@ -1,3 +1,5 @@
+import { radioSub } from '../audio/stations'
+import { PLAYLIST } from './playlist'
 import type { Room } from './types'
 
 // Un bungalow au bord de la mer, au coucher du soleil. Les enregistrements sont à déclarer dans `loops`
@@ -28,8 +30,8 @@ export const beach: Room = {
     chimes: { src: 'audio/beach/chimes', gain: 0.7 },
     waves: { src: 'audio/beach/waves', gain: 0.8 },
   },
-  stations: ['petit-matin', 'nuit-douce', 'brume'],
-  playlist: [],
+  stations: ['soleil-bas', 'rosee', 'petit-matin'],
+  playlist: PLAYLIST,
   objects: [
     { id: 'window', target: 'waves', label: 'La mer · vagues', anchor: [1.25, 2.1, -3.0] },
     { id: 'gull', target: 'gulls', label: 'Mouette · cris au loin', anchor: [-0.28, 1.25, -3.6] },
@@ -39,7 +41,7 @@ export const beach: Room = {
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-1.25, 1.0, -2.55] },
   ],
   sounds: [
-    { id: 'radio', name: 'Ukulélé lofi', chip: 'var(--c-radio)', volume: 0.7, sub: (s) => (s.on.radio && s.onAir) || 'lofi · 72 bpm' },
+    { id: 'radio', name: 'Ukulélé lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'waves', name: 'Vagues', chip: 'var(--c-waves)', volume: 0.7, sub: (s) => (s.night ? 'marée de nuit' : 'le ressac') },
     { id: 'gulls', name: 'Mouettes', chip: 'var(--c-gulls)', volume: 0.4, sub: () => 'au-dessus de la plage' },
     { id: 'chimes', name: 'Carillon', chip: 'var(--c-chimes)', volume: 0.45, sub: () => 'dans la brise' },

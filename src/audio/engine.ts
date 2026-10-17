@@ -2,7 +2,7 @@ import { preload, useStore } from '../state/store'
 import { roomById } from '../rooms'
 import type { Loop, Room, SoundId } from '../rooms/types'
 import { brownGen, loopBuffer, pinkGen, whiteGen } from './buffers'
-import { crossLoop, decode, grainLoop, later, missing, prefetch, shots } from './recordings'
+import { crossLoop, decode, grainLoop, later, missing, prefetch, release, shots } from './recordings'
 import radio from './channels/radio'
 import tracks from './channels/tracks'
 import rain from './channels/rain'
@@ -121,22 +121,8 @@ function makeKit(ctx: AudioContext, master: GainNode) {
   }
   const noise = { white: loopBuffer(ctx, 5, whiteGen), pink: loopBuffer(ctx, 6, pinkGen), brown: loopBuffer(ctx, 7, brownGen) }
   const sample = (src: string) => decode(ctx, src)
-  // Joue la boucle enregistrée vers `dest`, à son niveau. Sans enregistrement, ou s'il ne se charge pas : `synth()`.
-  const loopOr = (rec: Loop | undefined, dest: AudioNode, synth: () => void) => {
-    if (!rec) return synth()
-    sample(rec.src).then(
-      (b) => {
-        const g = gain(rec.gain)
-        g.connect(dest)
-        crossLoop(ctx, b, g)
-      },
-      (e) => {
-        missing(rec.src, e)
-        synth()
-      },
-    )
-  }
-  // Comme loopOr, pour une synthèse faite d'évènements planifiés (qui a un start et un stop) : renvoie le canal à brancher.
+  // Joue la boucle enregistrée vers `dest`, à son niveau (en route à `start`, vraiment arrêtée à `stop`). Sans enregistrement,
+  // ou s'il ne se charge pas : `synth()`. La synthèse d'un évènement planifié renvoie son canal ; sinon elle tourne sans fin.
   const loopOrChannel = (rec: Loop | undefined, dest: AudioNode, synth: () => Channel | void): Channel => {
     const ch = later()
     if (!rec) ch.use(synth())
@@ -145,7 +131,7 @@ function makeKit(ctx: AudioContext, master: GainNode) {
         (b) => {
           const g = gain(rec.gain)
           g.connect(dest)
-          crossLoop(ctx, b, g)
+          ch.use(crossLoop(ctx, b, g))
         },
         (e) => {
           missing(rec.src, e)
@@ -194,7 +180,9 @@ function makeKit(ctx: AudioContext, master: GainNode) {
     }
     return ch
   }
-  return { ctx, master, gain, biq, osc, loop, noise, sample, loopOr, loopOrChannel, grainsOr, shotsOr }
+  // S'abonner au store : à travers `watch`, l'abonnement se défait quand la pièce est déchargée (voir `evict`).
+  const watch = (fn: Parameters<typeof useStore.subscribe>[0]) => useStore.subscribe(fn)
+  return { ctx, master, gain, biq, osc, loop, noise, sample, loopOrChannel, grainsOr, shotsOr, watch }
 }
 
 // Les boucles de la pièce se téléchargent dès l'ouverture, pendant l'écran de chargement. On les décode à leur premier
@@ -219,6 +207,9 @@ const MASTER = 0.9
 // Un bus et un canal par son et par pièce : le ronron de la chambre n'est pas celui d'une autre pièce.
 const bus: Record<string, GainNode> = {}
 const built: Record<string, Channel | void> = {}
+// Ce que chaque canal a ouvert : ses abonnements au store et ses sources qui ne s'arrêtent pas seules (oscillateurs, bruits en boucle).
+const owned: Record<string, { subs: (() => void)[]; nodes: Set<AudioScheduledSourceNode>; dead: boolean }> = {}
+let evictTimer = 0
 const keyOf = (id: SoundId) => `${useStore.getState().room}/${id}`
 
 /** Crée l'AudioContext (au premier geste), ou le relance s'il a été suspendu. */
@@ -240,7 +231,8 @@ function ensure() {
   master.connect(comp)
   limiter = comp
   masterGain = master
-  if (typeof ctx.createMediaStreamDestination === 'function' && 'srcObject' in HTMLMediaElement.prototype) {
+  // `?direct` dans l'adresse : sortie directe vers les haut-parleurs, sans le flux <audio> (pour savoir si un grésillement vient de lui).
+  if (!new URLSearchParams(location.search).has('direct') && typeof ctx.createMediaStreamDestination === 'function' && 'srcObject' in HTMLMediaElement.prototype) {
     const dest = ctx.createMediaStreamDestination()
     comp.connect(dest)
     sink = new Audio()
@@ -282,7 +274,29 @@ function set(k: Kit, id: SoundId) {
   if (!(key in built)) {
     bus[key] = k.gain(0)
     bus[key].connect(k.master)
-    built[key] = CHANNELS[id].build(k, bus[key], roomById(useStore.getState().room))
+    const own = (owned[key] = { subs: [], nodes: new Set(), dead: false } as (typeof owned)[string])
+    // Une source qui finit seule (la note d'une radio) quitte la liste : seules celles qui tournent sans fin restent à arrêter.
+    const track = <T extends AudioScheduledSourceNode>(n: T) => {
+      own.nodes.add(n)
+      n.addEventListener('ended', () => own.nodes.delete(n))
+      return n
+    }
+    const mine: Kit = {
+      ...k,
+      watch: (fn) => {
+        if (own.dead) return () => {} // le canal est déjà déchargé (le son arrivait après coup)
+        const u = k.watch(fn)
+        own.subs.push(u)
+        return u
+      },
+      osc: (type, f) => {
+        return track(k.osc(type, f))
+      },
+      loop: (buf, offset) => {
+        return track(k.loop(buf, offset))
+      },
+    }
+    built[key] = CHANNELS[id].build(mine, bus[key], roomById(useStore.getState().room))
   }
   const { on, vol } = useStore.getState()
   const g = bus[key].gain, now = k.ctx.currentTime
@@ -311,6 +325,37 @@ function pop({ ctx, master, gain, osc }: Kit, up: boolean) {
   o.connect(g).connect(master)
   o.start(t)
   o.stop(t + 0.16)
+}
+
+/**
+ * Décharge les canaux des pièces qu'on a quittées : sources arrêtées, abonnements défaits, bus débranchés, puis les enregistrements
+ * décodés (jusqu'à 40 Mo par pièce) qu'aucune pièce courante n'utilise. Revenir dans une pièce la reconstruit au premier son allumé.
+ */
+function evict() {
+  // La pièce courante, et celle où l'on va si une transition est en cours, restent chargées.
+  const { room, leaving } = useStore.getState(), mine = [`${room}/`, ...(leaving ? [`${leaving}/`] : [])]
+  const keep = new Set([room, ...(leaving ? [leaving] : [])].flatMap((r) => Object.values(roomById(r).loops).map((l) => l.src)))
+  const gone = new Set<string>()
+  for (const key of Object.keys(built)) {
+    if (mine.some((m) => key.startsWith(m))) continue
+    built[key]?.stop()
+    const own = owned[key]
+    if (own) own.dead = true
+    own?.subs.forEach((u) => u())
+    own?.nodes.forEach((n) => {
+      try {
+        n.stop()
+      } catch {
+        // déjà arrêtée
+      }
+    })
+    bus[key]?.disconnect()
+    delete built[key]
+    delete owned[key]
+    delete bus[key]
+    for (const l of Object.values(roomById(key.split('/')[0]).loops)) gone.add(l.src)
+  }
+  for (const src of gone) if (!keep.has(src)) release(src)
 }
 
 // Minuteur de sommeil : sur l'horloge audio (qui ne dort pas quand l'onglet est en arrière-plan), le master descend
@@ -343,6 +388,11 @@ function sleepSchedule(k: Kit, end: number | null, was: number | null) {
 useStore.subscribe((s, p) => {
   // On s'en va vers une autre pièce : ses boucles commencent à se télécharger pendant l'effacement.
   if (s.leaving && s.leaving !== p.leaving) preloadRoom(roomById(s.leaving), false)
+  // Arrivé : on décharge l'ancienne, une fois ses sons fondus.
+  if (s.room !== p.room) {
+    clearTimeout(evictTimer)
+    evictTimer = window.setTimeout(evict, 2500)
+  }
   const changed = ids.filter((id) => s.on[id] !== p.on[id])
   if (changed.length || s.night !== p.night) {
     const k = ensure()

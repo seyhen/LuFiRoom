@@ -1,10 +1,12 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { useStore } from '../state/store'
+import { useT } from '../i18n'
 import type { RoomSound } from '../rooms/types'
 import { soundIcons, vinylIcon } from './icons'
 
 /** Un son : pastille, nom, sous-titre vivant (le bouton bascule) et curseur de volume, avec un bouton en plus si `extra`. */
 export function MixerCard({ sound, extra }: { sound: RoomSound; extra?: ReactNode }) {
+  const t = useT()
   const on = useStore((s) => s.on[sound.id])
   const vol = useStore((s) => s.vol[sound.id])
   const sub = useStore((s) => sound.sub(s))
@@ -20,8 +22,8 @@ export function MixerCard({ sound, extra }: { sound: RoomSound; extra?: ReactNod
           </span>
         </span>
         <span className="txt">
-          <span className="nm">{sound.name}</span>
-          <span className="sb" aria-live="polite">{sub}</span>
+          <span className="nm">{t(sound.name)}</span>
+          <span className="sb" aria-live="polite">{t(sub)}</span>
         </span>
       </button>
       <div className="vol">
@@ -30,7 +32,7 @@ export function MixerCard({ sound, extra }: { sound: RoomSound; extra?: ReactNod
           min={0}
           max={100}
           value={Math.round(vol * 100)}
-          aria-label={`Volume ${sound.name}`}
+          aria-label={`Volume ${t(sound.name)}`}
           onChange={(e) => useStore.getState().setVolume(sound.id, Number(e.target.value) / 100)}
         />
         {extra}

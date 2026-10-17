@@ -84,11 +84,11 @@ function SteamAndLeaves() {
   useFrame(({ clock }, delta) => {
     const dt = Math.min(delta, 0.05), t = clock.elapsedTime
     since.current += dt
-    if (!reduceMotion && since.current > 0.16) {
+    if (!reduceMotion && since.current > 0.13) {
       since.current = 0
       // Un brouillard plutôt qu'une fumée : beaucoup de petits nuages doux qui montent lentement du bassin entier.
       const a = rand(0, Math.PI * 2), k = Math.sqrt(Math.random())
-      steam.emit(mistTex, POOL.cx + Math.cos(a) * POOL.rx * 0.8 * k, POOL.y + 0.08, POOL.cz + Math.sin(a) * POOL.rz * 0.8 * k, { size: rand(0.55, 0.95), life: 5.5, vy: 0.17, sway: 0.14, grow: 0.9, peak: 0.75, soft: true })
+      steam.emit(mistTex, POOL.cx + Math.cos(a) * POOL.rx * 0.8 * k, POOL.y + 0.5, POOL.cz + Math.sin(a) * POOL.rz * 0.8 * k, { size: rand(0.65, 1.05), life: 5.5, vy: 0.17, sway: 0.14, grow: 0.9, peak: 0.7, soft: true })
     }
     if (!reduceMotion) floats.current.forEach((f, i) => { f.rotation.y = t * 0.1 * (i % 2 ? 1 : -1) + i; f.position.y = POOL.y + 0.012 + Math.sin(t * 1.3 + i) * 0.006 })
   })

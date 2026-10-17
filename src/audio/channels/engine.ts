@@ -7,7 +7,7 @@ import type { Kit } from '../engine'
  */
 export default function engine(kit: Kit, out: GainNode, { loops }: Room) {
   const { gain, biq, osc, loop, noise } = kit
-  kit.loopOr(loops.engine, out, () => {
+  return kit.loopOrChannel(loops.engine, out, () => {
     // la poussée de l'hélice : un grave triangulaire dont le niveau bat à chaque pale
     const thrust = gain(0.34)
     osc('triangle', 41).connect(thrust).connect(out)

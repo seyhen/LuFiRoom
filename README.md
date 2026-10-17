@@ -1,4 +1,4 @@
-# Chambre Lofi
+# LufiRoom
 
 Webapp d'ambiance sonore : une chambre en 3D isométrique où chaque objet lance un son (radio lofi, pluie, bruit blanc, ronron, bruits du dehors).
 

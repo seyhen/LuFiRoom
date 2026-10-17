@@ -45,8 +45,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Chambre Lofi',
-        short_name: 'Chambre Lofi',
+        name: 'LufiRoom',
+        short_name: 'LufiRoom',
         description: "Des chambres en 3D où chaque objet est un interrupteur de son : radio lofi, pluie, bruit blanc, feu de cheminée…",
         lang: 'fr',
         start_url: '/',

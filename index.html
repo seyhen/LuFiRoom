@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Chambre Lofi</title>
+<title>LufiRoom</title>
 <meta name="description" content="Des chambres en 3D où chaque objet est un interrupteur de son : radio lofi, pluie, bruit blanc, feu de cheminée…">
 <meta name="theme-color" content="#e5daef">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Chambre Lofi">
+<meta name="apple-mobile-web-app-title" content="LufiRoom">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Chambre Lofi">
+<meta property="og:site_name" content="LufiRoom">
 <meta property="og:locale" content="fr_FR">
-<meta property="og:title" content="Chambre Lofi">
+<meta property="og:title" content="LufiRoom">
 <meta property="og:description" content="Des chambres en 3D où chaque objet est un interrupteur de son : radio lofi, pluie, bruit blanc, feu de cheminée…">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
@@ -46,10 +46,21 @@
 </head>
 <body>
 <div id="splash">
-  <p class="t">Chambre Lofi</p>
+  <p class="t">LufiRoom</p>
   <div class="bar" role="progressbar" aria-label="Chargement de la chambre" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div>
   <p class="m">On range la chambre…</p>
 </div>
+<script>
+  // L'écran de chargement suit la langue choisie (ou celle du navigateur), comme l'app.
+  try {
+    var l = localStorage.getItem('chambre-lofi.lang') || (navigator.language || 'fr').slice(0, 2)
+    if (l !== 'fr') {
+      document.documentElement.lang = 'en'
+      document.querySelector('#splash .m').textContent = 'Tidying up the room…'
+      document.querySelector('#splash .bar').setAttribute('aria-label', 'Loading the room')
+    }
+  } catch (e) {}
+</script>
 <div id="root"></div>
 <script type="module" src="/src/main.tsx"></script>
 </body>

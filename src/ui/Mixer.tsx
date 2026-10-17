@@ -1,5 +1,6 @@
 import type { Ref } from 'react'
 import { useStore } from '../state/store'
+import { useLang, useT } from '../i18n'
 import { roomById } from '../rooms'
 import { MixerCard } from './MixerCard'
 import { SleepTimer } from './SleepTimer'
@@ -9,18 +10,19 @@ import { StationButton } from './StationButton'
 /** Mixeur flottant : une carte par son, le compte des sons actifs et « Tout couper ». */
 export function Mixer({ panelRef }: { panelRef: Ref<HTMLDivElement> }) {
   const { id, sounds, playlist } = useStore((s) => roomById(s.room))
+  const t = useT(), en = useLang((s) => s.lang) === 'en'
   const n = useStore((s) => sounds.filter((x) => s.on[x.id]).length)
   return (
-    <nav className="dock" aria-label="Mixeur d'ambiance">
+    <nav className="dock" aria-label={t("Mixeur d’ambiance")}>
       <div className="dock-inner" ref={panelRef}>
         <div className="dock-head">
-          <span className="eyebrow">Ambiance</span>
-          <span className="count">{n === 0 ? 'silence' : `${n} son${n > 1 ? 's' : ''} actif${n > 1 ? 's' : ''}`}</span>
+          <span className="eyebrow">{t('Ambiance')}</span>
+          <span className="count">{n === 0 ? t('silence') : en ? `${n} sound${n > 1 ? 's' : ''} on` : `${n} son${n > 1 ? 's' : ''} actif${n > 1 ? 's' : ''}`}</span>
           <div className="head-end">
             <MixesMenu />
             <SleepTimer />
             <button className="mute" type="button" hidden={n === 0} onClick={() => useStore.getState().muteAll()}>
-              Tout couper
+              {t('Tout couper')}
             </button>
           </div>
         </div>

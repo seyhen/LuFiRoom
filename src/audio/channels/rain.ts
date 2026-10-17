@@ -23,7 +23,7 @@ export default function rain(kit: Kit, out: GainNode, { loops }: Room): Channel 
   const level = () => (opened() ? 1 : 0.7)
   const lp = biq('lowpass', cutoff(), 0.4), trim = gain(level())
   lp.connect(trim).connect(out)
-  useStore.subscribe((s, p) => {
+  kit.watch((s, p) => {
     if (win(s) === win(p)) return
     lp.frequency.setTargetAtTime(cutoff(), ctx.currentTime, 0.4)
     trim.gain.setTargetAtTime(level(), ctx.currentTime, 0.4)
@@ -32,7 +32,7 @@ export default function rain(kit: Kit, out: GainNode, { loops }: Room): Channel 
   // tirés au hasard, fondus sur 3 s, et son niveau respire (rafales plus fortes, accalmies) toutes les 4 à 9 secondes.
   const gust = gain(1)
   gust.connect(lp)
-  let sway = 0
+  let sway = 0, halt = 0
   const swell = () => {
     gust.gain.setTargetAtTime(rand(0.72, 1.28), ctx.currentTime, 2.5)
     sway = window.setTimeout(swell, rand(4000, 9000))
@@ -46,13 +46,14 @@ export default function rain(kit: Kit, out: GainNode, { loops }: Room): Channel 
   })
   return {
     start() {
+      clearTimeout(halt)
       rec.start()
       clearTimeout(sway)
       swell()
     },
     stop() {
       clearTimeout(sway)
-      setTimeout(() => rec.stop(), 1500)
+      halt = window.setTimeout(() => rec.stop(), 1500)
     },
   }
 }

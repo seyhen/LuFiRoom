@@ -1,6 +1,7 @@
 import { stationIds } from '../audio/stations'
 import { roomById, rooms } from '../rooms'
 import type { SoundId } from '../rooms/types'
+import { tr } from '../i18n'
 
 /** Une ambiance : la pièce, les sons qui jouent avec leur volume, le jour / nuit, et la station si la radio joue. */
 export interface Mix {
@@ -23,8 +24,8 @@ const MAX = 12
 
 /** Nom d'une ambiance : ses sons, séparés par des points médians. */
 export function mixName(m: Mix) {
-  const names = roomById(m.room).sounds.filter((s) => m.on.includes(s.id)).map((s) => s.name)
-  return names.join(' · ') || 'Silence'
+  const names = roomById(m.room).sounds.filter((s) => m.on.includes(s.id)).map((s) => tr(s.name))
+  return names.join(' · ') || tr('Silence')
 }
 
 export function loadMixes(): SavedMix[] {

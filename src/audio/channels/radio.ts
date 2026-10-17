@@ -1,6 +1,6 @@
 import { useStore } from '../../state/store'
 import { clamp, rand } from '../../math'
-import { crackleBuffer, satCurve } from '../buffers'
+import { satCurve } from '../buffers'
 import { stationById, type Chord, type Station } from '../stations'
 import type { Channel, Kit } from '../engine'
 
@@ -8,31 +8,17 @@ const mtof = (m: number) => 440 * Math.pow(2, (m - 69) / 12)
 // Une nappe tient sa note : un peu moins fort qu'un piano qui s'éteint, à vélocité égale.
 const PAD = 0.7
 
-/** Grésillement de recherche de station, à l'allumage et quand on change de station : bruit en passe-bande qui glisse de 700 à 2600 Hz. */
-export function tuneStatic({ ctx, master, gain, biq, noise }: Kit) {
-  const t = ctx.currentTime, s = ctx.createBufferSource(), bp = biq('bandpass', 700, 2.5), g = gain(0)
-  s.buffer = noise.white
-  s.start(t, Math.random() * 3)
-  s.stop(t + 0.55)
-  bp.frequency.setValueAtTime(700, t)
-  bp.frequency.exponentialRampToValueAtTime(2600, t + 0.45)
-  g.gain.setValueAtTime(0, t)
-  g.gain.linearRampToValueAtTime(0.3 * useStore.getState().vol.radio, t + 0.04)
-  g.gain.linearRampToValueAtTime(0, t + 0.5)
-  s.connect(bp).connect(g).connect(master)
-}
-
 /**
  * Radio lofi générative : batterie, accords, basse et mélodie, jouées en direct. Chaque station (stations.ts) règle ce petit
  * groupe autrement : tempo, accords, voix, rythmes, couleur du bus. On passe de l'une à l'autre en « tournant le bouton ».
  */
 export default function radio(kit: Kit, out: GainNode): Channel {
-  const { ctx, gain, biq, osc, loop, noise } = kit
+  const { ctx, gain, biq, osc, noise } = kit
   let st = stationById(useStore.getState().station)
   let sd = 60 / st.bpm / 4 // durée d'une double croche
   const trim = (s: Station) => 0.85 * s.level
 
-  // Bus radio : passe-bas, saturation douce, crépitement de vinyle.
+  // Bus radio : passe-bas, saturation douce. Pas de crépitement de vinyle : on n'en voulait plus (il grésillait).
   const pre = gain(trim(st)), lp = biq('lowpass', st.tone.lp, 0.4), sat = ctx.createWaveShaper()
   sat.curve = satCurve(st.tone.sat)
   sat.oversample = '2x'
@@ -62,8 +48,6 @@ export default function radio(kit: Kit, out: GainNode): Channel {
   w2.connect(w2g).connect(wob)
   w1.start()
   w2.start()
-  const crackle = gain(st.tone.crackle)
-  loop(crackleBuffer(ctx), 0).connect(biq('highpass', 250, 0.5)).connect(crackle).connect(out)
 
   /** Règle le bus et le tempo sur une station. Les notes déjà lancées finissent dans l'ancien réglage. */
   function apply(to: Station) {
@@ -71,7 +55,6 @@ export default function radio(kit: Kit, out: GainNode): Channel {
     sd = 60 / to.bpm / 4
     lp.frequency.value = to.tone.lp
     sat.curve = satCurve(to.tone.sat)
-    crackle.gain.value = to.tone.crackle
     w1g.gain.value = to.tone.wobble[0]
     w2g.gain.value = to.tone.wobble[1]
     fb.gain.value = to.tone.echo[0]
@@ -88,7 +71,7 @@ export default function radio(kit: Kit, out: GainNode): Channel {
     if (switching) return
     const now = ctx.currentTime
     if (next < now - 0.05) next = now + 0.05
-    const horizon = now + (document.hidden ? 1.6 : 0.14)
+    const horizon = now + (document.hidden ? 1.6 : 0.3) // large : un à-coup de l'écran (3D, ombres) ne fait pas sauter de notes
     while (next < horizon) {
       sched(step, next)
       next += sd
@@ -178,9 +161,9 @@ export default function radio(kit: Kit, out: GainNode): Channel {
     if (kind === 'snare') {
       const s = noiseHit(t, 0.25), g = gain(0.0001)
       g.gain.setValueAtTime(0.0001, t)
-      g.gain.exponentialRampToValueAtTime(v * 0.5, t + 0.004)
+      g.gain.linearRampToValueAtTime(v * 0.36, t + 0.008)
       g.gain.exponentialRampToValueAtTime(0.0001, t + 0.2)
-      s.connect(biq('bandpass', 1800, 0.8)).connect(g).connect(drumsBus)
+      s.connect(biq('bandpass', 1500, 0.7)).connect(biq('lowpass', 2800, 0.5)).connect(g).connect(drumsBus)
       const o = osc('triangle', 190), g2 = gain(0.0001)
       g2.gain.setValueAtTime(0.0001, t)
       g2.gain.exponentialRampToValueAtTime(v * 0.25, t + 0.003)
@@ -189,18 +172,16 @@ export default function radio(kit: Kit, out: GainNode): Channel {
       o.start(t)
       o.stop(t + 0.1)
     } else if (kind === 'rim') {
-      const s = noiseHit(t, 0.06), g = gain(0.0001)
-      g.gain.setValueAtTime(0.0001, t)
-      g.gain.exponentialRampToValueAtTime(v * 0.45, t + 0.002)
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.04)
-      s.connect(biq('bandpass', 2600, 1.2)).connect(g).connect(drumsBus)
-      const o = osc('sine', 430), g2 = gain(0.0001)
-      g2.gain.setValueAtTime(0.0001, t)
-      g2.gain.exponentialRampToValueAtTime(v * 0.3, t + 0.002)
-      g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.05)
-      o.connect(g2).connect(drumsBus)
-      o.start(t)
-      o.stop(t + 0.06)
+      // Un « toc » de bois rond, sans souffle de bruit : deux sinus, attaque de 5 ms, rien d'aigu.
+      for (const [f, a, len] of [[380, 0.3, 0.07], [610, 0.12, 0.045]] as const) {
+        const o = osc('sine', f), g2 = gain(0.0001)
+        g2.gain.setValueAtTime(0.0001, t)
+        g2.gain.linearRampToValueAtTime(v * a, t + 0.005)
+        g2.gain.exponentialRampToValueAtTime(0.0001, t + len)
+        o.connect(g2).connect(drumsBus)
+        o.start(t)
+        o.stop(t + len + 0.02)
+      }
     } else {
       const s = noiseHit(t, 0.32), g = gain(0.0001)
       g.gain.setValueAtTime(0.0001, t)
@@ -237,13 +218,14 @@ export default function radio(kit: Kit, out: GainNode): Channel {
     const shaker = st.drums.hat.kind === 'shaker', s = noiseHit(t, shaker ? 0.12 : 0.08), g = gain(0.0001)
     if (shaker) {
       g.gain.setValueAtTime(0.0001, t)
-      g.gain.linearRampToValueAtTime(v * 0.3, t + 0.01)
+      g.gain.linearRampToValueAtTime(v * 0.2, t + 0.012)
       g.gain.exponentialRampToValueAtTime(0.0005, t + 0.1)
-      s.connect(biq('bandpass', 6500, 0.9)).connect(g).connect(drumsBus)
+      s.connect(biq('bandpass', 4800, 0.7)).connect(biq('lowpass', 6000, 0.5)).connect(g).connect(drumsBus)
     } else {
-      g.gain.setValueAtTime(v * 0.26, t)
-      g.gain.exponentialRampToValueAtTime(0.0005, t + 0.045)
-      s.connect(biq('highpass', 7000, 0.7)).connect(g).connect(drumsBus)
+      g.gain.setValueAtTime(0.0001, t)
+      g.gain.linearRampToValueAtTime(v * 0.17, t + 0.004)
+      g.gain.exponentialRampToValueAtTime(0.0005, t + 0.06)
+      s.connect(biq('bandpass', 5200, 0.6)).connect(biq('lowpass', 6500, 0.5)).connect(g).connect(drumsBus)
     }
   }
 
@@ -263,8 +245,8 @@ export default function radio(kit: Kit, out: GainNode): Channel {
       g.gain.setTargetAtTime(v * 0.35, t + 0.012, 0.55)
       g.gain.setTargetAtTime(0, t + dur, 0.2)
       const o1 = osc('sine', f), o2 = osc('triangle', f * 1.002), o3 = osc('sine', f * 4), g3 = gain(0)
-      g3.gain.setValueAtTime(0.12, t)
-      g3.gain.setTargetAtTime(0, t + 0.005, 0.06)
+      g3.gain.setValueAtTime(0.05, t)
+      g3.gain.setTargetAtTime(0, t + 0.005, 0.05)
       o1.connect(g)
       o2.connect(gain(0.22)).connect(g)
       o3.connect(g3).connect(g)
@@ -364,7 +346,7 @@ export default function radio(kit: Kit, out: GainNode): Channel {
   // On change de station : à l'arrêt, on règle simplement le bus ; en marche, on « tourne le bouton » (le son se coupe, le
   // grésillement de recherche passe, la nouvelle station repart sur le premier temps).
   let want = st.id
-  useStore.subscribe((s, p) => {
+  kit.watch((s, p) => {
     if (s.station === p.station) return
     want = s.station
     if (!timer || !s.on.radio) {
@@ -377,7 +359,6 @@ export default function radio(kit: Kit, out: GainNode): Channel {
     const t = ctx.currentTime
     pre.gain.cancelScheduledValues(t)
     pre.gain.setTargetAtTime(0, t, 0.03)
-    tuneStatic(kit)
     window.setTimeout(() => {
       apply(stationById(want))
       step = 0
@@ -400,10 +381,9 @@ export default function radio(kit: Kit, out: GainNode): Channel {
       if (st.id !== useStore.getState().station) apply(stationById(useStore.getState().station))
       pre.gain.cancelScheduledValues(ctx.currentTime)
       pre.gain.value = trim(st)
-      tuneStatic(kit)
       next = ctx.currentTime + 0.5
       step = 0
-      timer = window.setInterval(tick, 25)
+      timer = window.setInterval(tick, 40)
     },
     // On laisse finir les notes déjà programmées pendant le fondu.
     stop() {

@@ -39,6 +39,36 @@ export function TeaTray() {
   )
 }
 
+/** Le séchoir à serviettes et le panier de bain, sur les dalles devant le bassin : on vient ici pour se baigner. */
+export function TowelRack() {
+  return (
+    <>
+      <group position={[2.15, 0, 1.55]} rotation-y={0.12}>
+        {[-0.5, 0.5].map((x) => (
+          <group key={x}>
+            <Part geo={cyl(0.028, 0.034, 1.0, 10)} m={O.hinoki} p={[x, 0.5, 0]} />
+            <Part geo={rbox(0.1, 0.035, 0.34, 0.012)} m={O.hinoki} p={[x, 0.018, 0]} castShadow={false} />
+          </group>
+        ))}
+        <Part geo={cyl(0.02, 0.02, 1.08, 10)} m={O.bambooDry} p={[0, 0.94, 0]} rotation-z={Math.PI / 2} />
+        {/* trois serviettes qui sèchent : la blanche, la bleue, la rayée */}
+        {[[-0.28, O.towel, 0.42], [0.04, O.indigo, 0.5], [0.34, O.yukata, 0.4]].map(([x, m, h], i) => (
+          <group key={i} position={[x as number, 0.94, 0]}>
+            <Part geo={rbox(0.26, h as number, 0.03, 0.012)} m={m as typeof O.towel} p={[0, -(h as number) / 2 + 0.03, 0.025]} castShadow={false} />
+            <Part geo={rbox(0.26, 0.1, 0.05, 0.02)} m={m as typeof O.towel} p={[0, 0.0, 0]} castShadow={false} />
+          </group>
+        ))}
+      </group>
+      <group position={[1.0, 0, 2.15]} rotation-y={-0.3}>
+        <Part geo={cyl(0.21, 0.17, 0.24, 18)} m={O.deck} p={[0, 0.12, 0]} />
+        <Part geo={cyl(0.215, 0.215, 0.018, 18)} m={O.hinoki} p={[0, 0.24, 0]} castShadow={false} />
+        <Part geo={rbox(0.3, 0.06, 0.26, 0.025)} m={O.towel} p={[0, 0.27, 0]} />
+        <Part geo={cyl(0.045, 0.045, 0.26, 10)} m={O.yukata} p={[0.02, 0.32, 0.02]} rotation-z={Math.PI / 2} rotation-y={0.4} castShadow={false} />
+      </group>
+    </>
+  )
+}
+
 /** Les geta sur la pierre, le seau de hinoki et le petit tabouret au bord du bassin, une serviette pliée. */
 export function BathThings() {
   return (
