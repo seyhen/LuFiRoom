@@ -6,6 +6,8 @@ import { MixerCard } from './MixerCard'
 import { SleepTimer } from './SleepTimer'
 import { MixesMenu } from './MixesMenu'
 import { StationButton, TrackButton } from './StationButton'
+import { QuickStart } from './QuickStart'
+import { FocusTimer } from './FocusTimer'
 
 /** Mixeur flottant : une carte par son, le compte des sons actifs et « Tout couper ». */
 export function Mixer({ panelRef }: { panelRef: Ref<HTMLDivElement> }) {
@@ -15,11 +17,13 @@ export function Mixer({ panelRef }: { panelRef: Ref<HTMLDivElement> }) {
   return (
     <nav className="dock" aria-label={t("Mixeur d’ambiance")}>
       <div className="dock-inner" ref={panelRef}>
+        <QuickStart />
         <div className="dock-head">
           <span className="eyebrow">{t('Ambiance')}</span>
           <span className="count">{n === 0 ? t('silence') : en ? `${n} sound${n > 1 ? 's' : ''} on` : `${n} son${n > 1 ? 's' : ''} actif${n > 1 ? 's' : ''}`}</span>
           <div className="head-end">
             <MixesMenu />
+            <FocusTimer />
             <SleepTimer />
             <button className="mute" type="button" hidden={n === 0} onClick={() => useStore.getState().muteAll()}>
               {t('Tout couper')}

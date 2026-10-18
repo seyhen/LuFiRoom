@@ -3,7 +3,7 @@ import { stationAfter, stationById, stationIds } from '../audio/stations'
 import { roomById, rooms } from '../rooms'
 import type { ObjectId, RoomSound, SoundId, Target } from '../rooms/types'
 import { reduceMotion } from '../motion'
-import { MAX_SAVED, loadMixes, mixFromSearch, mixName, storeMixes, type Mix, type SavedMix } from './mixes'
+import { MAX_SAVED, loadMixes, mixFromSearch, mixName, storeLast, storeMixes, type Mix, type SavedMix } from './mixes'
 
 type PerSound<T> = Record<SoundId, T>
 // Les sons de toutes les pièces : un son qui revient d'une pièce à l'autre garde son volume.
@@ -219,6 +219,13 @@ export const useStore = create<Store>()((set, get, api) => ({
     }, reduceMotion ? 0 : FADE)
   },
 }))
+
+// La dernière ambiance jouée est gardée, pour le bouton « Reprendre » : pas pendant un changement de pièce (tout est coupé), ni en silence.
+useStore.subscribe((s, p) => {
+  if (s.leaving || (s.on === p.on && s.night === p.night && s.vol === p.vol)) return
+  const mix = s.currentMix()
+  if (mix.on.length) storeLast(mix)
+})
 
 /** Compte un fichier dans la progression de l'écran de chargement, qu'il arrive ou échoue. */
 export function preload(p: Promise<unknown>) {

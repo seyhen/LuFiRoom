@@ -327,6 +327,25 @@ function pop({ ctx, master, gain, osc }: Kit, up: boolean) {
   o.stop(t + 0.16)
 }
 
+/** Carillon du minuteur de concentration : deux notes de cloche qui descendent (fin du travail : la pause) ou montent (retour au travail). */
+export function chime(toBreak: boolean) {
+  const k = ensure()
+  if (!k) return
+  const { ctx, master, gain, osc } = k, t0 = ctx.currentTime
+  ;(toBreak ? [880, 660] : [660, 880]).forEach((f, i) => {
+    const t = t0 + i * 0.3
+    for (const [mul, amp, len] of [[1, 1, 1.8], [2.76, 0.22, 0.7]] as const) {
+      const o = osc('sine', f * mul), g = gain(0.0001)
+      g.gain.setValueAtTime(0.0001, t)
+      g.gain.exponentialRampToValueAtTime(0.14 * amp, t + 0.01)
+      g.gain.exponentialRampToValueAtTime(0.0001, t + len)
+      o.connect(g).connect(master)
+      o.start(t)
+      o.stop(t + len + 0.05)
+    }
+  })
+}
+
 /**
  * Décharge les canaux des pièces qu'on a quittées : sources arrêtées, abonnements défaits, bus débranchés, puis les enregistrements
  * décodés (jusqu'à 40 Mo par pièce) qu'aucune pièce courante n'utilise. Revenir dans une pièce la reconstruit au premier son allumé.

@@ -32,6 +32,11 @@ export const beach: Room = {
   },
   stations: ['soleil-bas', 'rosee', 'petit-matin'],
   playlist: PLAYLIST,
+  presets: {
+    work: { sounds: [['radio',.55], ['waves',.4]] },
+    read: { sounds: [['waves',.5], ['gulls',.25], ['chimes',.25]] },
+    sleep: { sounds: [['waves',.6], ['chimes',.2]], night: true },
+  },
   objects: [
     { id: 'window', target: 'waves', label: 'La mer · vagues', anchor: [1.25, 2.1, -3.0] },
     { id: 'gull', target: 'gulls', label: 'Mouette · cris au loin', anchor: [-0.28, 1.25, -3.6] },

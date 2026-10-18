@@ -173,3 +173,14 @@ html.leaving .hs { pointer-events: none }
   .hs::after, .card.on .eq i { animation: none }
   * { transition-duration: .01s !important }
 }
+
+/* ambiance toute prête : une rangée de puces au-dessus du mixeur silencieux (sans changer sa hauteur) */
+.dock-inner { position: relative }
+.quick { position: absolute; left: 0; right: 0; bottom: calc(100% + 8px); display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; pointer-events: none }
+.quick button { pointer-events: auto; font: 800 13px/1 var(--font-body); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 10px 16px;
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: var(--shadow); cursor: pointer; -webkit-tap-highlight-color: transparent }
+.quick button:hover { border-color: var(--accent) }
+.quick button:active { transform: scale(.96) }
+.quick .resume { background: var(--accent); border-color: var(--accent); color: #fff }
+html.night .quick .resume { color: #12102a }
+.quick button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
