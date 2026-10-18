@@ -31,6 +31,8 @@ export function Stage({ hotspotLayer }: { hotspotLayer: Layer }) {
       orthographic
       camera={{ manual: true, near: 0.1, far: 120 }}
       shadows
+      // Téléphone (écran tactile) : 1,5 au plus, un tiers de pixels en moins qu'à 2 pour la même image de loin. Ordinateur : jusqu'à 2.
+      dpr={[1, matchMedia('(pointer: coarse)').matches ? 1.5 : 2]}
       legacy
       linear
       flat
@@ -78,11 +80,34 @@ function Framing() {
   return null
 }
 
+/**
+ * Libère sur le GPU les géométries et les textures d'une pièce qu'on quitte. React Three Fiber ne libère que ce qu'il a créé lui-même
+ * dans le JSX : une géométrie ou une texture fabriquée dans un `useMemo` (rideaux, fils, vues peintes) restait sur la carte graphique
+ * à chaque visite. Libérer une ressource partagée est sans risque : three.js la renvoie au GPU au prochain rendu qui s'en sert.
+ */
+function freeScene(root: Object3D) {
+  root.traverse((o) => {
+    const m = o as Object3D & { geometry?: { dispose(): void }; material?: unknown }
+    m.geometry?.dispose()
+    for (const mat of ([] as Record<string, unknown>[]).concat((m.material as Record<string, unknown>[]) ?? [])) {
+      for (const k in mat) {
+        const v = mat[k] as { isTexture?: boolean; dispose?: () => void } | null
+        if (v?.isTexture) v.dispose?.()
+      }
+    }
+  })
+}
+
 /** La pièce : flotte, tourne quand on la glisse. */
 function Room({ room, hotspotLayer }: { room: RoomData; hotspotLayer: Layer }) {
   const group = useRef<Group>(null!)
   const turn = useTapAndTurn(group, room)
   const Scene = scenes[room.id]
+  // Dans un effet de mise en page : il se défait avant que React Three Fiber détache les objets de la pièce (qu'il vide ensuite).
+  useLayoutEffect(() => {
+    const g = group.current
+    return () => freeScene(g)
+  }, [])
   useFrame(({ clock }, delta) => {
     const t = turn.current
     t.angle += (t.target - t.angle) * Math.min(1, Math.min(delta, 0.05) * 6)

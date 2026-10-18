@@ -3,9 +3,10 @@ import type { Room } from '../../rooms/types'
 import { EXTS, fileUrl, keepOffline, later, missing } from '../recordings'
 import type { Channel, Kit } from '../engine'
 import radio from './radio'
+import tracksBuffered from './tracksBuffered'
 
 /** Indices 0..n-1 mélangés, sans recommencer par `last` (pas deux fois la même piste d'affilée). */
-function shuffled(n: number, last: number) {
+export function shuffled(n: number, last: number) {
   const a = Array.from({ length: n }, (_, i) => i)
   for (let i = n - 1; i > 0; i--) {
     const j = (Math.random() * (i + 1)) | 0
@@ -19,7 +20,14 @@ function shuffled(n: number, last: number) {
  * Radio sur les pistes enregistrées de la chambre, dans un ordre mélangé. Elles sont lues en flux par un élément <audio>
  * branché sur le graphe, sans être décodées en entier en mémoire. Si aucune ne se lit, retour à la musique générative.
  */
-export default function tracks(kit: Kit, out: GainNode, { playlist }: Room): Channel {
+// Safari sur iPhone : le curseur de volume n'agit pas sur un élément <audio> branché au graphe Web Audio. Là, comme avec `?buffered`
+// dans l'adresse (pour l'essayer ailleurs), les morceaux sont décodés et joués par le graphe (tracksBuffered.ts).
+const BUFFERED =
+  /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) || new URLSearchParams(location.search).has('buffered')
+
+export default function tracks(kit: Kit, out: GainNode, room: Room): Channel {
+  const { playlist } = room
+  if (BUFFERED) return tracksBuffered(kit, out, room)
   const el = new Audio()
   el.crossOrigin = 'anonymous' // au cas où les fichiers passeraient un jour par un autre domaine
   // Les fichiers sont à -20 LUFS, comme les boucles d'ambiance : la musique doit passer au-dessus d'elles, d'où ce gain.
