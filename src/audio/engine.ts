@@ -65,7 +65,7 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   street: { build: street, base: 0.9 },
   murmur: { build: murmur, base: 0.9 },
   espresso: { build: espresso, base: 0.9 },
-  pages: { build: pages, base: 0.9 },
+  pages: { build: pages, base: 1.3 },
   waves: { build: waves, base: 0.9 },
   gulls: { build: gulls, base: 0.65 },
   chimes: { build: chimes, base: 1.2 },
@@ -413,4 +413,4 @@ useStore.subscribe((s, p) => {
 })
 
 // Pont de développement (retiré du build) : les bus de chaque son et le kit, pour mesurer les niveaux (skill audit-room).
-if (import.meta.env.DEV) ((window as unknown as { __lofi?: Record<string, unknown> }).__lofi ??= {}).audio = { bus, getKit: () => kit }
+if (import.meta.env.DEV) ((window as unknown as { __lofi?: Record<string, unknown> }).__lofi ??= {}).audio = { bus, getKit: () => kit, getLimiter: () => limiter }

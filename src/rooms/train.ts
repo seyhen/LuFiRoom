@@ -30,6 +30,7 @@ export const train: Room = {
     rails: { src: 'audio/train/rails', gain: 0.9 },
     tea: { src: 'audio/train/tea', gain: 0.9 },
     rain: { src: 'audio/train/rain', gain: 1 },
+    pages: { src: 'audio/cafe/pages', gain: 0.8 },
   },
   stations: ['minuit', 'pluie-fine', 'nuit-douce'],
   playlist: PLAYLIST,
