@@ -12,6 +12,7 @@ import { PeacockChair } from './PeacockChair'
 import { RattanLamp } from './RattanLamp'
 import { CoffeeTable } from './CoffeeTable'
 import { Gull } from './Gull'
+import { FlyBy } from '../objects/FlyBy'
 import { WindChimes } from './WindChimes'
 import { BeachBag, DeckChair, FishingNet, Hats, Macrame, RecordCrate, ShellShelf, Surfboard } from './Corner'
 import { SunRays } from './SunRays'
@@ -35,6 +36,7 @@ export function BeachScene() {
       <Curtains />
       <WindChimes />
       <Gull />
+      <FlyBy color={0xffffff} height={3.7} />
       <FairyLights />
       <Daybed />
       <Cat position={[-2.4, 0.4, -0.45]} rotation={0.35} coat={ginger} />

@@ -33,6 +33,11 @@ export const onsen: Room = {
   },
   stations: ['rosee', 'minuit', 'brume'],
   playlist: PLAYLIST,
+  presets: {
+    work: { sounds: [['radio',.5], ['spring',.35], ['bamboo',.25]] },
+    read: { sounds: [['spring',.45], ['chimes',.3], ['outside',.3]] },
+    sleep: { sounds: [['spring',.5], ['outside',.35]], night: true },
+  },
   objects: [
     { id: 'spring', target: 'spring', label: 'Source · eau chaude', anchor: [1.15, 1.45, -2.4] },
     { id: 'bamboo', target: 'bamboo', label: 'Shishi-odoshi · bambou', anchor: [-1.1, 1.1, -2.35] },

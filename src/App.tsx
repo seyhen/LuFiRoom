@@ -6,6 +6,7 @@ import { Stage } from './scene/Stage'
 import { TopBar } from './ui/TopBar'
 import { Mixer } from './ui/Mixer'
 import { SharedMix } from './ui/SharedMix'
+import { SkyLife } from './ui/SkyLife'
 
 const UI_TOKENS: UiToken[] = ['accent', 'ink', 'ink-soft', 'panel', 'line', 'bg']
 
@@ -63,6 +64,8 @@ export function App() {
     <>
       <div className="sky sky-day" aria-hidden="true" />
       <div className="sky sky-night" aria-hidden="true" />
+      <SkyLife />
+      <div className="flash" aria-hidden="true" />
       <Stage hotspotLayer={hotspots} />
       <TopBar brandRef={brand} />
       <div className={seasoned ? 'hotspots seasoned' : 'hotspots'} ref={hotspots} />

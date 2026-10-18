@@ -3,7 +3,7 @@ import { stationAfter, stationById, stationIds } from '../audio/stations'
 import { roomById, rooms } from '../rooms'
 import type { ObjectId, RoomSound, SoundId, Target } from '../rooms/types'
 import { reduceMotion } from '../motion'
-import { MAX_SAVED, loadMixes, mixFromSearch, mixName, storeMixes, type Mix, type SavedMix } from './mixes'
+import { MAX_SAVED, loadMixes, mixFromSearch, mixName, storeLast, storeMixes, type Mix, type SavedMix } from './mixes'
 
 type PerSound<T> = Record<SoundId, T>
 // Les sons de toutes les pièces : un son qui revient d'une pièce à l'autre garde son volume.
@@ -27,6 +27,10 @@ export interface Store {
   kicks: number
   /** Demandes de « morceau suivant » (un compteur : la radio sur pistes passe à la suivante quand il change). */
   skips: number
+  /** Demandes de « morceau précédent » (même principe que `skips`). */
+  prevs: number
+  /** Coups de tonnerre à jouer (un compteur : l'audio fait gronder quand il change). */
+  thunders: number
   /** Station de la radio générative (identifiant, voir src/audio/stations.ts). */
   station: string
   /** Écran de chargement : fichiers préchargés, et scène dessinée une première fois. */
@@ -61,6 +65,8 @@ export interface Store {
   nextStation: (dir?: 1 | -1) => void
   /** Radio sur pistes enregistrées : passe au morceau suivant (la scène rebondit comme au toucher). */
   skipTrack: () => void
+  /** Revient au morceau précédent. */
+  prevTrack: () => void
 }
 
 const hour = new Date().getHours()
@@ -121,6 +127,8 @@ export const useStore = create<Store>()((set, get, api) => ({
   onAir: '',
   kicks: 0,
   skips: 0,
+  prevs: 0,
+  thunders: 0,
   station: savedStation(firstRoom),
   loading: { done: 0, total: 0, scene: false },
   insets: { top: 0, bottom: 0 },
@@ -198,6 +206,11 @@ export const useStore = create<Store>()((set, get, api) => ({
       return { station, squashAt: radio ? { ...s.squashAt, [radio.id]: performance.now() } : s.squashAt }
     })
   },
+  prevTrack: () =>
+    set((s) => {
+      const radio = roomById(s.room).objects.find((o) => o.target === 'radio')
+      return { prevs: s.prevs + 1, squashAt: radio ? { ...s.squashAt, [radio.id]: performance.now() } : s.squashAt }
+    }),
   skipTrack: () =>
     set((s) => {
       const radio = roomById(s.room).objects.find((o) => o.target === 'radio')
@@ -219,6 +232,13 @@ export const useStore = create<Store>()((set, get, api) => ({
     }, reduceMotion ? 0 : FADE)
   },
 }))
+
+// La dernière ambiance jouée est gardée, pour le bouton « Reprendre » : pas pendant un changement de pièce (tout est coupé), ni en silence.
+useStore.subscribe((s, p) => {
+  if (s.leaving || (s.on === p.on && s.night === p.night && s.vol === p.vol)) return
+  const mix = s.currentMix()
+  if (mix.on.length) storeLast(mix)
+})
 
 /** Compte un fichier dans la progression de l'écran de chargement, qu'il arrive ou échoue. */
 export function preload(p: Promise<unknown>) {

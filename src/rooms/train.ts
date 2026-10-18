@@ -34,6 +34,11 @@ export const train: Room = {
   },
   stations: ['minuit', 'pluie-fine', 'nuit-douce'],
   playlist: PLAYLIST,
+  presets: {
+    work: { sounds: [['radio',.55], ['rails',.4], ['rain',.3]] },
+    read: { sounds: [['rails',.45], ['rain',.45], ['tea',.3], ['pages',.3]] },
+    sleep: { sounds: [['rails',.55], ['rain',.4]], night: true },
+  },
   objects: [
     { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.35, 5.2, -3.85] },
     { id: 'window', target: 'rails', label: 'Fenêtre · le train', anchor: [0.9, 2.4, -3.0] },

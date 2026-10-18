@@ -24,6 +24,11 @@ export const bedroom: Room = {
     crickets: { src: 'audio/bedroom/crickets', gain: 0.25 },
   },
   playlist: PLAYLIST,
+  presets: {
+    work: { sounds: [['radio',.6], ['rain',.35], ['fan',.25]] },
+    read: { sounds: [['rain',.55], ['purr',.35], ['radio',.3]] },
+    sleep: { sounds: [['rain',.6], ['fan',.4], ['purr',.25]], night: true },
+  },
   stations: ['pluie-fine', 'nuit-douce', 'soleil-bas', 'petit-matin', 'veillee', 'bureau'],
   objects: [
     { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.35, 5.2, -3.85] },

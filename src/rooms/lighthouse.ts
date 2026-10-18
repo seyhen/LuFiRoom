@@ -33,6 +33,11 @@ export const lighthouse: Room = {
   },
   stations: ['minuit', 'veillee', 'pluie-fine'],
   playlist: PLAYLIST,
+  presets: {
+    work: { sounds: [['radio',.55], ['waves',.4], ['wind',.2]] },
+    read: { sounds: [['fire',.5], ['waves',.4], ['purr',.3]] },
+    sleep: { sounds: [['waves',.5], ['wind',.3], ['fire',.3]], night: true },
+  },
   objects: [
     { id: 'window', target: 'waves', label: 'Hublot · la houle', anchor: [1.35, 2.55, -2.9] },
     { id: 'barometer', target: 'wind', label: 'Baromètre · la tempête', anchor: [-0.55, 3.0, -2.85] },

@@ -34,6 +34,11 @@ export const market: Room = {
   },
   stations: ['pluie-fine', 'bureau', 'soleil-bas'],
   playlist: PLAYLIST,
+  presets: {
+    work: { sounds: [['radio',.55], ['rain',.4], ['neon',.2]] },
+    read: { sounds: [['rain',.5], ['simmer',.3], ['radio',.3]] },
+    sleep: { sounds: [['rain',.6], ['neon',.2]], night: true },
+  },
   objects: [
     { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.35, 5.2, -3.85] },
     { id: 'tram', target: 'tram', label: 'Baie · le tram', anchor: [1.4, 2.95, -2.9] },

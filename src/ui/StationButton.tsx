@@ -2,7 +2,7 @@ import { stationAfter } from '../audio/stations'
 import { roomById } from '../rooms'
 import { useStore } from '../state/store'
 import { useT } from '../i18n'
-import { skipIcon } from './icons'
+import { prevIcon, skipIcon } from './icons'
 
 /** Station suivante de la radio générative, à côté de son curseur de volume. Le nom de la station est le sous-titre de la carte. */
 export function StationButton({ noun = 'Station suivante' }: { noun?: string }) {
@@ -20,8 +20,13 @@ export function StationButton({ noun = 'Station suivante' }: { noun?: string }) 
 export function TrackButton({ noun = 'Morceau suivant' }: { noun?: string }) {
   const t = useT()
   return (
-    <button className="skip" type="button" aria-label={t(noun)} title={t(noun)} onClick={() => useStore.getState().skipTrack()}>
-      {skipIcon}
-    </button>
+    <>
+      <button className="skip" type="button" aria-label={t('Morceau précédent')} title={t('Morceau précédent')} onClick={() => useStore.getState().prevTrack()}>
+        {prevIcon}
+      </button>
+      <button className="skip" type="button" aria-label={t(noun)} title={t(noun)} onClick={() => useStore.getState().skipTrack()}>
+        {skipIcon}
+      </button>
+    </>
   )
 }

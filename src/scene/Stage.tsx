@@ -52,7 +52,11 @@ export function Stage({ hotspotLayer }: { hotspotLayer: Layer }) {
 
 /** Prévient l'écran de chargement quand la scène a été dessinée (la première image compile les shaders). */
 function Ready() {
-  const frames = useRef(0), get = useThree((s) => s.get)
+  const frames = useRef(0), get = useThree((s) => s.get), gl = useThree((s) => s.gl), scene = useThree((s) => s.scene), camera = useThree((s) => s.camera)
+  // Tous les shaders de la pièce se compilent d'un coup, en parallèle (là où le navigateur sait), au lieu de l'un après l'autre à la première image.
+  useEffect(() => {
+    void gl.compileAsync(scene, camera).catch(() => {})
+  }, [gl, scene, camera])
   // Pont de développement (retiré du build) : `window.__lofi.three()` rend la scène, le rendu et la caméra, pour compter les tracés et inspecter les maillages.
   if (import.meta.env.DEV) ((window as unknown as { __lofi?: Record<string, unknown> }).__lofi ??= {}).three = get
   useFrame(() => {

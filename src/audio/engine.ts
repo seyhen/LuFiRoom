@@ -327,6 +327,39 @@ function pop({ ctx, master, gain, osc }: Kit, up: boolean) {
   o.stop(t + 0.16)
 }
 
+/** Le tonnerre, un moment après l'éclair (la distance) : un grondement grave de bruit brun qui monte, roule et s'éteint. */
+function thunder(k: Kit) {
+  const { ctx, master, gain, biq, noise } = k, t = ctx.currentTime + 0.7 + Math.random() * 2.2
+  const s = ctx.createBufferSource(), g = gain(0.0001)
+  s.buffer = noise.brown
+  s.start(t, Math.random() * 3)
+  s.stop(t + 4.5)
+  g.gain.setValueAtTime(0.0001, t)
+  g.gain.exponentialRampToValueAtTime(0.5, t + 0.35)
+  g.gain.setTargetAtTime(0.2, t + 0.5, 0.5)
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 4.2)
+  s.connect(biq('lowpass', 170, 0.7)).connect(g).connect(master)
+}
+
+/** Carillon du minuteur de concentration : deux notes de cloche qui descendent (fin du travail : la pause) ou montent (retour au travail). */
+export function chime(toBreak: boolean) {
+  const k = ensure()
+  if (!k) return
+  const { ctx, master, gain, osc } = k, t0 = ctx.currentTime
+  ;(toBreak ? [880, 660] : [660, 880]).forEach((f, i) => {
+    const t = t0 + i * 0.3
+    for (const [mul, amp, len] of [[1, 1, 1.8], [2.76, 0.22, 0.7]] as const) {
+      const o = osc('sine', f * mul), g = gain(0.0001)
+      g.gain.setValueAtTime(0.0001, t)
+      g.gain.exponentialRampToValueAtTime(0.14 * amp, t + 0.01)
+      g.gain.exponentialRampToValueAtTime(0.0001, t + len)
+      o.connect(g).connect(master)
+      o.start(t)
+      o.stop(t + len + 0.05)
+    }
+  })
+}
+
 /**
  * Décharge les canaux des pièces qu'on a quittées : sources arrêtées, abonnements défaits, bus débranchés, puis les enregistrements
  * décodés (jusqu'à 40 Mo par pièce) qu'aucune pièce courante n'utilise. Revenir dans une pièce la reconstruit au premier son allumé.
@@ -403,6 +436,7 @@ useStore.subscribe((s, p) => {
     keepOutput(ids.some((id) => s.on[id]))
   }
   if (kit) for (const id of ids) if (s.vol[id] !== p.vol[id]) volume(kit, id)
+  if (kit && s.thunders !== p.thunders && ids.some((id) => s.on[id])) thunder(kit)
   if (s.sleepEnd !== p.sleepEnd) {
     const k = ensure()
     if (k) sleepSchedule(k, s.sleepEnd, p.sleepEnd)

@@ -8,6 +8,7 @@ import { Brazier } from './Brazier'
 import { FireCorner, FrontCorner, RadioCrate, Sofa, Telescope } from './Lounge'
 import { Laundry } from './Laundry'
 import { Pigeons } from './Pigeons'
+import { FlyBy } from '../objects/FlyBy'
 import { Herbs, OliveTree, Planter } from './Planters'
 import { FireEscape, NeonSign, Vent } from './Neon'
 
@@ -26,6 +27,7 @@ export function RoofScene() {
       <OliveTree />
       <Herbs />
       <Pigeons />
+      <FlyBy color={0x3a3550} height={4.2} plane />
       <Sofa />
       <FireCorner />
       <Brazier />

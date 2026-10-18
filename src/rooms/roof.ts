@@ -33,6 +33,11 @@ export const roof: Room = {
   },
   stations: ['soleil-bas', 'nuit-douce', 'bureau', 'rosee'],
   playlist: PLAYLIST,
+  presets: {
+    work: { sounds: [['radio',.6], ['city',.35], ['wind',.2]] },
+    read: { sounds: [['city',.4], ['fire',.4], ['pigeons',.2]] },
+    sleep: { sounds: [['wind',.35], ['fire',.35], ['city',.25]], night: true },
+  },
   objects: [
     { id: 'city', target: 'city', label: 'La ville · rumeur', anchor: [0.6, 4.6, -3.9] },
     { id: 'brazier', target: 'fire', label: 'Braséro · feu', anchor: [-0.85, 0.85, 0.35] },

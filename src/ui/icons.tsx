@@ -53,6 +53,8 @@ export const shareIcon = svg(<><path d="M12 15.5v-11M8 8l4-4 4 4" /><path d="M5 
 export const saveIcon = svg(<><path d="M12 5v14M5 12h14" /></>)
 export const closeIcon = svg(<path d="M6.5 6.5l11 11M17.5 6.5l-11 11" />)
 export const timerIcon = svg(<><circle cx="12" cy="13.5" r="7.5" /><path d="M12 9.5v4l2.6 1.6M9.5 3h5" /></>)
+export const focusIcon = svg(<><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3.6" /><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5" /></>)
+export const prevIcon = svg(<><path d="M17.5 5.5v13l-9-6.5z" /><path d="M5.5 5.5v13" /></>)
 export const installIcon = svg(<><path d="M12 3.5v11" /><path d="m7.5 10.5 4.5 4.5 4.5-4.5" /><path d="M5 19.5h14" /></>)
 export const sunIcon = svg(<><circle cx="12" cy="12" r="4" /><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4" /></>)
 export const moonIcon = svg(<path d="M19.5 14.6A7.8 7.8 0 0 1 9.4 4.5a7.8 7.8 0 1 0 10.1 10.1z" />)

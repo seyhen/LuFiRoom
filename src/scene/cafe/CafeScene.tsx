@@ -10,6 +10,7 @@ import { Festoon } from './Festoon'
 import { Counter } from './Counter'
 import { Chalkboard } from './Chalkboard'
 import { Clock } from './Clock'
+import { EspressoPuff } from './EspressoPuff'
 import { BackShelf, Bookshelf } from './Bookshelf'
 import { Hearth } from './Hearth'
 import { LogBasket } from './LogBasket'
@@ -34,6 +35,7 @@ export function CafeScene() {
   return (
     <Static>
       <CafeShell />
+      <EspressoPuff />
       {/* dehors */}
       <Skyline />
       <StreetLamp />

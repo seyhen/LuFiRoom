@@ -56,6 +56,15 @@ export default function tracks(kit: Kit, out: GainNode, room: Room): Channel {
   // Le bouton « morceau suivant » (ou la touche multimédia) : tant que la radio joue.
   kit.watch((s, p) => {
     if (s.skips !== p.skips && s.on.radio && timer) next()
+    // Précédent : au-delà de 5 s de lecture, on reprend le morceau au début ; sinon, le morceau d'avant dans l'ordre déjà joué.
+    if (s.prevs !== p.prevs && s.on.radio && timer) {
+      if (el.currentTime > 5 || pos <= 0) el.currentTime = 0
+      else {
+        pos--
+        ext = 0
+        load()
+      }
+    }
   })
   el.onplaying = () => {
     misses = 0
