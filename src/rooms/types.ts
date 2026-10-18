@@ -73,14 +73,6 @@ export interface Track {
 /** Les couleurs d'interface qu'une pièce peut changer (noms des variables CSS de tokens.css). */
 export type UiToken = 'accent' | 'ink' | 'ink-soft' | 'panel' | 'line' | 'bg'
 
-/** Les trois usages proposés d'un toucher, sur le mixeur silencieux. */
-export type PresetId = 'work' | 'read' | 'sleep'
-/** Une ambiance toute prête : les sons à allumer avec leur volume, et si elle impose la nuit. */
-export interface Preset {
-  sounds: [id: SoundId, volume: number][]
-  night?: boolean
-}
-
 export interface Room {
   /** Identifiant stable (clé de la scène, mémorisé entre deux visites). */
   id: string
@@ -111,8 +103,6 @@ export interface Room {
     hemi: { sky: DayNight<number>; ground: DayNight<number>; intensity: DayNight<number> }
     sun: { color: DayNight<number>; intensity: DayNight<number> }
   }
-  /** Ambiances toutes prêtes de la pièce : travailler, lire, dormir. */
-  presets?: Partial<Record<PresetId, Preset>>
   /** Objet dont l'activation assombrit la pièce (la pluie). */
   dimmedBy?: ObjectId
 }

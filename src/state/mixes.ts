@@ -38,29 +38,6 @@ export function loadMixes(): SavedMix[] {
   }
 }
 
-const LAST = 'chambre-lofi.last'
-
-/** La dernière ambiance jouée (pour « Reprendre »), si elle est encore valide : pièce et sons connus. */
-export function loadLast(): Mix | null {
-  try {
-    const m = JSON.parse(localStorage.getItem(LAST) ?? 'null') as Mix | null
-    if (!m || !rooms.some((r) => r.id === m.room) || !Array.isArray(m.on)) return null
-    const known = new Set(roomById(m.room).sounds.map((s) => s.id as string))
-    const on = m.on.filter((id) => known.has(id))
-    return on.length ? { ...m, on } : null
-  } catch {
-    return null
-  }
-}
-
-export function storeLast(m: Mix) {
-  try {
-    localStorage.setItem(LAST, JSON.stringify(m))
-  } catch {
-    // pas de stockage : « Reprendre » n'apparaîtra pas
-  }
-}
-
 export function storeMixes(list: SavedMix[]) {
   try {
     localStorage.setItem(KEY, JSON.stringify(list.slice(0, MAX)))

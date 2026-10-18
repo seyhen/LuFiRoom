@@ -20,7 +20,6 @@ export default function tracksBuffered(kit: Kit, out: GainNode, { playlist }: Ro
   let startedAt = 0, offset = 0, playing = false, gen = 0, misses = 0, beat = -1, timer = 0, stopT = 0
   let ahead: { i: number; p: Promise<AudioBuffer> } | null = null
   let fallback: Channel | null = null
-  const played: number[] = [] // les morceaux joués, pour « précédent »
 
   // L'index du prochain morceau : l'ordre est mélangé, sans jamais répéter le même deux fois d'affilée.
   const peek = () => {
@@ -67,14 +66,13 @@ export default function tracksBuffered(kit: Kit, out: GainNode, { playlist }: Ro
     }
     useStore.setState({ onAir: `${track.title} · ${track.artist}` })
     keepOffline(fileUrl(track.src, EXTS[0]))
-    played.push(curIndex)
   }
 
-  async function begin(force?: number) {
+  async function begin() {
     const my = ++gen, old = src
     src = null
     old?.stop()
-    const i = force ?? take()
+    const i = take()
     try {
       const buf = await (ahead && ahead.i === i ? ahead.p : fetchBuf(i))
       if (my !== gen) return
@@ -112,22 +110,6 @@ export default function tracksBuffered(kit: Kit, out: GainNode, { playlist }: Ro
 
   kit.watch((s, p) => {
     if (s.skips !== p.skips && s.on.radio && timer && playing) void begin()
-    if (s.prevs !== p.prevs && s.on.radio && timer && playing) {
-      // Au-delà de 5 s de lecture, on reprend le morceau au début ; sinon, le morceau d'avant.
-      if (ctx.currentTime - startedAt > 5 || played.length < 2) {
-        const old = src
-        src = null
-        old?.stop()
-        offset = 0
-        played.pop()
-        startAt()
-      } else {
-        played.pop()
-        const back = played.pop()!
-        queue.unshift(curIndex)
-        void begin(back)
-      }
-    }
   })
 
   return {

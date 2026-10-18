@@ -34,11 +34,6 @@ export const cabin: Room = {
   // Le tourne-disque joue d'abord le disque de Noël, puis les stations les plus douces.
   stations: ['noel', 'veillee', 'minuit', 'nuit-douce'],
   playlist: PLAYLIST,
-  presets: {
-    work: { sounds: [['radio',.6], ['fire',.35]] },
-    read: { sounds: [['fire',.55], ['radio',.3], ['purr',.3]] },
-    sleep: { sounds: [['fire',.4], ['wind',.4], ['purr',.3]], night: true },
-  },
   objects: [
     { id: 'fireplace', target: 'fire', label: 'Cheminée · feu', anchor: [-1.9, 1.3, -2.25] },
     { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-1.4, 0.58, -1.2] },

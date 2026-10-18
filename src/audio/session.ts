@@ -39,7 +39,7 @@ if ('mediaSession' in navigator) {
     if (hop !== hopping) {
       hopping = hop
       ms.setActionHandler('nexttrack', hop ? () => (roomById(useStore.getState().room).playlist.length ? useStore.getState().skipTrack() : useStore.getState().nextStation(1)) : null)
-      ms.setActionHandler('previoustrack', hop ? () => (roomById(useStore.getState().room).playlist.length ? useStore.getState().prevTrack() : useStore.getState().nextStation(-1)) : null)
+      ms.setActionHandler('previoustrack', hop ? () => !roomById(useStore.getState().room).playlist.length && useStore.getState().nextStation(-1) : null)
     }
     if (key !== shown) {
       shown = key

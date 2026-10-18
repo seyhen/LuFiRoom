@@ -35,11 +35,6 @@ export const submarine: Room = {
   },
   stations: ['minuit', 'brume', 'veillee'],
   playlist: PLAYLIST,
-  presets: {
-    work: { sounds: [['radio',.55], ['engine',.3], ['bubbles',.25]] },
-    read: { sounds: [['bubbles',.35], ['sonar',.3], ['whale',.3]] },
-    sleep: { sounds: [['whale',.4], ['hull',.3], ['engine',.25]], night: true },
-  },
   objects: [
     { id: 'window', target: 'whale', label: 'Hublot · chant de baleine', anchor: [0.45, 2.45, -2.9] },
     { id: 'sonar', target: 'sonar', label: 'Sonar · ping', anchor: [-1.75, 1.2, -2.1] },

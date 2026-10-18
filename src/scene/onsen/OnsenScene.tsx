@@ -1,5 +1,4 @@
 import { Static } from '../Static'
-import { FallingLeaf } from './FallingLeaf'
 import { Shamisen } from './Shamisen'
 import { OnsenShell } from './OnsenShell'
 import { Mountains } from './Mountains'
@@ -19,7 +18,6 @@ import { Chochin, Fireflies, Noren } from './Signs'
  */
 export function OnsenScene() {
   return (
-    <>
     <Static>
       <OnsenShell />
       <Mountains />
@@ -41,7 +39,5 @@ export function OnsenScene() {
       <Chochin />
       <Fireflies />
     </Static>
-    <FallingLeaf />
-    </>
   )
 }

@@ -34,11 +34,6 @@ export const atelier: Room = {
   },
   stations: ['bureau', 'rosee', 'pluie-fine', 'brume'],
   playlist: PLAYLIST,
-  presets: {
-    work: { sounds: [['radio',.55], ['rain',.35], ['keys',.3]] },
-    read: { sounds: [['rain',.5], ['kettle',.3], ['radio',.3]] },
-    sleep: { sounds: [['rain',.6], ['radio',.25]], night: true },
-  },
   objects: [
     { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.35, 5.2, -3.85] },
     { id: 'radio', target: 'radio', label: 'Tourne-disque · lofi', anchor: [2.3, 0.85, -2.6] },

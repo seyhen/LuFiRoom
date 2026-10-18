@@ -46,7 +46,7 @@ export function MixesMenu() {
   const share = async () => {
     const mix = useStore.getState().currentMix(), url = mixToUrl(mix)
     try {
-      if (navigator.share) await navigator.share({ title: 'LufiRoom', text: `${mixName(mix)} · ${tr(roomById(mix.room).name)} — ${tr('Mon ambiance sur LufiRoom :')}`, url })
+      if (navigator.share) await navigator.share({ title: 'LufiRoom', text: tr('Mon ambiance sur LufiRoom :'), url })
       else {
         await navigator.clipboard.writeText(url)
         setNote(tr('Lien copié : colle-le où tu veux.'))

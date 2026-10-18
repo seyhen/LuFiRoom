@@ -38,11 +38,6 @@ export const cafe: Room = {
   },
   stations: ['pluie-fine', 'soleil-bas', 'brume', 'veillee'],
   playlist: PLAYLIST,
-  presets: {
-    work: { sounds: [['radio',.5], ['murmur',.4], ['rain',.35], ['espresso',.2]] },
-    read: { sounds: [['pages',.4], ['rain',.5], ['fire',.35], ['radio',.3]] },
-    sleep: { sounds: [['rain',.6], ['fire',.35]], night: true },
-  },
   objects: [
     { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.35, 5.2, -3.85] },
     { id: 'window', target: 'street', label: 'Fenêtre · la rue', anchor: [1.4, 3.35, -3.0] },
