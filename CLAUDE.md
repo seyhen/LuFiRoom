@@ -58,6 +58,7 @@ src/
 scripts/encode-audio.mjs    # npm run audio : sources → Opus/WebM + MP3 dans public/audio/
 scripts/make-noises.mjs     # npm run noises : bruits colorés calculés
 scripts/check-stations.mjs  # npm run stations : vérifie la musique des stations (accords, notes, rythmes)
+scripts/check-audio.mjs     # npm run audio:check : sonie, crêtes et paires webm + mp3 de public/audio/
 netlify.toml                # hébergement : cache et en-têtes (voir docs/DEPLOY.md)
 vite.config.ts              # dont vite-plugin-pwa : manifeste, service worker, cache des sons (voir docs/PWA.md)
 ```
@@ -128,6 +129,7 @@ npm run preview
 npm run audio     # encode audio-src/ vers public/audio/ (ffmpeg requis, voir docs/ASSETS.md)
 npm run noises    # calcule les bruits colorés
 npm run stations  # vérifie la musique des stations de la radio
+npm run audio:check  # vérifie les crêtes (max -0,5 dBTP) et la sonie des sons de public/audio/ (ffmpeg requis)
 ```
 
 ## Avant de dire qu'une tâche est finie

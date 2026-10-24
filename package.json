@@ -8,6 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "audio": "node scripts/encode-audio.mjs",
+    "audio:check": "node scripts/check-audio.mjs",
     "noises": "node scripts/make-noises.mjs",
     "stations": "node scripts/check-stations.mjs"
   },
