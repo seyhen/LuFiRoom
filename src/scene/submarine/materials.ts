@@ -38,6 +38,10 @@ export const S = {
   telegraph: gummy(0xffffff, { map: telegraphTex, roughness: 0.4, clearcoat: 0.7 }),
   gold: gummy(0xf0c24e, { roughness: 0.3, clearcoat: 0.9 }),
   fish: gummy(0xf08a3c, { roughness: 0.35, clearcoat: 0.8 }),
+  /** La conque : nacre rose, lèvre corail, et l'intérieur qui rougeoit quand elle chante (voir Conch). */
+  pearl: gummy(0xf4d8d0, { roughness: 0.3, clearcoat: 1 }),
+  pearlLip: gummy(0xf09aa8, { roughness: 0.3, clearcoat: 0.9 }),
+  pearlGlow: gummy(0xffd6e4, { roughness: 0.3, clearcoat: 0.6, emissive: 0xffb0cc, emissiveIntensity: 0.15 }),
   /** L'écran du sonar : il brille de lui-même. */
   crt: new MeshBasicMaterial({ map: sonarTex, color: 0x6a8a74 }),
   sweep: new MeshBasicMaterial({ map: sweepTex, color: 0x6a8a74, blending: AdditiveBlending, transparent: true, depthWrite: false }),

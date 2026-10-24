@@ -48,30 +48,6 @@ export function Bookcase() {
   )
 }
 
-/** Le chevalet et son aquarelle des toits, à moitié finie ; la boîte de couleurs et un pinceau dans un pot. */
-export function Easel() {
-  return (
-    <group position={[2.35, 0, -0.85]} rotation-y={-0.45}>
-      <Part geo={cyl(0.02, 0.025, 1.9, 8)} m={A.oakDark} p={[-0.32, 0.92, 0]} rotation-z={-0.12} />
-      <Part geo={cyl(0.02, 0.025, 1.9, 8)} m={A.oakDark} p={[0.32, 0.92, 0]} rotation-z={0.12} />
-      <Part geo={cyl(0.02, 0.025, 1.7, 8)} m={A.oakDark} p={[0, 0.82, -0.32]} rotation-x={0.35} />
-      <Part geo={rbox(0.78, 0.04, 0.08, 0.015)} m={A.oakDark} p={[0, 0.7, 0.04]} />
-      <group position={[0, 1.15, 0.06]} rotation-x={-0.08}>
-        <Part geo={rbox(0.62, 0.8, 0.03, 0.01)} m={A.white} />
-        <mesh material={A.painting} position={[0, 0, 0.017]}>
-          <planeGeometry args={[0.58, 0.76]} />
-        </mesh>
-      </group>
-      <group position={[0.18, 0.74, 0.08]}>
-        <Part geo={rbox(0.24, 0.03, 0.12, 0.01)} m={A.white} />
-        {[A.prussian, A.terracotta, A.ochre, A.sage].map((m, i) => (
-          <Part key={i} geo={cyl(0.015, 0.015, 0.01, 10)} m={m} p={[-0.08 + i * 0.05, 0.02, 0]} castShadow={false} />
-        ))}
-      </group>
-    </group>
-  )
-}
-
 /** Le coin lecture : un fauteuil de velours ocre, un plaid, un guéridon et sa pile de livres, un lampadaire en arc. */
 export function ReadingCorner() {
   return (

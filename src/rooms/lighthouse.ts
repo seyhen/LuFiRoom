@@ -30,12 +30,13 @@ export const lighthouse: Room = {
     wind: { src: 'audio/roof/wind', gain: 0.9 },
     fire: { src: 'audio/lighthouse/fire', gain: 0.8 },
     foghorn: { src: 'audio/lighthouse/foghorn', gain: 0.9 },
+    quill: { src: 'audio/lighthouse/quill', gain: 0.8 },
   },
   stations: ['minuit', 'veillee', 'pluie-fine'],
   playlist: PLAYLIST,
   presets: {
-    work: { sounds: [['radio',.55], ['waves',.4], ['wind',.2]] },
-    read: { sounds: [['fire',.5], ['waves',.4], ['purr',.3]] },
+    work: { sounds: [['radio',.55], ['waves',.4], ['quill',.35]] },
+    read: { sounds: [['fire',.5], ['waves',.4], ['quill',.3], ['purr',.3]] },
     sleep: { sounds: [['waves',.5], ['wind',.3], ['fire',.3]], night: true },
   },
   objects: [
@@ -47,6 +48,7 @@ export const lighthouse: Room = {
     { id: 'lamp', target: 'night', label: 'Lampe à huile · jour / nuit', anchor: [0.12, 1.5, -2.45] },
     { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-0.75, 0.75, 0.7] },
     { id: 'radio', target: 'radio', label: 'Concertina · lofi', anchor: [2.45, 1.05, 0.2] },
+    { id: 'quill', target: 'quill', label: 'Journal de bord · la plume', anchor: [-0.48, 0.72, 2.47] },
   ],
   sounds: [
     { id: 'radio', name: 'Concertina lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
@@ -55,6 +57,7 @@ export const lighthouse: Room = {
     { id: 'foghorn', name: 'Corne de brume', chip: 'var(--c-foghorn)', volume: 0.45, sub: () => 'au large, dans la brume' },
     { id: 'bell', name: 'Cloche de bouée', chip: 'var(--c-bell)', volume: 0.45, sub: () => 'balancée par la houle' },
     { id: 'fire', name: 'Poêle', chip: 'var(--c-fire)', volume: 0.5, sub: () => 'la fonte qui chauffe' },
+    { id: 'quill', name: 'Plume d’oie', chip: 'var(--c-quill)', volume: 0.5, sub: () => 'le journal de bord' },
     { id: 'purr', name: 'Ronron', chip: 'var(--c-cat)', volume: 0.5, sub: () => 'le chat du phare' },
   ],
 }

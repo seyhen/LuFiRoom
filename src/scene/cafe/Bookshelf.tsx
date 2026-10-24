@@ -181,9 +181,10 @@ export function Pothos({ at, drop = 0.9 }: { at: [number, number, number]; drop?
   const [x, y, z] = at
   return (
     <group position={[x, y, z]}>
-      <Part geo={cyl(0.12, 0.09, 0.18, 16)} m={K.pot} p={[0, 0.09, 0]} />
+      <Part geo={cyl(0.15, 0.11, 0.2, 18)} m={K.pot} p={[0, 0.1, 0]} />
+      <Part geo={cyl(0.158, 0.158, 0.03, 18)} m={K.pot} p={[0, 0.2, 0]} castShadow={false} />
       {/* les tiges tombent dans le vide, devant la corniche (dont le bord est à x = -2,45) : le pot est au bord, elles ne traversent pas la planche */}
-      <Vines p={[0, 0.17, 0]} strands={[[0.17, -0.12, drop], [0.18, 0.04, drop * 0.65], [0.16, 0.13, drop * 1.2]]} m={K.leafV} m2={K.leafVDark} size={0.085} crown={7} seed={Math.round((x + z) * 10)} />
+      <Vines p={[0, 0.2, 0]} strands={[[0.17, -0.14, drop * 0.85], [0.18, -0.07, drop * 0.55], [0.17, 0.01, drop * 1.15], [0.18, 0.09, drop * 0.7], [0.16, 0.15, drop * 1.0]]} m={K.leafV} m2={K.leafVDark} size={0.1} crown={24} seed={Math.round((x + z) * 10)} />
     </group>
   )
 }

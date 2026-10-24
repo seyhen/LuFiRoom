@@ -12,6 +12,7 @@ import { Street } from './Street'
 import { Rainfall } from './Rainfall'
 import { Izakaya } from './Izakaya'
 import { Overhead } from './Overhead'
+import { FruitStall } from './FruitStall'
 import { Details } from './Details'
 
 /**
@@ -33,6 +34,7 @@ export function MarketScene() {
       <Vending />
       <Izakaya />
       <Street />
+      <FruitStall />
       <Overhead />
       <Details />
       <Motes colors={[0xffd8c0, 0xff9ac8]} opacity={[0.3, 0.55]} n={26} />

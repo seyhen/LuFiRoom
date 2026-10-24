@@ -30,13 +30,14 @@ export const cabin: Room = {
     fire: { src: 'audio/cabin/fire', gain: 0.5 },
     wind: { src: 'audio/cabin/wind', gain: 0.7 },
     purr: { src: 'audio/bedroom/purr', gain: 0.5 },
+    knit: { src: 'audio/cabin/knit', gain: 0.8 },
   },
   // Le tourne-disque joue d'abord le disque de Noël, puis les stations les plus douces.
   stations: ['noel', 'veillee', 'minuit', 'nuit-douce'],
   playlist: PLAYLIST,
   presets: {
-    work: { sounds: [['radio',.6], ['fire',.35]] },
-    read: { sounds: [['fire',.55], ['radio',.3], ['purr',.3]] },
+    work: { sounds: [['radio',.6], ['fire',.35], ['knit',.25]] },
+    read: { sounds: [['fire',.55], ['knit',.3], ['radio',.3], ['purr',.3]] },
     sleep: { sounds: [['fire',.4], ['wind',.4], ['purr',.3]], night: true },
   },
   objects: [
@@ -45,11 +46,13 @@ export const cabin: Room = {
     { id: 'turntable', target: 'radio', label: 'Tourne-disque · lofi', anchor: [1.9, 1.05, -2.6] },
     { id: 'window', target: 'wind', label: 'Fenêtre · le vent', anchor: [1.4, 3.35, -3.0] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [1.55, 1.12, -0.73] },
+    { id: 'knit', target: 'knit', label: 'Panier de tricot · les aiguilles', anchor: [-0.2, 0.5, 1.6] },
   ],
   sounds: [
     { id: 'fire', name: 'Feu de bois', chip: 'var(--c-fire)', volume: 0.7, sub: (s) => (s.on.fire ? 'ça crépite' : 'cheminée') },
     { id: 'wind', name: 'Vent', chip: 'var(--c-wind)', volume: 0.6, sub: (s) => (s.night ? 'tempête' : 'rafales') },
     { id: 'radio', name: 'Tourne-disque', chip: 'var(--c-radio)', icon: 'vinyl', skip: 'Disque suivant', volume: 0.75, sub: radioSub(PLAYLIST.length) },
+    { id: 'knit', name: 'Tricot', chip: 'var(--c-knit)', volume: 0.45, sub: () => 'les aiguilles de bois' },
     { id: 'purr', name: 'Ronron', chip: 'var(--c-cat)', volume: 0.7, sub: () => 'près du feu' },
   ],
 }

@@ -126,3 +126,21 @@ Pixabay Content License (exception accordée par le propriétaire, voir CLAUDE.m
 | market/tram | Tram, transport, road, wheel noise, rails | SSPsurvival | 10342 |
 | market/simmer | Cauldron Boiling | Irhouen | 173607 |
 | market/neon | Cyberpunk Neon Sign Electric Buzz #1 | Vadim_Makes_Sound | 547828 |
+
+## Sons des objets ajoutés le 2026-10-24 (un par pièce)
+
+Pixabay Content License (accord du propriétaire du projet), téléchargés depuis son navigateur via l'extension Claude à sa demande. Sources d'origine : `Téléchargements/pixabay-sources/`. Les sons « freesound_community » viennent de Freesound, redistribués par Pixabay. Découpés à 60 s au plus, mono, ramenés à −20 LUFS par `npm run audio`.
+
+| Fichier | Titre | Auteur | Id Pixabay |
+|---|---|---|---|
+| `bedroom/mist` | YUASA YHY-80P Steam Humidifier | freesound_community | 61668 |
+| `cabin/knit` | knitting and dropping metal knitting needle | freesound_community | 28092 |
+| `beach/rainstick` | Rain stick 2 | freesound_community | 48494 |
+| `train/cards` | Shuffling Playing Cards | freesound_community | 19937 |
+| `roof/watering` | Watering with a Watering Can | freesound_community | 39121 |
+| `atelier/brush` | Paint brush | freesound_community | 57324 |
+| `onsen/whisk` | whisking | freesound_community | 44551 |
+| `lighthouse/quill` | Writing sound loop | freesound_community | 57001 |
+| `submarine/shell` | SeaShell_01 | freesound_community | 90046 |
+| `market/abacus` | Rosary Beads | DOBCommunications | 284813 |
+| `cafe/drip` | Water Dripping | DRAGON-STUDIO | 364450 |

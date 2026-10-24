@@ -30,13 +30,14 @@ export const roof: Room = {
     pigeons: { src: 'audio/roof/pigeons', gain: 0.8 },
     wind: { src: 'audio/roof/wind', gain: 0.8 },
     fire: { src: 'audio/cafe/fire', gain: 0.8 },
+    watering: { src: 'audio/roof/watering', gain: 0.8 },
   },
   stations: ['soleil-bas', 'nuit-douce', 'bureau', 'rosee'],
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio',.6], ['city',.35], ['wind',.2]] },
-    read: { sounds: [['city',.4], ['fire',.4], ['pigeons',.2]] },
-    sleep: { sounds: [['wind',.35], ['fire',.35], ['city',.25]], night: true },
+    read: { sounds: [['city',.4], ['fire',.4], ['watering',.25], ['pigeons',.2]] },
+    sleep: { sounds: [['wind',.3], ['watering',.3], ['fire',.35]], night: true },
   },
   objects: [
     { id: 'city', target: 'city', label: 'La ville · rumeur', anchor: [0.6, 4.6, -3.9] },
@@ -45,12 +46,14 @@ export const roof: Room = {
     { id: 'pigeons', target: 'pigeons', label: 'Pigeons · roucoulements', anchor: [1.15, 1.5, -3.15] },
     { id: 'radio', target: 'radio', label: 'Boombox · lofi', anchor: [-2.55, 0.75, 2.35] },
     { id: 'lamp', target: 'night', label: 'Guirlande · jour / nuit', anchor: [3.0, 2.8, 0.4] },
+    { id: 'watering', target: 'watering', label: 'Arrosoir · l’eau', anchor: [-0.5, 0.8, -2.11] },
   ],
   sounds: [
     { id: 'radio', name: 'Boombox lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'city', name: 'La ville', chip: 'var(--c-city)', volume: 0.6, sub: (s) => (s.night ? 'sirènes au loin' : 'klaxons, rumeur') },
     { id: 'fire', name: 'Braséro', chip: 'var(--c-fire)', volume: 0.7, sub: (s) => (s.on.fire ? 'ça crépite' : 'éteint') },
     { id: 'wind', name: 'Vent', chip: 'var(--c-wind)', volume: 0.6, sub: () => 'sur les toits' },
+    { id: 'watering', name: 'Arrosoir', chip: 'var(--c-watering)', volume: 0.45, sub: () => 'un filet d’eau sur la terre' },
     { id: 'pigeons', name: 'Pigeons', chip: 'var(--c-pigeons)', volume: 0.45, sub: (s) => (s.night ? 'ils somnolent' : 'roucoulements') },
   ],
 }

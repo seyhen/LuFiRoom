@@ -8,12 +8,15 @@ export type SoundId =
   | 'waves' | 'gulls' | 'chimes' | 'rails' | 'tea' | 'city' | 'pigeons' | 'keys' | 'pencil' | 'kettle' | 'spring' | 'bamboo'
   // le phare, le sous-marin, le marché de nuit
   | 'foghorn' | 'bell' | 'sonar' | 'bubbles' | 'hull' | 'engine' | 'whale' | 'sizzle' | 'simmer' | 'neon' | 'tram'
+  // les nouveaux objets : diffuseur, tricot, bâton de pluie, cartes, arrosoir, pinceau, fouet, plume, conque, boulier
+  | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'abacus' | 'drip'
 /** Un objet interactif de la scène. */
 export type ObjectId =
   | 'cloud' | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
   | 'gull' | 'chimes' | 'tea' | 'book' | 'brazier' | 'pigeons' | 'city' | 'laundry' | 'keyboard' | 'pencil' | 'kettle'
   | 'spring' | 'bamboo' | 'furin' | 'maple'
   | 'foghorn' | 'bell' | 'stove' | 'barometer' | 'sonar' | 'valve' | 'gauge' | 'telegraph' | 'wok' | 'pot' | 'neon' | 'tram'
+  | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'abacus' | 'drip'
 /** Ce qu'un objet pilote : un son, ou le passage jour / nuit. */
 export type Target = SoundId | 'night'
 

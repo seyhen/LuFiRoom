@@ -10,6 +10,7 @@ import { Table } from './Table'
 import { Bunks } from './Bunks'
 import { ClubChair, LuggageRack, OpenSuitcase, Slippers, TeaTrolley } from './Luggage'
 import { Sideboard, Washstand } from './Corner'
+import { CardTable } from './CardTable'
 import { PassingLights } from './PassingLights'
 import { CatBasket, ChessTable, Flowers, PersianRug, SteamerTrunk } from './Lounge'
 
@@ -38,6 +39,7 @@ export function TrainScene() {
       <Washstand />
       <PassingLights />
       <ChessTable />
+      <CardTable />
       <SteamerTrunk />
       <CatBasket />
       <Flowers />

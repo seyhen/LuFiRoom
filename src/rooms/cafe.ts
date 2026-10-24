@@ -35,13 +35,14 @@ export const cafe: Room = {
     street: { src: 'audio/cafe/street', gain: 0.7 },
     rain: { src: 'audio/cafe/rain', gain: 1 },
     fire: { src: 'audio/cafe/fire', gain: 0.8 },
+    drip: { src: 'audio/cafe/drip', gain: 0.8 },
   },
   stations: ['pluie-fine', 'soleil-bas', 'brume', 'veillee'],
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio',.5], ['murmur',.4], ['rain',.35], ['espresso',.2]] },
-    read: { sounds: [['pages',.4], ['rain',.5], ['fire',.35], ['radio',.3]] },
-    sleep: { sounds: [['rain',.6], ['fire',.35]], night: true },
+    read: { sounds: [['pages',.4], ['rain',.5], ['drip',.2], ['fire',.35], ['radio',.3]] },
+    sleep: { sounds: [['rain',.6], ['drip',.2], ['fire',.35]], night: true },
   },
   objects: [
     { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.35, 5.2, -3.85] },
@@ -52,6 +53,7 @@ export const cafe: Room = {
     { id: 'fireplace', target: 'fire', label: 'Cheminée · feu', anchor: [-2.45, 1.0, 0] },
     { id: 'books', target: 'pages', label: 'Bibliothèque · pages', anchor: [-2.55, 2.6, 1.85] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-0.42, 1.0, -0.81] },
+    { id: 'drip', target: 'drip', label: 'Manteau mouillé · gouttes', anchor: [3.0, 1.15, 1.14] },
   ],
   sounds: [
     { id: 'radio', name: 'Jukebox lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
@@ -60,6 +62,7 @@ export const cafe: Room = {
     { id: 'street', name: 'La rue', chip: 'var(--c-street)', volume: 0.45, sub: (s) => (s.night ? 'bus dans la nuit' : 'voitures sur le pavé') },
     { id: 'murmur', name: 'Brouhaha', chip: 'var(--c-murmur)', volume: 0.5, sub: () => 'conversations' },
     { id: 'espresso', name: 'Expresso', chip: 'var(--c-espresso)', volume: 0.5, sub: () => 'vapeur et tasses' },
+    { id: 'drip', name: 'Gouttes', chip: 'var(--c-drip)', volume: 0.45, sub: () => 'le manteau qui s’égoutte' },
     { id: 'pages', name: 'Pages', chip: 'var(--c-pages)', volume: 0.55, sub: () => 'bibliothèque, tic-tac' },
   ],
 }

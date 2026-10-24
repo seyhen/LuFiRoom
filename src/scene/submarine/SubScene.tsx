@@ -9,6 +9,7 @@ import { Telegraph } from './Telegraph'
 import { Organ, ORGAN } from './Organ'
 import { Table } from './BankerLamp'
 import { Seating } from './Seating'
+import { Conch } from './Conch'
 import { Decor } from './Decor'
 
 /**
@@ -29,6 +30,7 @@ export function SubScene() {
       <Organ position={[ORGAN.x + 0.2, 1.0, ORGAN.z]} />
       <Table />
       <Seating />
+      <Conch />
       <Decor />
       <Motes colors={[0xc8f4ee, 0x8ff0e0]} opacity={[0.3, 0.5]} n={22} />
     </Static>

@@ -1,7 +1,7 @@
 import { LatheGeometry, SplineCurve, Vector2 } from 'three'
 import { TAU } from '../../math'
 import { M } from '../materials'
-import { Batch, Part, cyl, rbox, type Item } from '../parts'
+import { Part, cyl, rbox } from '../parts'
 import { Candles } from '../objects/Candles'
 import { B } from './materials'
 
@@ -10,14 +10,7 @@ const bag = new LatheGeometry(
   new SplineCurve([[0, 0], [0.5, 0.02], [0.62, 0.17], [0.6, 0.4], [0.5, 0.58], [0.36, 0.7], [0.2, 0.7], [0.1, 0.66], [0, 0.64]].map(([x, y]) => new Vector2(x, y))).getPoints(32),
   36,
 )
-const BOOKS: Item[] = [
-  { p: [2.82, 0.56, 0.5], s: [0.4, 0.07, 0.29], r: [0, 0.3, 0], c: 0xf3afc6 },
-  { p: [2.82, 0.56, 0.5], s: [0.36, 0.055, 0.3], r: [0, 0.3, 0], c: 0xfff5e6 },
-  { p: [2.83, 0.64, 0.5], s: [0.34, 0.07, 0.25], r: [0, -0.25, 0], c: 0x8fd8c6 },
-  { p: [2.83, 0.64, 0.5], s: [0.3, 0.055, 0.26], r: [0, -0.25, 0], c: 0xfff5e6 },
-]
-
-/** Coin lecture : pouf-poire beurre avec un coussin rose, tabouret en bois, deux livres et une bougie qui brille la nuit. */
+/** Coin lecture : pouf-poire beurre avec un coussin rose, tabouret en bois et une bougie qui brille la nuit (le diffuseur d'huiles est dessus : Diffuser). */
 export function ReadingNook() {
   return (
     <>
@@ -34,8 +27,7 @@ export function ReadingNook() {
         const a = (i / 3) * TAU + 0.6
         return <Part key={i} geo={cyl(0.03, 0.025, 0.5, 10)} m={M.woodLeg} p={[2.82 + Math.cos(a) * 0.17, 0.24, 0.5 + Math.sin(a) * 0.17]} rotation={[-Math.sin(a) * 0.12, 0, Math.cos(a) * 0.12]} />
       })}
-      <Batch geo={rbox(1, 1, 1, 0.1)} m={B.trim} items={BOOKS} shadow />
-      <Candles items={[{ p: [2.9, 0.675, 0.58], h: 0.13, r: 0.055 }]} />
+      <Candles items={[{ p: [2.95, 0.525, 0.64], h: 0.13, r: 0.055 }]} />
     </>
   )
 }

@@ -22,12 +22,13 @@ export const bedroom: Room = {
     purr: { src: 'audio/bedroom/purr', gain: 0.5 },
     birds: { src: 'audio/bedroom/birds', gain: 0.16 },
     crickets: { src: 'audio/bedroom/crickets', gain: 0.25 },
+    mist: { src: 'audio/bedroom/mist', gain: 0.8 },
   },
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio',.6], ['rain',.35], ['fan',.25]] },
-    read: { sounds: [['rain',.55], ['purr',.35], ['radio',.3]] },
-    sleep: { sounds: [['rain',.6], ['fan',.4], ['purr',.25]], night: true },
+    read: { sounds: [['rain',.55], ['mist',.3], ['purr',.35], ['radio',.3]] },
+    sleep: { sounds: [['rain',.6], ['mist',.35], ['purr',.25]], night: true },
   },
   stations: ['pluie-fine', 'nuit-douce', 'soleil-bas', 'petit-matin', 'veillee', 'bureau'],
   objects: [
@@ -37,6 +38,7 @@ export const bedroom: Room = {
     { id: 'fan', target: 'fan', label: 'Ventilo · bruit blanc', anchor: [0.6, 1.85, -2.6] },
     { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-1.15, 1.45, -0.5] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-2.68, 1.2, -2.72] },
+    { id: 'mist', target: 'mist', label: 'Diffuseur · la brume', anchor: [2.72, 0.78, 0.42] },
   ],
   sounds: [
     {
@@ -49,6 +51,7 @@ export const bedroom: Room = {
     { id: 'rain', name: 'Pluie', chip: 'var(--c-rain)', volume: 0.7, sub: (s) => (s.on.outside ? 'vitre ouverte' : 'vitre fermée') },
     { id: 'fan', name: 'Bruit blanc', chip: 'var(--c-fan)', volume: 0.55, sub: () => 'ventilateur' },
     { id: 'purr', name: 'Ronron', chip: 'var(--c-cat)', volume: 0.7, sub: () => 'chat endormi' },
+    { id: 'mist', name: 'Brume', chip: 'var(--c-mist)', volume: 0.45, sub: () => 'le diffuseur d’huiles' },
     { id: 'outside', name: 'Dehors', chip: 'var(--c-win)', volume: 0.65, sub: (s) => (s.night ? 'grillons' : 'oiseaux') },
   ],
 }

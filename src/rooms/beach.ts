@@ -29,13 +29,14 @@ export const beach: Room = {
     gulls: { src: 'audio/beach/gulls', gain: 0.8 },
     chimes: { src: 'audio/beach/chimes', gain: 0.7 },
     waves: { src: 'audio/beach/waves', gain: 0.8 },
+    rainstick: { src: 'audio/beach/rainstick', gain: 0.8 },
   },
   stations: ['soleil-bas', 'rosee', 'petit-matin'],
   playlist: PLAYLIST,
   presets: {
-    work: { sounds: [['radio',.55], ['waves',.4]] },
-    read: { sounds: [['waves',.5], ['gulls',.25], ['chimes',.25]] },
-    sleep: { sounds: [['waves',.6], ['chimes',.2]], night: true },
+    work: { sounds: [['radio',.55], ['waves',.4], ['rainstick',.25]] },
+    read: { sounds: [['waves',.5], ['rainstick',.3], ['gulls',.25], ['chimes',.25]] },
+    sleep: { sounds: [['waves',.55], ['rainstick',.3], ['chimes',.2]], night: true },
   },
   objects: [
     { id: 'window', target: 'waves', label: 'La mer · vagues', anchor: [1.25, 2.1, -3.0] },
@@ -44,12 +45,14 @@ export const beach: Room = {
     { id: 'radio', target: 'radio', label: 'Ukulélé · lofi', anchor: [-2.45, 1.15, 1.55] },
     { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-2.35, 1.05, -0.4] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-1.25, 1.0, -2.55] },
+    { id: 'rainstick', target: 'rainstick', label: 'Bâton de pluie · bascule', anchor: [-1.8, 2.35, -2.8] },
   ],
   sounds: [
     { id: 'radio', name: 'Ukulélé lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'waves', name: 'Vagues', chip: 'var(--c-waves)', volume: 0.7, sub: (s) => (s.night ? 'marée de nuit' : 'le ressac') },
     { id: 'gulls', name: 'Mouettes', chip: 'var(--c-gulls)', volume: 0.4, sub: () => 'au-dessus de la plage' },
     { id: 'chimes', name: 'Carillon', chip: 'var(--c-chimes)', volume: 0.45, sub: () => 'dans la brise' },
+    { id: 'rainstick', name: 'Bâton de pluie', chip: 'var(--c-rainstick)', volume: 0.4, sub: () => 'les graines dans le bambou' },
     { id: 'purr', name: 'Chat', chip: 'var(--c-cat)', volume: 0.7, sub: () => 'sieste au soleil' },
   ],
 }

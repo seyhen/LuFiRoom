@@ -32,13 +32,14 @@ export const submarine: Room = {
     hull: { src: 'audio/submarine/hull', gain: 0.8 },
     engine: { src: 'audio/submarine/engine', gain: 0.8 },
     whale: { src: 'audio/submarine/whale', gain: 0.9 },
+    shell: { src: 'audio/submarine/shell', gain: 0.8 },
   },
   stations: ['minuit', 'brume', 'veillee'],
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio',.55], ['engine',.3], ['bubbles',.25]] },
-    read: { sounds: [['bubbles',.35], ['sonar',.3], ['whale',.3]] },
-    sleep: { sounds: [['whale',.4], ['hull',.3], ['engine',.25]], night: true },
+    read: { sounds: [['bubbles',.35], ['shell',.3], ['whale',.3]] },
+    sleep: { sounds: [['whale',.4], ['shell',.35], ['engine',.25]], night: true },
   },
   objects: [
     { id: 'window', target: 'whale', label: 'Hublot · chant de baleine', anchor: [0.45, 2.45, -2.9] },
@@ -48,6 +49,7 @@ export const submarine: Room = {
     { id: 'telegraph', target: 'engine', label: 'Télégraphe · machines', anchor: [2.5, 1.4, 1.8] },
     { id: 'lamp', target: 'night', label: 'Lampe de banquier · jour / nuit', anchor: [0.6, 1.25, -0.55] },
     { id: 'radio', target: 'radio', label: 'Orgue · lofi', anchor: [-2.4, 1.5, 0.5] },
+    { id: 'shell', target: 'shell', label: 'Conque · la mer dedans', anchor: [-1.2, 1.0, 2.1] },
   ],
   sounds: [
     { id: 'radio', name: 'Orgue lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
@@ -55,6 +57,7 @@ export const submarine: Room = {
     { id: 'bubbles', name: 'Bulles', chip: 'var(--c-bubbles)', volume: 0.5, sub: () => 'le ballast qui respire' },
     { id: 'hull', name: 'Coque', chip: 'var(--c-hull)', volume: 0.5, sub: () => 'la pression qui gémit' },
     { id: 'engine', name: 'Machines', chip: 'var(--c-engine)', volume: 0.5, sub: () => 'avant, lentement' },
+    { id: 'shell', name: 'Conque', chip: 'var(--c-shell)', volume: 0.45, sub: () => 'la mer, dans le coquillage' },
     { id: 'whale', name: 'Baleine', chip: 'var(--c-whale)', volume: 0.5, sub: () => 'un chant au loin' },
   ],
 }

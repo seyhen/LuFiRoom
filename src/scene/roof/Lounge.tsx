@@ -159,7 +159,7 @@ export function Telescope() {
   )
 }
 
-/** Devant : un bac de zinc plein de glace et de bouteilles, des caisses de bois empilées avec des plantes, un arrosoir. */
+/** Devant : un bac de zinc plein de glace et de bouteilles et des caisses de bois empilées avec des plantes (l'arrosoir est à part : WateringCan). */
 export function FrontCorner() {
   return (
     <>
@@ -191,14 +191,6 @@ export function FrontCorner() {
         {[0, 1, 2, 3].map((i) => (
           <Part key={i} geo={SPH} m={R.tomato} scale={0.03} p={[-0.15 + Math.cos(i * 1.6) * 0.08, 0.53 + (i % 2) * 0.03, 0.1 + Math.sin(i * 1.6) * 0.08]} castShadow={false} />
         ))}
-        {/* l'arrosoir */}
-        <group position={[0.45, 0, 0.2]}>
-          <Part geo={cyl(0.1, 0.11, 0.22, 16)} m={R.zinc} p={[0, 0.11, 0]} />
-          <Part geo={cyl(0.012, 0.02, 0.26, 8)} m={R.zinc} p={[0.15, 0.2, 0]} rotation-z={-0.9} castShadow={false} />
-          <Part m={R.zinc} p={[-0.02, 0.24, 0]} castShadow={false}>
-            <torusGeometry args={[0.07, 0.012, 6, 12, Math.PI]} />
-          </Part>
-        </group>
       </group>
     </>
   )

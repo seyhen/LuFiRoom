@@ -7,6 +7,7 @@ import { StringLights } from './StringLights'
 import { Brazier } from './Brazier'
 import { FireCorner, FrontCorner, RadioCrate, Sofa, Telescope } from './Lounge'
 import { Laundry } from './Laundry'
+import { WateringCan } from './WateringCan'
 import { Pigeons } from './Pigeons'
 import { Herbs, OliveTree, Planter } from './Planters'
 import { FireEscape, NeonSign, Vent } from './Neon'
@@ -33,6 +34,7 @@ export function RoofScene() {
       <Boombox position={[-2.55, 0.5, 2.35]} />
       <Telescope />
       <FrontCorner />
+      <WateringCan />
       <Laundry />
       <NeonSign />
       <FireEscape />

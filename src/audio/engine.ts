@@ -38,6 +38,17 @@ import sizzle from './channels/sizzle'
 import simmer from './channels/simmer'
 import neon from './channels/neon'
 import tram from './channels/tram'
+import mist from './channels/mist'
+import knit from './channels/knit'
+import rainstick from './channels/rainstick'
+import cards from './channels/cards'
+import watering from './channels/watering'
+import brush from './channels/brush'
+import whisk from './channels/whisk'
+import quill from './channels/quill'
+import shell from './channels/shell'
+import abacus from './channels/abacus'
+import drip from './channels/drip'
 
 // canal (bus Gain) ─┬─> master Gain 0.9 ─> compresseur ─> sortie
 // canal (bus Gain) ─┘
@@ -89,6 +100,17 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   simmer: { build: simmer, base: 0.65 },
   neon: { build: neon, base: 1.3 },
   tram: { build: tram, base: 0.6 },
+  mist: { build: mist, base: 1.0 },
+  knit: { build: knit, base: 1.0 },
+  rainstick: { build: rainstick, base: 1.0 },
+  cards: { build: cards, base: 1.0 },
+  watering: { build: watering, base: 1.0 },
+  brush: { build: brush, base: 0.8 },
+  whisk: { build: whisk, base: 1.0 },
+  quill: { build: quill, base: 1.0 },
+  shell: { build: shell, base: 1.0 },
+  abacus: { build: abacus, base: 1.0 },
+  drip: { build: drip, base: 1.0 },
 }
 const ids = Object.keys(CHANNELS) as SoundId[]
 

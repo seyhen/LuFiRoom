@@ -31,12 +31,13 @@ export const train: Room = {
     tea: { src: 'audio/train/tea', gain: 0.9 },
     rain: { src: 'audio/train/rain', gain: 1 },
     pages: { src: 'audio/cafe/pages', gain: 0.8 },
+    cards: { src: 'audio/train/cards', gain: 0.8 },
   },
   stations: ['minuit', 'pluie-fine', 'nuit-douce'],
   playlist: PLAYLIST,
   presets: {
-    work: { sounds: [['radio',.55], ['rails',.4], ['rain',.3]] },
-    read: { sounds: [['rails',.45], ['rain',.45], ['tea',.3], ['pages',.3]] },
+    work: { sounds: [['radio',.55], ['rails',.4], ['cards',.2]] },
+    read: { sounds: [['rails',.45], ['rain',.45], ['tea',.3], ['cards',.25], ['pages',.3]] },
     sleep: { sounds: [['rails',.55], ['rain',.4]], night: true },
   },
   objects: [
@@ -46,12 +47,14 @@ export const train: Room = {
     { id: 'tea', target: 'tea', label: 'Verre de thé · cuillère', anchor: [0.75, 1.45, -2.55] },
     { id: 'book', target: 'pages', label: 'Livre · pages', anchor: [-2.35, 1.05, -1.1] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-0.05, 1.6, -2.68] },
+    { id: 'cards', target: 'cards', label: 'Réussite · les cartes', anchor: [2.6, 0.78, 1.05] },
   ],
   sounds: [
     { id: 'radio', name: 'Gramophone lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'rails', name: 'Le train', chip: 'var(--c-rails)', volume: 0.7, sub: (s) => (s.on.rails ? 'ta-dam, ta-dam' : 'vitre fermée') },
     { id: 'rain', name: 'Pluie', chip: 'var(--c-rain)', volume: 0.7, sub: () => 'sur la vitre' },
     { id: 'tea', name: 'Thé', chip: 'var(--c-tea)', volume: 0.5, sub: () => 'la cuillère qui tinte' },
+    { id: 'cards', name: 'Cartes', chip: 'var(--c-cards)', volume: 0.45, sub: () => 'une réussite, carte après carte' },
     { id: 'pages', name: 'Livre', chip: 'var(--c-pages)', volume: 0.55, sub: () => 'pages tournées' },
   ],
 }

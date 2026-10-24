@@ -8,6 +8,7 @@ import { Furin, Maple, StoneLantern } from './Garden'
 import { BathThings, TeaTray, TowelRack } from './Props'
 import { Macaque } from './Macaque'
 import { POOL } from './Pool'
+import { MatchaTable } from './MatchaTable'
 import { Shrubs } from './Shrubs'
 import { Chochin, Fireflies, Noren } from './Signs'
 
@@ -29,6 +30,7 @@ export function OnsenScene() {
       <Furin />
       <TeaTray />
       <Shamisen position={[-2.45, 0.42, 2.0]} />
+      <MatchaTable />
       <BathThings />
       <TowelRack />
       {/* le baigneur : un macaque, et son petit près du bord */}

@@ -8,8 +8,9 @@ import { DraftingTable, Stool } from './DraftingTable'
 import { Desk, Turntable } from './Desk'
 import { Kitchenette } from './Kitchenette'
 import { Gallery, Rafters } from './Rafters'
+import { PaintEasel } from './PaintEasel'
 import { FloorNook } from './FloorNook'
-import { Bookcase, CanvasCorner, Easel, HangingPlants, ReadingCorner, RugAndLadder } from './Corner'
+import { Bookcase, CanvasCorner, HangingPlants, ReadingCorner, RugAndLadder } from './Corner'
 
 /**
  * Un atelier d'illustratrice sous les toits de Paris : la verrière d'acier sur les toits de zinc et la tour Eiffel,
@@ -27,7 +28,7 @@ export function AtelierScene() {
       <DraftingTable />
       <Stool />
       <Turntable />
-      <Easel />
+      <PaintEasel />
       <Desk />
       <Kitchenette />
       <RugAndLadder />

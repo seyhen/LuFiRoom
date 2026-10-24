@@ -21,6 +21,7 @@ import { ReadingTable } from './ReadingTable'
 import { Guests } from './Guests'
 import { FigTree } from './Plants'
 import { Umbrellas } from './Umbrellas'
+import { DripCoat } from './DripCoat'
 import { Sill } from './Sill'
 import { Static } from '../Static'
 import { Motes } from '../Floaters'
@@ -61,6 +62,7 @@ export function CafeScene() {
       {/* la salle et l'entrée */}
       <ReadingTable />
       <Umbrellas />
+      <DripCoat />
       <Motes colors={[0xfff2d8, 0xffcf8a]} opacity={[0.3, 0.5]} n={22} />
     </Static>
   )
