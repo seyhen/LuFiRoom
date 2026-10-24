@@ -18,6 +18,8 @@ export interface Store {
   leaving: string | null
   on: PerSound<boolean>
   vol: PerSound<number>
+  /** Volume général (0 à 1), par-dessus le mélange : propre à l'appareil, il ne fait pas partie des ambiances. */
+  master: number
   /** Gestes sur les objets et le mixeur : les hotspots arrêtent de pulser après 3. */
   taps: number
   /** Dernier rebond demandé pour chaque objet (performance.now()). */
@@ -43,6 +45,7 @@ export interface Store {
   toggleNight: () => void
   muteAll: () => void
   setVolume: (id: SoundId, v: number) => void
+  setMaster: (v: number) => void
   /** Lance le minuteur de sommeil (durée en minutes), ou l'annule (null). */
   setSleep: (minutes: number | null) => void
   /** L'ambiance en cours : pièce, sons qui jouent et leur volume, jour / nuit. */
@@ -67,6 +70,7 @@ const hour = new Date().getHours()
 const ROOM_KEY = 'chambre-lofi.room'
 const STATION_KEY = 'chambre-lofi.station'
 const stationKey = (room: string) => `${STATION_KEY}.${room}`
+const MASTER_KEY = 'chambre-lofi.volume'
 const FADE = 350 // ms, la durée de l'effacement (voir app.css)
 
 // La dernière pièce visitée, si le navigateur veut bien s'en souvenir.
@@ -89,6 +93,16 @@ function savedStation(room: string) {
     // pas de stockage : la première de la pièce
   }
   return ids[0]
+}
+
+// Le volume général retenu, plein par défaut.
+function savedMaster() {
+  try {
+    const v = parseFloat(localStorage.getItem(MASTER_KEY) ?? '')
+    return Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : 1
+  } catch {
+    return 1
+  }
 }
 
 function rememberStation(room: string, id: string) {
@@ -116,6 +130,7 @@ export const useStore = create<Store>()((set, get, api) => ({
   leaving: null,
   on: perSound(() => false),
   vol: perSound((s) => s.volume),
+  master: savedMaster(),
   taps: 0,
   squashAt: {},
   onAir: '',
@@ -188,6 +203,14 @@ export const useStore = create<Store>()((set, get, api) => ({
   toggleNight: () => set((s) => flip(s, 'night')),
   muteAll: () => set({ on: perSound(() => false) }),
   setVolume: (id, v) => set((s) => ({ vol: { ...s.vol, [id]: v } })),
+  setMaster: (v) => {
+    set({ master: v })
+    try {
+      localStorage.setItem(MASTER_KEY, String(v))
+    } catch {
+      // pas de stockage : on ne s'en souviendra pas
+    }
+  },
   setStation: (id) => {
     const station = stationById(id).id
     if (station === get().station || !stationIds(roomById(get().room).stations).includes(station)) return

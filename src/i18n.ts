@@ -57,6 +57,7 @@ const EN: Record<string, string> = {
   'Mon ambiance sur LufiRoom :': 'My mood on LufiRoom:',
   Minuteur: 'Timer',
   'Minuteur de sommeil': 'Sleep timer',
+  'Volume général': 'Main volume',
   'Éteindre en fondu dans…': 'Fade out in…',
   'Annuler le minuteur': 'Cancel the timer',
   'Ambiance partagée': 'Shared mood',

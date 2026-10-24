@@ -50,7 +50,7 @@ import shell from './channels/shell'
 import abacus from './channels/abacus'
 import drip from './channels/drip'
 
-// canal (bus Gain) ─┬─> master Gain 0.9 ─> compresseur ─> sortie
+// canal (bus Gain) ─┬─> master Gain 0.9 ─> volume général ─> compresseur ─> sortie
 // canal (bus Gain) ─┘
 
 export type { SoundId }
@@ -220,6 +220,10 @@ preloadRoom(roomById(useStore.getState().room), true)
 let kit: Kit | null = null
 let masterGain: GainNode | null = null
 let limiter: DynamicsCompressorNode | null = null
+// Volume général, à part du master (que le minuteur de sommeil fait descendre) : les deux se multiplient.
+let userGain: GainNode | null = null
+// Le curseur suit l'oreille plutôt que l'amplitude : au carré, la moitié du curseur sonne à peu près à moitié aussi fort.
+const userLevel = (v: number) => v * v
 // Sortie : un flux (MediaStream) lu par un élément <audio>, plutôt que les haut-parleurs directs. Pour le système, c'est alors
 // un lecteur de média : la lecture continue écran verrouillé ou app en arrière-plan, et la Media Session (src/audio/session.ts)
 // peut afficher des contrôles. Si le navigateur ne sait pas, ou refuse de lire, la sortie directe reste le repli.
@@ -250,7 +254,10 @@ function ensure() {
   comp.release.value = 0.3
   const master = ctx.createGain()
   master.gain.value = MASTER
-  master.connect(comp)
+  const user = ctx.createGain()
+  user.gain.value = userLevel(useStore.getState().master)
+  master.connect(user).connect(comp)
+  userGain = user
   limiter = comp
   masterGain = master
   // `?direct` dans l'adresse : sortie directe vers les haut-parleurs, sans le flux <audio> (pour savoir si un grésillement vient de lui).
@@ -444,6 +451,7 @@ useStore.subscribe((s, p) => {
     keepOutput(ids.some((id) => s.on[id]))
   }
   if (kit) for (const id of ids) if (s.vol[id] !== p.vol[id]) volume(kit, id)
+  if (kit && userGain && s.master !== p.master) userGain.gain.setTargetAtTime(userLevel(s.master), kit.ctx.currentTime, 0.04)
   if (s.sleepEnd !== p.sleepEnd) {
     const k = ensure()
     if (k) sleepSchedule(k, s.sleepEnd, p.sleepEnd)
@@ -454,4 +462,4 @@ useStore.subscribe((s, p) => {
 })
 
 // Pont de développement (retiré du build) : les bus de chaque son et le kit, pour mesurer les niveaux (skill audit-room).
-if (import.meta.env.DEV) ((window as unknown as { __lofi?: Record<string, unknown> }).__lofi ??= {}).audio = { bus, getKit: () => kit, getLimiter: () => limiter }
+if (import.meta.env.DEV) ((window as unknown as { __lofi?: Record<string, unknown> }).__lofi ??= {}).audio = { bus, getKit: () => kit, getLimiter: () => limiter, getUserGain: () => userGain }
