@@ -1,0 +1,71 @@
+# Vérifications à chaque push et à chaque pull request : build TypeScript, musique des stations, test de fumée dans Chromium
+# (les onze pièces, téléphone et ordinateur), et contrôle des fichiers son. Voir la section « Commandes » de CLAUDE.md.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+# Un nouveau push sur la même branche annule la vérification précédente, devenue inutile.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  app:
+    name: Build, stations, test navigateur
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node 22 (LTS), comme sur Cloudflare (NODE_VERSION dans docs/DEPLOY.md).
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build (tsc + vite)
+        run: npm run build
+
+      - name: Musique des stations
+        run: npm run stations
+
+      # Le Chromium de la version de Playwright du dépôt, et les bibliothèques système qu'il demande.
+      - name: Chromium pour Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Test de fumée (onze pièces, 390 px et ordinateur)
+        run: npm run test:smoke
+
+      - name: Captures des pièces en échec
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: captures-test-de-fumee
+          path: test-results/
+          if-no-files-found: ignore
+
+  audio:
+    name: Contrôle des sons (audio:check)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # scripts/check-audio.mjs ne demande que Node et ffmpeg (pas de npm ci).
+      - name: ffmpeg
+        run: command -v ffmpeg || (sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg)
+
+      # Échoue sur une crête trop haute ou un fichier sans son jumeau (webm / mp3) ; les sonies à côté de la cible ne sont que des avertissements.
+      - name: Sonie, crêtes, paires webm + mp3
+        run: npm run audio:check

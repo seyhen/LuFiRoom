@@ -10,7 +10,9 @@
     "audio": "node scripts/encode-audio.mjs",
     "audio:check": "node scripts/check-audio.mjs",
     "noises": "node scripts/make-noises.mjs",
-    "stations": "node scripts/check-stations.mjs"
+    "stations": "node scripts/check-stations.mjs",
+    "test": "npm run build && npm run stations && npm run test:smoke",
+    "test:smoke": "node scripts/smoke.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^9.122.0",
@@ -25,6 +27,7 @@
     "@types/react-dom": "^18.3.7",
     "@types/three": "^0.173.0",
     "@vitejs/plugin-react": "^6.1.1",
+    "playwright": "1.63.0",
     "typescript": "^7.0.2",
     "vite": "^8.3.2",
     "vite-plugin-pwa": "^1.3.0"

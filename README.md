@@ -15,4 +15,5 @@ Webapp d'ambiance sonore : une chambre en 3D isométrique où chaque objet lance
 - `docs/prototype.html` : le prototype qui marche. Ouvre-le dans un navigateur (connexion internet nécessaire pour charger Three.js et les polices).
 - `docs/PROTOTYPE.md` : toutes les valeurs techniques du prototype.
 - `docs/PLAN.md` : les phases du projet.
+- `npm test` : build, musique des stations et test de fumée dans Chromium (chaque pièce, en 390 px et en desktop) ; la CI GitHub (`.github/workflows/ci.yml`) le lance à chaque push. Détails : `CLAUDE.md`, « Commandes ».
 - `docs/captures/` : captures de référence.
