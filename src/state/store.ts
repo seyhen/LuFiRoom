@@ -3,6 +3,7 @@ import { stationAfter, stationById, stationIds } from '../audio/stations'
 import { roomById, rooms } from '../rooms'
 import type { ObjectId, RoomSound, SoundId, Target } from '../rooms/types'
 import { reduceMotion } from '../motion'
+import { clockNight, holdFor } from './daylight'
 import { MAX_SAVED, loadMixes, mixFromSearch, mixName, storeLast, storeMixes, type Mix, type SavedMix } from './mixes'
 
 type PerSound<T> = Record<SoundId, T>
@@ -12,6 +13,13 @@ const perSound = <T>(f: (s: RoomSound) => T) => Object.fromEntries(allSounds.map
 
 export interface Store {
   night: boolean
+  /**
+   * Jour / nuit choisi à la main contre l'horloge : il tient jusqu'à cet instant (ms), le prochain changement de période. `null` :
+   * la pièce suit l'heure (voir src/state/daylight.ts).
+   */
+  nightHold: number | null
+  /** Le dernier passage jour / nuit vient de l'horloge : il se fait lentement (le crépuscule, l'aube), sans « pop ». */
+  dusk: boolean
   /** Pièce affichée (identifiant). */
   room: string
   /** Pièce vers laquelle on s'en va, pendant la transition. */
@@ -29,6 +37,8 @@ export interface Store {
   kicks: number
   /** Demandes de « morceau suivant » (un compteur : la radio sur pistes passe à la suivante quand il change). */
   skips: number
+  /** Éclairs de l'orage (un compteur : le ciel s'illumine et le tonnerre gronde, doux et lointain, quand il change). */
+  thunders: number
   /** Station de la radio générative (identifiant, voir src/audio/stations.ts). */
   station: string
   /** Écran de chargement : fichiers préchargés, et scène dessinée une première fois. */
@@ -66,7 +76,6 @@ export interface Store {
   skipTrack: () => void
 }
 
-const hour = new Date().getHours()
 const ROOM_KEY = 'chambre-lofi.room'
 const STATION_KEY = 'chambre-lofi.station'
 const stationKey = (room: string) => `${STATION_KEY}.${room}`
@@ -118,14 +127,19 @@ function flip(s: Store, target: Target): Partial<Store> {
   const obj = roomById(s.room).objects.find((o) => o.target === target)
   return {
     squashAt: obj ? { ...s.squashAt, [obj.id]: performance.now() } : s.squashAt,
-    ...(target === 'night' ? { night: !s.night } : { on: { ...s.on, [target]: !s.on[target] } }),
+    ...(target === 'night' ? byHand(!s.night) : { on: { ...s.on, [target]: !s.on[target] } }),
   }
 }
+
+// Le jour ou la nuit choisis par un geste : ils tiennent contre l'horloge jusqu'au prochain changement de période.
+const byHand = (night: boolean) => ({ night, nightHold: holdFor(night), dusk: false })
 
 const firstRoom = savedRoom()
 
 export const useStore = create<Store>()((set, get, api) => ({
-  night: hour >= 20 || hour < 7,
+  night: clockNight(),
+  nightHold: null,
+  dusk: false,
   room: firstRoom,
   leaving: null,
   on: perSound(() => false),
@@ -136,6 +150,7 @@ export const useStore = create<Store>()((set, get, api) => ({
   onAir: '',
   kicks: 0,
   skips: 0,
+  thunders: 0,
   station: savedStation(firstRoom),
   loading: { done: 0, total: 0, scene: false },
   insets: { top: 0, bottom: 0 },
@@ -175,7 +190,7 @@ export const useStore = create<Store>()((set, get, api) => ({
       rememberStation(m.room, station)
       set((s) => ({
         station,
-        night: m.night,
+        ...byHand(m.night),
         vol: { ...s.vol, ...m.vol },
         on: { ...perSound(() => false), ...Object.fromEntries(sounds.filter((x) => m.on.includes(x.id)).map((x) => [x.id, true])) },
         taps: s.taps + 1,
@@ -244,11 +259,25 @@ export const useStore = create<Store>()((set, get, api) => ({
 }))
 
 // La dernière ambiance jouée est gardée, pour le bouton « Reprendre » : pas pendant un changement de pièce (tout est coupé), ni en silence.
+// Un passage du jour à la nuit fait par l'horloge ne compte pas : c'est l'ambiance qu'on a composée qu'on garde.
 useStore.subscribe((s, p) => {
-  if (s.leaving || (s.on === p.on && s.night === p.night && s.vol === p.vol)) return
+  if (s.leaving || (s.on === p.on && (s.night === p.night || s.dusk) && s.vol === p.vol)) return
   const mix = s.currentMix()
   if (mix.on.length) storeLast(mix)
 })
+
+/**
+ * L'horloge : toutes les 20 s (et au retour sur l'onglet), si aucun choix de la main ne tient plus, la pièce passe au jour ou à la
+ * nuit de l'heure, lentement (`dusk`). Le choix de la main tombe au changement de période qui suit.
+ */
+function followClock() {
+  const s = useStore.getState(), now = Date.now()
+  if (s.nightHold !== null && now < s.nightHold) return
+  const night = clockNight(new Date(now))
+  if (s.nightHold !== null || night !== s.night) useStore.setState({ nightHold: null, ...(night !== s.night ? { night, dusk: true } : {}) })
+}
+setInterval(followClock, 20_000)
+document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && followClock())
 
 /** Compte un fichier dans la progression de l'écran de chargement, qu'il arrive ou échoue. */
 export function preload(p: Promise<unknown>) {
@@ -265,3 +294,6 @@ export function isActive(s: Store, id: ObjectId) {
   const target = roomById(s.room).objects.find((o) => o.id === id)?.target
   return target === 'night' ? s.night : target !== undefined && s.on[target]
 }
+
+/** Le minuteur de sommeil arrive à sa fin (les deux dernières minutes, fondu compris) : rien ne doit surprendre, pas d'orage. */
+export const fallingAsleep = (s: Store) => s.sleepEnd !== null && s.sleepEnd - Date.now() < 120_000

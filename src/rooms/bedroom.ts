@@ -10,6 +10,7 @@ export const bedroom: Room = {
   name: 'Chambre',
   description: 'Chambre lofi en 3D isométrique : lit avec un chat, bureau avec radio et ventilateur, fenêtre, nuage, lampe champignon.',
   dimmedBy: 'cloud',
+  storm: 'rain',
   sky: { day: ['#f7f1fa', '#e7dcf0', '#d2c1e3'], night: ['#342d66', '#211c44', '#13102a'] },
   light: {
     hemi: { sky: [0xfff4fb, 0x6c6db8], ground: [0xbca8d0, 0x2c2448], intensity: [0.62, 0.42] },

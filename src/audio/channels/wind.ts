@@ -1,11 +1,14 @@
 import type { Room } from '../../rooms/types'
 import type { Kit } from '../engine'
+import { thunder } from '../thunder'
 
 /**
  * Vent. Enregistré, ou synthétisé : un souffle dont la hauteur et le niveau montent et descendent (rafales), un sifflement fin,
  * un grondement grave. Sur la neige (la cabane), une tempête ; sur un toit en été, une brise plus douce et sans sifflement.
  */
-export default function wind(kit: Kit, out: GainNode, { loops, id }: Room) {
+export default function wind(kit: Kit, out: GainNode, room: Room) {
+  const { loops, id } = room
+  if (room.storm === 'wind') thunder(kit, out) // au phare, la tempête porte l'orage
   const breeze = id === 'roof'
   // Au phare : la tempête qui s'engouffre dans l'escalier, un sifflement plus fort et un grondement plus plein.
   const storm = id === 'lighthouse'

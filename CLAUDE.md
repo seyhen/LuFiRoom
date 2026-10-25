@@ -33,6 +33,7 @@ src/
   state/store.ts            # Zustand : on/off et volume par son, mode nuit, pièce, minuteur, ambiances
   i18n.ts                   # langue (fr / en), dictionnaire des traductions, `tr` et `useT`
   state/mixes.ts            # ambiances : modèle, stockage, lien de partage (voir docs/MIXES.md)
+  state/daylight.ts         # le jour et la nuit qui suivent l'heure, et la règle de la main (voir docs/ROOMS.md)
   rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen, lighthouse, submarine, market), index.ts
   scene/
     Stage.tsx               # <Canvas>, caméra iso, lumières, cadrage, rotation au drag
@@ -44,6 +45,7 @@ src/
     paint.ts, walls.ts      # vues peintes qui suivent le jour / la nuit, murs percés
     materials.ts            # palette de matériaux gummy partagés
     Floaters.tsx            # neige autour de la cabane, poussières de la chambre
+    life.ts                 # les petits évènements rares (useEvery), la lueur des éclairs
     Hotspot.tsx             # bouton DOM projeté sur un objet 3D (drei <Html>)
   audio/
     engine.ts               # AudioContext, master, compresseur, un bus par son
@@ -52,8 +54,9 @@ src/
     session.ts              # Media Session : titre, pause / lecture depuis l'écran verrouillé
     stations.ts             # les stations de la radio générative (accords, rythmes, timbres) ; chaque pièce choisit les siennes
     events.ts               # canal d'évènements ponctuels (tasse qui tinte, page qui se tourne)
+    thunder.ts              # le tonnerre de l'orage (dans le bus de la pluie ou de la tempête)
     channels/               # un canal par son : radio.ts, tracks.ts (pistes lofi), rain.ts, fan.ts, purr.ts, outside.ts, waves.ts, rails.ts…
-  ui/                       # TopBar, RoomPicker, Mixer, MixerCard, SleepTimer, MixesMenu, SharedMix, InstallButton, splash.ts (écran de chargement, HTML dans index.html)
+  ui/                       # TopBar, SkyLife (étoile filante, oiseau, éclair, crépuscule derrière la pièce), RoomPicker, Mixer, MixerCard, SleepTimer, MixesMenu, SharedMix, InstallButton, splash.ts (écran de chargement, HTML dans index.html)
   styles/tokens.css
 scripts/encode-audio.mjs    # npm run audio : sources → Opus/WebM + MP3 dans public/audio/
 scripts/make-noises.mjs     # npm run noises : bruits colorés calculés

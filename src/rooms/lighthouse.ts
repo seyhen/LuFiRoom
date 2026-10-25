@@ -21,6 +21,7 @@ export const lighthouse: Room = {
     line: ['rgba(30, 70, 110, .16)', 'rgba(255, 154, 138, .18)'],
     bg: ['#dfe8f0', '#0e1624'],
   },
+  storm: 'wind',
   sky: { day: ['#e6eef4', '#c8d8e4', '#9db4c6'], night: ['#18284c', '#0e1830', '#070d1c'] },
   light: {
     hemi: { sky: [0xfff1de, 0x4a6aa8], ground: [0xa88c6c, 0x2a3040], intensity: [0.7, 0.34] },

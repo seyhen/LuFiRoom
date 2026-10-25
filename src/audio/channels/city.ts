@@ -1,4 +1,5 @@
 import { useStore } from '../../state/store'
+import { DUSK } from '../../state/daylight'
 import type { Room } from '../../rooms/types'
 import { rand } from '../../math'
 import { impulse } from '../buffers'
@@ -24,7 +25,10 @@ export default function city(kit: Kit, out: GainNode, { loops }: Room): Channel 
     const wave = osc('sine', 0.05)
     wave.connect(gain(0.06)).connect(hum.gain)
     wave.start()
-    const level = () => hum.gain.setTargetAtTime(useStore.getState().night ? 0.28 : 0.4, ctx.currentTime, 1)
+    const level = () => {
+      const s = useStore.getState()
+      hum.gain.setTargetAtTime(s.night ? 0.28 : 0.4, ctx.currentTime, s.dusk ? DUSK / 4 : 1)
+    }
     level()
     kit.watch((s, p) => s.night !== p.night && level())
 

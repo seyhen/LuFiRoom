@@ -15,7 +15,9 @@ body { background: var(--bg); color: var(--ink); font: 500 14px/1.4 var(--font-b
     radial-gradient(1.2px 1.2px at 93% 64%, rgba(255, 250, 235, .55), transparent 60%),
     radial-gradient(1.4px 1.4px at 55% 6%, rgba(255, 250, 235, .7), transparent 60%),
     radial-gradient(130% 90% at 50% 40%, var(--night-1) 0%, var(--night-2) 52%, var(--night-3) 100%) }
-html.night .sky-night { opacity: 1 }
+html.night-sky .sky-night { opacity: 1 }
+/* le crépuscule et l'aube (l'horloge, voir src/state/daylight.ts) : le ciel passe lentement, comme la lumière de la pièce */
+html.dusk .sky-night { transition: opacity 40s cubic-bezier(.45, 0, .55, 1) }
 
 /* le conteneur du <Canvas> est positionné en ligne (fixed, plein écran) dans Stage.tsx */
 .scene canvas { touch-action: none; outline: none; cursor: grab }
@@ -187,3 +189,25 @@ html.leaving .hs { pointer-events: none }
 .quick .resume { background: var(--accent); border-color: var(--accent); color: #fff }
 html.night .quick .resume { color: #12102a }
 .quick button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+
+/* le ciel qui vit (src/ui/SkyLife.tsx), derrière la scène : une étoile filante la nuit, un oiseau le jour */
+.sky-life, .sky-flash, .sky-dusk { position: fixed; inset: 0; pointer-events: none }
+.sky-life { overflow: hidden }
+.sky-life i { position: absolute; display: block }
+/* l'étoile file vers le bas à gauche, la tête (le bout clair) devant, la traînée le long de sa course */
+.sky-life .star { width: 110px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, rgba(255, 252, 240, .95), rgba(255, 252, 240, .35) 30%, transparent);
+  transform: rotate(-28deg); transform-origin: 0 50%; opacity: 0; animation: shoot 1.4s cubic-bezier(.2, .6, .4, 1) forwards }
+@keyframes shoot { 0% { opacity: 0; translate: 0 0 } 15% { opacity: .9 } 70% { opacity: .7 } 100% { opacity: 0; translate: -230px 122px } }
+/* l'oiseau : deux ailes en arc qui battent doucement, il traverse en planant un peu */
+.sky-life .bird { width: 22px; height: 10px; opacity: 0; animation: fly 26s linear forwards }
+.sky-life .bird::before, .sky-life .bird::after { content: ""; position: absolute; top: 0; width: 11px; height: 7px; border-top: 2px solid rgba(70, 58, 96, .5);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0; animation: flap .9s ease-in-out infinite alternate }
+.sky-life .bird::before { left: 0; transform-origin: 100% 100% }
+.sky-life .bird::after { right: 0; transform-origin: 0 100% }
+@keyframes flap { from { scale: 1 1 } to { scale: 1 .45 } }
+@keyframes fly { 0% { opacity: 0; translate: -40px 0 } 5% { opacity: 1 } 50% { translate: 50vw -18px } 95% { opacity: 1 } 100% { opacity: 0; translate: 104vw 6px } }
+/* l'éclair : une lueur pâle derrière la pièce (jamais sur l'interface), animée à chaque éclair par SkyLife */
+.sky-flash { background: radial-gradient(120% 80% at 55% 20%, #f4f2ff, rgba(226, 228, 255, .6) 55%, rgba(210, 214, 255, .2)); opacity: 0 }
+/* le crépuscule : une lueur dorée et rose montée de l'horizon, animée pendant le passage */
+.sky-dusk { background: radial-gradient(140% 75% at 50% 100%, rgba(255, 168, 112, .55), rgba(255, 140, 150, .3) 45%, rgba(220, 140, 190, 0) 80%); opacity: 0 }
+@media (prefers-reduced-motion: reduce) { .sky-life, .sky-flash { display: none } }

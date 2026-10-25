@@ -7,9 +7,9 @@ import { InstallButton } from './InstallButton'
 
 const now = () => new Date().toLocaleTimeString(useLang.getState().lang === 'fr' ? 'fr-FR' : 'en-GB', { hour: '2-digit', minute: '2-digit' })
 
-/** Titre, phrase d'aide, heure (masquée sur mobile) et bouton jour / nuit. */
+/** Titre, phrase d'aide, heure (masquée sur mobile) et bouton jour / nuit (son infobulle dit s'il suit l'heure ou la main). */
 export function TopBar({ brandRef }: { brandRef: Ref<HTMLDivElement> }) {
-  const night = useStore((s) => s.night)
+  const night = useStore((s) => s.night), held = useStore((s) => s.nightHold !== null)
   const lang = useLang((s) => s.lang), t = useT()
   const [time, setTime] = useState(now)
   useEffect(() => setTime(now()), [lang])
@@ -31,6 +31,7 @@ export function TopBar({ brandRef }: { brandRef: Ref<HTMLDivElement> }) {
           className="mode"
           type="button"
           aria-label={night ? t('Passer en journée') : t('Passer en nuit')}
+          title={held ? (night ? t('Nuit choisie à la main, jusqu’au matin') : t('Jour choisi à la main, jusqu’au soir')) : t('Suit l’heure : nuit de 20 h à 7 h')}
           onClick={() => useStore.getState().toggleNight()}
         >
           {night ? moonIcon : sunIcon}

@@ -431,7 +431,7 @@ function sleepSchedule(k: Kit, end: number | null, was: number | null) {
   }, left * 1000)
 }
 
-// L'audio suit le store. Un changement on/off ou jour/nuit vient toujours d'un geste de l'utilisateur
+// L'audio suit le store. Un changement on/off ou jour/nuit à la main vient toujours d'un geste de l'utilisateur
 // (l'écouteur est appelé pendant le clic) : c'est là qu'on crée ou relance l'AudioContext (règle d'autoplay).
 useStore.subscribe((s, p) => {
   // On s'en va vers une autre pièce : ses boucles commencent à se télécharger pendant l'effacement.
@@ -442,12 +442,15 @@ useStore.subscribe((s, p) => {
     evictTimer = window.setTimeout(evict, 2500)
   }
   const changed = ids.filter((id) => s.on[id] !== p.on[id])
-  if (changed.length || s.night !== p.night) {
+  // Le jour et la nuit qui suivent l'heure (`dusk`) ne viennent pas d'un geste : ni AudioContext, ni « pop ». Les canaux qui
+  // dépendent de la nuit (oiseaux / grillons, ville) l'écoutent eux-mêmes.
+  const nightByHand = s.night !== p.night && !s.dusk
+  if (changed.length || nightByHand) {
     const k = ensure()
     if (!k) return
     for (const id of changed) set(k, id)
     if (changed.length) pop(k, changed.some((id) => s.on[id]))
-    if (s.night !== p.night) pop(k, !s.night)
+    if (nightByHand) pop(k, !s.night)
     keepOutput(ids.some((id) => s.on[id]))
   }
   if (kit) for (const id of ids) if (s.vol[id] !== p.vol[id]) volume(kit, id)

@@ -9,6 +9,7 @@ import { FireCorner, FrontCorner, RadioCrate, Sofa, Telescope } from './Lounge'
 import { Laundry } from './Laundry'
 import { WateringCan } from './WateringCan'
 import { Pigeons } from './Pigeons'
+import { FlyBy } from '../objects/FlyBy'
 import { Herbs, OliveTree, Planter } from './Planters'
 import { FireEscape, NeonSign, Vent } from './Neon'
 
@@ -27,6 +28,8 @@ export function RoofScene() {
       <OliveTree />
       <Herbs />
       <Pigeons />
+      {/* un pigeon qui passe le jour, un avion la nuit */}
+      <FlyBy color={0x5c5872} height={2.4} plane />
       <Sofa />
       <FireCorner />
       <Brazier />

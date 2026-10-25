@@ -6,11 +6,13 @@ import { Stage } from './scene/Stage'
 import { TopBar } from './ui/TopBar'
 import { Mixer } from './ui/Mixer'
 import { SharedMix } from './ui/SharedMix'
+import { SkyLife } from './ui/SkyLife'
+import { DUSK } from './state/daylight'
 
 const UI_TOKENS: UiToken[] = ['accent', 'ink', 'ink-soft', 'panel', 'line', 'bg']
 
 export function App() {
-  const night = useStore((s) => s.night)
+  const night = useStore((s) => s.night), dusk = useStore((s) => s.dusk)
   const room = useStore((s) => roomById(s.room))
   const leaving = useStore((s) => s.leaving !== null) // la scène s'efface : voir app.css
   const seasoned = useStore((s) => s.taps >= 3) // les hotspots arrêtent de pulser
@@ -30,12 +32,21 @@ export function App() {
     }
   }, [room])
 
-  // Le mode nuit redéfinit les tokens d'interface.
+  // Le mode nuit redéfinit les tokens d'interface (classe `night`) et le ciel du fond (classe `night-sky`). Au crépuscule (l'horloge,
+  // classe `dusk`), le ciel passe en `DUSK` secondes et l'interface change à mi-chemin, quand la pièce est à moitié dans le soir.
   useLayoutEffect(() => {
-    document.documentElement.classList.toggle('night', night)
-    // La barre du navigateur (et celle de l'app installée) prend la couleur du fond.
-    document.querySelector('meta[name=theme-color]')?.setAttribute('content', getComputedStyle(document.documentElement).getPropertyValue('--bg').trim())
-  }, [night, room])
+    const html = document.documentElement
+    html.classList.toggle('dusk', dusk)
+    html.classList.toggle('night-sky', night)
+    const flip = () => {
+      html.classList.toggle('night', night)
+      // La barre du navigateur (et celle de l'app installée) prend la couleur du fond.
+      document.querySelector('meta[name=theme-color]')?.setAttribute('content', getComputedStyle(html).getPropertyValue('--bg').trim())
+    }
+    if (!dusk || html.classList.contains('night') === night) return flip()
+    const t = window.setTimeout(flip, (DUSK * 1000) / 2)
+    return () => clearTimeout(t)
+  }, [night, dusk, room])
 
   useLayoutEffect(() => {
     document.documentElement.classList.toggle('leaving', leaving)
@@ -63,6 +74,7 @@ export function App() {
     <>
       <div className="sky sky-day" aria-hidden="true" />
       <div className="sky sky-night" aria-hidden="true" />
+      <SkyLife />
       <Stage hotspotLayer={hotspots} />
       <TopBar brandRef={brand} />
       <div className={seasoned ? 'hotspots seasoned' : 'hotspots'} ref={hotspots} />

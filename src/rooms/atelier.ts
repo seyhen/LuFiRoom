@@ -13,6 +13,7 @@ export const atelier: Room = {
     'et la tour Eiffel, une table à dessin et sa lampe d’architecte, un bureau avec un clavier, un tourne-disque, ' +
     'un coin cuisine et sa bouilloire, un chevalet, un fauteuil ocre pour lire, et la pluie sur la verrière si on veut.',
   dimmedBy: 'cloud',
+  storm: 'rain',
   ui: {
     accent: ['#2c4a6e', '#f0b54a'],
     ink: ['#252a34', '#fff3e0'],

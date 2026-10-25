@@ -13,6 +13,7 @@ export const train: Room = {
     'lampe de table à abat-jour plissé, verre de thé dans son porte-verre, fauteuil de velours, valise ouverte, ' +
     'et par la fenêtre, le paysage des Alpes qui défile, sous la pluie si on veut.',
   dimmedBy: 'cloud',
+  storm: 'rain',
   ui: {
     accent: ['#8e2f3a', '#e9c48f'],
     ink: ['#3a1e22', '#fbefe0'],

@@ -13,6 +13,7 @@ export const market: Room = {
     'sur sa flamme, une marmite de bouillon qui frémit, une enseigne au néon rose qui bourdonne, une télé de comptoir, un distributeur ' +
     'qui éclaire le pavé, des flaques pleines de reflets, des guirlandes d’ampoules, et par la baie, un boulevard où passe un tram.',
   dimmedBy: 'cloud',
+  storm: 'rain',
   ui: {
     accent: ['#d6336c', '#ff6fb1'],
     ink: ['#2c1530', '#fff0f8'],

@@ -14,6 +14,7 @@ export const cafe: Room = {
     "comptoir avec une machine à café, deux clients autour d'une théière à la fenêtre, et dehors, sous la pluie, " +
     'le Château, les toits de la vieille ville et un réverbère.',
   dimmedBy: 'cloud',
+  storm: 'rain',
   // Dehors gris et froid ; la lumière chaude vient du dedans (feu, guirlande, lampe), pas du ciel.
   ui: {
     accent: ['#2f6b58', '#f2c46b'],

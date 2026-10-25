@@ -118,4 +118,15 @@ export interface Room {
   presets?: Partial<Record<PresetId, Preset>>
   /** Objet dont l'activation assombrit la pièce (la pluie). */
   dimmedBy?: ObjectId
+  /**
+   * Orage : quand ce son joue (la pluie, la tempête du phare), un éclair de loin en loin dans le ciel du dehors, puis le tonnerre,
+   * doux et lointain (voir src/scene/life.ts). Sans orage par défaut.
+   */
+  storm?: SoundId
+  /**
+   * Ce qui passe dans le ciel du fond (src/ui/SkyLife.tsx) : une étoile filante la nuit, un oiseau le jour, et les couleurs du
+   * crépuscule quand le jour et la nuit suivent l'heure. `bird: false` là où un oiseau traverse déjà la scène ; `false` : le fond
+   * n'est pas un ciel (sous la mer), rien n'y passe.
+   */
+  skyLife?: { star?: boolean; bird?: boolean } | false
 }

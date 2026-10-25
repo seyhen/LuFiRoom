@@ -1,4 +1,5 @@
 import { useStore } from '../../state/store'
+import { DUSK } from '../../state/daylight'
 import type { Room } from '../../rooms/types'
 import { rand } from '../../math'
 import { impulse } from '../buffers'
@@ -34,7 +35,8 @@ export default function outside(kit: Kit, out: GainNode, { loops }: Room): Chann
       }
       mix(useStore.getState().night, 0.01)
       kit.watch((s, p) => {
-        if (s.night !== p.night) mix(s.night, 0.4)
+        // Au crépuscule (l'horloge), les grillons prennent la place des oiseaux aussi lentement que la lumière baisse.
+        if (s.night !== p.night) mix(s.night, s.dusk ? DUSK / 4 : 0.4)
       })
       ch.use({
         start() {

@@ -20,6 +20,7 @@ export const roof: Room = {
     line: ['rgba(150, 80, 60, .16)', 'rgba(255, 122, 184, .2)'],
     bg: ['#f7e1d2', '#141634'],
   },
+  skyLife: { bird: false },
   sky: { day: ['#ffe2c8', '#f4c4b4', '#c9b0c8'], night: ['#1d2350', '#121638', '#0a0c24'] },
   light: {
     hemi: { sky: [0xffe8d6, 0x5a62a8], ground: [0xb08a70, 0x42303a], intensity: [0.6, 0.36] },

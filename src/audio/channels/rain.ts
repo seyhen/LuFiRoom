@@ -4,10 +4,13 @@ import type { Room } from '../../rooms/types'
 import { rand } from '../../math'
 import { dropletBuffer } from '../buffers'
 import type { Channel, Kit } from '../engine'
+import { thunder } from '../thunder'
 
 /** Pluie, étouffée quand la fenêtre est fermée. Enregistrée, ou synthétisée : souffle rose, gouttes sur la vitre, grondement grave. */
-export default function rain(kit: Kit, out: GainNode, { loops }: Room): Channel {
+export default function rain(kit: Kit, out: GainNode, { loops, storm }: Room): Channel {
   const { ctx, gain, biq, loop, noise } = kit
+  // L'orage (voir thunder.ts) : le tonnerre gronde dans le bus de la pluie, à son volume.
+  if (storm === 'rain') thunder(kit, out)
   // Fenêtre ouverte (sons du dehors actifs) : l'enregistrement passe sans filtre (coupure à Nyquist), la synthèse à 7500 Hz.
   let open = ctx.sampleRate / 2
   // La fenêtre de la pièce est ouverte : son objet « window » a son son allumé. Sans fenêtre (une verrière), la pluie reste étouffée.
