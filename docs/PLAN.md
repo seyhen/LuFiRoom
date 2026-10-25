@@ -111,7 +111,7 @@ Cahier des charges d'origine :
 
 Rien de ceci n'est décidé une fois pour toutes : à confirmer avant de l'attaquer.
 
-- [ ] **Ciel vivant et vrai jour / nuit** (en cours) : le ciel et la lumière qui suivent l'heure réelle, et des évènements dans les pièces (une première version, avec étoile filante, oiseau, orage, mouette et avion, feuille d'érable, jet de vapeur, a été retirée le 2026-10-18 et se refait).
+- [x] **Ciel vivant et vrai jour / nuit** : le jour et la nuit suivent l'heure (passage de 40 s avec crépuscule, un geste prend la main jusqu'au prochain changement de période, `src/state/daylight.ts`) ; orage rare et doux (éclair dehors, tonnerre grave, jamais pendant le fondu du minuteur), étoile filante et oiseau dans le ciel, mouette et avion à la plage, pigeon au toit. Écartés : la feuille d'érable de l'onsen (cachée par la brume) et le jet de vapeur de l'expresso (invisible sur le carrelage).
 - [ ] **Météo** : un sélecteur de météo remplace le nuage (aujourd'hui interrupteur de pluie). Toutes les météos dans toutes les pièces, avec leurs sons, synthétisés d'abord, enregistrés ensuite.
 - [ ] Les derniers sons synthétisés à enregistrer (voir Phase 2), son de neige et de bois qui craque pour la cabane, pistes de Noël.
 - [ ] Modèle Blender en `.glb` (Phase 2) : en suspens, les pièces sont construites en code.
