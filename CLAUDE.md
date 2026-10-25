@@ -58,8 +58,12 @@ src/
 scripts/encode-audio.mjs    # npm run audio : sources → Opus/WebM + MP3 dans public/audio/
 scripts/make-noises.mjs     # npm run noises : bruits colorés calculés
 scripts/check-stations.mjs  # npm run stations : vérifie la musique des stations (accords, notes, rythmes)
+scripts/check-audio.mjs     # npm run audio:check : crêtes, sonie et paires webm + mp3 de public/audio/
+scripts/smoke.mjs           # npm run test:smoke : test de fumée dans Chromium (Playwright), chaque pièce en 390 px et en desktop
+.github/workflows/ci.yml    # CI GitHub Actions à chaque push et pull request : build, stations, test de fumée, audio:check
 scripts/check-audio.mjs     # npm run audio:check : sonie, crêtes et paires webm + mp3 de public/audio/
-netlify.toml                # hébergement : cache et en-têtes (voir docs/DEPLOY.md)
+wrangler.jsonc              # hébergement : Cloudflare Workers publie dist/ (voir docs/DEPLOY.md)
+public/_headers             # cache et en-têtes lus par Cloudflare ; netlify.toml dit la même chose pour Netlify (plus utilisé, gardé en réserve)
 vite.config.ts              # dont vite-plugin-pwa : manifeste, service worker, cache des sons (voir docs/PWA.md)
 ```
 
@@ -130,11 +134,21 @@ npm run audio     # encode audio-src/ vers public/audio/ (ffmpeg requis, voir do
 npm run noises    # calcule les bruits colorés
 npm run stations  # vérifie la musique des stations de la radio
 npm run audio:check  # vérifie les crêtes (max -0,5 dBTP) et la sonie des sons de public/audio/ (ffmpeg requis)
+npm test          # build + stations + test de fumée (tout ce que la CI vérifie, sauf audio:check)
+npm run test:smoke   # test de fumée seul, sur le dist/ déjà construit
 ```
+
+Le test de fumée (`scripts/smoke.mjs`) sert `dist/` avec `vite preview` et ouvre chaque pièce dans Chromium sans écran (WebGL logiciel),
+en 390 px tactile puis en 1440 px : la pièce se charge, le canvas dessine, un `<button>` avec `aria-label` et `aria-pressed` par objet,
+une carte par son dans le mixeur, un clic sur une carte allume un son ; aucune erreur en console ni « Enregistrement indisponible ».
+Ce qu'il attend vient des fiches `src/rooms/*.ts` : une pièce ajoutée est testée d'office. Compte 3 à 6 minutes (4 navigateurs en parallèle).
+Il faut le Chromium de Playwright : `npx playwright install chromium` une fois (ou `LOFI_CHROMIUM` = chemin d'un Chromium).
+`LOFI_SMOKE_ROOMS=cafe,market` ne teste que ces pièces ; en échec, les captures sont dans `test-results/`.
+La CI (`.github/workflows/ci.yml`) lance tout à chaque push et pull request ; `audio:check` y tourne à part, avec ffmpeg installé par apt.
 
 ## Avant de dire qu'une tâche est finie
 
-1. `npm run build` passe (et `npm run stations` si la musique des stations a changé).
+1. `npm run build` passe (et `npm run stations` si la musique des stations a changé). Après un changement de pièce, de scène ou de moteur : `npm run test:smoke`.
 2. Pour une pièce nouvelle ou beaucoup retouchée : lance le skill **`audit-room`** (`.claude/skills/audit-room/SKILL.md`) et colle son rapport dans ta réponse. Une pièce n'est pas finie sans lui.
    Sinon, vérifie ce que la modification touche, dans le navigateur, **en gros plan** pour un objet (voir « Le soin des ambiances » : chaque défaut de la liste, objet par objet). Pas besoin de revoir toutes les pièces, en mobile et en desktop, de jour et de nuit, à chaque fois : la vérification complète (largeur mobile 390 px et desktop, jour et nuit) est pour les gros changements de rendu ou de moteur.
 3. Pour un changement de moteur, compare au prototype : mêmes sons, mêmes interactions (sauf changement voulu).
