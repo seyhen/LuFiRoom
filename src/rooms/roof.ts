@@ -1,6 +1,7 @@
 import { radioSub } from '../audio/stations'
 import { PLAYLIST } from './playlist'
 import type { Room } from './types'
+import { WEATHER_LOOPS } from './weather'
 
 // Un toit-terrasse de Brooklyn, un soir d'été. Les enregistrements sont à déclarer dans `loops`
 // (city, fire, wind, pigeons) et `playlist` (docs/ASSETS.md) ; sources et licences : public/audio/CREDITS.md.
@@ -26,7 +27,9 @@ export const roof: Room = {
     hemi: { sky: [0xffe8d6, 0x5a62a8], ground: [0xb08a70, 0x42303a], intensity: [0.6, 0.36] },
     sun: { color: [0xffcf9e, 0x9fb0ff], intensity: [0.58, 0.22] },
   },
+  shelter: 'open',
   loops: {
+    ...WEATHER_LOOPS,
     city: { src: 'audio/roof/city', gain: 0.8 },
     pigeons: { src: 'audio/roof/pigeons', gain: 0.8 },
     wind: { src: 'audio/roof/wind', gain: 0.8 },
@@ -56,5 +59,6 @@ export const roof: Room = {
     { id: 'wind', name: 'Vent', chip: 'var(--c-wind)', volume: 0.6, sub: () => 'sur les toits' },
     { id: 'watering', name: 'Arrosoir', chip: 'var(--c-watering)', volume: 0.45, sub: () => 'un filet d’eau sur la terre' },
     { id: 'pigeons', name: 'Pigeons', chip: 'var(--c-pigeons)', volume: 0.45, sub: (s) => (s.night ? 'ils somnolent' : 'roucoulements') },
+    { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'sur les toits' },
   ],
 }

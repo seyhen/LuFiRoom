@@ -2,7 +2,8 @@ import type { CSSProperties, ReactNode } from 'react'
 import { useStore } from '../state/store'
 import { useT } from '../i18n'
 import type { RoomSound } from '../rooms/types'
-import { soundIcons, vinylIcon } from './icons'
+import { SKY_NAMES } from '../state/weather'
+import { skyIcons, soundIcons, vinylIcon } from './icons'
 
 /** Un son : pastille, nom, sous-titre vivant (le bouton bascule) et curseur de volume, avec un bouton en plus si `extra`. */
 export function MixerCard({ sound, extra }: { sound: RoomSound; extra?: ReactNode }) {
@@ -10,11 +11,14 @@ export function MixerCard({ sound, extra }: { sound: RoomSound; extra?: ReactNod
   const on = useStore((s) => s.on[sound.id])
   const vol = useStore((s) => s.vol[sound.id])
   const sub = useStore((s) => sound.sub(s))
+  // La carte « Météo » dit le temps qu'il fait, puis d'où on l'entend (« neige · contre les rondins »).
+  const weather = useStore((s) => (sound.id === 'rain' ? s.weather : null))
+  const line = weather ? `${t(SKY_NAMES[weather])} · ${t(sub)}` : t(sub)
   return (
     <div className={on ? 'card on' : 'card'}>
       <button className="tg" type="button" aria-pressed={on} onClick={() => useStore.getState().toggle(sound.id)}>
         <span className="ico" style={{ '--chip': sound.chip } as CSSProperties}>
-          {sound.icon === 'vinyl' ? vinylIcon : soundIcons[sound.id]}
+          {sound.icon === 'vinyl' ? vinylIcon : weather ? skyIcons[weather] : soundIcons[sound.id]}
           <span className="eq" aria-hidden="true">
             <i />
             <i />
@@ -23,7 +27,7 @@ export function MixerCard({ sound, extra }: { sound: RoomSound; extra?: ReactNod
         </span>
         <span className="txt">
           <span className="nm">{t(sound.name)}</span>
-          <span className="sb" aria-live="polite">{t(sub)}</span>
+          <span className="sb" aria-live="polite">{line}</span>
         </span>
       </button>
       <div className="vol">

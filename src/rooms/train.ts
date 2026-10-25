@@ -1,6 +1,7 @@
 import { radioSub } from '../audio/stations'
 import { PLAYLIST } from './playlist'
 import type { Room } from './types'
+import { WEATHER_LOOPS } from './weather'
 
 // Un compartiment de voiture-lits, la nuit. Les enregistrements sont à déclarer dans `loops`
 // (rails, tea, rain, pages) et `playlist` (docs/ASSETS.md) ; sources et licences : public/audio/CREDITS.md.
@@ -12,8 +13,6 @@ export const train: Room = {
     'Compartiment de voiture-lits en 3D isométrique : boiseries d’acajou, couchettes superposées et leur échelle de laiton, ' +
     'lampe de table à abat-jour plissé, verre de thé dans son porte-verre, fauteuil de velours, valise ouverte, ' +
     'et par la fenêtre, le paysage des Alpes qui défile, sous la pluie si on veut.',
-  dimmedBy: 'cloud',
-  storm: 'rain',
   ui: {
     accent: ['#8e2f3a', '#e9c48f'],
     ink: ['#3a1e22', '#fbefe0'],
@@ -28,6 +27,7 @@ export const train: Room = {
     sun: { color: [0xffe6c6, 0x9aa8f0], intensity: [0.48, 0.2] },
   },
   loops: {
+    ...WEATHER_LOOPS,
     rails: { src: 'audio/train/rails', gain: 0.9 },
     tea: { src: 'audio/train/tea', gain: 0.9 },
     rain: { src: 'audio/train/rain', gain: 1 },
@@ -42,7 +42,6 @@ export const train: Room = {
     sleep: { sounds: [['rails',.55], ['rain',.4]], night: true },
   },
   objects: [
-    { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.35, 5.2, -3.85] },
     { id: 'window', target: 'rails', label: 'Fenêtre · le train', anchor: [0.9, 2.4, -3.0] },
     { id: 'radio', target: 'radio', label: 'Gramophone · lofi', anchor: [-2.55, 1.1, 1.5] },
     { id: 'tea', target: 'tea', label: 'Verre de thé · cuillère', anchor: [0.75, 1.45, -2.55] },
@@ -53,7 +52,7 @@ export const train: Room = {
   sounds: [
     { id: 'radio', name: 'Gramophone lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'rails', name: 'Le train', chip: 'var(--c-rails)', volume: 0.7, sub: (s) => (s.on.rails ? 'ta-dam, ta-dam' : 'vitre fermée') },
-    { id: 'rain', name: 'Pluie', chip: 'var(--c-rain)', volume: 0.7, sub: () => 'sur la vitre' },
+    { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.7, sub: () => 'sur la vitre' },
     { id: 'tea', name: 'Thé', chip: 'var(--c-tea)', volume: 0.5, sub: () => 'la cuillère qui tinte' },
     { id: 'cards', name: 'Cartes', chip: 'var(--c-cards)', volume: 0.45, sub: () => 'une réussite, carte après carte' },
     { id: 'pages', name: 'Livre', chip: 'var(--c-pages)', volume: 0.55, sub: () => 'pages tournées' },

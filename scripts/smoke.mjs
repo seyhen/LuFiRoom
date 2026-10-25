@@ -97,7 +97,7 @@ function instrument() {
 
 // Mesure dans la page : part de pixels opaques et nombre de couleurs distinctes (sur une réduction 96 × 96 du canvas).
 function canvasStats() {
-  const c = document.querySelector('canvas')
+  const c = document.querySelector('.scene canvas') // la scène 3D, pas le canvas de la météo (ui/WeatherSky.tsx)
   if (!c || !c.width || !c.height) return { opaque: 0, colors: 0, size: '0x0' }
   const W = 96, H = 96, t = document.createElement('canvas')
   t.width = W

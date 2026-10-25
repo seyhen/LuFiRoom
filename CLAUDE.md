@@ -1,6 +1,6 @@
 # LufiRoom
 
-Webapp d'ambiance sonore : des pièces en 3D isométrique, style « gummy » (onze aujourd'hui : chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit), où chaque objet est un interrupteur de son. On touche la radio pour lancer la musique lofi, le nuage pour faire tomber la pluie, le ventilo pour le bruit blanc, etc. On compose son ambiance pour travailler, lire ou dormir.
+Webapp d'ambiance sonore : des pièces en 3D isométrique, style « gummy » (onze aujourd'hui : chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit), où chaque objet est un interrupteur de son. On touche la radio pour lancer la musique lofi, le ventilo pour le bruit blanc, etc., et on choisit la météo (pluie, orage, neige…) dans le sélecteur du haut. On compose son ambiance pour travailler, lire ou dormir.
 
 Nom : « LufiRoom » (le dossier et les clés de stockage gardent « chambre-lofi »).
 
@@ -12,6 +12,7 @@ Nom : « LufiRoom » (le dossier et les clés de stockage gardent « chambre-lof
 - `docs/PLAN.md` : les phases du projet et ce qui est fait. Les phases 1 à 5 sont faites ; la suite se décide pièce par pièce.
 - `docs/ROOMS.md` : comment est faite une pièce, les outils de décor, le budget de dessin. À lire avant d'ajouter ou de refaire une pièce.
 - `docs/RADIO.md` : les stations de la radio générative.
+- `docs/WEATHER.md` : la météo (sélecteur, son, ce qu'on voit dehors).
 - `docs/captures/` : captures du prototype, jour et nuit, mobile et desktop.
 
 ## Stack cible
@@ -33,8 +34,9 @@ src/
   state/store.ts            # Zustand : on/off et volume par son, mode nuit, pièce, minuteur, ambiances
   i18n.ts                   # langue (fr / en), dictionnaire des traductions, `tr` et `useT`
   state/mixes.ts            # ambiances : modèle, stockage, lien de partage (voir docs/MIXES.md)
+  state/weather.ts          # la météo : les choix, ce qu'on voit et entend (voir docs/WEATHER.md)
   state/daylight.ts         # le jour et la nuit qui suivent l'heure, et la règle de la main (voir docs/ROOMS.md)
-  rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen, lighthouse, submarine, market), index.ts
+  rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen, lighthouse, submarine, market), index.ts, weather.ts (enregistrements de la météo partagés)
   scene/
     Stage.tsx               # <Canvas>, caméra iso, lumières, cadrage, rotation au drag
     scenes.ts               # associe chaque pièce à sa scène 3D ; ajouter une pièce : docs/ROOMS.md
@@ -56,7 +58,7 @@ src/
     events.ts               # canal d'évènements ponctuels (tasse qui tinte, page qui se tourne)
     thunder.ts              # le tonnerre de l'orage (dans le bus de la pluie ou de la tempête)
     channels/               # un canal par son : radio.ts, tracks.ts (pistes lofi), rain.ts, fan.ts, purr.ts, outside.ts, waves.ts, rails.ts…
-  ui/                       # TopBar, SkyLife (étoile filante, oiseau, éclair, crépuscule derrière la pièce), RoomPicker, Mixer, MixerCard, SleepTimer, MixesMenu, SharedMix, InstallButton, splash.ts (écran de chargement, HTML dans index.html)
+  ui/                       # TopBar, WeatherPicker (sélecteur de météo), WeatherSky (pluie et neige dans le ciel du fond), SkyLife (étoile filante, oiseau, éclair, crépuscule derrière la pièce), RoomPicker, Mixer, MixerCard, SleepTimer, MixesMenu, SharedMix, InstallButton, splash.ts (écran de chargement, HTML dans index.html)
   styles/tokens.css
 scripts/encode-audio.mjs    # npm run audio : sources → Opus/WebM + MP3 dans public/audio/
 scripts/make-noises.mjs     # npm run noises : bruits colorés calculés
@@ -110,7 +112,7 @@ Les défauts qui reviennent le plus, à traquer avant de dire « fini » (explic
 - **Des commandes qui touchent l'écran** : garde 0,05 de jeu entre le bord d'une lunette ou d'un cadran et les boutons voisins, et ne laisse pas la rangée du bas s'enterrer dans le coffre.
 - **Du contenu caché par du transparent** : l'eau ou le verre qui écrit la profondeur masque ses bulles et ses poissons ; matériau du contenant en `depthWrite: false`, teinte distincte du mur derrière.
 - **Un objet à l'envers ou de dos** : regarde de quel côté il fait face (la table à dessin montrait son dos). La caméra voit les faces +x et +z.
-- **Quelque chose qui tombe dans un lieu couvert** : une pièce qui a un toit ou des murs n'a pas de gouttes, de ronds dans l'eau ni de flocons à l'intérieur. La pluie se voit dehors (par la baie, autour du diorama, sous le nuage) ; à l'intérieur on montre l'humidité par des reflets et des flaques calmes.
+- **Quelque chose qui tombe dans un lieu couvert** : une pièce qui a un toit ou des murs n'a pas de gouttes, de ronds dans l'eau ni de flocons à l'intérieur. La pluie se voit dehors (par la baie, dans le ciel autour du diorama) ; à l'intérieur on montre l'humidité par des reflets et des flaques calmes.
 - **Une radio qui ne va pas avec la pièce** : l'objet qui joue la musique est propre à la pièce (tourne-disque, shamisen, boombox, gramophone, ukulélé, jukebox…), pas une radio partout. Il a son id `radio`, le hook `useBeat` (`src/scene/objects/useBeat.ts`) et son libellé.
 
 Comment travailler un objet :
@@ -122,7 +124,7 @@ Comment travailler un objet :
 ## Sons
 
 Le moteur synthétise tout en direct (celui du prototype) : c'est le repli de tout son sans enregistrement, et la radio est générative (`src/audio/stations.ts`, `docs/RADIO.md`). Les boucles enregistrées se déclarent dans `loops` de la pièce (`docs/ASSETS.md`).
-Licences : CC0 ou licence achetée qui permet l'usage commercial. Seule exception accordée par le propriétaire du projet (2026-10-02) : la Pixabay Content License, pour les boucles déjà listées. Toute autre licence se demande d'abord.
+Licences : CC0 ou licence achetée qui permet l'usage commercial. Seule exception accordée par le propriétaire du projet : la Pixabay Content License, pour les boucles déjà listées (2026-10-02) et pour les futurs sons de météo (2026-10-24). Toute autre licence se demande d'abord.
 Note la source de chaque fichier dans `public/audio/CREDITS.md`.
 
 ## Commandes

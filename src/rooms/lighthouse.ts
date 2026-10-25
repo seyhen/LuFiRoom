@@ -1,6 +1,7 @@
 import { radioSub } from '../audio/stations'
 import { PLAYLIST } from './playlist'
 import type { Room } from './types'
+import { WEATHER_LOOPS } from './weather'
 
 // Le quartier du gardien d'un phare, un soir de tempête. Les enregistrements sont à déclarer dans `loops`
 // (waves, wind, foghorn, bell, fire) et `playlist` (docs/ASSETS.md) ; sans eux, tout est synthétisé.
@@ -28,6 +29,7 @@ export const lighthouse: Room = {
     sun: { color: [0xffe6c4, 0x9db8ff], intensity: [0.5, 0.22] },
   },
   loops: {
+    ...WEATHER_LOOPS,
     wind: { src: 'audio/roof/wind', gain: 0.9 },
     fire: { src: 'audio/lighthouse/fire', gain: 0.8 },
     foghorn: { src: 'audio/lighthouse/foghorn', gain: 0.9 },
@@ -60,5 +62,6 @@ export const lighthouse: Room = {
     { id: 'fire', name: 'Poêle', chip: 'var(--c-fire)', volume: 0.5, sub: () => 'la fonte qui chauffe' },
     { id: 'quill', name: 'Plume d’oie', chip: 'var(--c-quill)', volume: 0.5, sub: () => 'le journal de bord' },
     { id: 'purr', name: 'Ronron', chip: 'var(--c-cat)', volume: 0.5, sub: () => 'le chat du phare' },
+    { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'contre la pierre' },
   ],
 }

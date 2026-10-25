@@ -1,7 +1,5 @@
 import { Static } from '../Static'
 import { Motes } from '../Floaters'
-import { Cloud } from '../objects/Cloud'
-import { Rain } from '../objects/Rain'
 import { MarketShell } from './MarketShell'
 import { BoulevardView } from './BoulevardView'
 import { Yatai } from './Yatai'
@@ -25,8 +23,6 @@ export function MarketScene() {
     <Static>
       <MarketShell />
       <BoulevardView />
-      <Cloud />
-      <Rain />
       <Rainfall />
       <Yatai />
       <NeonSign />

@@ -1,5 +1,3 @@
-import { Cloud } from '../objects/Cloud'
-import { Rain } from '../objects/Rain'
 import { Static } from '../Static'
 import { Motes } from '../Floaters'
 import { AtelierShell } from './AtelierShell'
@@ -21,8 +19,6 @@ export function AtelierScene() {
     <Static>
       <AtelierShell />
       <ParisView />
-      <Cloud />
-      <Rain />
       <HangingPlants />
       <Bookcase />
       <DraftingTable />

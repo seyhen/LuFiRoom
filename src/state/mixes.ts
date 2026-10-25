@@ -2,6 +2,7 @@ import { stationIds } from '../audio/stations'
 import { roomById, rooms } from '../rooms'
 import type { SoundId } from '../rooms/types'
 import { tr } from '../i18n'
+import { SKY_NAMES, isWeather, type WeatherKind } from './weather'
 
 /** Une ambiance : la pièce, les sons qui jouent avec leur volume, le jour / nuit, et la station si la radio joue. */
 export interface Mix {
@@ -10,6 +11,8 @@ export interface Mix {
   vol: Partial<Record<SoundId, number>>
   night: boolean
   station?: string
+  /** La météo, si la carte « Météo » joue (sans elle, un ancien lien : la pluie). */
+  weather?: WeatherKind
 }
 
 /** Une ambiance gardée dans le navigateur. */
@@ -22,9 +25,9 @@ export interface SavedMix {
 const KEY = 'chambre-lofi.mixes'
 const MAX = 12
 
-/** Nom d'une ambiance : ses sons, séparés par des points médians. */
+/** Nom d'une ambiance : ses sons, séparés par des points médians (la carte « Météo » par le nom de sa météo). */
 export function mixName(m: Mix) {
-  const names = roomById(m.room).sounds.filter((s) => m.on.includes(s.id)).map((s) => tr(s.name))
+  const names = roomById(m.room).sounds.filter((s) => m.on.includes(s.id)).map((s) => tr(s.id === 'rain' ? SKY_NAMES[m.weather ?? 'rain'] : s.name))
   return names.join(' · ') || tr('Silence')
 }
 
@@ -71,7 +74,7 @@ export function storeMixes(list: SavedMix[]) {
 
 export const MAX_SAVED = MAX
 
-// Lien de partage : ?room=cabin&mix=fire.70,radio.75&night=1&station=veillee   (son.volume en %, jour = 0, nuit = 1)
+// Lien de partage : ?room=cabin&mix=fire.70,rain.60&night=1&station=veillee&weather=snow   (son.volume en %, jour = 0, nuit = 1)
 
 export function mixToUrl(m: Mix) {
   const q = new URLSearchParams({
@@ -80,6 +83,7 @@ export function mixToUrl(m: Mix) {
     night: m.night ? '1' : '0',
   })
   if (m.station) q.set('station', m.station)
+  if (m.weather) q.set('weather', m.weather)
   return `${location.origin}${import.meta.env.BASE_URL}?${q}`
 }
 
@@ -96,6 +100,15 @@ export function mixFromSearch(search: string): Mix | null {
     on.push(sid as SoundId)
     if (Number.isFinite(n)) vol[sid as SoundId] = Math.min(1, Math.max(0, n / 100))
   }
-  const station = q.get('station')
-  return on.length ? { room: id, on, vol, night: q.get('night') === '1', ...(station && stationIds(roomById(id).stations).includes(station) ? { station } : {}) } : null
+  const station = q.get('station'), weather = q.get('weather')
+  if (!on.length) return null
+  return {
+    room: id,
+    on,
+    vol,
+    night: q.get('night') === '1',
+    ...(station && stationIds(roomById(id).stations).includes(station) ? { station } : {}),
+    // Un lien d'avant la météo qui allume `rain` : c'était la pluie.
+    ...(on.includes('rain') ? { weather: isWeather(weather) ? weather : 'rain' } : {}),
+  }
 }

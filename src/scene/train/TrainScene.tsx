@@ -1,6 +1,4 @@
 import { Gramophone } from './Gramophone'
-import { Cloud } from '../objects/Cloud'
-import { Rain } from '../objects/Rain'
 import { Static } from '../Static'
 import { Motes } from '../Floaters'
 import { TrainShell } from './TrainShell'
@@ -24,8 +22,6 @@ export function TrainScene() {
       <TrainShell />
       <PersianRug />
       <TrainView />
-      <Cloud />
-      <Rain />
       <TrainWindow />
       <LuggageRack />
       <Table />

@@ -211,3 +211,24 @@ html.night .quick .resume { color: #12102a }
 /* le crépuscule : une lueur dorée et rose montée de l'horizon, animée pendant le passage */
 .sky-dusk { background: radial-gradient(140% 75% at 50% 100%, rgba(255, 168, 112, .55), rgba(255, 140, 150, .3) 45%, rgba(220, 140, 190, 0) 80%); opacity: 0 }
 @media (prefers-reduced-motion: reduce) { .sky-life, .sky-flash { display: none } }
+
+/* la météo dans le ciel du fond (WeatherSky) : un voile gris ou blanc, la pluie et la neige par-dessus, sous la pièce */
+.sky-veil, .sky-weather { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity 1.6s ease }
+.sky-veil { background: linear-gradient(180deg, rgba(120, 130, 156, .42), rgba(150, 158, 180, .22) 70%, rgba(150, 158, 180, .1)) }
+.sky-veil.wet { opacity: 1 }
+.sky-veil.wet.dark { background: linear-gradient(180deg, rgba(84, 90, 118, .36), rgba(100, 106, 134, .3) 60%, rgba(120, 126, 150, .16)) }
+.sky-veil.snowy { opacity: 1; background: linear-gradient(180deg, rgba(236, 240, 250, .5), rgba(226, 232, 246, .28) 70%, rgba(226, 232, 246, .1)) }
+html.night .sky-veil.snowy { background: linear-gradient(180deg, rgba(150, 160, 200, .28), rgba(140, 150, 190, .14) 70%, transparent) }
+.sky-weather.on { opacity: 1 }
+
+/* le sélecteur de météo, dans la barre du haut : la liste s'ouvre sous son bouton */
+.sky-pick { position: relative }
+.mode.on { color: var(--accent) }
+.sky-menu { position: absolute; right: 0; top: calc(100% + 8px); z-index: 6; display: grid; gap: 2px; min-width: 196px; padding: 6px;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow) }
+.sky-menu button { display: flex; align-items: center; gap: 10px; font: 800 13px/1 var(--font-body); color: var(--ink); background: none; border: 0;
+  text-align: left; padding: 10px 12px; border-radius: 10px; cursor: pointer }
+.sky-menu button svg { width: 19px; height: 19px; flex: none }
+.sky-menu button:hover { background: var(--accent-soft) }
+.sky-menu button[aria-pressed=true] { background: var(--accent-soft); color: var(--accent) }
+.sky-menu button:focus-visible { outline: 2px solid var(--accent) }

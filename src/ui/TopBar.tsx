@@ -4,10 +4,11 @@ import { useLang, useT } from '../i18n'
 import { moonIcon, sunIcon } from './icons'
 import { RoomPicker } from './RoomPicker'
 import { InstallButton } from './InstallButton'
+import { WeatherPicker } from './WeatherPicker'
 
 const now = () => new Date().toLocaleTimeString(useLang.getState().lang === 'fr' ? 'fr-FR' : 'en-GB', { hour: '2-digit', minute: '2-digit' })
 
-/** Titre, phrase d'aide, heure (masquée sur mobile) et bouton jour / nuit (son infobulle dit s'il suit l'heure ou la main). */
+/** Titre, phrase d'aide, heure (masquée sur mobile), météo et bouton jour / nuit (son infobulle dit s'il suit l'heure ou la main). */
 export function TopBar({ brandRef }: { brandRef: Ref<HTMLDivElement> }) {
   const night = useStore((s) => s.night), held = useStore((s) => s.nightHold !== null)
   const lang = useLang((s) => s.lang), t = useT()
@@ -27,6 +28,7 @@ export function TopBar({ brandRef }: { brandRef: Ref<HTMLDivElement> }) {
       <div className="tools">
         <InstallButton />
         <span className="clock" aria-label={t('Heure locale')}>{time}</span>
+        <WeatherPicker />
         <button
           className="mode"
           type="button"

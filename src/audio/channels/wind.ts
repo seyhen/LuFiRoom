@@ -8,7 +8,8 @@ import { thunder } from '../thunder'
  */
 export default function wind(kit: Kit, out: GainNode, room: Room) {
   const { loops, id } = room
-  if (room.storm === 'wind') thunder(kit, out) // au phare, la tempête porte l'orage
+  // Au phare, la tempête porte l'orage ; si la météo est déjà à l'orage, c'est elle qui gronde (pas deux tonnerres à la fois).
+  if (room.storm === 'wind') thunder(kit, out, (s) => !(s.on.rain && s.weather === 'storm'))
   const breeze = id === 'roof'
   // Au phare : la tempête qui s'engouffre dans l'escalier, un sifflement plus fort et un grondement plus plein.
   const storm = id === 'lighthouse'

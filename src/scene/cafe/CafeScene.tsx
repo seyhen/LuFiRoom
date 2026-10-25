@@ -1,6 +1,4 @@
 import { Window } from '../objects/Window'
-import { Cloud } from '../objects/Cloud'
-import { Rain } from '../objects/Rain'
 import { Jukebox } from './Jukebox'
 import { K, shopGlass } from './materials'
 import { CafeShell } from './CafeShell'
@@ -38,8 +36,6 @@ export function CafeScene() {
       {/* dehors */}
       <Skyline />
       <StreetLamp />
-      <Cloud />
-      <Rain />
       <Window frame={K.green} glass={shopGlass} transom />
       <Sill />
       {/* le mur du fond : comptoir, ardoise, guirlande, clients à la fenêtre */}

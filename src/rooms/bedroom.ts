@@ -1,5 +1,6 @@
 import { radioSub } from '../audio/stations'
 import type { Room } from './types'
+import { WEATHER_LOOPS } from './weather'
 import { PLAYLIST } from './playlist'
 
 // La chambre. Les enregistrements sont à déclarer dans `loops` et `playlist` (docs/ASSETS.md) ; sources et licences :
@@ -9,8 +10,6 @@ export const bedroom: Room = {
   id: 'bedroom',
   name: 'Chambre',
   description: 'Chambre lofi en 3D isométrique : lit avec un chat, bureau avec radio et ventilateur, fenêtre, nuage, lampe champignon.',
-  dimmedBy: 'cloud',
-  storm: 'rain',
   sky: { day: ['#f7f1fa', '#e7dcf0', '#d2c1e3'], night: ['#342d66', '#211c44', '#13102a'] },
   light: {
     hemi: { sky: [0xfff4fb, 0x6c6db8], ground: [0xbca8d0, 0x2c2448], intensity: [0.62, 0.42] },
@@ -18,6 +17,7 @@ export const bedroom: Room = {
   },
   // Gains calés sur le niveau de sortie de la synthèse (mesuré à ±1 dB) : un point de départ, à régler à l'oreille.
   loops: {
+    ...WEATHER_LOOPS,
     rain: { src: 'audio/bedroom/rain', gain: 0.85 },
     fan: { src: 'audio/bedroom/fan', gain: 0.75 },
     purr: { src: 'audio/bedroom/purr', gain: 0.5 },
@@ -33,7 +33,6 @@ export const bedroom: Room = {
   },
   stations: ['pluie-fine', 'nuit-douce', 'soleil-bas', 'petit-matin', 'veillee', 'bureau'],
   objects: [
-    { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.35, 5.2, -3.85] },
     { id: 'radio', target: 'radio', label: 'Radio · lofi', anchor: [2.2, 1.8, -2.55] },
     { id: 'window', target: 'outside', label: 'Fenêtre · dehors', anchor: [1.4, 3.35, -3.0] },
     { id: 'fan', target: 'fan', label: 'Ventilo · bruit blanc', anchor: [0.6, 1.85, -2.6] },
@@ -49,7 +48,7 @@ export const bedroom: Room = {
       volume: 0.75,
       sub: radioSub(PLAYLIST.length),
     },
-    { id: 'rain', name: 'Pluie', chip: 'var(--c-rain)', volume: 0.7, sub: (s) => (s.on.outside ? 'vitre ouverte' : 'vitre fermée') },
+    { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.7, sub: (s) => (s.on.outside ? 'vitre ouverte' : 'vitre fermée') },
     { id: 'fan', name: 'Bruit blanc', chip: 'var(--c-fan)', volume: 0.55, sub: () => 'ventilateur' },
     { id: 'purr', name: 'Ronron', chip: 'var(--c-cat)', volume: 0.7, sub: () => 'chat endormi' },
     { id: 'mist', name: 'Brume', chip: 'var(--c-mist)', volume: 0.45, sub: () => 'le diffuseur d’huiles' },

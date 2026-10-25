@@ -186,7 +186,6 @@ se rencontrent du premier coup.
 | Nœud | Contient, pour les animations (nœuds enfants nommés) |
 |---|---|
 | `radio` | `radio_needle` (aiguille), `radio_antenna` |
-| `cloud` | le nuage seul, derrière la fenêtre (teinte et tremblement dans le code) |
 | `window` | `window_left`, `window_right` (battants, pivot sur la charnière) |
 | `fan` | `fan_head` (tête qui oscille), `fan_blades` (pales, pivot au centre) |
 | `cat` | `cat_body` (respiration), `cat_tail` |

@@ -12,7 +12,7 @@ export type SoundId =
   | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'abacus' | 'drip'
 /** Un objet interactif de la scène. */
 export type ObjectId =
-  | 'cloud' | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
+  | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
   | 'gull' | 'chimes' | 'tea' | 'book' | 'brazier' | 'pigeons' | 'city' | 'laundry' | 'keyboard' | 'pencil' | 'kettle'
   | 'spring' | 'bamboo' | 'furin' | 'maple'
   | 'foghorn' | 'bell' | 'stove' | 'barometer' | 'sonar' | 'valve' | 'gauge' | 'telegraph' | 'wok' | 'pot' | 'neon' | 'tram'
@@ -59,7 +59,7 @@ export interface Loop {
   gain: number
 }
 
-export type Loops = Partial<Record<Exclude<SoundId, 'radio' | 'outside'> | 'birds' | 'crickets' | 'garden', Loop>>
+export type Loops = Partial<Record<Exclude<SoundId, 'radio' | 'outside'> | 'birds' | 'crickets' | 'garden' | 'blizzard', Loop>>
 
 /** Une piste de la radio. */
 export interface Track {
@@ -116,11 +116,14 @@ export interface Room {
   }
   /** Ambiances toutes prêtes de la pièce : travailler, lire, dormir. */
   presets?: Partial<Record<PresetId, Preset>>
-  /** Objet dont l'activation assombrit la pièce (la pluie). */
-  dimmedBy?: ObjectId
   /**
-   * Orage : quand ce son joue (la pluie, la tempête du phare), un éclair de loin en loin dans le ciel du dehors, puis le tonnerre,
-   * doux et lointain (voir src/scene/life.ts). Sans orage par défaut.
+   * D'où l'on entend la météo (la carte « Météo », le son `rain`) : derrière une vitre (`glass`, par défaut : étouffée, plus claire
+   * quand l'objet « window » de la pièce est ouvert), en plein air (`open`), ou de très loin, à travers une coque (`deep`).
+   */
+  shelter?: 'glass' | 'open' | 'deep'
+  /**
+   * Un son de la pièce qui porte aussi l'orage (la tempête du phare) : quand il joue, un éclair de loin en loin dans le ciel du dehors,
+   * puis le tonnerre, doux et lointain, comme avec la météo « Orage » (voir src/scene/Lights.tsx). Sans par défaut.
    */
   storm?: SoundId
   /**

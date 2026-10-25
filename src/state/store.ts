@@ -4,6 +4,7 @@ import { roomById, rooms } from '../rooms'
 import type { ObjectId, RoomSound, SoundId, Target } from '../rooms/types'
 import { reduceMotion } from '../motion'
 import { clockNight, holdFor } from './daylight'
+import { isWeather, type WeatherKind } from './weather'
 import { MAX_SAVED, loadMixes, mixFromSearch, mixName, storeLast, storeMixes, type Mix, type SavedMix } from './mixes'
 
 type PerSound<T> = Record<SoundId, T>
@@ -25,6 +26,8 @@ export interface Store {
   /** Pièce vers laquelle on s'en va, pendant la transition. */
   leaving: string | null
   on: PerSound<boolean>
+  /** La météo choisie (elle joue quand la carte « Météo », le son `rain`, est allumée ; voir state/weather.ts). */
+  weather: WeatherKind
   vol: PerSound<number>
   /** Volume général (0 à 1), par-dessus le mélange : propre à l'appareil, il ne fait pas partie des ambiances. */
   master: number
@@ -52,6 +55,8 @@ export interface Store {
   /** Place prise par le titre (en haut) et le mixeur (en bas), en px : la pièce se cadre entre les deux. */
   insets: { top: number; bottom: number }
   toggle: (target: Target) => void
+  /** Choisit la météo et l'allume, ou « clear » : la carte « Météo » s'éteint. */
+  setWeather: (w: WeatherKind | 'clear') => void
   toggleNight: () => void
   muteAll: () => void
   setVolume: (id: SoundId, v: number) => void
@@ -77,6 +82,7 @@ export interface Store {
 }
 
 const ROOM_KEY = 'chambre-lofi.room'
+const WEATHER_KEY = 'chambre-lofi.weather'
 const STATION_KEY = 'chambre-lofi.station'
 const stationKey = (room: string) => `${STATION_KEY}.${room}`
 const MASTER_KEY = 'chambre-lofi.volume'
@@ -102,6 +108,24 @@ function savedStation(room: string) {
     // pas de stockage : la première de la pièce
   }
   return ids[0]
+}
+
+// La dernière météo choisie, la pluie par défaut.
+function savedWeather(): WeatherKind {
+  try {
+    const v = localStorage.getItem(WEATHER_KEY)
+    return isWeather(v) ? v : 'rain'
+  } catch {
+    return 'rain'
+  }
+}
+
+function rememberWeather(w: WeatherKind) {
+  try {
+    localStorage.setItem(WEATHER_KEY, w)
+  } catch {
+    // pas de stockage : on ne s'en souviendra pas
+  }
 }
 
 // Le volume général retenu, plein par défaut.
@@ -145,6 +169,7 @@ export const useStore = create<Store>()((set, get, api) => ({
   on: perSound(() => false),
   vol: perSound((s) => s.volume),
   master: savedMaster(),
+  weather: savedWeather(),
   taps: 0,
   squashAt: {},
   onAir: '',
@@ -164,6 +189,7 @@ export const useStore = create<Store>()((set, get, api) => ({
       on,
       vol: Object.fromEntries(on.map((id) => [id, Math.round(s.vol[id] * 100) / 100])),
       night: s.night,
+      ...(on.includes('rain') ? { weather: s.weather } : {}),
       // La station ne compte que si la radio joue (et si elle joue des stations : sans piste enregistrée).
       ...(on.includes('radio') && !roomById(s.room).playlist.length ? { station: s.station } : {}),
     }
@@ -188,8 +214,10 @@ export const useStore = create<Store>()((set, get, api) => ({
       // La station du lien compte si cette pièce la joue ; sinon la pièce garde la sienne.
       const station = m.station && stationIds(roomById(m.room).stations).includes(m.station) ? m.station : get().station
       rememberStation(m.room, station)
+      if (m.weather) rememberWeather(m.weather)
       set((s) => ({
         station,
+        ...(m.weather ? { weather: m.weather } : {}),
         ...byHand(m.night),
         vol: { ...s.vol, ...m.vol },
         on: { ...perSound(() => false), ...Object.fromEntries(sounds.filter((x) => m.on.includes(x.id)).map((x) => [x.id, true])) },
@@ -214,6 +242,12 @@ export const useStore = create<Store>()((set, get, api) => ({
   setSleep: (minutes) => set({ sleepEnd: minutes === null ? null : Date.now() + minutes * 60_000 }),
   // Toucher un objet, son hotspot ou sa carte du mixeur. Sans effet pendant une transition.
   toggle: (target) => set((s) => (s.leaving ? s : { taps: s.taps + 1, ...flip(s, target) })),
+  setWeather: (w) => {
+    if (get().leaving) return
+    if (w === 'clear') return set((s) => ({ taps: s.taps + 1, on: { ...s.on, rain: false } }))
+    rememberWeather(w)
+    set((s) => ({ taps: s.taps + 1, weather: w, on: { ...s.on, rain: true } }))
+  },
   // Bouton jour / nuit : comme toucher la lampe, sans compter comme un geste.
   toggleNight: () => set((s) => flip(s, 'night')),
   muteAll: () => set({ on: perSound(() => false) }),
@@ -261,7 +295,7 @@ export const useStore = create<Store>()((set, get, api) => ({
 // La dernière ambiance jouée est gardée, pour le bouton « Reprendre » : pas pendant un changement de pièce (tout est coupé), ni en silence.
 // Un passage du jour à la nuit fait par l'horloge ne compte pas : c'est l'ambiance qu'on a composée qu'on garde.
 useStore.subscribe((s, p) => {
-  if (s.leaving || (s.on === p.on && (s.night === p.night || s.dusk) && s.vol === p.vol)) return
+  if (s.leaving || (s.on === p.on && (s.night === p.night || s.dusk) && s.vol === p.vol && s.weather === p.weather)) return
   const mix = s.currentMix()
   if (mix.on.length) storeLast(mix)
 })

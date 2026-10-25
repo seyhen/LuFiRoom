@@ -9,7 +9,8 @@ import { noRay } from './parts'
 export { reduceMotion } from '../motion'
 
 /** Transitions partagées (0 → 1), avancées par <Lights> avant le reste de la frame. */
-export const mood = { night: useStore.getState().night ? 1 : 0, rain: 0 }
+// rain : mouillé (0 → 1, la bruine à moitié) ; snow : enneigé. Voir state/weather.ts.
+export const mood = { night: useStore.getState().night ? 1 : 0, rain: 0, snow: 0 }
 // Pont de développement (retiré du build) : `window.__lofi.mood` pour figer une transition (un crépuscule à mi-chemin) et la regarder.
 if (import.meta.env.DEV) ((window as unknown as { __lofi?: Record<string, unknown> }).__lofi ??= {}).mood = mood
 

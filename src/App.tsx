@@ -7,6 +7,7 @@ import { TopBar } from './ui/TopBar'
 import { Mixer } from './ui/Mixer'
 import { SharedMix } from './ui/SharedMix'
 import { SkyLife } from './ui/SkyLife'
+import { WeatherSky } from './ui/WeatherSky'
 import { DUSK } from './state/daylight'
 
 const UI_TOKENS: UiToken[] = ['accent', 'ink', 'ink-soft', 'panel', 'line', 'bg']
@@ -74,6 +75,7 @@ export function App() {
     <>
       <div className="sky sky-day" aria-hidden="true" />
       <div className="sky sky-night" aria-hidden="true" />
+      <WeatherSky />
       <SkyLife />
       <Stage hotspotLayer={hotspots} />
       <TopBar brandRef={brand} />

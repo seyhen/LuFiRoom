@@ -1,6 +1,7 @@
 import { radioSub } from '../audio/stations'
 import { PLAYLIST } from './playlist'
 import type { Room } from './types'
+import { WEATHER_LOOPS } from './weather'
 
 // La cabane de Noël sous la neige : un feu qui crépite, le vent dehors, le chat qui ronronne, la radio. Les enregistrements sont à déclarer dans `loops`
 // (feu, vent) et `playlist` (docs/ASSETS.md) ; sources et licences : public/audio/CREDITS.md.
@@ -27,6 +28,7 @@ export const cabin: Room = {
   },
   // Gains calés sur le niveau de sortie de la synthèse (mesuré à ±1 dB) : un point de départ, à régler à l'oreille.
   loops: {
+    ...WEATHER_LOOPS,
     fire: { src: 'audio/cabin/fire', gain: 0.5 },
     wind: { src: 'audio/cabin/wind', gain: 0.7 },
     purr: { src: 'audio/bedroom/purr', gain: 0.5 },
@@ -54,5 +56,6 @@ export const cabin: Room = {
     { id: 'radio', name: 'Tourne-disque', chip: 'var(--c-radio)', icon: 'vinyl', skip: 'Disque suivant', volume: 0.75, sub: radioSub(PLAYLIST.length) },
     { id: 'knit', name: 'Tricot', chip: 'var(--c-knit)', volume: 0.45, sub: () => 'les aiguilles de bois' },
     { id: 'purr', name: 'Ronron', chip: 'var(--c-cat)', volume: 0.7, sub: () => 'près du feu' },
+    { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'contre les rondins' },
   ],
 }

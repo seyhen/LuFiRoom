@@ -1,6 +1,7 @@
 import { radioSub } from '../audio/stations'
 import { PLAYLIST } from './playlist'
 import type { Room } from './types'
+import { WEATHER_LOOPS } from './weather'
 
 // Un café-librairie d'Édimbourg sous la pluie : coin du feu, murs de livres. Les enregistrements sont à déclarer dans `loops`
 // (street, murmur, espresso, pages, fire, rain) et `playlist` (docs/ASSETS.md) ; sources et licences : public/audio/CREDITS.md.
@@ -13,8 +14,6 @@ export const cafe: Room = {
     'fauteuil à oreilles en tartan, skye terrier endormi sur son coussin, murs de livres avec leur échelle, lampe de banquier, ' +
     "comptoir avec une machine à café, deux clients autour d'une théière à la fenêtre, et dehors, sous la pluie, " +
     'le Château, les toits de la vieille ville et un réverbère.',
-  dimmedBy: 'cloud',
-  storm: 'rain',
   // Dehors gris et froid ; la lumière chaude vient du dedans (feu, guirlande, lampe), pas du ciel.
   ui: {
     accent: ['#2f6b58', '#f2c46b'],
@@ -30,6 +29,7 @@ export const cafe: Room = {
     sun: { color: [0xe9eefa, 0x8ea2e8], intensity: [0.42, 0.2] },
   },
   loops: {
+    ...WEATHER_LOOPS,
     murmur: { src: 'audio/cafe/murmur', gain: 0.8 },
     espresso: { src: 'audio/cafe/espresso', gain: 0.8 },
     pages: { src: 'audio/cafe/pages', gain: 0.8 },
@@ -46,7 +46,6 @@ export const cafe: Room = {
     sleep: { sounds: [['rain',.6], ['drip',.2], ['fire',.35]], night: true },
   },
   objects: [
-    { id: 'cloud', target: 'rain', label: 'Nuage · pluie', anchor: [1.35, 5.2, -3.85] },
     { id: 'window', target: 'street', label: 'Fenêtre · la rue', anchor: [1.4, 3.35, -3.0] },
     { id: 'radio', target: 'radio', label: 'Jukebox · lofi', anchor: [-0.45, 1.3, -2.53] },
     { id: 'espresso', target: 'espresso', label: 'Machine à café · expresso', anchor: [-1.85, 1.6, -2.5] },
@@ -58,7 +57,7 @@ export const cafe: Room = {
   ],
   sounds: [
     { id: 'radio', name: 'Jukebox lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
-    { id: 'rain', name: 'Pluie', chip: 'var(--c-rain)', volume: 0.7, sub: (s) => (s.on.street ? 'vitre ouverte' : 'vitre fermée') },
+    { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.7, sub: (s) => (s.on.street ? 'vitre ouverte' : 'vitre fermée') },
     { id: 'fire', name: 'Feu de bois', chip: 'var(--c-fire)', volume: 0.7, sub: (s) => (s.on.fire ? 'ça crépite' : 'cheminée') },
     { id: 'street', name: 'La rue', chip: 'var(--c-street)', volume: 0.45, sub: (s) => (s.night ? 'bus dans la nuit' : 'voitures sur le pavé') },
     { id: 'murmur', name: 'Brouhaha', chip: 'var(--c-murmur)', volume: 0.5, sub: () => 'conversations' },

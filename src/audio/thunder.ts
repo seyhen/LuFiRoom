@@ -1,16 +1,16 @@
-import { fallingAsleep } from '../state/store'
+import { fallingAsleep, type Store } from '../state/store'
 import { rand } from '../math'
 import type { Kit } from './engine'
 
 /**
- * Le tonnerre d'un orage lointain, joué dans le bus du son qui porte l'orage (la pluie, la tempête du phare) : il suit son volume
+ * Le tonnerre d'un orage lointain, joué dans le bus du son qui porte l'orage (la météo « Orage », la tempête du phare) quand `when` le dit : il suit son volume
  * et le minuteur de sommeil. Un grondement grave sans claquement, qui monte en une seconde, roule deux fois et s'éteint en six,
  * une à trois secondes après l'éclair (la distance). Au plus fort, 2 à 4 dB au-dessus de la pluie, dans le grave seulement.
  * Jamais dans les deux dernières minutes du minuteur de sommeil.
  */
-export function thunder(kit: Kit, out: AudioNode) {
+export function thunder(kit: Kit, out: AudioNode, when: (s: Store) => boolean) {
   kit.watch((s, p) => {
-    if (s.thunders !== p.thunders && !fallingAsleep(s)) rumble(kit, out)
+    if (s.thunders !== p.thunders && when(s) && !fallingAsleep(s)) rumble(kit, out)
   })
 }
 

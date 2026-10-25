@@ -1,4 +1,4 @@
-import { Color, ColorManagement, DoubleSide, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, ShaderChunk, type MeshPhysicalMaterialParameters } from 'three'
+import { ColorManagement, DoubleSide, MeshBasicMaterial, MeshPhysicalMaterial, MeshStandardMaterial, ShaderChunk, type MeshPhysicalMaterialParameters } from 'three'
 
 // Même rendu que le prototype, qui tourne sur three r128 :
 // - pas de gestion des couleurs, les hex sont utilisés tels quels (avec <Canvas legacy linear flat>).
@@ -42,7 +42,6 @@ export const M = {
   furLight: gummy(0xe6e3ee, { roughness: 0.62 }),
   nose: gummy(0xf4a3b5),
   ink: gummy(0x2e2438, { roughness: 0.3 }),
-  cloud: gummy(0xfdfbff, { roughness: 0.55, clearcoat: 0.35 }),
   lampCap: gummy(0xffd9a6, { emissive: 0xffa94d, emissiveIntensity: 0.05 }),
   dial: gummy(0xfff3d6, { emissive: 0xffcf7a, emissiveIntensity: 0.1 }),
   red: gummy(0xe0586e),
@@ -66,7 +65,3 @@ export const fairyMats = [0xffd36b, 0xff9fc0, 0x8ff0dc].map(
   (c) => new MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: 0.2, roughness: 0.4 }),
 )
 
-/** Couleurs du nuage, sec et sous la pluie. (Celles des lumières sont dans les données de la pièce.) */
-export const COL = {
-  cloudDay: new Color(0xfdfbff), cloudRain: new Color(0xb9b6cf),
-}

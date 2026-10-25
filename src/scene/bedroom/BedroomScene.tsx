@@ -20,8 +20,6 @@ import { Chair } from './Chair'
 import { Monstera } from './Monstera'
 import { SnakePlant } from './SnakePlant'
 import { Fan } from './Fan'
-import { Cloud } from '../objects/Cloud'
-import { Rain } from '../objects/Rain'
 import { Polaroids } from './Polaroids'
 import { MoonGarland } from './MoonGarland'
 import { Slippers } from './Slippers'
@@ -60,8 +58,6 @@ export function BedroomScene() {
       <Radio position={[2.25, 1.35, -2.6]} />
       <Fan position={[0.62, 1.35, -2.6]} />
       <Cat position={[-1.25, 0.9, -0.6]} rotation={-0.25} />
-      <Cloud />
-      <Rain />
     </>
   )
 }

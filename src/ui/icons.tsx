@@ -70,3 +70,13 @@ export const mutedIcon = svg(<><path d="M4.5 9.5h3l4.5-4v13l-4.5-4h-3z" /><path 
 export const installIcon = svg(<><path d="M12 3.5v11" /><path d="m7.5 10.5 4.5 4.5 4.5-4.5" /><path d="M5 19.5h14" /></>)
 export const sunIcon = svg(<><circle cx="12" cy="12" r="4" /><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4" /></>)
 export const moonIcon = svg(<path d="M19.5 14.6A7.8 7.8 0 0 1 9.4 4.5a7.8 7.8 0 1 0 10.1 10.1z" />)
+
+/** Les météos du sélecteur (state/weather.ts). */
+export const skyIcons: Record<'clear' | 'drizzle' | 'rain' | 'storm' | 'snow' | 'blizzard', ReactNode> = {
+  clear: svg(<><circle cx="12" cy="12" r="4" /><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4" /></>),
+  drizzle: svg(<><path d="M7.2 14a4 4 0 0 1 .4-8 5.5 5.5 0 0 1 10.3 1.7A3.2 3.2 0 0 1 17.6 14z" /><path d="M9 17.6v.1M13 18.6v.1M16.5 17.6v.1M11 20.6v.1" /></>),
+  rain: svg(<><path d="M7.2 14a4 4 0 0 1 .4-8 5.5 5.5 0 0 1 10.3 1.7A3.2 3.2 0 0 1 17.6 14z" /><path d="M8.5 17.2 7.6 19.8M12.5 17.2l-.9 2.6M16.5 17.2l-.9 2.6" /></>),
+  storm: svg(<><path d="M7.2 14a4 4 0 0 1 .4-8 5.5 5.5 0 0 1 10.3 1.7A3.2 3.2 0 0 1 17.6 14z" /><path d="m12.8 15.6-2.2 3.4h3l-2.2 3.4" /></>),
+  snow: svg(<path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9M9.6 4.6 12 6.4l2.4-1.8M9.6 19.4 12 17.6l2.4 1.8" />),
+  blizzard: svg(<><path d="M3 8.5h10.5a2.6 2.6 0 1 0-2.6-2.6M3 12.5h15a2.6 2.6 0 1 1-2.6 2.6M3 16.5h7" /><path d="M14 19.5v.1M18.5 19v.1M20.5 9.5v.1" /></>),
+}

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { isActive, useStore } from '../state/store'
+import { useStore } from '../state/store'
+import { skyOf } from '../state/weather'
 import { roomById } from '../rooms'
 import { DUSK } from '../state/daylight'
 import { reduceMotion } from '../motion'
@@ -15,7 +16,7 @@ interface Passing {
  * Le ciel du fond, derrière la pièce. C'est du CSS (des opacités et des déplacements, que le compositeur anime seul) : rien dans le
  * rendu 3D, aucune écriture de style à chaque image.
  * - De loin en loin (toutes les une à deux minutes et demie), une étoile filante la nuit, un oiseau qui traverse le jour ;
- *   pas sous la pluie, ni là où la fiche de la pièce l'écarte (`skyLife`). Rien avec `prefers-reduced-motion`, ni onglet caché.
+ *   pas sous la pluie ni la neige, ni là où la fiche de la pièce l'écarte (`skyLife`). Rien avec `prefers-reduced-motion`, ni onglet caché.
  * - L'orage : une lueur pâle derrière la pièce à chaque éclair (pas sur l'interface, pas avec `prefers-reduced-motion`).
  * - Le crépuscule et l'aube, quand l'horloge fait passer la pièce au soir ou au matin : une lueur dorée et rose qui monte puis s'efface.
  */
@@ -35,8 +36,8 @@ export function SkyLife() {
     const schedule = (first: boolean) => {
       timer = window.setTimeout(() => {
         const s = useStore.getState()
-        const rain = room.dimmedBy && isActive(s, room.dimmedBy), storm = room.storm && s.on[room.storm]
-        if (document.visibilityState === 'visible' && !rain && !storm && !s.leaving)
+        const clear = skyOf(s) === 'clear' && !(room.storm && s.on[room.storm])
+        if (document.visibilityState === 'visible' && clear && !s.leaving)
           setList((l) => [...l.slice(-1), { id: ++id, kind, top: kind === 'star' ? 8 + Math.random() * 18 : 24 + Math.random() * 14, left: kind === 'star' ? 35 + Math.random() * 50 : 0 }])
         schedule(false)
       }, first ? 20_000 + Math.random() * 25_000 : 60_000 + Math.random() * 90_000)

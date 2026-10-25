@@ -1,6 +1,7 @@
 import { radioSub } from '../audio/stations'
 import { PLAYLIST } from './playlist'
 import type { Room } from './types'
+import { WEATHER_LOOPS } from './weather'
 
 // Un bain en plein air au bord d'un ryokan, en automne. Les enregistrements sont à déclarer dans `loops`
 // (spring, bamboo, chimes, birds, crickets) et `playlist` (docs/ASSETS.md) ; sources et licences : public/audio/CREDITS.md.
@@ -26,7 +27,9 @@ export const onsen: Room = {
     hemi: { sky: [0xfff0e2, 0x5a62a8], ground: [0x9a8a70, 0x3e3036], intensity: [0.62, 0.36] },
     sun: { color: [0xffdcb8, 0x9fb0ff], intensity: [0.55, 0.22] },
   },
+  shelter: 'open',
   loops: {
+    ...WEATHER_LOOPS,
     spring: { src: 'audio/onsen/spring', gain: 0.8 },
     chimes: { src: 'audio/beach/chimes', gain: 0.7 },
     garden: { src: 'audio/onsen/outside', gain: 0.5 },
@@ -55,5 +58,6 @@ export const onsen: Room = {
     { id: 'whisk', name: 'Fouet à matcha', chip: 'var(--c-whisk)', volume: 0.45, sub: () => 'le bol de thé vert' },
     { id: 'chimes', name: 'Furin', chip: 'var(--c-chimes)', volume: 0.45, sub: () => 'clochette de verre' },
     { id: 'outside', name: 'Jardin', chip: 'var(--c-win)', volume: 0.65, sub: (s) => (s.night ? 'grillons' : 'oiseaux') },
+    { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'sur le bassin' },
   ],
 }

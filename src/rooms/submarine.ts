@@ -1,6 +1,7 @@
 import { radioSub } from '../audio/stations'
 import { PLAYLIST } from './playlist'
 import type { Room } from './types'
+import { WEATHER_LOOPS } from './weather'
 
 // La cabine d'un sous-marin de légende, au fond de l'abîme. Les enregistrements sont à déclarer dans `loops`
 // (sonar, bubbles, hull, engine, whale) et `playlist` (docs/ASSETS.md) ; sans eux, tout est synthétisé.
@@ -27,7 +28,9 @@ export const submarine: Room = {
     hemi: { sky: [0xdff8f2, 0x2a6a88], ground: [0x7a6a50, 0x1a2a30], intensity: [0.58, 0.3] },
     sun: { color: [0xfff0c8, 0x6fe0d0], intensity: [0.5, 0.22] },
   },
+  shelter: 'deep',
   loops: {
+    ...WEATHER_LOOPS,
     sonar: { src: 'audio/submarine/sonar', gain: 0.8 },
     bubbles: { src: 'audio/submarine/bubbles', gain: 0.8 },
     hull: { src: 'audio/submarine/hull', gain: 0.8 },
@@ -60,5 +63,6 @@ export const submarine: Room = {
     { id: 'engine', name: 'Machines', chip: 'var(--c-engine)', volume: 0.5, sub: () => 'avant, lentement' },
     { id: 'shell', name: 'Conque', chip: 'var(--c-shell)', volume: 0.45, sub: () => 'la mer, dans le coquillage' },
     { id: 'whale', name: 'Baleine', chip: 'var(--c-whale)', volume: 0.5, sub: () => 'un chant au loin' },
+    { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'loin, à la surface' },
   ],
 }
