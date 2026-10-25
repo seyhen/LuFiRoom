@@ -64,7 +64,6 @@ scripts/check-stations.mjs  # npm run stations : vérifie la musique des station
 scripts/check-audio.mjs     # npm run audio:check : crêtes, sonie et paires webm + mp3 de public/audio/
 scripts/smoke.mjs           # npm run test:smoke : test de fumée dans Chromium (Playwright), chaque pièce en 390 px et en desktop
 .github/workflows/ci.yml    # CI GitHub Actions à chaque push et pull request : build, stations, test de fumée, audio:check
-scripts/check-audio.mjs     # npm run audio:check : sonie, crêtes et paires webm + mp3 de public/audio/
 wrangler.jsonc              # hébergement : Cloudflare Workers publie dist/ (voir docs/DEPLOY.md)
 public/_headers             # cache et en-têtes lus par Cloudflare ; netlify.toml dit la même chose pour Netlify (plus utilisé, gardé en réserve)
 vite.config.ts              # dont vite-plugin-pwa : manifeste, service worker, cache des sons (voir docs/PWA.md)
