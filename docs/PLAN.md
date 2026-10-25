@@ -1,7 +1,7 @@
 # Plan
 
 On avance phase par phase. Une phase est finie quand ses critères sont remplis, pas avant.
-Les phases 3 à 5 sont des pistes : à confirmer avant de les attaquer.
+Les phases 1 à 5 sont faites (sauf les cases encore vides) ; la suite se décide pièce par pièce (« Pistes », en bas).
 
 ## Phase 1 : portage à parité
 Porter le prototype dans la stack cible, sans rien ajouter.
@@ -19,7 +19,7 @@ Fini quand :
 - ça tourne fluide en largeur mobile et desktop.
 
 ## Phase 2 : vrais assets
-État : le code est prêt, il manque les fichiers (sons et modèle). Guide : `docs/ASSETS.md`.
+État : sons et radio faits (enregistrements, 28 morceaux) ; le modèle Blender est en suspens. Guide : `docs/ASSETS.md`.
 
 - [x] Formats Opus/WebM avec MP3 en repli, outil d'encodage `npm run audio` (sonie unifiée à -20 LUFS).
 - [x] Moteur : boucles enregistrées sans couture (fondu entre les passages), radio sur pistes mélangées en flux, jour / nuit des sons du dehors.
@@ -27,8 +27,10 @@ Fini quand :
 - [x] Préchargement des boucles et écran de chargement léger.
 - [x] `public/audio/CREDITS.md` : gabarit et règles de licence.
 - [x] Enregistrements en boucle : pluie, ventilo, ronron, oiseaux, grillons, et feu et vent de la cabane. Pris sur Pixabay (Pixabay Content License, **pas CC0** : accord du propriétaire le 2026-10-02), niveaux calés sur la synthèse ; **à écouter et à régler à l'oreille** (`gain` dans `src/rooms/`). Sources et licences : `public/audio/CREDITS.md`.
-- [ ] Pistes lofi sous licence pour la radio.
-- [x] En attendant : radio générative en six stations (Nuit douce, Petit matin, Brume, Veillée, Bureau, et Noël pour la cabane), à changer depuis le mixeur ou l'écran verrouillé. Voir `docs/RADIO.md`.
+- [x] Pistes lofi pour la radio : 28 morceaux (RhythmicInk) fournis par le propriétaire (7 le 2026-10-17, 21 le 2026-10-18), playlist partagée par toutes les pièces (`src/rooms/playlist.ts`, tempo et premier temps mesurés), bouton « morceau suivant » (« disque suivant » au tourne-disque) et touche multimédia. **Licence d'usage commercial à confirmer** par le propriétaire avant toute vente (`public/audio/CREDITS.md`).
+- [x] Radio générative en repli (pas de morceau, ou morceau qui ne charge pas) : dix stations aujourd'hui (`npm run stations` les vérifie), à changer depuis le mixeur ou l'écran verrouillé. Voir `docs/RADIO.md`.
+- [x] Vrais enregistrements pour presque tous les sons des onze pièces (Pixabay Content License, crédits dans `public/audio/CREDITS.md`), lus en boucle, en grains (segments fondus) ou en tirs espacés selon le son (`grainsOr`, `shotsOr`). Restent synthétisés : vagues, cloche de bouée et ronron du phare, ronron de la plage, shishi-odoshi de l'onsen, pluie du marché.
+- [x] Contrôle des fichiers son : `npm run audio:check` (crête vraie au plus -0,5 dBTP, sonie, paires webm + mp3, boucles courtes) ; 15 fichiers qui dépassaient ont été limités et réencodés.
 - [ ] Modèle Blender en `.glb` compressé, puis son chargement (nœuds nommés, lumière cuite) : à valider d'abord, voir `docs/ASSETS.md`.
 
 Cahier des charges d'origine :
@@ -38,7 +40,7 @@ Cahier des charges d'origine :
 - Préchargement avec écran de chargement léger. Formats audio : Opus/WebM, avec MP3 en repli pour Safari si besoin.
 - `public/audio/CREDITS.md` à jour.
 
-## Phase 3 : plusieurs chambres (piste)
+## Phase 3 : plusieurs chambres
 État : onze pièces (chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit). Guide : `docs/ROOMS.md`.
 
 - [x] Format de pièce stabilisé : `src/rooms/types.ts` (objets, sons, enregistrements, ciel, lumières), scène associée dans `src/scene/scenes.ts`.
@@ -60,37 +62,57 @@ Cahier des charges d'origine :
 - [x] Les signatures de chaque pièce (2e passe) : rais de soleil et filet de pêcheur (plage), lumières de gare et compartiment habité (train), néon, escalier de secours et vapeur (toit), poutres, mur de cadres et guirlande (atelier), noren ゆ, lanternes rouges et lucioles (onsen).
 - [x] Cabane : le tourne-disque joue sa propre liste (Noël, Veillée, Brume, Nuit douce) ; la chambre garde les cinq stations d'origine. Chaque pièce retient sa station.
 - [ ] Cabane : son de neige / bois qui craque, vraies pistes de Noël sous licence.
-- [ ] Les onze nouveaux sons (foghorn, bell, sonar, bubbles, hull, engine, whale, sizzle, simmer, neon, tram) sont synthétisés et dosés (voir `base` dans `audio/engine.ts`) ; à remplacer par des enregistrements si on en trouve.
-- [ ] Enregistrements pour les nouveaux sons (liste et mots-clés dans `docs/ASSETS.md`).
+- [x] Les sons du phare, du sous-marin et du marché sont enregistrés (corne de brume, sonar, bulles, coque, machines, baleine, wok, marmite, néon, tram), sauf la cloche de bouée, les vagues du phare et la pluie du marché, encore synthétisées.
+- [x] Un objet de plus par pièce, avec un son à lui : diffuseur (chambre), tricot (cabane), manteau qui goutte (café), bâton de pluie (plage), cartes (train), arrosoir (toit), pinceau (atelier), fouet à matcha (onsen), plume (phare), conque (sous-marin), boulier (marché). Méthode : skill `room-objects`.
+- [x] Mémoire : à la sortie d'une pièce, ses géométries et textures sont libérées sur le GPU, et ses canaux audio et sons décodés déchargés.
 
 Cahier des charges d'origine :
 - Format de chambre stabilisé (modèle, objets, sons, palette, ciel).
 - Sélecteur de pièce et transition entre chambres.
 - Idées de pièces : café un jour de pluie, cabane sous la neige, bibliothèque, toit-terrasse la nuit.
 
-## Phase 4 : app installable (piste)
+## Phase 4 : app installable
 État : tout est fait ; la lecture en arrière-plan reste à essayer sur un vrai téléphone. Guides : `docs/PWA.md`, `docs/MIXES.md`.
 
 - [x] PWA : manifeste, icônes, installation (bouton « Installer l'app » là où le navigateur la propose), hors ligne.
 - [x] Minuteur de sommeil : 15 min, 30 min, 1 h ou 2 h, fondu de 30 s puis tout s'éteint.
 - [x] Lecture en arrière-plan et contrôles écran verrouillé (Media Session) : codés et testés dans Chromium ; **à vérifier sur iPhone et Android**.
 - [x] Ambiances sauvegardées (dans le navigateur), partage d'une ambiance par lien.
+- [x] Préréglages : sur le mixeur silencieux, les puces Travailler / Lire / Dormir (trois ambiances prêtes par pièce, `presets` de sa fiche ; « Dormir » passe en nuit et lance le minuteur) et « Reprendre » la dernière ambiance.
+- [x] Minuteur de concentration 25/5 ou 50/10, avec carillon, écran gardé allumé et temps dans le titre de l'onglet.
+- [x] Volume général : un curseur dans l'en-tête du mixeur, retenu dans le navigateur (hors des ambiances et des liens).
+- [x] Français et anglais (`src/i18n.ts`, bouton EN / FR, langue du navigateur par défaut).
+- [x] Radio sur iPhone et iPad : morceaux décodés et joués par Web Audio, pour que le volume agisse.
 
 Cahier des charges d'origine :
 - PWA (installable, hors ligne une fois les sons en cache).
 - Lecture en arrière-plan et contrôles écran verrouillé (Media Session), surtout sur iOS.
 - Minuteur de sommeil, mixes sauvegardés, partage d'un mix par lien.
 
-## Phase 5 : mise en ligne (piste)
-État : config Netlify, aperçu des liens, point d'accroche de la mesure d'audience et note sur le modèle économique faits ; le déploiement, le nom de domaine et le choix du service d'audience se font depuis tes comptes.
+## Phase 5 : mise en ligne
+État : le site est en ligne sur Cloudflare Workers (`wrangler.jsonc`, adresse `lufiroom.an-alexcore.workers.dev`) ; chaque push sur `main` republie. Guide : `docs/DEPLOY.md`.
 
-- [x] Config d'hébergement : cache, service worker toujours revalidé, types des sons, en-têtes de sécurité.
-- [ ] Déploiement sur Netlify depuis le dépôt (à faire depuis ton compte) et nom de domaine.
-- [x] Image et titre d'aperçu des liens (Open Graph) : adresses absolues ajoutées au build (`URL` de Netlify ou `SITE_URL`).
-- [x] Mesure d'audience : point d'accroche prêt, inactif (`ANALYTICS_SRC`) ; reste à choisir un service sans cookie.
+- [x] Config d'hébergement : cache, service worker toujours revalidé, types des sons, en-têtes de sécurité. Pour Cloudflare, c'est `public/_headers` (copié dans `dist/`) ; `netlify.toml` dit la même chose pour Netlify.
+- [x] Déploiement : d'abord prévu sur Netlify, passé à Cloudflare (gratuit, sans plafond de bande passante, utile avec ~160 Mo de sons) : Pages (`ce1319d`), puis Workers en site statique (`d1dc73b`).
+- [ ] Nom de domaine à soi (depuis le compte Cloudflare).
+- [x] Image et titre d'aperçu des liens (Open Graph) : adresses absolues ajoutées au build (`SITE_URL`, ou `URL` de Netlify, ou `CF_PAGES_URL` de Cloudflare Pages).
+- [ ] Sur Cloudflare Workers, aucune de ces variables n'est fournie toute seule : définir `SITE_URL` dans les variables de construction du Worker, sinon l'image d'aperçu n'est pas déclarée (à vérifier sur la page en ligne).
+- [x] Mesure d'audience : point d'accroche prêt, inactif (`ANALYTICS_SRC`).
+- [ ] Choisir le service d'audience : comparaison et recommandation dans `docs/DEPLOY.md` (« Mesure d'audience »).
 - [x] Modèle économique : note de réflexion, `docs/MODELE-ECONOMIQUE.md`.
+- [x] Vérifications automatiques : `npm test` (build, stations, test de fumée dans Chromium : chaque pièce en 390 px et en desktop), et CI GitHub Actions à chaque push et pull request (`.github/workflows/ci.yml`, avec `npm run audio:check`). Avant une mise en ligne : skill `release-check`.
 
 Cahier des charges d'origine :
 - Déploiement (Vercel ou Netlify), nom de domaine.
 - Mesure d'audience légère et respectueuse de la vie privée.
 - Modèle économique éventuel (chambres ou sons premium).
+
+## Pistes
+
+Rien de ceci n'est décidé une fois pour toutes : à confirmer avant de l'attaquer.
+
+- [ ] **Ciel vivant et vrai jour / nuit** (en cours) : le ciel et la lumière qui suivent l'heure réelle, et des évènements dans les pièces (une première version, avec étoile filante, oiseau, orage, mouette et avion, feuille d'érable, jet de vapeur, a été retirée le 2026-10-18 et se refait).
+- [ ] **Météo** : un sélecteur de météo remplace le nuage (aujourd'hui interrupteur de pluie). Toutes les météos dans toutes les pièces, avec leurs sons, synthétisés d'abord, enregistrés ensuite.
+- [ ] Les derniers sons synthétisés à enregistrer (voir Phase 2), son de neige et de bois qui craque pour la cabane, pistes de Noël.
+- [ ] Modèle Blender en `.glb` (Phase 2) : en suspens, les pièces sont construites en code.
+- [ ] Lecture en arrière-plan et écran verrouillé à essayer sur un vrai iPhone et un vrai Android (Phase 4).
