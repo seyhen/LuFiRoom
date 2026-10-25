@@ -53,7 +53,7 @@ export function Lights({ room }: { room: Room }) {
     hemi.current.color.copy(col.sky[0]).lerp(col.sky[1], e).lerp(DUSK_SKY, gold * 0.35)
     hemi.current.groundColor.copy(col.ground[0]).lerp(col.ground[1], e)
     // L'éclair éclaire un peu la pièce, comme par la fenêtre : un ciel un peu plus clair, sans toucher au soleil (ni aux ombres).
-    hemi.current.intensity = (lerp(h.intensity[0], h.intensity[1], e) * (1 - mood.rain * 0.12) + life.flash * 0.3) * PI
+    hemi.current.intensity = (lerp(h.intensity[0], h.intensity[1], e) * (1 - mood.rain * 0.12) + life.flash * 0.15) * PI
     sun.current.color.copy(col.sun[0]).lerp(col.sun[1], e).lerp(DUSK_SUN, gold * 0.55)
     sun.current.intensity = lerp(u.intensity[0], u.intensity[1], e) * (1 - mood.rain * 0.3) * PI
   }, -1)

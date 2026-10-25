@@ -4,7 +4,7 @@ import { rand } from '../math'
 import { reduceMotion } from './anim'
 
 /**
- * La vie de la pièce, ces petits évènements qui reviennent de loin en loin (un oiseau, une feuille, un jet de vapeur, un éclair).
+ * La vie de la pièce, ces petits évènements qui reviennent de loin en loin (un oiseau, un avion, un éclair).
  * `flash` : la lumière d'un éclair (0 → 1), qui retombe vite ; <Lights> l'écrit, le nuage et l'éclairage la lisent.
  */
 export const life = {

@@ -28,8 +28,8 @@ export function RoofScene() {
       <OliveTree />
       <Herbs />
       <Pigeons />
-      {/* un pigeon qui passe le jour, un avion la nuit */}
-      <FlyBy color={0x5c5872} height={2.4} plane />
+      {/* un pigeon qui passe le jour (la nuit, les tours cacheraient un avion : rien) */}
+      <FlyBy color={0x6a6680} wing={0x585470} height={2.4} />
       <Sofa />
       <FireCorner />
       <Brazier />

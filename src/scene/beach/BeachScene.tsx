@@ -38,7 +38,7 @@ export function BeachScene() {
       <WindChimes />
       <Gull />
       {/* une mouette au loin le jour, un avion la nuit */}
-      <FlyBy color={0xfffaf4} height={2.4} plane />
+      <FlyBy color={0xfffaf4} wing={0xb8b4c4} height={2.1} plane />
       <FairyLights />
       <Daybed />
       <Cat position={[-2.4, 0.4, -0.45]} rotation={0.35} coat={ginger} />

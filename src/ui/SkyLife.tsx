@@ -37,7 +37,7 @@ export function SkyLife() {
         const s = useStore.getState()
         const rain = room.dimmedBy && isActive(s, room.dimmedBy), storm = room.storm && s.on[room.storm]
         if (document.visibilityState === 'visible' && !rain && !storm && !s.leaving)
-          setList((l) => [...l.slice(-1), { id: ++id, kind, top: 5 + Math.random() * 18, left: kind === 'star' ? 35 + Math.random() * 50 : 0 }])
+          setList((l) => [...l.slice(-1), { id: ++id, kind, top: kind === 'star' ? 8 + Math.random() * 18 : 24 + Math.random() * 14, left: kind === 'star' ? 35 + Math.random() * 50 : 0 }])
         schedule(false)
       }, first ? 20_000 + Math.random() * 25_000 : 60_000 + Math.random() * 90_000)
     }
@@ -51,7 +51,7 @@ export function SkyLife() {
     return useStore.subscribe((s, p) => {
       if (s.thunders === p.thunders || !flash.current.animate) return
       flash.current.animate(
-        [{ opacity: 0 }, { opacity: 0.42, offset: 0.05 }, { opacity: 0.08, offset: 0.2 }, { opacity: 0.26, offset: 0.27 }, { opacity: 0 }],
+        [{ opacity: 0 }, { opacity: 0.26, offset: 0.05 }, { opacity: 0.05, offset: 0.2 }, { opacity: 0.16, offset: 0.27 }, { opacity: 0 }],
         { duration: 1400, easing: 'ease-out' },
       )
     })
