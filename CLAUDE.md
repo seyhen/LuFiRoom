@@ -41,10 +41,11 @@ src/
     Stage.tsx               # <Canvas>, caméra iso, lumières, cadrage, rotation au drag
     scenes.ts               # associe chaque pièce à sa scène 3D ; ajouter une pièce : docs/ROOMS.md
     bedroom/, cabin/, cafe/, beach/, train/, roof/, atelier/, onsen/, lighthouse/, submarine/, market/   # la scène de chaque pièce, un fichier par objet, ses matériaux et ses textures
-    objects/                # objets partagés entre pièces : Window, Radio, Lamp, Cat, FairyLights, Candles, Candle, Steam, Flames, ScrollLayer, Garment
+    objects/                # objets partagés entre pièces : Window, Radio, Lamp, Cat, FairyLights, Candles, Candle, Steam, Flames, ScrollLayer, Garment, ViewFlakes, FlashVeil
     nature/                 # pierres, feuillages, feuilles, fougères, plantes retombantes, rosettes : formes et matériaux partagés
     parts.tsx, Static.tsx   # briques (Part, Batch, rbox, cyl, worldUV, orient) ; <Static> regroupe le décor immobile en peu de tracés
-    paint.ts, walls.ts      # vues peintes qui suivent le jour / la nuit, murs percés
+    paint.ts, walls.ts      # vues peintes qui suivent le jour / la nuit et la météo, murs percés
+    snowTop.ts              # la neige posée sur les volumes du dehors (tours du toit, montagnes de l'onsen)
     materials.ts            # palette de matériaux gummy partagés
     Floaters.tsx            # neige autour de la cabane, poussières de la chambre
     life.ts                 # les petits évènements rares (useEvery), la lueur des éclairs

@@ -2,7 +2,9 @@ import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, Color, type Group, type Mesh, type MeshBasicMaterial, type Sprite } from 'three'
 import { smooth } from '../../math'
-import { dn, rgb, seeded, usePainted } from '../paint'
+import { WX, dn, mix, paintFlakes, paintWhiteout, rgb, seeded, skyWx, snowLine, usePainted, weathered, type Wx } from '../paint'
+import { FlashVeil } from '../objects/FlashVeil'
+import { ViewFlakes } from '../objects/ViewFlakes'
 import { WIN, noRay } from '../parts'
 import { mood, reduceMotion, useSquash } from '../anim'
 import { glowTex } from '../textures'
@@ -29,24 +31,34 @@ const SIGNS: [number, number, number, number, string, string][] = [
   [420, 176, 16, 70, '#ff6f4a', '#d89880'], [500, 140, 20, 88, '#a07cff', '#a090c8'], [262, 208, 30, 12, '#4fff9a', '#88c8a8'],
 ]
 
-function draw(x: CanvasRenderingContext2D, n: number, rain: number) {
-  const r = seeded(17), c = (k: keyof typeof P, a = 1) => rgb(dn(P[k], n), a)
+/**
+ * Le boulevard. L'orage fonce le ciel ; la neige blanchit les toits, la chaussée et éteint ses reflets ; la tempête de neige
+ * efface la ville du fond. Les enseignes, elles, brillent toujours.
+ */
+function draw(x: CanvasRenderingContext2D, n: number, rain: number, w: Wx) {
+  const r = seeded(17), snowy = Math.min(1, w.s * 1.4)
+  const c = (k: keyof typeof P, a = 1, far = 0) => rgb(weathered(dn(P[k], n), w, far), a)
   const sky = x.createLinearGradient(0, 0, 0, STREET)
-  sky.addColorStop(0, c('skyTop')); sky.addColorStop(1, c('skyLow'))
+  sky.addColorStop(0, rgb(skyWx(dn(P.skyTop, n), w))); sky.addColorStop(1, rgb(skyWx(dn(P.skyLow, n), { ...w, s: w.s * 0.7 })))
   x.fillStyle = sky; x.fillRect(0, 0, W, H)
-  // la ville au loin : de petits blocs serrés, quelques fenêtres
-  x.fillStyle = c('far')
-  for (let px = -10; px < W; px += 22 + r() * 18) { const h = 70 + r() * 110; x.fillRect(px, STREET - h - 30, 20 + r() * 16, h + 30) }
+  // la ville au loin : de petits blocs serrés, quelques fenêtres (poudrés de neige sur le toit)
+  x.fillStyle = c('far', 1, 0.9)
+  for (let px = -10; px < W; px += 22 + r() * 18) {
+    const h = 70 + r() * 110, bw = 20 + r() * 16
+    x.fillStyle = c('far', 1, 0.9); x.fillRect(px, STREET - h - 30, bw, h + 30)
+    if (snowy > 0.01) { x.fillStyle = rgb(weathered(dn(WX.snowShade, n), w, 0.9), snowy); x.fillRect(px, STREET - h - 33, bw, 4) }
+  }
   // les grands immeubles du boulevard, fenêtres allumées par paliers
   const blocks = [[30, 100, 120], [140, 135, 150], [250, 92, 130], [370, 120, 140], [490, 98, 120], [570, 130, 100]]
   for (const [bx, bw, bh] of blocks) {
-    x.fillStyle = c('mid'); x.fillRect(bx, STREET - bh, bw, bh + 4)
-    x.fillStyle = c('midLit', 0.5); x.fillRect(bx, STREET - bh, 6, bh)
+    x.fillStyle = c('mid', 1, 0.3); x.fillRect(bx, STREET - bh, bw, bh + 4)
+    x.fillStyle = c('midLit', 0.5, 0.3); x.fillRect(bx, STREET - bh, 6, bh)
     for (let j = 0; j < Math.floor(bh / 22); j++) for (let i = 0; i < Math.floor(bw / 18); i++) {
       const lit = r() < 0.5 * n + 0.1
-      x.fillStyle = lit ? `rgba(255,${(200 + r() * 40) | 0},${(120 + r() * 60) | 0},${0.45 + 0.4 * n})` : c('far', 0.7)
+      x.fillStyle = lit ? `rgba(255,${(200 + r() * 40) | 0},${(120 + r() * 60) | 0},${0.45 + 0.4 * n})` : c('far', 0.7, 0.3)
       x.fillRect(bx + 8 + i * 18, STREET - bh + 10 + j * 22, 9, 11)
     }
+    snowLine(x, [[bx + 2, STREET - bh - 1], [bx + bw - 2, STREET - bh - 1]], 7, w)
   }
   // enseignes verticales : un bandeau lumineux, un halo, des barres de « caractères »
   for (const [sx, sy, sw, sh, night, day] of SIGNS) {
@@ -61,22 +73,28 @@ function draw(x: CanvasRenderingContext2D, n: number, rain: number) {
   }
   // la chaussée mouillée : un dégradé sombre, la bordure, les reflets verticaux des enseignes et des fenêtres
   const road = x.createLinearGradient(0, STREET, 0, H)
-  road.addColorStop(0, c('street')); road.addColorStop(1, c('mid'))
+  // sous la neige, une chaussée blanche (un peu grise : on y a roulé), qui ne reflète presque plus
+  const snowRoad = (k: keyof typeof P) => rgb(mix(weathered(dn(P[k], n), w), dn(WX.snowShade, n), snowy * 0.75))
+  road.addColorStop(0, snowRoad('street')); road.addColorStop(1, snowRoad('mid'))
   x.fillStyle = road; x.fillRect(0, STREET, W, H - STREET)
-  x.fillStyle = c('curb'); x.fillRect(0, STREET, W, 5)
+  x.fillStyle = rgb(mix(weathered(dn(P.curb, n), w), dn(WX.snow, n), snowy)); x.fillRect(0, STREET, W, 5)
   for (const [sx, , sw, , night, day] of SIGNS) {
     const col = dn([day, night], n), g = x.createLinearGradient(0, STREET, 0, H)
-    g.addColorStop(0, rgb(col, 0.1 + 0.4 * n)); g.addColorStop(1, rgb(col, 0))
+    g.addColorStop(0, rgb(col, (0.1 + 0.4 * n) * (1 - snowy * 0.6))); g.addColorStop(1, rgb(col, 0))
     x.fillStyle = g
     for (let k = 0; k < 4; k++) x.fillRect(sx - 4 + k * 2 + r() * 6, STREET + 5, sw + 6 - k * 2, 120)
   }
-  x.fillStyle = `rgba(255,255,255,${0.1 + 0.1 * n})`
+  x.fillStyle = `rgba(255,255,255,${(0.1 + 0.1 * n) * (1 - snowy * 0.7)})`
   for (let k = 0; k < 28; k++) x.fillRect(r() * W, STREET + 20 + r() * 110, 8 + r() * 40, 1.5)
+  // deux ornières plus sombres dans la neige, là où passe le tram
+  if (snowy > 0.01) { x.fillStyle = rgb(dn(P.street, n), 0.35 * snowy); x.fillRect(0, STREET + 16, W, 3); x.fillRect(0, STREET + 30, W, 3) }
   // des lignes de pluie, très fines, quand il pleut
   if (rain > 0.02) {
     x.strokeStyle = `rgba(210,220,255,${0.35 * rain})`; x.lineWidth = 1
     for (let k = 0; k < 110; k++) { const px = r() * W, py = r() * H; x.beginPath(); x.moveTo(px, py); x.lineTo(px - 4, py + 18); x.stroke() }
   }
+  paintWhiteout(x, W, STREET, w, 0.55, 0.12)
+  paintFlakes(x, W, H, w, 29)
 }
 
 const dayTint = new Color(0xb8a8c8), nightTint = new Color(0xffffff)
@@ -94,7 +112,8 @@ export function BoulevardView() {
     m.position.x = CX + 2.4 - Math.min(q, 1) * 4.8
     m.position.y = wy(301) + (reduceMotion ? 0 : Math.sin(t * 22) * 0.002)
     mat.color.copy(dayTint).lerp(nightTint, n)
-    mat.opacity = Math.min(1, q * 8, (1 - q) * 8)
+    // il n'apparaît que dans la baie : au-delà, il passerait derrière le bord du mur, sur le ciel
+    mat.opacity = Math.min(1, q * 8, (1 - q) * 8, Math.max(0, (1.9 - Math.abs(m.position.x - CX)) / 0.5))
     // les enseignes respirent
     glows.current.forEach((g, i) => {
       g.material.opacity = n * (0.55 + (reduceMotion ? 0 : Math.sin(t * (1.1 + i * 0.37) + i) * 0.18))
@@ -123,6 +142,8 @@ export function BoulevardView() {
       </mesh>
       <ScrollLayer map={umbrellasTex} position={[CX, wy(372), Z + 0.012]} size={[3.2, 0.38]} color={[0xa86a8c, 0xff6fb0]} speed={0.012} bob={[0.004, 3]} opacity={[0.7, 0.85]} />
       <ScrollLayer map={umbrellasTex} position={[CX, wy(400), Z + 0.014]} size={[3.2, 0.5]} color={[0x6a8aa8, 0x4fd8ff]} speed={-0.02} bob={[0.006, 2.4]} phase={1.4} opacity={[0.75, 0.9]} />
+      <FlashVeil position={[CX, CY, Z + 0.016]} size={[W / PX, H / PX]} />
+      <ViewFlakes x={[WIN.x0 - 0.5, WIN.x1 + 0.3]} y={[WIN.y0 - 0.4, WIN.y1 + 0.15]} z={[-3.76, -3.42]} n={80} />
       {/* la vitre : de la pluie qui ruisselle, par-dessus la baie */}
       <mesh ref={streaks} position={[(WIN.x0 + WIN.x1) / 2, (WIN.y0 + WIN.y1) / 2, -3.065]} renderOrder={2} raycast={noRay}>
         <planeGeometry args={[w, h]} />

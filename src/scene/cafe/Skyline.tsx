@@ -1,10 +1,10 @@
-import { useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
 import { CanvasTexture } from 'three'
 import { TAU, smooth } from '../../math'
-import { mood } from '../anim'
-import { noRay } from '../parts'
+import { WX, dn, paintFlakes, paintWhiteout, skyWx, snowLine, useRepaint, weathered, type Wx } from '../paint'
+import { WIN, noRay } from '../parts'
 import { makeCanvas } from '../textures'
+import { FlashVeil } from '../objects/FlashVeil'
+import { ViewFlakes } from '../objects/ViewFlakes'
 
 // Édimbourg par la fenêtre du café : le Château sur son rocher, la vieille ville qui monte vers lui, les façades
 // colorées d'une rue en pente (Victoria Street), un immeuble de grès en face, la chaussée mouillée. Tout est froid et
@@ -56,16 +56,22 @@ function poly(pts: number[][], fill: string) {
   x.fill()
 }
 
-/** n : nuit, r : pluie (0 → 1). */
-function draw(n: number, r: number) {
+/**
+ * n : nuit, r : pluie (0 → 1), dans `w` la neige et l'orage. Sous la neige, les toits, les remparts, le rocher et la chaussée
+ * blanchissent ; l'orage fonce le ciel ; la tempête de neige efface le Château dans la brume.
+ */
+function draw(w: Wx) {
+  const { n, r } = w, snowy = Math.min(1, w.s * 1.4)
   const fog = mix(hex(P.mist[0]), hex(P.mist[1]), n)
-  // Couleur d'un élément : jour → nuit, puis voilée par la pluie, d'autant plus qu'il est loin.
-  const col = (k: keyof typeof P, far = 0) => mix(mix(hex(P[k][0]), hex(P[k][1]), n), fog, r * (0.12 + far * 0.4))
+  // Couleur d'un élément : jour → nuit, puis voilée par la pluie, d'autant plus qu'il est loin, puis par l'orage ou la neige.
+  const col = (k: keyof typeof P, far = 0) => weathered(mix(mix(hex(P[k][0]), hex(P[k][1]), n), fog, r * (0.12 + far * 0.4)), w, far)
   const rnd = seeded(42)
+  // La neige sur une arête, à l'échelle de la vue.
+  const cap = (pts: number[][], t = 6) => snowLine(x, pts, t, w)
 
   // Ciel bas et nuages lourds.
   const g = x.createLinearGradient(0, VY, 0, VY + VH * 0.7)
-  g.addColorStop(0, rgb(col('skyTop'))); g.addColorStop(1, rgb(col('skyBot')))
+  g.addColorStop(0, rgb(skyWx(col('skyTop'), w))); g.addColorStop(1, rgb(skyWx(col('skyBot'), w)))
   x.fillStyle = g; x.fillRect(0, 0, W, H)
   x.save()
   x.translate(VX, VY)
@@ -77,13 +83,14 @@ function draw(n: number, r: number) {
 
   // Arthur's Seat, au loin à droite.
   poly([[420, 300], [470, 240], [530, 196], [580, 182], [622, 196], [660, 228], [700, 262], [700, 300]], rgb(col('seat', 1)))
+  cap([[470, 242], [530, 198], [580, 184], [622, 198], [660, 230]], 9)
 
   // Le rocher du Château, escarpé, et le Château dessus.
   const rock = rgb(col('rock', 0.7)), castle = rgb(col('castle', 0.7 - n * 0.5))
   // La nuit, le Château est éclairé par en dessous : un halo chaud sur le rocher.
   if (n > 0.05) {
     const fl = x.createRadialGradient(165, 150, 10, 165, 150, 190)
-    fl.addColorStop(0, `rgba(255,200,130,${(0.32 * n * (1 - r * 0.4)).toFixed(2)})`); fl.addColorStop(1, 'rgba(255,200,130,0)')
+    fl.addColorStop(0, `rgba(255,200,130,${(0.32 * n * (1 - r * 0.4) * (1 - w.s * 0.5)).toFixed(2)})`); fl.addColorStop(1, 'rgba(255,200,130,0)')
     x.fillStyle = fl; x.fillRect(-20, 0, 380, 330)
   }
   poly([[-10, 330], [-10, 214], [30, 206], [60, 186], [92, 178], [250, 176], [276, 190], [300, 224], [330, 262], [350, 300], [360, 330]], rock)
@@ -94,9 +101,14 @@ function draw(n: number, r: number) {
   sh.addColorStop(0, rgb(mix(col('rock', 0.7), [0, 0, 0], 0.05))); sh.addColorStop(1, rgb(mix(col('rock', 0.7), [0, 0, 0], 0.25)))
   poly([[150, 182], [250, 176], [276, 190], [300, 224], [330, 262], [350, 300], [360, 330], [200, 330]], 'rgba(0,0,0,0)')
   x.fillStyle = sh; x.fill()
-  // les arbres des jardins au pied du rocher
-  x.fillStyle = rgb(col('trees', 0.5))
-  for (let i = 0; i < 16; i++) { const tx = -10 + i * 24 + rnd() * 10, ty = 300 + rnd() * 14; x.beginPath(); x.ellipse(tx, ty, 18 + rnd() * 8, 14 + rnd() * 6, 0, 0, TAU); x.fill() }
+  // la neige sur les replats du rocher, de part et d'autre du Château
+  cap([[-10, 214], [30, 206], [60, 188], [72, 182]], 7); cap([[250, 178], [276, 192], [298, 222]], 6)
+  // les arbres des jardins au pied du rocher (poudrés de neige sur le dessus)
+  for (let i = 0; i < 16; i++) {
+    const tx = -10 + i * 24 + rnd() * 10, ty = 300 + rnd() * 14, rx = 18 + rnd() * 8, ry = 14 + rnd() * 6
+    x.fillStyle = rgb(col('trees', 0.5)); x.beginPath(); x.ellipse(tx, ty, rx, ry, 0, 0, TAU); x.fill()
+    if (snowy > 0.01) { x.fillStyle = rgb(dn(WX.snowShade, n), snowy * 0.9); x.beginPath(); x.ellipse(tx, ty - ry * 0.45, rx * 0.8, ry * 0.45, 0, Math.PI, TAU); x.fill() }
+  }
   poly([[70, 178], [70, 142], [250, 142], [250, 178]], castle) // remparts
   poly([[250, 178], [250, 150], [262, 146], [276, 150], [282, 178]], castle) // Half Moon Battery
   poly([[96, 142], [96, 104], [150, 104], [150, 142]], castle) // palais
@@ -108,6 +120,8 @@ function draw(n: number, r: number) {
   x.fillStyle = castle
   for (let cx = 70; cx < 250; cx += 13) x.fillRect(cx, 136, 8, 7)
   for (const tx of [96, 140, 176, 206]) { x.fillRect(tx, 98, 8, 10); x.fillRect(tx - 1, 96, 10, 4) }
+  cap([[70, 136], [250, 136]], 5); cap([[96, 104], [123, 86], [146, 104]], 5); cap([[180, 96], [184, 84], [210, 84], [214, 96]], 5)
+  x.fillStyle = castle
   x.fillRect(195, 60, 2.5, 26)
   x.fillStyle = rgb(mix(hex('#3a5aa8'), hex('#1a2246'), n)); x.fillRect(197.5, 60, 16, 10) // le drapeau (bleu et blanc)
   x.fillStyle = rgb(mix(hex('#e8ecf2'), hex('#5a6080'), n)); x.fillRect(197.5, 64, 16, 2)
@@ -126,6 +140,9 @@ function draw(n: number, r: number) {
     const steps = 3, sw = hw / (steps * 2)
     for (let s = 0; s < steps; s++) x.fillRect(hx + s * sw, base - hh - (s + 1) * 6, hw - s * 2 * sw, 6)
     x.fillRect(hx + hw * 0.7, base - hh - 26, 6, 16)
+    // la neige sur chaque redent du pignon
+    for (let s = 0; s < steps && snowy > 0.01; s++) cap([[hx + s * sw + 1, base - hh - (s + 1) * 6], [hx + hw - s * sw - 1, base - hh - (s + 1) * 6]], 3)
+    x.fillStyle = ridge
     for (let wy = base - hh + 12; wy < base - 10; wy += 16) for (let wx = hx + 5; wx < hx + hw - 6; wx += 10) if (rnd() < 0.55) lit.push([wx, wy, rnd()])
     hx += hw + 2
   }
@@ -142,6 +159,7 @@ function draw(n: number, r: number) {
     // étages de grès au-dessus de la boutique, toit et cheminée
     poly([[sx, ground - sh], [sx, ground - sh - up], [sx + sw, ground - sh - up], [sx + sw, ground - sh]], rgb(col('stone', 0.15)))
     poly([[sx - 2, ground - sh - up], [sx + sw * 0.5, ground - sh - up - 16 - k * 8], [sx + sw + 2, ground - sh - up]], rgb(col('roof', 0.15)))
+    cap([[sx + 1, ground - sh - up - 1], [sx + sw * 0.5, ground - sh - up - 16 - k * 8], [sx + sw - 1, ground - sh - up - 1]], 5 + k * 3)
     x.fillStyle = rgb(col('stoneDark', 0.15)); x.fillRect(sx + sw * 0.72, ground - sh - up - 24 - k * 8, 7 + k * 3, 16)
     for (let wy = ground - sh - up + 12; wy < ground - sh - 10; wy += 22 + k * 6) {
       for (let wx = sx + 8; wx < sx + sw - 12; wx += 18 + k * 8) {
@@ -163,12 +181,14 @@ function draw(n: number, r: number) {
   const fx = 430, ftop = 120, fground = 470
   poly([[fx, fground], [fx, ftop], [VW + 10, ftop], [VW + 10, fground]], rgb(col('stone')))
   x.fillStyle = rgb(col('stoneDark')); x.fillRect(fx, ftop, VW - fx + 10, 10); x.fillRect(fx, ftop + 120, VW - fx + 10, 6)
+  cap([[fx + 2, ftop], [VW + 10, ftop]], 7)
   for (let wy = ftop + 26; wy < fground - 140; wy += 70) {
     for (let wx = fx + 30; wx < VW - 30; wx += 72) {
       const on = rnd()
       lit.push([wx, wy, on, 1])
       x.fillStyle = rgb(col('stoneDark')); x.fillRect(wx - 4, wy - 4, 38, 52)
       x.fillStyle = rgb(col('win')); x.fillRect(wx, wy, 30, 44)
+      cap([[wx - 3, wy + 49], [wx + 33, wy + 49]], 3) // la neige sur l'appui de la fenêtre
     }
   }
   poly([[fx, fground], [fx, fground - 86], [VW + 10, fground - 86], [VW + 10, fground]], rgb(mix(mix(hex('#5a1f2a'), hex('#2a0f18'), n), fog, r * 0.1)))
@@ -206,7 +226,9 @@ function draw(n: number, r: number) {
 
   // La chaussée mouillée : pavés sombres, reflets chauds des vitrines qui s'étirent.
   const sg = x.createLinearGradient(0, 380, 0, VH + 10)
-  sg.addColorStop(0, rgb(mix(col('street'), fog, 0.25))); sg.addColorStop(1, rgb(mix(col('street'), [0, 0, 0], 0.25)))
+  // sous la neige, la chaussée blanchit (un peu grise : on y a marché)
+  const street = mix(col('street'), dn(WX.snowShade, n), snowy * 0.75)
+  sg.addColorStop(0, rgb(mix(street, fog, 0.25))); sg.addColorStop(1, rgb(mix(street, [0, 0, 0], 0.25 * (1 - snowy * 0.6))))
   const edge = shops.slice(0, -2).map(([sx2, ground, sw]) => [sx2 + sw * 1.6, ground]).filter(([px]) => px < fx)
   poly([[-10, 380], ...edge, [fx, 444], [fx, fground], [VW + 10, fground], [VW + 10, VH + 10], [-10, VH + 10]], '#000')
   x.fillStyle = sg; x.fill()
@@ -214,13 +236,16 @@ function draw(n: number, r: number) {
   for (let i = 0; i < 220; i++) { const cx = rnd() * VW, cy = 400 + rnd() * 100; if (cy > 460 - cx * 0.16) { x.beginPath(); x.ellipse(cx, cy, 5, 1.6, 0, 0, TAU); x.fill() } }
   for (const [sx2, ground, sw] of shops) {
     const rg = x.createLinearGradient(0, ground, 0, ground + 46)
-    rg.addColorStop(0, `rgba(255,205,130,${(0.18 + n * 0.3 + r * 0.1).toFixed(2)})`); rg.addColorStop(1, 'rgba(255,205,130,0)')
+    rg.addColorStop(0, `rgba(255,205,130,${((0.18 + n * 0.3 + r * 0.1) * (1 - snowy * 0.5)).toFixed(2)})`); rg.addColorStop(1, 'rgba(255,205,130,0)')
     x.fillStyle = rg; x.fillRect(sx2, Math.max(ground, 452), sw, 46)
   }
   x.restore()
+  // La tempête de neige efface tout dans le blanc ; des flocons immobiles donnent la profondeur.
+  paintWhiteout(x, W, H, w, 0.5, 0.15)
+  paintFlakes(x, W, H, w, 9)
 
-  // Pluie sur la vitre : traînées obliques, plus nombreuses quand il pleut fort.
-  x.strokeStyle = `rgba(225,235,248,${(0.08 + r * 0.22).toFixed(2)})`
+  // Pluie sur la vitre : traînées obliques, plus nombreuses quand il pleut fort (sous la neige, la vitre sèche).
+  x.strokeStyle = `rgba(225,235,248,${((0.08 + r * 0.22) * (1 - w.s * 0.85)).toFixed(2)})`
   x.lineWidth = 1.6
   for (let i = 0; i < 40 + r * 120; i++) {
     const sx = VX + ((i * 97) % VW), sy = VY + ((i * 61) % VH)
@@ -229,22 +254,17 @@ function draw(n: number, r: number) {
   tex.needsUpdate = true
 }
 
-/** La vue, redessinée quand le jour / nuit ou la pluie changent (par petits pas : c'est une grande image). */
+/** La vue, redessinée quand le jour / nuit ou la météo changent (par petits pas : c'est une grande image). */
 export function Skyline() {
-  const drawn = useRef({ n: -1, r: -1 })
-  useFrame(() => {
-    const d = drawn.current, dn = Math.abs(mood.night - d.n), dr = Math.abs(mood.rain - d.r)
-    const settled = (v: number) => v === 0 || v === 1
-    if (dn > 0.06 || dr > 0.06 || ((dn > 0.001 || dr > 0.001) && settled(mood.night) && settled(mood.rain))) {
-      draw(smooth(mood.night), smooth(mood.rain))
-      d.n = mood.night
-      d.r = mood.rain
-    }
-  })
+  useRepaint(draw)
   return (
-    <mesh position={[1.0, 2.6, -3.62]} raycast={noRay}>
-      <planeGeometry args={[3.6, 2.8]} />
-      <meshBasicMaterial map={tex} />
-    </mesh>
+    <>
+      <mesh position={[1.0, 2.6, -3.62]} raycast={noRay}>
+        <planeGeometry args={[3.6, 2.8]} />
+        <meshBasicMaterial map={tex} />
+      </mesh>
+      <FlashVeil position={[1.4, 3.0, -3.6]} size={[2.8, 2.2]} />
+      <ViewFlakes x={[WIN.x0 - 0.3, WIN.x1 + 0.3]} y={[WIN.y0 - 0.25, WIN.y1 + 0.15]} z={[-3.56, -3.42]} n={80} />
+    </>
   )
 }

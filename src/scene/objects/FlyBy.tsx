@@ -29,13 +29,15 @@ const R = [Math.SQRT1_2, 0, -Math.SQRT1_2], BACK = -6, FROM = -10, SPAN = 20
  * De loin en loin (toutes les une à deux minutes et demie), un oiseau qui traverse le ciel derrière la pièce en battant des ailes,
  * le jour ; avec `plane`, la nuit, un avion lointain à la place, dont le feu clignote. `color` : le corps de l'oiseau, `wing` : ses ailes
  * (une mouette blanche aux ailes gris perle, qui se détache sur un ciel clair). `height` : la hauteur de son passage, juste au-dessus
- * des murs vus de loin (il passe derrière la pièce). Rien avec `prefers-reduced-motion`, ni onglet caché.
+ * des murs vus de loin (il passe derrière la pièce). Rien avec `prefers-reduced-motion`, ni onglet caché, ni par mauvais temps.
  */
 export function FlyBy({ color = 0xffffff, wing = color, height = 2.2, plane = false }: { color?: number; wing?: number; height?: number; plane?: boolean }) {
   const g = useRef<Group>(null!), wings = useRef<Mesh[]>([]), lamp = useRef<Sprite>(null!), bird = useRef<Group>(null!), jet = useRef<Group>(null!)
   const t = useRef(-1), kind = useRef<'bird' | 'plane'>('bird'), flap = useRef(0)
   useEvery(60, 150, () => {
     if (t.current >= 0) return // il est encore en route
+    // Ni oiseau ni avion sous la pluie, l'orage ou la neige (comme le ciel du fond, ui/SkyLife.tsx).
+    if (Math.max(mood.rain, mood.snow, mood.storm) > 0.3) return
     // Au crépuscule, ni l'un ni l'autre : on attend que le soir ou le jour soit là.
     if (mood.night < 0.2) kind.current = 'bird'
     else if (plane && mood.night > 0.8) kind.current = 'plane'

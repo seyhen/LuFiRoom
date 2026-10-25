@@ -4,9 +4,12 @@ import { Color, MeshBasicMaterial, Object3D, SphereGeometry, type InstancedMesh 
 import { isActive, useStore } from '../state/store'
 import { TAU, rand, smooth } from '../math'
 import { mood, reduceMotion } from './anim'
+import { whiteout } from './paint'
 import { noRay } from './parts'
 
-const dot = new SphereGeometry(1, 6, 4)
+/** Un flocon, une poussière : une petite sphère à peu de faces (elles sont des centaines). */
+export const DOT = new SphereGeometry(1, 6, 4)
+const dot = DOT
 const dummy = new Object3D()
 
 interface Flake {
@@ -23,17 +26,22 @@ const INSIDE = { x: [-3.5, 3.4], z: [-3.5, 3.4], top: 4.5 }
 const SNOW = { n: 150, x: [-7.5, 7.5], z: [-7.5, 7.5], y: [-1.7, 8.2] }
 const snowMat = new MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9, depthWrite: false })
 
-/** La neige qui tombe autour de la cabane, comme dans une boule à neige. Le vent (la fenêtre ouverte) la pousse de côté. */
+/**
+ * La neige qui tombe autour de la cabane, comme dans une boule à neige. Le vent (la fenêtre ouverte) et la tempête de neige la
+ * poussent de côté ; sous la pluie, c'est de la neige fondue.
+ */
 export function Snowfall() {
   const ref = useRef<InstancedMesh>(null!), gust = useRef(0)
   const flakes = useMemo(() => Array.from({ length: SNOW.n }, (): Flake => ({ x: rand(SNOW.x[0], SNOW.x[1]), y: rand(SNOW.y[0], SNOW.y[1]), z: rand(SNOW.z[0], SNOW.z[1]), v: rand(0.28, 0.6), s: rand(0.03, 0.06), ph: rand(0, TAU) })), [])
   useFrame(({ clock }, delta) => {
     const dt = reduceMotion ? 0 : Math.min(delta, 0.05), t = clock.elapsedTime
     gust.current += ((isActive(useStore.getState(), 'window') ? 1 : 0) - gust.current) * Math.min(1, dt * 1.2)
-    const wind = gust.current * (0.9 + Math.sin(t * 0.8) * 0.4)
+    // Comme derrière la fenêtre : neige fondue sous la pluie (plus fine, plus rapide), poussée de côté par la tempête de neige.
+    const sleet = smooth(mood.rain), wo = whiteout({ n: 0, r: 0, s: smooth(mood.snow), st: 0 })
+    const wind = (gust.current + wo * 1.3) * (0.9 + Math.sin(t * 0.8) * 0.4), fall = 1 + sleet * 1.6 + wo * 1.1, size = 1 - sleet * 0.4
     flakes.forEach((f, i) => {
-      f.y -= f.v * dt
-      f.x += (Math.sin(t * 0.6 + f.ph) * 0.14 - wind) * dt
+      f.y -= f.v * dt * fall
+      f.x += (Math.sin(t * 0.6 + f.ph) * 0.14 * (1 - sleet) - wind) * dt
       f.z += Math.cos(t * 0.5 + f.ph) * 0.08 * dt
       if (f.y < SNOW.y[0]) { f.y = SNOW.y[1]; f.x = rand(SNOW.x[0], SNOW.x[1]); f.z = rand(SNOW.z[0], SNOW.z[1]) }
       if (f.x < SNOW.x[0]) f.x = SNOW.x[1]
@@ -46,7 +54,7 @@ export function Snowfall() {
         k *= 1 - Math.min(1, Math.max(0, m / 0.6))
       }
       dummy.position.set(f.x, f.y, f.z)
-      dummy.scale.setScalar(f.s * k)
+      dummy.scale.set(f.s * k * size, f.s * k * (size + sleet * 0.5), f.s * k * size)
       dummy.updateMatrix()
       ref.current.setMatrixAt(i, dummy.matrix)
     })

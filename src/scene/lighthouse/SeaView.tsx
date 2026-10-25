@@ -3,7 +3,9 @@ import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, Color, type Group, type Mesh, type MeshBasicMaterial, type Sprite } from 'three'
 import { isActive, useStore } from '../../state/store'
 import { TAU, approach, smooth } from '../../math'
-import { dn, poly, rgb, seeded, usePainted, canvasTex } from '../paint'
+import { clearOf, dn, mix, paintFlakes, paintWhitecaps, paintWhiteout, poly, rgb, seeded, skyWx, snowLine, usePainted, canvasTex, weathered, type Wx } from '../paint'
+import { FlashVeil } from '../objects/FlashVeil'
+import { ViewFlakes } from '../objects/ViewFlakes'
 import { Part, SPH, cyl, noRay } from '../parts'
 import { mood, reduceMotion } from '../anim'
 import { glowTex } from '../textures'
@@ -27,48 +29,58 @@ const P = {
   cloud: ['#59657a', '#1a2444'], cloudLit: ['#e8b27a', '#5a6e9c'],
   seaFar: ['#3d6a84', '#15284c'], seaNear: ['#173a52', '#060f26'],
   rock: ['#242c3a', '#04070f'], rockWet: ['#5c6a80', '#26385a'],
+  rainSky: ['#7c8494', '#141a30'], stormSea: ['#3c4c58', '#0a1222'],
 } as const
 
-function draw(x: CanvasRenderingContext2D, n: number) {
-  const r = seeded(31), c = (k: keyof typeof P) => rgb(dn(P[k], n))
+/**
+ * Le ciel de tempête et la mer. La pluie ferme la trouée d'ambre ; l'orage noircit les nuages, grise la mer, la couvre de
+ * moutons et renvoie le cargo au port ; la neige blanchit le ciel et les rochers, la tempête de neige efface l'horizon.
+ */
+function draw(x: CanvasRenderingContext2D, n: number, rain: number, w: Wx) {
+  const r = seeded(31), clear = clearOf(w), shut = Math.max(rain * 0.7, w.st, w.s)
+  const c = (k: keyof typeof P, far = 0) => rgb(weathered(dn(P[k], n), w, far))
+  const skyC = (k: keyof typeof P) => rgb(skyWx(mix(dn(P[k], n), dn(P.rainSky, n), rain * 0.5 + w.st * 0.3), w))
   const sky = x.createLinearGradient(0, 0, 0, HORIZON)
-  sky.addColorStop(0, c('skyTop')); sky.addColorStop(0.55, c('skyMid')); sky.addColorStop(1, c('skyLow'))
+  sky.addColorStop(0, skyC('skyTop')); sky.addColorStop(0.55, skyC('skyMid')); sky.addColorStop(1, skyC('skyLow'))
   x.fillStyle = sky; x.fillRect(0, 0, W, HORIZON + 2)
   // les étoiles, entre les nuages, la nuit
-  if (n > 0.05) for (let i = 0; i < 70; i++) { x.fillStyle = `rgba(255,248,230,${(0.25 + r() * 0.6) * n})`; x.fillRect(r() * W, r() * HORIZON * 0.8, r() < 0.1 ? 2.2 : 1.2, r() < 0.1 ? 2.2 : 1.2) }
+  if (n > 0.05) for (let i = 0; i < 70; i++) { x.fillStyle = `rgba(255,248,230,${(0.25 + r() * 0.6) * n * clear})`; x.fillRect(r() * W, r() * HORIZON * 0.8, r() < 0.1 ? 2.2 : 1.2, r() < 0.1 ? 2.2 : 1.2) }
   else for (let i = 0; i < 70; i++) { r(); r(); r(); r() }
   // la lune, voilée
-  if (n > 0.05) {
-    const mx = 330, my = 150, gl = x.createRadialGradient(mx, my, 0, mx, my, 120)
-    gl.addColorStop(0, `rgba(226,232,255,${0.5 * n})`); gl.addColorStop(1, 'rgba(210,220,255,0)')
+  if (n > 0.05 && clear > 0.01) {
+    const k = n * clear, mx = 330, my = 150, gl = x.createRadialGradient(mx, my, 0, mx, my, 120)
+    gl.addColorStop(0, `rgba(226,232,255,${0.5 * k})`); gl.addColorStop(1, 'rgba(210,220,255,0)')
     x.fillStyle = gl; x.fillRect(0, 0, W, HORIZON)
-    x.fillStyle = `rgba(250,248,238,${n})`; x.beginPath(); x.arc(mx, my, 20, 0, TAU); x.fill()
+    x.fillStyle = `rgba(250,248,238,${k})`; x.beginPath(); x.arc(mx, my, 20, 0, TAU); x.fill()
   }
   // les nuages de tempête : de longs bancs sombres, la lumière rasante les borde de dessous
   for (let i = 0; i < 12; i++) {
     const py = 60 + (i / 12) * (HORIZON - 80) + r() * 14, pw = 90 + r() * 200, px = r() * W
-    x.fillStyle = rgb(dn(P.cloud, n), 0.92)
+    x.fillStyle = rgb(skyWx(mix(dn(P.cloud, n), [8, 10, 18], w.st * 0.35), { ...w, st: w.st * 0.3 }), 0.92)
     x.beginPath(); x.ellipse(px, py, pw, 14 + r() * 16, 0, 0, TAU); x.ellipse(px + pw * 0.4, py - 10, pw * 0.5, 11 + r() * 9, 0, 0, TAU); x.fill()
-    x.fillStyle = rgb(dn(P.cloudLit, n), 0.55)
+    x.fillStyle = rgb(skyWx(dn(P.cloudLit, n), w), 0.55 * (1 - shut * 0.8))
     x.beginPath(); x.ellipse(px, py + 12, pw * 0.9, 3 + r() * 3, 0, 0, TAU); x.fill()
   }
   // la trouée d'ambre au ras de l'horizon
   const gap = x.createLinearGradient(0, HORIZON - 40, 0, HORIZON)
-  gap.addColorStop(0, 'rgba(255,200,130,0)'); gap.addColorStop(1, `rgba(255,205,140,${0.55 * (1 - n * 0.85)})`)
+  gap.addColorStop(0, 'rgba(255,200,130,0)'); gap.addColorStop(1, `rgba(255,205,140,${0.55 * (1 - n * 0.85) * (1 - shut)})`)
   x.fillStyle = gap; x.fillRect(0, HORIZON - 40, W, 40)
   // la mer
   const sea = x.createLinearGradient(0, HORIZON, 0, H)
-  sea.addColorStop(0, c('seaFar')); sea.addColorStop(1, c('seaNear'))
+  const seaC = (k: keyof typeof P, far: number) => rgb(weathered(mix(dn(P[k], n), dn(P.stormSea, n), w.st * 0.7 + w.s * 0.3), { ...w, st: 0 }, far))
+  sea.addColorStop(0, seaC('seaFar', 0.8)); sea.addColorStop(1, seaC('seaNear', 0.2))
   x.fillStyle = sea; x.fillRect(0, HORIZON, W, H - HORIZON)
   // le reflet : ambre le jour sous la trouée, argent la nuit sous la lune
   const gx = n < 0.5 ? 240 : 330, tint = n < 0.5 ? '255,214,150' : '226,232,255'
   for (let i = 0; i < 40; i++) {
     const k = r(), py = HORIZON + 3 + k * k * (H - HORIZON - 70), spread = 14 + k * 90
-    x.fillStyle = `rgba(${tint},${(0.7 - k * 0.45) * (n < 0.5 ? 0.9 - n : 0.5 + n * 0.4)})`
+    x.fillStyle = `rgba(${tint},${(0.7 - k * 0.45) * (n < 0.5 ? 0.9 - n : 0.5 + n * 0.4) * (n < 0.5 ? 1 - shut : clear)})`
     x.fillRect(gx - spread / 2 + r() * spread * 0.6, py, 8 + r() * 28, 2 + k * 2)
   }
   // des rouleaux plus sombres, au creux des vagues
   for (let i = 0; i < 60; i++) { const k = r(), py = HORIZON + 6 + k * (H - HORIZON - 40); x.fillStyle = `rgba(4,18,30,${0.1 + k * 0.18})`; x.fillRect(r() * W, py, 14 + k * 70, 2 + k * 3) }
+  // la mer d'orage : des moutons partout
+  paintWhitecaps(x, W, HORIZON, H - 30, w, 41)
   // la bouée, loin à gauche
   x.fillStyle = rgb(dn(['#a8323a', '#401820'], n)); poly(x, [[170, 338], [178, 322], [186, 338]], x.fillStyle as string)
   x.fillStyle = rgb(dn(['#2b2f3a', '#080a12'], n)); x.fillRect(176, 316, 4, 8)
@@ -78,6 +90,11 @@ function draw(x: CanvasRenderingContext2D, n: number) {
   poly(x, [[300, H], [340, 458], [380, 448], [410, 424], [440, 408], [470, 420], [470, H]], rock)
   x.strokeStyle = wet; x.lineWidth = 2
   x.beginPath(); x.moveTo(112, 389); x.lineTo(140, 411); x.moveTo(380, 449); x.lineTo(410, 425); x.moveTo(440, 409); x.lineTo(470, 421); x.stroke()
+  // la neige sur le dos des rochers
+  snowLine(x, [[82, 400], [112, 389], [140, 411], [168, 439]], 7, w)
+  snowLine(x, [[342, 457], [380, 449], [410, 425], [440, 409], [468, 420]], 7, w)
+  paintWhiteout(x, W, H - 60, w, 0.6, 0.15)
+  paintFlakes(x, W, H, w, 17)
 }
 
 const crest = [crestTex(3), crestTex(5), crestTex(7), crestTex(9, true)]
@@ -109,7 +126,11 @@ export function SeaView() {
     const q = (t / 240) % 1
     ship.current.position.x = CX + 1.4 - q * 2.8
     ship.current.position.y = CY + (260 - HORIZON) / PX + 0.045 + (reduceMotion ? 0 : Math.sin(t * 0.9) * 0.006)
-    ;(ship.current.material as MeshBasicMaterial).color.copy(day).lerp(night, n)
+    const sm = ship.current.material as MeshBasicMaterial
+    sm.color.copy(day).lerp(night, n)
+    // par gros temps, le cargo reste au port
+    sm.opacity = 1 - smooth(Math.max(mood.storm, Math.max(0, mood.snow - 0.85) / 0.15))
+    ship.current.visible = sm.opacity > 0.01
   })
   return (
     <group userData={LIVE} raycast={noRay}>
@@ -121,10 +142,12 @@ export function SeaView() {
         <planeGeometry args={[0.36, 0.18]} />
         <meshBasicMaterial map={shipTex} transparent depthWrite={false} />
       </mesh>
-      <ScrollLayer map={crest[0]} position={[CX, CY + (260 - HORIZON) / PX - 0.03, Z + 0.006]} size={[2.6, 0.1]} color={[0x9fbccb, 0x4a5e9a]} speed={0.007} bob={[0.006, 0.6]} />
-      <ScrollLayer map={crest[1]} position={[CX, CY - 0.22, Z + 0.008]} size={[2.6, 0.2]} color={[0xb6d0dc, 0x5468a6]} speed={-0.012} bob={[0.014, 0.8]} phase={1} />
-      <ScrollLayer map={crest[2]} position={[CX, CY - 0.48, Z + 0.01]} size={[2.6, 0.3]} color={[0xcfe2ea, 0x6074b4]} speed={0.02} bob={[0.024, 0.7]} phase={2} />
-      <ScrollLayer map={crest[3]} position={[CX, CY - 0.7, Z + 0.012]} size={[2.6, 0.28]} color={[0xffffff, 0x8a98d0]} speed={-0.008} bob={[0.07, 0.5]} phase={0.5} />
+      <ScrollLayer map={crest[0]} position={[CX, CY + (260 - HORIZON) / PX - 0.03, Z + 0.006]} size={[2.6, 0.1]} color={[0x9fbccb, 0x4a5e9a]} storm={[0x8e9aa2, 0x3a4668]} swell={1} snow={[0xdde4ea, 0x7a88b0]} speed={0.007} bob={[0.006, 0.6]} />
+      <ScrollLayer map={crest[1]} position={[CX, CY - 0.22, Z + 0.008]} size={[2.6, 0.2]} color={[0xb6d0dc, 0x5468a6]} storm={[0xa6b0b6, 0x46527a]} swell={1.3} snow={[0xe4eaee, 0x8090b8]} speed={-0.012} bob={[0.014, 0.8]} phase={1} />
+      <ScrollLayer map={crest[2]} position={[CX, CY - 0.48, Z + 0.01]} size={[2.6, 0.3]} color={[0xcfe2ea, 0x6074b4]} storm={[0xc0c8cc, 0x52608a]} swell={1.4} snow={[0xeef2f4, 0x8a98c0]} speed={0.02} bob={[0.024, 0.7]} phase={2} />
+      <ScrollLayer map={crest[3]} position={[CX, CY - 0.7, Z + 0.012]} size={[2.6, 0.28]} color={[0xffffff, 0x8a98d0]} storm={[0xe8ecee, 0x7684b0]} swell={1} speed={-0.008} bob={[0.07, 0.5]} phase={0.5} />
+      <FlashVeil position={[CX, CY, Z + 0.014]} size={[2.6, 2.6]} />
+      <ViewFlakes x={[PORT.x - 1.4, PORT.x + 0.95]} y={[PORT.y - 1.3, PORT.y + 0.95]} z={[-3.76, -3.42]} n={70} size={0.018} />
       <sprite ref={buoy} scale={0.2} position={[wx(178), CY + (260 - 330) / PX, Z + 0.02]} raycast={noRay}>
         <spriteMaterial map={glowTex} color={0xff4a5a} blending={AdditiveBlending} transparent depthWrite={false} opacity={0} />
       </sprite>

@@ -1,10 +1,13 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { CanvasTexture } from 'three'
-import { TAU, rand, smooth } from '../../math'
+import { TAU, rand } from '../../math'
 import { mood, reduceMotion } from '../anim'
-import { noRay } from '../parts'
+import { WX, clearOf, dn, paintFlakes, paintWhiteout, skyWx, useRepaint, weathered, type Wx } from '../paint'
+import { WIN, noRay } from '../parts'
 import { makeCanvas } from '../textures'
+import { FlashVeil } from '../objects/FlashVeil'
+import { ViewFlakes } from '../objects/ViewFlakes'
 
 type RGB = [number, number, number]
 const hex = (h: string): RGB => {
@@ -24,14 +27,19 @@ const stars = Array.from({ length: 55 }, () => [rand(50, 470), rand(70, 270), ra
 const [canvas, x] = makeCanvas(512, 400)
 const tex = new CanvasTexture(canvas)
 
-/** n : nuit, r : pluie (0 → 1). Soleil le jour, lune et étoiles la nuit, voilés par la pluie. */
-function drawSky(n: number, r: number) {
-  const top = mix(mix(SK.dTop, SK.nTop, n), mix(SK.rdTop, SK.rnTop, n), r)
-  const bot = mix(mix(SK.dBot, SK.nBot, n), mix(SK.rdBot, SK.rnBot, n), r)
+/**
+ * Soleil le jour, lune et étoiles la nuit, voilés par la pluie ; l'orage fonce le ciel vers l'ardoise ; la neige le blanchit et
+ * couvre les collines, la tempête de neige les efface dans la brume.
+ */
+function drawSky(w: Wx) {
+  const { n, r } = w
+  const top = skyWx(mix(mix(SK.dTop, SK.nTop, n), mix(SK.rdTop, SK.rnTop, n), r), w)
+  const bot = skyWx(mix(mix(SK.dBot, SK.nBot, n), mix(SK.rdBot, SK.rnBot, n), r), w)
   const g = x.createLinearGradient(0, 60, 0, 360)
   g.addColorStop(0, rgb(top)); g.addColorStop(1, rgb(bot))
   x.fillStyle = g; x.fillRect(0, 0, 512, 400)
-  const sa = n * (1 - r * 0.9)
+  const clear = clearOf({ ...w, r: 0 })
+  const sa = n * (1 - r * 0.9) * clear
   if (sa > 0.01) {
     for (const s of stars) {
       x.fillStyle = `rgba(255,248,230,${(sa * (0.35 + 0.65 * s[3])).toFixed(3)})`
@@ -42,17 +50,22 @@ function drawSky(n: number, r: number) {
     x.fillStyle = mg; x.fillRect(220, 40, 220, 220)
     x.fillStyle = `rgba(255,245,218,${sa})`; x.beginPath(); x.arc(330, 150, 25, 0, TAU); x.fill()
   }
-  const su = (1 - n) * (1 - r * 0.85)
+  const su = (1 - n) * (1 - r * 0.85) * clear
   if (su > 0.01) {
     const sg = x.createRadialGradient(140, 170, 10, 140, 170, 90)
     sg.addColorStop(0, `rgba(255,244,205,${0.7 * su})`); sg.addColorStop(1, 'rgba(255,244,205,0)')
     x.fillStyle = sg; x.fillRect(40, 70, 200, 200)
     x.fillStyle = `rgba(255,247,220,${su})`; x.beginPath(); x.arc(140, 170, 26, 0, TAU); x.fill()
   }
-  x.fillStyle = rgb(mix(SK.h1D, SK.h1N, n))
-  x.beginPath(); x.ellipse(130, 372, 230, 72, 0, 0, TAU); x.ellipse(450, 380, 220, 84, 0, 0, TAU); x.fill()
-  x.fillStyle = rgb(mix(SK.h2D, SK.h2N, n))
-  x.beginPath(); x.ellipse(300, 400, 260, 58, 0, 0, TAU); x.fill()
+  // les collines : lilas, ou blanches sous la neige (celle de devant plus claire, celle de derrière dans l'ombre)
+  const snowy = Math.min(1, w.s * 1.4)
+  x.fillStyle = rgb(weathered(mix(mix(SK.h1D, SK.h1N, n), dn(WX.snowShade, n), snowy), w, 0.6))
+  // (leur sommet affleure au bas de la fenêtre : c'est là qu'on voit la neige tenir)
+  x.beginPath(); x.ellipse(130, 340, 230, 72, 0, 0, TAU); x.ellipse(450, 348, 220, 84, 0, 0, TAU); x.fill()
+  x.fillStyle = rgb(weathered(mix(mix(SK.h2D, SK.h2N, n), dn(WX.snow, n), snowy), w, 0.2))
+  x.beginPath(); x.ellipse(300, 370, 260, 58, 0, 0, TAU); x.fill()
+  paintWhiteout(x, 512, 400, w, 0.5, 0.25)
+  paintFlakes(x, 512, 400, w, 3)
   tex.needsUpdate = true
 }
 
@@ -73,13 +86,16 @@ function drawShootingStar(t: number, x0: number, y0: number) {
  * file de temps en temps.
  */
 export function WindowView() {
-  const drawn = useRef({ n: -1, r: -1 }), star = useRef({ at: -1, next: 10 + Math.random() * 12, x: 400, y: 50 })
+  const star = useRef({ at: -1, next: 10 + Math.random() * 12, x: 400, y: 50 }), now = useRef<Wx>({ n: 0, r: 0, s: 0, st: 0 })
+  useRepaint((w) => {
+    now.current = w
+    if (star.current.at < 0) drawSky(w)
+  })
   useFrame((_, delta) => {
-    const d = drawn.current, s = star.current
-    const n = smooth(mood.night), r = smooth(mood.rain)
+    const s = star.current, w = now.current
     if (!reduceMotion) {
       s.next -= Math.min(delta, 0.05)
-      if (s.at < 0 && s.next <= 0 && n > 0.95 && r < 0.05) {
+      if (s.at < 0 && s.next <= 0 && w.n > 0.95 && mood.rain < 0.05 && mood.snow < 0.05 && mood.storm < 0.05) {
         s.at = 0
         s.next = 22 + Math.random() * 30
         s.x = 380 + Math.random() * 90
@@ -88,21 +104,19 @@ export function WindowView() {
     }
     if (s.at >= 0) {
       s.at += Math.min(delta, 0.05)
-      drawSky(n, r)
+      drawSky(w)
       if (s.at < 0.9) drawShootingStar(s.at / 0.9, s.x, s.y)
       else s.at = -1
-      d.n = mood.night
-      d.r = mood.rain
-    } else if (Math.abs(mood.night - d.n) > 0.01 || Math.abs(mood.rain - d.r) > 0.01) {
-      drawSky(n, r)
-      d.n = mood.night
-      d.r = mood.rain
     }
   })
   return (
-    <mesh position={[1.0, 2.6, -3.62]} raycast={noRay}>
-      <planeGeometry args={[3.6, 2.8]} />
-      <meshBasicMaterial map={tex} />
-    </mesh>
+    <>
+      <mesh position={[1.0, 2.6, -3.62]} raycast={noRay}>
+        <planeGeometry args={[3.6, 2.8]} />
+        <meshBasicMaterial map={tex} />
+      </mesh>
+      <FlashVeil position={[1.4, 3.0, -3.6]} size={[2.8, 2.2]} />
+      <ViewFlakes x={[WIN.x0 - 0.3, WIN.x1 + 0.3]} y={[WIN.y0 - 0.25, WIN.y1 + 0.15]} z={[-3.56, -3.42]} n={80} />
+    </>
   )
 }

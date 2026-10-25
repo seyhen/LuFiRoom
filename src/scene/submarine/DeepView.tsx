@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, Color, MeshBasicMaterial, Object3D, SphereGeometry, type InstancedMesh, type Mesh, type PointLight, type Sprite } from 'three'
 import { isActive, useStore } from '../../state/store'
 import { TAU, approach, rand, smooth } from '../../math'
-import { canvasTex, dn, poly, rgb, seeded, usePainted } from '../paint'
+import { canvasTex, dn, mix, poly, rgb, seeded, usePainted, type Wx } from '../paint'
 import { Part, cyl, noRay } from '../parts'
 import { mood, reduceMotion } from '../anim'
 import { glowTex } from '../textures'
@@ -25,14 +25,23 @@ const P = {
   rock: ['#2b6a70', '#0a2a3a'], coral: ['#e8806a', '#7a3a58'], star: ['#f29a52', '#7a4a4a'],
 } as const
 
-function draw(x: CanvasRenderingContext2D, n: number) {
+// Sous un ciel couvert, la surface est plus terne : l'eau du haut perd son turquoise lumineux.
+const DULL: [string, string] = ['#6fa8a8', '#16566e']
+
+/**
+ * L'abysse. On ne voit ni la pluie ni la neige ici, seulement la lumière qui descend de la surface : plus terne quand le ciel est
+ * couvert (pluie, neige), plus encore sous l'orage. Aucun éclair ne descend jusque-là.
+ */
+function draw(x: CanvasRenderingContext2D, n: number, rain: number, w: Wx) {
   const r = seeded(21), c = (k: keyof typeof P, a = 1) => rgb(dn(P[k], n), a)
+  const dull = Math.max(rain * 0.7, w.s * 0.6, w.st)
   const water = x.createLinearGradient(0, 0, 0, H)
-  water.addColorStop(0, c('top')); water.addColorStop(0.28, c('upper')); water.addColorStop(0.62, c('mid')); water.addColorStop(1, c('low'))
+  water.addColorStop(0, rgb(mix(dn(P.top, n), dn(DULL, n), dull * 0.75))); water.addColorStop(0.28, rgb(mix(dn(P.upper, n), dn(DULL, n), dull * 0.3)))
+  water.addColorStop(0.62, c('mid')); water.addColorStop(1, c('low'))
   x.fillStyle = water; x.fillRect(0, 0, W, H)
-  // une lueur de surface, loin au-dessus
+  // une lueur de surface, loin au-dessus (voilée par un ciel couvert)
   const sun = x.createRadialGradient(360, 0, 0, 360, 0, 300)
-  sun.addColorStop(0, `rgba(255,250,220,${0.55 - n * 0.4})`); sun.addColorStop(1, 'rgba(255,250,220,0)')
+  sun.addColorStop(0, `rgba(255,250,220,${(0.55 - n * 0.4) * (1 - dull * 0.65)})`); sun.addColorStop(1, 'rgba(255,250,220,0)')
   x.fillStyle = sun; x.fillRect(0, 0, W, 320)
   // l'épave d'un galion, couchée sur le flanc, dans la brume bleue : coque, château de poupe, deux mâts brisés
   x.save()
@@ -122,7 +131,9 @@ export function DeepView() {
     // les rayons se balancent, plus faibles la nuit
     const sway = still ? 0 : Math.sin(t * 0.25) * 0.16
     rays.current.position.x = CX + sway
-    ;(rays.current.material as MeshBasicMaterial).opacity = 0.5 - n * 0.36 + (still ? 0 : Math.sin(t * 0.7) * 0.05)
+    // et s'affaiblissent quand le ciel, là-haut, est couvert
+    const dull = Math.max(mood.rain * 0.7, mood.snow * 0.6, mood.storm)
+    ;(rays.current.material as MeshBasicMaterial).opacity = (0.5 - n * 0.36 + (still ? 0 : Math.sin(t * 0.7) * 0.05)) * (1 - smooth(dull) * 0.55)
     // les méduses pulsent et dérivent
     jellies.current.forEach((s, i) => {
       const j = jelly[i], u = still ? 0 : t
@@ -156,10 +167,10 @@ export function DeepView() {
     wm.opacity = alpha.current * edge * (0.85 - n * 0.1)
     // la lumière turquoise du hublot sur le plancher : deux voiles qui glissent en sens contraires, et vacillent
     const shimmer = 0.88 + (still ? 0 : Math.sin(t * 1.3) * 0.07 + Math.sin(t * 2.9) * 0.05)
-    light.current.intensity = (1.45 - n * 0.4) * shimmer * Math.PI
+    light.current.intensity = (1.45 - n * 0.4) * shimmer * (1 - smooth(dull) * 0.25) * Math.PI
     for (const [k, m] of [patchA.current, patchB.current].entries()) {
       const mat = m.material as MeshBasicMaterial
-      mat.opacity = (0.34 - n * 0.14) * shimmer
+      mat.opacity = (0.34 - n * 0.14) * shimmer * (1 - smooth(dull) * 0.35)
       if (!still) { mat.map!.offset.x = (t * (k ? -0.012 : 0.01)) % 1; mat.map!.offset.y = (t * (k ? 0.008 : -0.011)) % 1 }
     }
   })

@@ -20,11 +20,13 @@ const rayTex = canvasTex(64, 256, (x) => {
 // Les rais : [x, largeur, inclinaison, opacité].
 const RAYS = [[0.1, 0.5, 0.0, 0.5], [0.75, 0.7, 0.05, 0.7], [1.5, 0.45, 0.08, 0.45], [2.2, 0.6, 0.12, 0.55]] as const
 
-/** Les rais du soleil couchant qui entrent par la grande porte et s'allongent sur le plancher. Ils s'éteignent le soir. */
+/** Les rais du soleil couchant qui entrent par la grande porte et s'allongent sur le plancher. Ils s'éteignent le soir, et par gros temps. */
 export function SunRays() {
   const mats = useRef<MeshBasicMaterial[]>([])
   useFrame(({ clock }) => {
-    const k = 1 - smooth(mood.night), t = clock.elapsedTime
+    // pas de soleil sous la pluie, l'orage ou la neige : les rais s'effacent
+    const gray = Math.max(mood.rain, mood.storm, mood.snow * 0.9)
+    const k = (1 - smooth(mood.night)) * (1 - smooth(gray) * 0.95), t = clock.elapsedTime
     mats.current.forEach((m, i) => (m.opacity = k * RAYS[i][3] * (reduceMotion ? 1 : 0.85 + Math.sin(t * 0.6 + i * 1.7) * 0.15)))
   })
   return (

@@ -2,6 +2,8 @@ import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { PlaneGeometry, type Group, type Mesh } from 'three'
 import { smooth } from '../../math'
+import { WX, clearOf, dn, hex, rgb, weathered, whiteout } from '../paint'
+import { snowTop } from '../snowTop'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { mood, useSquash } from '../anim'
 import { LIVE, Static } from '../Static'
@@ -78,13 +80,23 @@ function Tower({ x, z, w, d, h, m, kind, seed, far }: { x: number; z: number; w:
  * La ville autour du toit : deux rangées de tours derrière le parapet du fond, d'autres à gauche. Leurs fenêtres s'allument
  * le soir, la flèche clignote en rouge, la lune se lève. On la touche pour entendre la ville.
  */
+// Sous la neige, les toits des tours, leurs corniches et leurs gradins blanchissent (voir snowTop.ts) ; les façades restent nues.
+for (const m of [...R.tower, R.towerTrim, R.far]) snowTop(m)
+const FAR_TINT = hex('#' + R.far.color.getHexString())
+
 export function Skyline() {
   const g = useRef<Group>(null!), beacon = useRef<Mesh>(null!), moon = useRef<Mesh>(null!)
   useSquash('city', g)
   useFrame(({ clock }) => {
-    const n = smooth(mood.night)
+    const n = smooth(mood.night), w = { n, r: smooth(mood.rain), s: smooth(mood.snow), st: smooth(mood.storm) }
     R.windows.emissiveIntensity = 0.08 + n * 1.0
-    R.moon.opacity = n
+    // la lune se cache derrière la pluie, l'orage ou la neige
+    R.moon.opacity = n * clearOf(w) ** 2
+    // les tours du fond : plus sombres sous l'orage, effacées dans le blanc par la tempête de neige
+    R.far.color.setStyle(rgb(weathered(FAR_TINT, { ...w, n: 0 }, 1)))
+    const wo = whiteout(w)
+    if (wo > 0) R.far.emissive.setStyle(rgb(dn(WX.haze, n))).multiplyScalar(wo * 0.12)
+    else R.far.emissive.setRGB(0, 0, 0)
     beacon.current.visible = Math.sin(clock.elapsedTime * 2.2) > 0.3
   })
   return (

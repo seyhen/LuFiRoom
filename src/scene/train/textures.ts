@@ -59,21 +59,27 @@ export const carpetTex = canvasTex(256, 256, (x) => {
 // ── Le paysage, en bandes qui défilent. Chaque bande se répète en largeur (son bord droit continue son bord gauche).
 const LW = 1024
 
-/** Collines lointaines bleutées, un clocher. */
-export const farHillsTex = canvasTex(LW, 128, (x) => {
+/** Collines lointaines bleutées, un clocher. `snow` : les mêmes sous la neige (collines blanches, toits blancs). */
+const farHillsDraw = (snow: boolean) => (x: CanvasRenderingContext2D) => {
   const r = seeded(31)
-  x.fillStyle = '#9db8c2'
+  x.fillStyle = snow ? '#dfe6ee' : '#9db8c2'
   x.beginPath(); x.moveTo(0, 128)
   for (let px = 0; px <= LW; px += 8) x.lineTo(px, 70 - Math.sin((px / LW) * TAU * 2) * 18 - Math.sin((px / LW) * TAU * 5 + 1) * 8)
   x.lineTo(LW, 128); x.closePath(); x.fill()
-  x.fillStyle = '#86a6b2'
+  x.fillStyle = snow ? '#ccd6e2' : '#86a6b2'
   x.beginPath(); x.moveTo(0, 128)
   for (let px = 0; px <= LW; px += 8) x.lineTo(px, 92 - Math.sin((px / LW) * TAU * 3 + 2) * 14)
   x.lineTo(LW, 128); x.closePath(); x.fill()
   // un village lointain et son clocher
-  for (let i = 0; i < 9; i++) { x.fillStyle = r() < 0.5 ? '#c9b8a8' : '#b8a898'; x.fillRect(600 + i * 9, 84 - r() * 6, 8, 12) }
-  x.fillStyle = '#c9b8a8'; x.fillRect(640, 62, 6, 28); poly(x, [[638, 62], [643, 50], [648, 62]], '#7a8a96')
-})
+  for (let i = 0; i < 9; i++) {
+    const hy = 84 - r() * 6
+    x.fillStyle = r() < 0.5 ? '#c9b8a8' : '#b8a898'; x.fillRect(600 + i * 9, hy, 8, 12)
+    if (snow) { x.fillStyle = '#f4f7fb'; x.fillRect(599 + i * 9, hy - 2, 10, 3) }
+  }
+  x.fillStyle = '#c9b8a8'; x.fillRect(640, 62, 6, 28); poly(x, [[638, 62], [643, 50], [648, 62]], snow ? '#eef2f7' : '#7a8a96')
+}
+export const farHillsTex = canvasTex(LW, 128, farHillsDraw(false))
+export const farHillsSnowTex = canvasTex(LW, 128, farHillsDraw(true))
 
 /** Les maisons des prés : position, largeur, hauteur, toit. Partagées avec leurs fenêtres allumées. */
 const HOUSES = (() => {
@@ -82,31 +88,36 @@ const HOUSES = (() => {
   return out
 })()
 
-/** Prés et bosquets, fermes et chalets. */
-export const meadowTex = canvasTex(LW, 256, (x) => {
+/** Prés et bosquets, fermes et chalets. `snow` : sous la neige (prés blancs, bosquets et toits poudrés). */
+const meadowDraw = (snow: boolean) => (x: CanvasRenderingContext2D) => {
   const r = seeded(53)
   const field = (y: number, amp: number, k: number, col: string) => {
     x.fillStyle = col; x.beginPath(); x.moveTo(0, 256)
     for (let px = 0; px <= LW; px += 8) x.lineTo(px, y - Math.sin((px / LW) * TAU * k + y) * amp)
     x.lineTo(LW, 256); x.closePath(); x.fill()
   }
-  field(140, 22, 2, '#8fb070')
-  field(175, 16, 3, '#7aa462')
+  field(140, 22, 2, snow ? '#e6ecf3' : '#8fb070')
+  field(175, 16, 3, snow ? '#f2f5f9' : '#7aa462')
   // haies et bosquets
   for (let i = 0; i < 26; i++) {
     const px = r() * LW, py = 150 + r() * 60, s = 10 + r() * 16
-    x.fillStyle = r() < 0.5 ? '#4f7f4f' : '#5d8f56'
+    const dark = r() < 0.5
+    x.fillStyle = snow ? (dark ? '#466a52' : '#517458') : dark ? '#4f7f4f' : '#5d8f56'
     x.beginPath(); x.ellipse(px, py, s, s * 0.8, 0, 0, TAU); x.fill()
+    if (snow) { x.fillStyle = '#f4f7fb'; x.beginPath(); x.ellipse(px, py - s * 0.35, s * 0.85, s * 0.45, 0, Math.PI, TAU); x.fill() }
     x.fillStyle = '#5a4030'; x.fillRect(px - 1.5, py + s * 0.6, 3, 6)
   }
   // les maisons
   for (const hs of HOUSES) {
     x.fillStyle = '#f1e6d4'; x.fillRect(hs.x, hs.y - hs.h, hs.w, hs.h)
     poly(x, [[hs.x - 5, hs.y - hs.h], [hs.x + hs.w / 2, hs.y - hs.h - 16], [hs.x + hs.w + 5, hs.y - hs.h]], '#a8584a')
+    if (snow) poly(x, [[hs.x - 6, hs.y - hs.h - 1], [hs.x + hs.w / 2, hs.y - hs.h - 18], [hs.x + hs.w + 6, hs.y - hs.h - 1], [hs.x + hs.w + 1, hs.y - hs.h + 3], [hs.x + hs.w / 2, hs.y - hs.h - 11], [hs.x - 1, hs.y - hs.h + 3]], '#f6f8fc')
     x.fillStyle = '#6a7a8a'; x.fillRect(hs.x + 6, hs.y - hs.h + 7, 6, 7); x.fillRect(hs.x + hs.w - 12, hs.y - hs.h + 7, 6, 7)
   }
-  field(225, 8, 4, '#6e9a58')
-})
+  field(225, 8, 4, snow ? '#dde5ee' : '#6e9a58')
+}
+export const meadowTex = canvasTex(LW, 256, meadowDraw(false))
+export const meadowSnowTex = canvasTex(LW, 256, meadowDraw(true))
 
 /** Les fenêtres des maisons, allumées la nuit : mêmes positions que dans `meadowTex`. */
 export const meadowLightsTex = canvasTex(LW, 256, (x) => {
@@ -120,8 +131,8 @@ export const meadowLightsTex = canvasTex(LW, 256, (x) => {
   }
 })
 
-/** Tout près de la voie : buissons flous et poteaux télégraphiques avec leurs fils. */
-export const nearTex = canvasTex(LW, 512, (x) => {
+/** Tout près de la voie : buissons flous et poteaux télégraphiques avec leurs fils. `snow` : le talus sous la neige. */
+const nearDraw = (snow: boolean) => (x: CanvasRenderingContext2D) => {
   const r = seeded(19)
   // les fils, qui montent et descendent entre deux poteaux
   x.strokeStyle = 'rgba(40,40,50,.55)'; x.lineWidth = 2
@@ -137,16 +148,19 @@ export const nearTex = canvasTex(LW, 512, (x) => {
   for (const px of poles) {
     x.fillStyle = '#4a3a30'; x.fillRect(px - 5, 60, 10, 452)
     x.fillRect(px - 26, 66, 52, 6)
+    if (snow) { x.fillStyle = '#f4f7fb'; x.fillRect(px - 27, 62, 54, 5) }
     x.fillStyle = '#d8d0c0'; for (const dx of [-22, -10, 10, 22]) x.fillRect(px + dx - 2, 60, 4, 7)
   }
   // le talus et ses buissons, flous de vitesse (étirés en largeur)
   for (let i = 0; i < 40; i++) {
-    const px = r() * LW, py = 380 + r() * 90, w = 40 + r() * 90, h = 30 + r() * 60
-    x.fillStyle = r() < 0.5 ? 'rgba(52,92,58,.95)' : 'rgba(70,110,64,.95)'
+    const px = r() * LW, py = 380 + r() * 90, w = 40 + r() * 90, h = 30 + r() * 60, dark = r() < 0.5
+    x.fillStyle = snow ? (dark ? 'rgba(190,203,219,.97)' : 'rgba(228,235,243,.97)') : dark ? 'rgba(52,92,58,.95)' : 'rgba(70,110,64,.95)'
     x.beginPath(); x.ellipse(px, py, w, h, 0, 0, TAU); x.fill()
   }
-  x.fillStyle = '#4a7a48'; x.fillRect(0, 440, LW, 72)
-})
+  x.fillStyle = snow ? '#e4eaf2' : '#4a7a48'; x.fillRect(0, 440, LW, 72)
+}
+export const nearTex = canvasTex(LW, 512, nearDraw(false))
+export const nearSnowTex = canvasTex(LW, 512, nearDraw(true))
 
 /** Pluie sur la vitre d'un train qui roule : des gouttes et des traînées en biais. */
 export const streakTex = canvasTex(512, 512, (x) => {

@@ -2,7 +2,8 @@ import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, Color, LatheGeometry, Vector2, type SpriteMaterial } from 'three'
 import { smooth } from '../../math'
 import { Part, SPH, noRay } from '../parts'
-import { seeded } from '../paint'
+import { clearOf, hex, rgb, seeded, weathered, whiteout } from '../paint'
+import { snowTop } from '../snowTop'
 import { Foliage } from '../nature/Foliage'
 import { mood } from '../anim'
 import { glowTex } from '../textures'
@@ -27,6 +28,11 @@ const RANGES: [number, number, [number, number, number][]][] = [
 const mists: SpriteMaterial[] = []
 // Les deux rangs : bleu-vert puis bleu lavande le jour, nuit d'encre le soir.
 const DAY = [0x98a4a4, 0xb8bccf].map((c) => new Color(c)), NIGHT = [0x262c48, 0x323c64].map((c) => new Color(c))
+// Sous la neige, les montagnes blanchissent sur leurs pentes douces et leurs cimes, la lisière est poudrée sur le dessus des houppiers.
+O.mountains.slice(1).forEach((m) => snowTop(m, 1, -0.1, 0.35))
+O.forest.forEach((m) => snowTop(m, 0.85, 0.4, 0.8))
+snowTop(O.forestPine, 0.85, 0.3, 0.7)
+const tmp = new Color()
 
 /** Une montagne : profil tourné, base large, flancs creusés, sommet arrondi (rien de pointu). Base y = 0, sommet y = 1. */
 const mountainGeo = (() => {
@@ -44,10 +50,15 @@ const mountainGeo = (() => {
 /** Les montagnes dans la brume au-dessus de la palissade, et la lune qui se lève sur elles le soir. */
 export function Mountains() {
   useFrame(() => {
-    const n = smooth(mood.night)
-    O.mountains.slice(1).forEach((m, i) => m.color.copy(DAY[i]).lerp(NIGHT[i], n))
-    O.moon.opacity = n
-    mists.forEach((m) => (m.opacity = 0.3 - n * 0.24))
+    const n = smooth(mood.night), w = { n, r: smooth(mood.rain), s: smooth(mood.snow), st: smooth(mood.storm) }
+    // les rangs : jour → nuit, puis assombris par l'orage, effacés dans le blanc par la tempête de neige (le second plus loin)
+    O.mountains.slice(1).forEach((m, i) => {
+      tmp.copy(DAY[i]).lerp(NIGHT[i], n)
+      m.color.setStyle(rgb(weathered(hex('#' + tmp.getHexString()), w, 0.5 + i * 0.4)))
+    })
+    O.moon.opacity = n * clearOf(w) ** 2
+    // la brume entre les rangs s'épaissit dans la tempête de neige
+    mists.forEach((m) => (m.opacity = 0.3 - n * 0.24 + whiteout(w) * 0.35))
   })
   return (
     <group raycast={noRay}>

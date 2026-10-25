@@ -2,7 +2,10 @@ import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, BufferGeometry, Float32BufferAttribute, type PointsMaterial } from 'three'
 import { TAU, smooth } from '../../math'
-import { dn, mix, poly, rgb, seeded, usePainted } from '../paint'
+import { WX, clearOf, dn, mix, paintFlakes, paintWhiteout, poly, rgb, seeded, skyWx, snowLine, usePainted, weathered, type Wx } from '../paint'
+import { FlashVeil } from '../objects/FlashVeil'
+import { ViewFlakes } from '../objects/ViewFlakes'
+import { BAY } from './AtelierShell'
 import { noRay } from '../parts'
 import { mood, useWorldPointSize } from '../anim'
 import { glowTex } from '../textures'
@@ -22,17 +25,25 @@ const P = {
   chimney: ['#c9785a', '#5a3a4a'], tower: ['#8a7a6a', '#c9a060'], win: ['#5e6878', '#ffd28a'],
 } as const
 
-function draw(x: CanvasRenderingContext2D, n: number, rain: number) {
-  const r = seeded(33), fog = dn(P.mist, n)
-  const c = (k: keyof typeof P, far = 0) => rgb(mix(dn(P[k], n), fog, rain * (0.15 + far * 0.45)))
+/**
+ * Les toits de Paris. La pluie les voile ; l'orage fonce le ciel ; la neige blanchit le zinc, les chiens-assis, les souches et
+ * les mitrons, la tempête de neige efface la tour Eiffel.
+ */
+function draw(x: CanvasRenderingContext2D, n: number, rain: number, wx: Wx) {
+  const r = seeded(33), fog = dn(P.mist, n), snowy = Math.min(1, wx.s * 1.4), clear = clearOf(wx)
+  const col = (k: keyof typeof P, far = 0) => weathered(mix(dn(P[k], n), fog, rain * (0.15 + far * 0.45)), wx, far)
+  const c = (k: keyof typeof P, far = 0) => rgb(col(k, far))
+  // le zinc sous la neige : blanc, avec un reste de gris
+  const zinc = (far = 0) => rgb(mix(col('zinc', far), weathered(dn(WX.snowShade, n), wx, far), snowy * 0.85))
+  const cap = (pts: number[][], t: number) => snowLine(x, pts, t, wx)
   const sky = x.createLinearGradient(0, 0, 0, cy(1.7))
-  sky.addColorStop(0, c('skyTop', 1)); sky.addColorStop(1, c('skyLow', 1))
+  sky.addColorStop(0, rgb(skyWx(col('skyTop', 1), wx))); sky.addColorStop(1, rgb(skyWx(col('skyLow', 1), wx)))
   x.fillStyle = sky; x.fillRect(0, 0, W, H)
-  if (n > 0.05) for (let i = 0; i < 60; i++) { x.fillStyle = `rgba(255,248,230,${(0.2 + r() * 0.6) * n * (1 - rain * 0.8)})`; x.fillRect(r() * W, r() * cy(2.4), 1.4, 1.4) }
+  if (n > 0.05) for (let i = 0; i < 60; i++) { x.fillStyle = `rgba(255,248,230,${(0.2 + r() * 0.6) * n * (1 - rain * 0.8) * clear})`; x.fillRect(r() * W, r() * cy(2.4), 1.4, 1.4) }
   else for (let i = 0; i < 60; i++) { r(); r() }
   for (let i = 0; i < 9; i++) {
     const px = r() * W, py = 40 + r() * 200, w = 80 + r() * 140
-    x.fillStyle = rgb(mix(dn(P.cloud, n), fog, rain * 0.5), 0.6 + rain * 0.3)
+    x.fillStyle = rgb(skyWx(weathered(mix(dn(P.cloud, n), fog, rain * 0.5), wx, 1), wx), 0.6 + rain * 0.3)
     x.beginPath(); x.ellipse(px, py, w, 18 + r() * 14, 0, 0, TAU); x.fill()
   }
   // la tour Eiffel : quatre pieds, deux étages, la flèche ; dorée la nuit
@@ -40,7 +51,7 @@ function draw(x: CanvasRenderingContext2D, n: number, rain: number) {
   x.fillStyle = c('tower', 0.8)
   if (n > 0.05) {
     const gl = x.createRadialGradient(tx, tt + th * 0.5, 0, tx, tt + th * 0.5, th * 0.8)
-    gl.addColorStop(0, `rgba(255,200,120,${0.3 * n * (1 - rain * 0.5)})`); gl.addColorStop(1, 'rgba(255,200,120,0)')
+    gl.addColorStop(0, `rgba(255,200,120,${0.3 * n * (1 - rain * 0.5) * (1 - wx.s * 0.6)})`); gl.addColorStop(1, 'rgba(255,200,120,0)')
     x.fillStyle = gl; x.fillRect(tx - th, tt - 20, th * 2, th + 40)
     x.fillStyle = c('tower', 0.8)
   }
@@ -55,22 +66,30 @@ function draw(x: CanvasRenderingContext2D, n: number, rain: number) {
       const w = 50 + r() * 90, hh = hgt + r() * 20
       x.fillStyle = c(row % 2 ? 'farWall' : 'far', 0.9 - row * 0.25)
       x.fillRect(px, base - hh, w, hh + 60)
-      poly(x, [[px - 4, base - hh], [px + 10, base - hh - 14], [px + w - 10, base - hh - 14], [px + w + 4, base - hh]], c('zinc', 0.9 - row * 0.25))
+      poly(x, [[px - 4, base - hh], [px + 10, base - hh - 14], [px + w - 10, base - hh - 14], [px + w + 4, base - hh]], zinc(0.9 - row * 0.25))
+      cap([[px + 10, base - hh - 14], [px + w - 10, base - hh - 14]], 4)
       if (n > 0.1 && r() < 0.5) { x.fillStyle = rgb(dn(P.win, n), 0.8 * n); x.fillRect(px + 10 + r() * (w - 20), base - hh + 8 + r() * 10, 5, 6) } else { r(); r(); r() }
       px += w + 4
     }
-    if (row === 0) { const dx = cx(-0.6); x.fillStyle = c('far', 0.9); x.beginPath(); x.arc(dx, base - hgt - 10, 26, Math.PI, 0); x.fill(); x.fillRect(dx - 3, base - hgt - 50, 6, 16) }
+    if (row === 0) {
+      const dx = cx(-0.6); x.fillStyle = c('far', 0.9); x.beginPath(); x.arc(dx, base - hgt - 10, 26, Math.PI, 0); x.fill(); x.fillRect(dx - 3, base - hgt - 50, 6, 16)
+      // la neige sur le haut du dôme
+      if (snowy > 0.01) { x.strokeStyle = rgb(weathered(dn(WX.snow, n), wx, 0.9), snowy); x.lineWidth = 5; x.lineCap = 'round'; x.beginPath(); x.arc(dx, base - hgt - 10, 25, Math.PI * 1.2, Math.PI * 1.8); x.stroke() }
+    }
   }
   // le toit d'en face, tout près : zinc, chiens-assis, souches de cheminée et leurs mitrons
   const roofTop = cy(1.25)
   x.fillStyle = c('wall'); x.fillRect(0, cy(0.7), W, H)
-  poly(x, [[0, cy(0.75)], [0, roofTop + 30], [40, roofTop], [W, roofTop - 10], [W, cy(0.75)]], c('zinc'))
-  x.strokeStyle = rgb(dn(P.zincLit, n), 0.6); x.lineWidth = 2
+  poly(x, [[0, cy(0.75)], [0, roofTop + 30], [40, roofTop], [W, roofTop - 10], [W, cy(0.75)]], zinc())
+  // les tasseaux du zinc : sous la neige, de simples ondulations grises
+  x.strokeStyle = rgb(mix(dn(P.zincLit, n), dn(WX.snowShade, n), snowy * 0.6), 0.6 - snowy * 0.25); x.lineWidth = 2
   for (let px = 20; px < W; px += 22) { x.beginPath(); x.moveTo(px, roofTop + 4); x.lineTo(px - 6, cy(0.75)); x.stroke() }
+  cap([[0, roofTop + 30], [40, roofTop], [W, roofTop - 10]], 8)
   for (const dxu of [-1.0, 0.1, 1.2]) {
     const dx = cx(dxu), dy = cy(0.98)
     x.fillStyle = c('wall'); x.fillRect(dx - 28, dy - 40, 56, 52)
-    poly(x, [[dx - 34, dy - 40], [dx, dy - 66], [dx + 34, dy - 40]], c('zinc'))
+    poly(x, [[dx - 34, dy - 40], [dx, dy - 66], [dx + 34, dy - 40]], zinc())
+    cap([[dx - 32, dy - 41], [dx, dy - 65], [dx + 32, dy - 41]], 6)
     x.fillStyle = n > 0.2 ? rgb(dn(P.win, n)) : c('win'); x.fillRect(dx - 16, dy - 30, 32, 36)
     x.fillStyle = c('wallShade'); x.fillRect(dx - 1.5, dy - 30, 3, 36); x.fillRect(dx - 16, dy - 14, 32, 3)
   }
@@ -78,12 +97,18 @@ function draw(x: CanvasRenderingContext2D, n: number, rain: number) {
     const sx = cx(sxu), sy = roofTop + 6 - (sxu + 1.8) * 4
     x.fillStyle = c('wall'); x.fillRect(sx - sw / 2, sy - 56, sw, 60)
     x.fillStyle = c('wallShade'); x.fillRect(sx - sw / 2, sy - 60, sw, 8)
-    for (let k = 0; k < Math.round(sw / 16); k++) { x.fillStyle = c('chimney'); x.fillRect(sx - sw / 2 + 5 + k * 16, sy - 76, 9, 18); x.fillRect(sx - sw / 2 + 4 + k * 16, sy - 78, 11, 4) }
+    cap([[sx - sw / 2 + 1, sy - 61], [sx + sw / 2 - 1, sy - 61]], 4)
+    for (let k = 0; k < Math.round(sw / 16); k++) {
+      x.fillStyle = c('chimney'); x.fillRect(sx - sw / 2 + 5 + k * 16, sy - 76, 9, 18); x.fillRect(sx - sw / 2 + 4 + k * 16, sy - 78, 11, 4)
+      cap([[sx - sw / 2 + 5 + k * 16, sy - 79], [sx - sw / 2 + 14 + k * 16, sy - 79]], 3) // un bonnet de neige sur chaque mitron
+    }
   }
   x.fillStyle = c('wallShade'); x.fillRect(0, cy(0.75), W, 10)
   for (let px = 30; px < W; px += 90) { x.fillStyle = n > 0.3 && r() < 0.6 ? rgb(dn(P.win, n)) : c('win'); x.fillRect(px, cy(0.62), 34, 50) }
-  // la pluie voile tout
+  // la pluie voile tout, la tempête de neige efface le lointain
   if (rain > 0.02) { x.fillStyle = rgb(fog, rain * 0.25); x.fillRect(0, 0, W, H) }
+  paintWhiteout(x, W, cy(1.0), wx, 0.6, 0.1)
+  paintFlakes(x, W, H, wx, 21)
 }
 
 /** Les toits de Paris, et la tour Eiffel qui scintille à l'heure pile... ici, toutes les quelques secondes, la nuit. */
@@ -100,7 +125,7 @@ export function ParisView() {
   }, [])
   useFrame(({ clock }) => {
     const n = smooth(mood.night), t = clock.elapsedTime
-    sparkle.current.opacity = n * (1 - mood.rain * 0.5) * (0.35 + 0.65 * Math.max(0, Math.sin(t * 9) * Math.sin(t * 0.4)))
+    sparkle.current.opacity = n * (1 - mood.rain * 0.5) * (1 - smooth(mood.storm) * 0.4) * (1 - smooth(mood.snow) * 0.6) * (0.35 + 0.65 * Math.max(0, Math.sin(t * 9) * Math.sin(t * 0.4)))
   })
   return (
     <>
@@ -111,6 +136,8 @@ export function ParisView() {
       <points geometry={geo} raycast={noRay}>
         <pointsMaterial ref={sparkle} map={glowTex} color={0xfff2c8} sizeAttenuation={false} blending={AdditiveBlending} transparent depthWrite={false} opacity={0} />
       </points>
+      <FlashVeil position={[0.25, 1.85, -3.68]} size={[4.1, 3.4]} />
+      <ViewFlakes x={[BAY.x0 - 0.2, BAY.x1 + 0.2]} y={[BAY.y0 - 0.1, BAY.y1 + 0.1]} z={[-3.64, -3.4]} n={110} />
     </>
   )
 }
