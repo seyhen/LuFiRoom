@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { ExtrudeGeometry, Shape } from 'three'
+import { ExtrudeGeometry, Shape, ShapeGeometry } from 'three'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { I } from './materials'
 
@@ -10,6 +10,22 @@ const deg = (d: number) => (d * Math.PI) / 180
 export const polar = (a: number, r: number, y = 0): [number, number, number] => [Math.cos(deg(a)) * r, y, Math.sin(deg(a)) * r]
 /** Tourne un objet pour que son axe x suive la paroi dans la direction `a` (tangente au cercle). */
 export const along = (a: number) => -(deg(a) + Math.PI / 2)
+
+/**
+ * Le bord de l'île de neige (rayon selon l'angle, en radians) : un rond de 4 m qui ondule doucement, assez grand pour qu'il reste de
+ * la place dehors, autour du dôme (le traîneau, les sapins, la lanterne de neige), sans sortir du cadre des pièces carrées.
+ */
+export const shore = (t: number) => 4.0 + 0.1 * Math.sin(3 * t + 0.6) + 0.06 * Math.sin(5 * t + 2.1)
+
+function islandShape(inset = 0) {
+  const s = new Shape(), n = 96
+  for (let i = 0; i <= n; i++) {
+    const t = (i / n) * Math.PI * 2, r = shore(t) - inset
+    // la forme est dessinée dans le plan (x, -z) puis couchée : y de la forme = -z de la pièce
+    i ? s.lineTo(Math.cos(t) * r, -Math.sin(t) * r) : s.moveTo(Math.cos(t) * r, -Math.sin(t) * r)
+  }
+  return s
+}
 
 // La banquette de couchage : un arc de neige tassée contre la paroi du fond, de 190° à 250°, 45 cm de haut.
 export const BENCH = { a0: 190, a1: 250, r0: 1.95, r1: 2.93, h: 0.45 }
@@ -46,19 +62,28 @@ const DRIFTS: [number, number, number, number][] = [
  */
 export function IglooShell() {
   const bench = useMemo(() => sector(BENCH.a0, BENCH.a1, BENCH.r0, BENCH.r1, BENCH.h), [])
+  const island = useMemo(() => {
+    const g = new ExtrudeGeometry(islandShape(0.12), { depth: 0.36, bevelEnabled: true, bevelThickness: 0.1, bevelSize: 0.12, bevelSegments: 4, curveSegments: 96 })
+    g.rotateX(-Math.PI / 2)
+    g.translate(0, -0.46, 0)
+    return g
+  }, [])
+  const floor = useMemo(() => {
+    const g = new ShapeGeometry(islandShape(0.14), 96)
+    g.rotateX(-Math.PI / 2)
+    // les UV suivent la pièce (1 unité = 1 tuile ; la texture se répète déjà par 2)
+    const p = g.attributes.position, uv = g.attributes.uv
+    for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i) / 4, p.getZ(i) / 4)
+    return g
+  }, [])
   const { r, R } = DOME
   // Le demi-dôme gardé est derrière le plan x + z = 0 (le côté de la caméra est ouvert) : φ de -135° à 45° dans SphereGeometry.
   const phi0 = -0.75 * Math.PI
   return (
     <>
       {/* le socle, son bord arrondi, et le sol de neige tassée */}
-      <Part geo={cyl(3.6, 3.5, 0.5, 64)} m={I.base} p={[0, -0.27, 0]} />
-      <Part m={I.snowShade} p={[0, -0.03, 0]} rotation-x={Math.PI / 2} castShadow={false}>
-        <torusGeometry args={[3.55, 0.07, 10, 72]} />
-      </Part>
-      <mesh material={I.floor} position={[0, 0.004, 0]} rotation-x={-Math.PI / 2} receiveShadow>
-        <circleGeometry args={[3.5, 72]} />
-      </mesh>
+      <mesh geometry={island} material={I.base} castShadow receiveShadow />
+      <mesh geometry={floor} material={I.floor} position={[0, 0.004, 0]} receiveShadow />
       {/* le dôme */}
       <mesh material={I.domeOut} castShadow receiveShadow>
         <sphereGeometry args={[R, 56, 24, phi0, Math.PI, 0, Math.PI / 2]} />

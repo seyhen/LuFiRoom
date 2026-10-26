@@ -15,6 +15,8 @@ export const I = {
   cut: gummy(0xeef4fb, { roughness: 0.6, clearcoat: 0.3, side: DoubleSide, emissive: 0xa8bcd4, emissiveIntensity: 0.2 }),
   snow: gummy(0xf2f7fc, { roughness: 0.7, clearcoat: 0.2 }),
   snowShade: gummy(0xd2e0ee, { roughness: 0.75, clearcoat: 0.15 }),
+  // les boules de la lanterne de neige : la bougie les éclaire du dedans le soir (voir SnowLantern)
+  snowLit: gummy(0xf6f8fc, { roughness: 0.7, clearcoat: 0.2, emissive: 0xffa458, emissiveIntensity: 0 }),
   // le creux d'une niche : une ombre bleue, tiédie par la bougie
   niche: gummy(0x9cb4d0, { roughness: 0.8, clearcoat: 0.05, emissive: 0xffb070, emissiveIntensity: 0.12 }),
   ice: gummy(0xcfeaf6, { roughness: 0.08, clearcoat: 1, transparent: true, opacity: 0.55, depthWrite: false }),
@@ -59,5 +61,11 @@ export const I = {
   rope: gummy(0xd8b878, { roughness: 0.85 }),
   thread: gummy(0xf4ead6, { roughness: 0.6 }),
   needle: gummy(0xd8dde2, { roughness: 0.15, clearcoat: 1 }),
+  // dehors : les sapins, leur écorce ; la truite du seau
+  pine: gummy(0x3f6e56, { roughness: 0.75, clearcoat: 0.15 }),
+  pineDeep: gummy(0x2f5a48, { roughness: 0.75, clearcoat: 0.15 }),
+  bark: gummy(0x5a3e2e, { roughness: 0.8 }),
+  fish: gummy(0x8a9aa6, { roughness: 0.2, clearcoat: 1 }),
+  fishBelly: gummy(0xf0d8cc, { roughness: 0.3, clearcoat: 0.8 }),
   ink: M.ink,
 }
