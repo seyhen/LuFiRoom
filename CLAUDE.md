@@ -1,6 +1,6 @@
 # LufiRoom
 
-Webapp d'ambiance sonore : des pièces en 3D isométrique, style « gummy » (onze aujourd'hui : chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit), où chaque objet est un interrupteur de son. On touche la radio pour lancer la musique lofi, le ventilo pour le bruit blanc, etc., et on choisit la météo (pluie, orage, neige…) dans le sélecteur du haut. On compose son ambiance pour travailler, lire ou dormir.
+Webapp d'ambiance sonore : des pièces en 3D isométrique, style « gummy » (douze aujourd'hui : chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit, igloo), où chaque objet est un interrupteur de son. On touche la radio pour lancer la musique lofi, le ventilo pour le bruit blanc, etc., et on choisit la météo (pluie, orage, neige…) dans le sélecteur du haut. On compose son ambiance pour travailler, lire ou dormir.
 
 Nom : « LufiRoom » (le dossier et les clés de stockage gardent « chambre-lofi »).
 
@@ -36,11 +36,11 @@ src/
   state/mixes.ts            # ambiances : modèle, stockage, lien de partage (voir docs/MIXES.md)
   state/weather.ts          # la météo : les choix, ce qu'on voit et entend (voir docs/WEATHER.md)
   state/daylight.ts         # le jour et la nuit qui suivent l'heure, et la règle de la main (voir docs/ROOMS.md)
-  rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen, lighthouse, submarine, market), index.ts, weather.ts (enregistrements de la météo partagés)
+  rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen, lighthouse, submarine, market, igloo), index.ts, weather.ts (enregistrements de la météo partagés)
   scene/
     Stage.tsx               # <Canvas>, caméra iso, lumières, cadrage, rotation au drag
     scenes.ts               # associe chaque pièce à sa scène 3D ; ajouter une pièce : docs/ROOMS.md
-    bedroom/, cabin/, cafe/, beach/, train/, roof/, atelier/, onsen/, lighthouse/, submarine/, market/   # la scène de chaque pièce, un fichier par objet, ses matériaux et ses textures
+    bedroom/, cabin/, cafe/, beach/, train/, roof/, atelier/, onsen/, lighthouse/, submarine/, market/, igloo/   # la scène de chaque pièce, un fichier par objet, ses matériaux et ses textures
     objects/                # objets partagés entre pièces : Window, Radio, Lamp, Cat, FairyLights, Candles, Candle, Steam, Flames, ScrollLayer, Garment, ViewFlakes, FlashVeil
     nature/                 # pierres, feuillages, feuilles, fougères, plantes retombantes, rosettes : formes et matériaux partagés
     parts.tsx, Static.tsx   # briques (Part, Batch, rbox, cyl, worldUV, orient) ; <Static> regroupe le décor immobile en peu de tracés

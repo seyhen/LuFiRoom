@@ -26,12 +26,12 @@ Méthode et pont de test : skill `audit-room`, étape 0.
 
 1. **Console** : toutes les pièces visitées, quelques sons allumés dans chacune : aucune erreur, aucun « Enregistrement indisponible ».
 2. **Sons nouveaux ou changés** : niveaux mesurés (skill `source-sounds`, étape 4).
-3. **Fuite au changement de pièce** : deux tours des onze pièces, puis comparer au premier tour :
+3. **Fuite au changement de pièce** : deux tours des douze pièces, puis comparer au premier tour :
 
 ```js
 async () => {
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
-  const st = window.__lofi.store, ids = ['bedroom','cabin','cafe','beach','train','roof','atelier','onsen','lighthouse','submarine','market']
+  const st = window.__lofi.store, ids = ['bedroom','cabin','cafe','beach','train','roof','atelier','onsen','lighthouse','submarine','market','igloo']
   const out = {}
   for (const pass of [1, 2]) {
     for (const r of ids) { st.getState().goto(r); while (st.getState().room !== r || st.getState().leaving) await sleep(100); await sleep(1200) }

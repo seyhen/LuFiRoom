@@ -41,7 +41,7 @@ Cahier des charges d'origine :
 - `public/audio/CREDITS.md` à jour.
 
 ## Phase 3 : plusieurs chambres
-État : onze pièces (chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit). Guide : `docs/ROOMS.md`.
+État : douze pièces (chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit, igloo). Guide : `docs/ROOMS.md`.
 
 - [x] Format de pièce stabilisé : `src/rooms/types.ts` (objets, sons, enregistrements, ciel, lumières), scène associée dans `src/scene/scenes.ts`.
 - [x] Moteur lu depuis la pièce courante : scène, lumières, hotspots, mixeur, audio (bus et canaux par pièce).
@@ -59,6 +59,7 @@ Cahier des charges d'origine :
 - [x] 9e pièce : phare (quartier du gardien dans la tempête : hublot de laiton sur la houle, escalier de fonte, poêle, table à cartes, baromètre, corne de brume, cloche de bouée, concertina). Sons : corne de brume, cloche ; houle (sur les rochers), tempête et poêle repris.
 - [x] 10e pièce : sous-marin (carré de légende : hublot sur l'abysse avec baleine, sonar qui balaie, tube de ballast à bulles, manomètre, télégraphe de machines, orgue de capitaine, lampe de banquier). Sons : sonar, bulles, coque, machines, baleine.
 - [x] 11e pièce : marché de nuit (ruelle sous la pluie : carriole de ramen, wok, marmite, néon, télé, distributeur, tram sur le boulevard). Sons : wok, marmite, néon, tram ; pluie et radio repris.
+- [x] 12e pièce : igloo, le bivouac d'un explorateur sous les aurores (dôme de blocs ouvert sur le devant, fenêtre de glace, banquette et duvet, radio de secours à manivelle, lampe tempête, réchaud, thermos, moufle, husky endormi, trou de pêche ; l'aurore danse dans le ciel). Sons nouveaux, synthétisés pour l'instant : aurore, trou de pêche, couture, cacao (l'objet bouge au moment du geste : `pulse`, `audio/events.ts`).
 - [x] Les signatures de chaque pièce (2e passe) : rais de soleil et filet de pêcheur (plage), lumières de gare et compartiment habité (train), néon, escalier de secours et vapeur (toit), poutres, mur de cadres et guirlande (atelier), noren ゆ, lanternes rouges et lucioles (onsen).
 - [x] Cabane : le tourne-disque joue sa propre liste (Noël, Veillée, Brume, Nuit douce) ; la chambre garde les cinq stations d'origine. Chaque pièce retient sa station.
 - [ ] Cabane : son de neige / bois qui craque, vraies pistes de Noël sous licence.

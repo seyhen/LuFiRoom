@@ -99,6 +99,10 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite, 
 | Phare | plume d'oie et encrier, le journal de bord | `quill` |
 | Sous-marin | grand coquillage qu'on porte à l'oreille | `shell` |
 | Marché de nuit | boulier du marchand | `abacus` |
+| Igloo | fenêtre de glace sur l'aurore boréale (le ciel qui chante) | `aurora` |
+| Igloo | trou de pêche dans la glace (clapotis, bulles) | `icehole` |
+| Igloo | moufle qu'on coud sur un billot | `sew` |
+| Igloo | thermos de cacao qu'on verse dans un quart émaillé | `cocoa` |
 
 Mets ce tableau à jour à chaque objet ajouté.
 

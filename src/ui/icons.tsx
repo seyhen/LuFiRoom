@@ -53,6 +53,10 @@ export const soundIcons: Record<SoundId, ReactNode> = {
   shell: svg(<><path d="M12 3.5c5.5 0 8.5 4 8.5 8.5 0 4.7-3.4 8.5-8.5 8.5S3.5 16.7 3.5 12C3.5 7.5 6.5 3.5 12 3.5z" /><path d="M12 20.5 12 6M12 20.5 7 8M12 20.5 17 8M12 20.5 4.5 13.5M12 20.5l7.5-7" /></>),
   abacus: svg(<><rect x="3.5" y="4.5" width="17" height="15" rx="2" /><path d="M3.5 12h17M9 4.5v15" /><circle cx="6.2" cy="8.2" r=".8" /><circle cx="12" cy="8.2" r=".8" /><circle cx="15" cy="8.2" r=".8" /><circle cx="6.2" cy="15.8" r=".8" /><circle cx="17.8" cy="15.8" r=".8" /></>),
   drip: svg(<><path d="M12 3.5c3 4.2 5 6.6 5 9.4a5 5 0 0 1-10 0c0-2.800 2-5.200 5-9.400z" /><path d="M8.500 20.500c2.500-1 4.500-1 7 0" /></>),
+  aurora: svg(<><path d="M3.5 15c2.5-6 5.5-9 8.5-9s6 3 8.5 9" /><path d="M6.5 15.5c1.8-3.6 3.6-5.5 5.5-5.5s3.7 1.9 5.5 5.5" /><path d="M4 19.5h16" /></>),
+  icehole: svg(<><ellipse cx="12" cy="14" rx="8" ry="4" /><ellipse cx="12" cy="14" rx="4" ry="1.8" /><path d="M15.5 3.5v8.2" /><path d="M15.5 3.5 18 5" /></>),
+  sew: svg(<><path d="M5 19 17.5 6.5" /><circle cx="18.6" cy="5.4" r="1.4" /><path d="M5 19c2-3.5 5.5-4 8-2.5s4.5 1.5 6-1" /></>),
+  cocoa: svg(<><path d="M5 9.5h10v5.5a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z" /><path d="M15 11h1.5a2.2 2.2 0 0 1 0 4.4H15" /><path d="M8.5 3.5c-.8 1 .8 2 0 3M11.5 3.5c-.8 1 .8 2 0 3" /></>),
 }
 
 /** Disque noir, étiquette au centre : le tourne-disque de la cabane. */

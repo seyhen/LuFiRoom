@@ -42,6 +42,11 @@ export interface Store {
   skips: number
   /** Éclairs de l'orage (un compteur : le ciel s'illumine et le tonnerre gronde, doux et lointain, quand il change). */
   thunders: number
+  /**
+   * Publié par les canaux faits de gestes (le thermos qu'on verse, l'aiguille qui pique) : un compteur par son, avancé au moment
+   * où l'on entend le geste, pour que la scène le montre en même temps (voir `pulse` dans audio/events.ts).
+   */
+  pulses: Partial<Record<SoundId, number>>
   /** Station de la radio générative (identifiant, voir src/audio/stations.ts). */
   station: string
   /** Écran de chargement : fichiers préchargés, et scène dessinée une première fois. */
@@ -176,6 +181,7 @@ export const useStore = create<Store>()((set, get, api) => ({
   kicks: 0,
   skips: 0,
   thunders: 0,
+  pulses: {},
   station: savedStation(firstRoom),
   loading: { done: 0, total: 0, scene: false },
   insets: { top: 0, bottom: 0 },

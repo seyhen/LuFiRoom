@@ -49,6 +49,10 @@ import quill from './channels/quill'
 import shell from './channels/shell'
 import abacus from './channels/abacus'
 import drip from './channels/drip'
+import aurora from './channels/aurora'
+import icehole from './channels/icehole'
+import sew from './channels/sew'
+import cocoa from './channels/cocoa'
 
 // canal (bus Gain) ─┬─> master Gain 0.9 ─> volume général ─> compresseur ─> sortie
 // canal (bus Gain) ─┘
@@ -111,6 +115,10 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   shell: { build: shell, base: 1.0 },
   abacus: { build: abacus, base: 1.0 },
   drip: { build: drip, base: 1.0 },
+  aurora: { build: aurora, base: 1.9 },
+  icehole: { build: icehole, base: 1.0 },
+  sew: { build: sew, base: 1.4 },
+  cocoa: { build: cocoa, base: 1.25 },
 }
 const ids = Object.keys(CHANNELS) as SoundId[]
 

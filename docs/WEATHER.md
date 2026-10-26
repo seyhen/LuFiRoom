@@ -48,6 +48,7 @@ Les vues peintes les reçoivent (`usePainted`, `useRepaint` dans `src/scene/pain
 | Onsen | lune cachée | montagnes plus sombres, lune cachée | montagnes blanchies sur leurs pentes et leurs cimes, lisière poudrée sur le dessus ; tempête : la brume blanche s'épaissit entre les rangs |
 | Phare | la trouée d'ambre se ferme, nuages plus gris | nuages noirs, mer grise couverte de moutons, houle qui forcit, le cargo reste au port, éclair (aussi quand la tempête du baromètre souffle) | ciel blanc, rochers enneigés, mer grise, flocons ; tempête : l'horizon s'efface |
 | Sous-marin | la lumière de surface et les rais pâlissent (un ciel couvert, loin au-dessus) | plus terne encore ; aucun éclair sous la mer (ni dans la pièce) | la lumière de surface pâlit ; ni neige ni ciel |
+| Igloo | pas de vitre : la pluie tombe dans le ciel du fond, l'aurore se cache derrière les nuages | ciel du fond plus sombre, éclair, aurore cachée | flocons dans le ciel du fond, aurore cachée |
 | Marché de nuit | pluie peinte et vitre qui ruisselle (comme avant) | ciel plus sombre, éclair | toits des immeubles blanchis, chaussée blanche aux reflets éteints, deux ornières du tram, flocons ; tempête : la ville du fond s'efface |
 
 Les oiseaux et l'avion qui passent derrière la plage et le toit (`FlyBy`) ne volent plus par mauvais temps.

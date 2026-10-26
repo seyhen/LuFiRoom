@@ -10,6 +10,8 @@ export type SoundId =
   | 'foghorn' | 'bell' | 'sonar' | 'bubbles' | 'hull' | 'engine' | 'whale' | 'sizzle' | 'simmer' | 'neon' | 'tram'
   // les nouveaux objets : diffuseur, tricot, bâton de pluie, cartes, arrosoir, pinceau, fouet, plume, conque, boulier
   | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'abacus' | 'drip'
+  // l'igloo : l'aurore, le trou de pêche, la couture, le cacao
+  | 'aurora' | 'icehole' | 'sew' | 'cocoa'
 /** Un objet interactif de la scène. */
 export type ObjectId =
   | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
@@ -17,6 +19,7 @@ export type ObjectId =
   | 'spring' | 'bamboo' | 'furin' | 'maple'
   | 'foghorn' | 'bell' | 'stove' | 'barometer' | 'sonar' | 'valve' | 'gauge' | 'telegraph' | 'wok' | 'pot' | 'neon' | 'tram'
   | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'abacus' | 'drip'
+  | 'icewindow' | 'icehole' | 'mitten' | 'thermos'
 /** Ce qu'un objet pilote : un son, ou le passage jour / nuit. */
 export type Target = SoundId | 'night'
 
