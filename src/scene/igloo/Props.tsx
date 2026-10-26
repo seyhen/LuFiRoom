@@ -25,8 +25,29 @@ export function Bedding() {
         {/* le duvet, gonflé, un peu ouvert sur le haut */}
         <Part geo={rbox(1.45, 0.17, 0.6, 0.08)} m={I.quilt} p={[0, 0.085, 0]} />
         <Part geo={rbox(0.5, 0.1, 0.56, 0.05)} m={I.rust} p={[0.52, 0.2, 0.0]} rotation-z={-0.12} />
+        {/* la capuche du duvet, ronde, son ouverture plus sombre et son cordon à deux arrêts */}
+        <Part geo={SPH} m={I.rust} scale={[0.2, 0.13, 0.3]} p={[0.75, 0.13, 0]} />
+        <Part geo={SPH} m={I.leatherDark} scale={[0.06, 0.07, 0.17]} p={[0.62, 0.17, 0]} castShadow={false} />
+        {[-0.08, 0.08].map((z) => (
+          <Part key={z} geo={SPH} m={I.rust} scale={[0.018, 0.012, 0.018]} p={[0.6, 0.245, z]} castShadow={false} />
+        ))}
+        {/* la fermeture éclair, le long du flanc */}
+        <Part geo={rbox(1.2, 0.012, 0.012, 0.004)} m={I.darkSteel} p={[-0.05, 0.17, 0.296]} castShadow={false} />
         {/* l'oreiller de laine, au bout près de la paroi */}
-        <Part geo={SPH} m={I.wool} scale={[0.17, 0.08, 0.24]} p={[0.88, 0.12, 0]} />
+        <Part geo={SPH} m={I.wool} scale={[0.17, 0.08, 0.24]} p={[0.95, 0.12, 0]} />
+        {/* un livre ouvert retourné sur le duvet, la frontale à côté */}
+        <group position={[-0.15, 0.18, 0.05]} rotation-y={0.4}>
+          {[-1, 1].map((sd) => (
+            <Part key={sd} geo={rbox(0.16, 0.014, 0.22, 0.006)} m={I.book} p={[sd * 0.08, 0.008 - Math.abs(sd) * 0.0, 0]} rotation-z={sd * -0.18} castShadow={false} />
+          ))}
+          <Part geo={rbox(0.3, 0.008, 0.2, 0.004)} m={I.paper} p={[0, 0.0, 0]} castShadow={false} />
+        </group>
+        <group position={[0.35, 0.18, -0.1]}>
+          <Part m={I.rubber} rotation-x={Math.PI / 2} castShadow={false}>
+            <torusGeometry args={[0.07, 0.009, 6, 20]} />
+          </Part>
+          <Part geo={rbox(0.05, 0.035, 0.035, 0.012)} m={I.orange} p={[0.07, 0.01, 0]} castShadow={false} />
+        </group>
       </group>
       {/* la couverture de laine rouge pliée, au pied */}
       <group position={polar(206, 2.42, h + 0.035)} rotation-y={along(206)}>
@@ -99,9 +120,29 @@ export function Stove({ position }: { position: V3 }) {
         </mesh>
         {/* la casserole, son anse repliée, son couvercle et sa poignée */}
         <Part geo={cyl(0.15, 0.14, 0.16, 28)} m={I.darkSteel} p={[0, 0.27, 0]} />
-        <Part geo={cyl(0.155, 0.155, 0.015, 28)} m={I.steel} p={[0, 0.355, 0]} castShadow={false} />
-        <Part geo={SPH} m={I.steel} scale={[0.14, 0.03, 0.14]} p={[0, 0.36, 0]} castShadow={false} />
-        <Part geo={SPH} m={I.darkSteel} scale={0.025} p={[0, 0.395, 0]} castShadow={false} />
+        {/* la neige qui fond dans la casserole, sous le couvercle entrouvert posé de biais sur le bord */}
+        <Part geo={cyl(0.135, 0.135, 0.02, 28)} m={I.snow} p={[0, 0.34, 0]} castShadow={false} />
+        <Part geo={SPH} m={I.snow} scale={[0.09, 0.03, 0.08]} p={[-0.03, 0.352, 0.02]} castShadow={false} />
+        <group position={[0.05, 0.37, -0.06]} rotation-x={-0.35}>
+          <Part geo={cyl(0.155, 0.155, 0.015, 28)} m={I.steel} castShadow={false} />
+          <Part geo={SPH} m={I.steel} scale={[0.14, 0.03, 0.14]} p={[0, 0.005, 0]} castShadow={false} />
+          <Part geo={SPH} m={I.darkSteel} scale={0.025} p={[0, 0.04, 0]} castShadow={false} />
+        </group>
+        {/* la cuillère de bois, dans la casserole */}
+        <Part geo={cyl(0.01, 0.012, 0.32, 8)} m={I.crate} p={[-0.08, 0.43, 0.05]} rotation={[0.3, 0, 0.55]} castShadow={false} />
+        {/* la cartouche de gaz bleue, à côté, et son tuyau jusqu'au brûleur */}
+        <group position={[0.2, 0.04, 0.08]}>
+          <Part geo={cyl(0.055, 0.055, 0.13, 20)} m={I.gas} p={[0, 0.065, 0]} />
+          <Part geo={SPH} m={I.gas} scale={[0.055, 0.03, 0.055]} p={[0, 0.13, 0]} castShadow={false} />
+          <Part geo={cyl(0.056, 0.056, 0.04, 20)} m={I.paper} p={[0, 0.06, 0]} castShadow={false} />
+          <Part geo={cyl(0.015, 0.015, 0.03, 10)} m={I.darkSteel} p={[0, 0.16, 0]} castShadow={false} />
+        </group>
+        <Part geo={cyl(0.008, 0.008, 0.2, 6)} m={I.rubber} p={[0.11, 0.17, 0.05]} rotation={[0, 0.4, 1.25]} castShadow={false} />
+        {/* la boîte d'allumettes sur la planchette */}
+        <group position={[-0.17, 0.045, 0.12]} rotation-y={0.4}>
+          <Part geo={rbox(0.07, 0.02, 0.045, 0.004)} m={I.rust} p={[0, 0.01, 0]} castShadow={false} />
+          <Part geo={rbox(0.072, 0.004, 0.03, 0.001)} m={I.paper} p={[0, 0.021, 0]} castShadow={false} />
+        </group>
         <Part m={I.darkSteel} p={[0, 0.3, 0]} rotation-y={0.4} castShadow={false}>
           <torusGeometry args={[0.165, 0.007, 6, 24, Math.PI]} />
         </Part>
@@ -120,6 +161,10 @@ export function SupplyCrate({ position, ry = 0, top = 0.5 }: { position: V3; ry?
         <Part key={y} geo={rbox(0.62, 0.015, 0.46, 0.006)} m={I.crateDark} p={[0, y, 0]} castShadow={false} />
       ))}
       <Part geo={rbox(0.64, 0.03, 0.48, 0.012)} m={I.crateDark} p={[0, top - 0.015, 0]} castShadow={false} />
+      {/* le pochoir, sur la face avant */}
+      <mesh material={I.stencil} position={[0, top * 0.5, 0.236]}>
+        <planeGeometry args={[0.44, 0.22]} />
+      </mesh>
       {/* les poignées de corde sur les flancs */}
       {[-1, 1].map((s) => (
         <Part key={s} m={I.rope} p={[s * 0.31, top * 0.62, 0]} rotation-y={Math.PI / 2} castShadow={false}>
@@ -135,16 +180,25 @@ export function Snowshoes({ a }: { a: number }) {
   return (
     <group position={polar(a, 2.72, 0)} rotation-y={along(a)}>
       {[-0.17, 0.17].map((x, i) => (
-        <group key={x} position={[x, 0.42, 0]} rotation={[-0.22, 0, i ? 0.06 : -0.06]}>
+        <group key={x} position={[x, 0.42, 0]} rotation={[-0.22, 0, i ? 0.06 : -0.06]} scale={0.85}>
           <Part m={I.wood} scale={[0.15, 0.4, 1]}>
-            <torusGeometry args={[1, 0.08, 8, 28]} />
+            <torusGeometry args={[1, 0.06, 8, 28]} />
           </Part>
-          {/* le laçage : des brins croisés tendus dans le cadre */}
-          {[-0.2, -0.07, 0.06, 0.19].map((y) => (
-            <Part key={y} geo={cyl(0.005, 0.005, 0.26, 4)} m={I.rope} p={[0, y, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+          {/* le laçage de babiche : un treillis serré de brins clairs, bien visible dans le cadre sombre */}
+          {[-0.27, -0.18, -0.09, 0, 0.09, 0.18, 0.27].map((y) => (
+            <Part key={y} geo={cyl(0.009, 0.009, 0.28 * Math.sqrt(1 - (y / 0.4) ** 2), 4)} m={I.rope} p={[0, y, 0]} rotation-z={Math.PI / 2} castShadow={false} />
           ))}
-          <Part geo={cyl(0.005, 0.005, 0.7, 4)} m={I.rope} p={[0, 0, 0]} castShadow={false} />
+          {[-0.07, 0, 0.07].map((x2) => (
+            <Part key={x2} geo={cyl(0.009, 0.009, 0.74 * Math.sqrt(1 - (x2 / 0.15) ** 2), 4)} m={I.rope} p={[x2, 0, 0]} castShadow={false} />
+          ))}
           <Part geo={rbox(0.12, 0.06, 0.03, 0.01)} m={I.leatherDark} p={[0, 0.05, 0.015]} castShadow={false} />
+          {/* la queue de la raquette : les deux bois du cadre se rejoignent en bas, liés par une lanière */}
+          {[-1, 1].map((s) => (
+            <Part key={s} geo={cyl(0.012, 0.012, 0.26, 6)} m={I.wood} p={[s * 0.04, -0.5, 0]} rotation-z={-s * 0.28} castShadow={false} />
+          ))}
+          <Part geo={rbox(0.05, 0.03, 0.03, 0.01)} m={I.leatherDark} p={[0, -0.61, 0]} castShadow={false} />
+          {/* la sangle du talon, en travers */}
+          <Part geo={rbox(0.2, 0.02, 0.025, 0.006)} m={I.leatherDark} p={[0, -0.02, 0.02]} castShadow={false} />
         </group>
       ))}
     </group>
@@ -162,6 +216,22 @@ export function Backpack({ a }: { a: number }) {
         {[-0.1, 0.1].map((x) => (
           <Part key={x} geo={rbox(0.035, 0.3, 0.02, 0.008)} m={I.leatherDark} p={[x, 0.42, 0.16]} castShadow={false} />
         ))}
+        {/* les boucles de laiton des sangles */}
+        {[-0.1, 0.1].map((x) => (
+          <Part key={x} geo={rbox(0.045, 0.03, 0.02, 0.006)} m={I.brass} p={[x, 0.3, 0.17]} castShadow={false} />
+        ))}
+        {/* la gourde dans sa poche de côté, le mousqueton accroché à la bretelle */}
+        <Part geo={cyl(0.05, 0.05, 0.22, 14)} m={I.thermos} p={[0.25, 0.25, 0.02]} />
+        <Part geo={cyl(0.03, 0.03, 0.04, 10)} m={I.darkSteel} p={[0.25, 0.38, 0.02]} castShadow={false} />
+        <Part geo={rbox(0.1, 0.12, 0.2, 0.03)} m={I.canvas} p={[0.24, 0.16, 0.02]} castShadow={false} />
+        <Part m={I.brass} p={[-0.24, 0.45, 0.05]} rotation-y={Math.PI / 2} castShadow={false}>
+          <torusGeometry args={[0.03, 0.006, 6, 14]} />
+        </Part>
+        {/* le piolet sanglé dans le dos du sac : son manche, sa tête de métal */}
+        <group position={[-0.08, 0.38, 0.2]} rotation-z={0.15}>
+          <Part geo={cyl(0.014, 0.016, 0.62, 8)} m={I.wood} castShadow={false} />
+          <Part geo={rbox(0.2, 0.035, 0.03, 0.01)} m={I.steel} p={[0, 0.3, 0]} castShadow={false} />
+        </group>
         {/* le tapis de sol roulé, sangle autour */}
         <Part geo={cyl(0.09, 0.09, 0.5, 18)} m={I.rust} p={[0, 0.71, 0]} rotation-z={Math.PI / 2} />
         <Part m={I.leatherDark} p={[0.12, 0.71, 0]} rotation-y={Math.PI / 2} castShadow={false}>
@@ -197,6 +267,33 @@ export function IceNiche({ a, y }: { a: number; y: number }) {
       <sprite ref={glow as never} scale={0.55} position={[0, 0.0, 0.13]} raycast={noRay}>
         <spriteMaterial map={glowTex} blending={AdditiveBlending} transparent depthWrite={false} opacity={0.5} />
       </sprite>
+    </group>
+  )
+}
+
+/**
+ * La patère près de l'entrée : deux chevilles de bois plantées dans la neige, un bonnet de laine bleu à pompon accroché à l'une,
+ * une corde d'alpinisme lovée à l'autre.
+ */
+export function Pegs({ a, y }: { a: number; y: number }) {
+  const r = Math.sqrt(3.0 * 3.0 - y * y) - 0.02
+  return (
+    <group position={polar(a, r, y)} rotation-y={along(a)}>
+      {[-0.22, 0.22].map((x) => (
+        <Part key={x} geo={cyl(0.022, 0.026, 0.16, 8)} m={I.wood} p={[x, 0, 0.07]} rotation-x={Math.PI / 2 - 0.25} castShadow={false} />
+      ))}
+      {/* le bonnet : la calotte, le revers côtelé, le pompon */}
+      <group position={[-0.22, -0.1, 0.12]}>
+        <Part geo={SPH} m={I.hat} scale={[0.11, 0.1, 0.06]} p={[0, -0.02, 0]} />
+        <Part geo={cyl(0.1, 0.1, 0.05, 18)} m={I.wool} p={[0, -0.1, 0]} rotation-x={0.25} castShadow={false} />
+        <Part geo={SPH} m={I.wool} scale={0.045} p={[0, 0.08, 0]} castShadow={false} />
+      </group>
+      {/* la corde lovée, pendue à sa cheville */}
+      {[0.13, 0.115, 0.1].map((rr, i) => (
+        <Part key={rr} m={I.orange} p={[0.22, -0.12 - i * 0.012, 0.12 + i * 0.012]} castShadow={false}>
+          <torusGeometry args={[rr, 0.014, 6, 20]} />
+        </Part>
+      ))}
     </group>
   )
 }

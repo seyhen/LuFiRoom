@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { Quaternion, Vector3, type Group, type Mesh } from 'three'
 import { isActive, useStore } from '../../state/store'
 import { clamp, lerp, smooth } from '../../math'
-import { Part, SPH, cyl, type V3 } from '../parts'
+import { Part, SPH, cyl, rbox, type V3 } from '../parts'
 import { reduceMotion, useSquash } from '../anim'
 import { Static } from '../Static'
 import { I } from './materials'
@@ -45,7 +45,7 @@ export function Mitten({ position }: { position: V3 }) {
     needle.current.rotation.set(lerp(0.5, -0.6, lift), 0, lerp(0.25, -0.35, lift))
     // le fil : du point de couture au chas de l'aiguille
     a.set(px, py, pz)
-    b.set(0, 0.07, 0).applyEuler(needle.current.rotation).add(needle.current.position)
+    b.set(0, 0.118, 0).applyEuler(needle.current.rotation).add(needle.current.position)
     const len = a.distanceTo(b)
     thread.current.position.copy(a).add(b).multiplyScalar(0.5)
     thread.current.quaternion.copy(q.setFromUnitVectors(UP, b.sub(a).normalize()))
@@ -56,15 +56,40 @@ export function Mitten({ position }: { position: V3 }) {
       <Static>
         {/* le billot de bois, ses cernes sur le dessus, et la peau de mouton qui le couvre en débordant */}
         <Part geo={cyl(0.25, 0.27, SEAT - 0.06, 24)} m={I.wood} p={[0, (SEAT - 0.06) / 2, 0]} />
+        {/* l'écorce du billot, en bourrelets plus sombres */}
+        {[0.08, 0.2].map((y) => (
+          <Part key={y} m={I.bark} p={[0, y, 0]} rotation-x={Math.PI / 2} castShadow={false}>
+            <torusGeometry args={[0.262, 0.012, 6, 28]} />
+          </Part>
+        ))}
         <Part geo={SPH} m={I.fleece} scale={[0.33, 0.07, 0.31]} p={[0, SEAT - 0.04, 0]} />
         {/* la moufle, couchée : la paume, le pouce, la manchette de fourrure (grande, pour qu'on la lise de loin) */}
         <group position={GLOVE.p} rotation-y={GLOVE.ry} scale={GLOVE.s}>
           <Part geo={SPH} m={I.leather} scale={[0.14, 0.045, 0.1]} p={[0.04, 0.03, 0]} />
           <Part geo={SPH} m={I.leather} scale={[0.06, 0.035, 0.04]} p={[-0.02, 0.025, -0.1]} rotation-y={0.6} />
           <Part geo={cyl(0.075, 0.08, 0.1, 18)} m={I.greyFur} p={[-0.14, 0.04, 0]} rotation-z={Math.PI / 2} />
+          {/* la bande de laine rouge entre la manchette et la paume */}
+          <Part geo={cyl(0.07, 0.07, 0.025, 18)} m={I.woolRed} p={[-0.085, 0.035, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+          {/* la broderie sur le dos : une fleur à cinq pétales, son cœur jaune */}
+          {Array.from({ length: 5 }, (_, k) => {
+            const a = (k / 5) * Math.PI * 2
+            return <Part key={k} geo={SPH} m={I.woolRed} scale={[0.016, 0.006, 0.011]} p={[0.06 + Math.cos(a) * 0.02, 0.073, Math.sin(a) * 0.02]} rotation-y={-a} castShadow={false} />
+          })}
+          <Part geo={SPH} m={I.marsh} scale={[0.009, 0.006, 0.009]} p={[0.06, 0.076, 0]} castShadow={false} />
           {/* la couture déjà faite, en points clairs sur le bord */}
           {[-0.06, -0.01, 0.04, 0.09, 0.14].map((x) => (
             <Part key={x} geo={SPH} m={I.thread} scale={[0.012, 0.006, 0.004]} p={[x, 0.05, 0.095 - Math.abs(x - 0.04) * 0.35]} castShadow={false} />
+          ))}
+        </group>
+        {/* la paire de ciseaux posée sur la peau : deux lames croisées, deux anneaux rouges */}
+        <group position={[-0.17, SEAT + 0.01, 0.14]} rotation-y={0.8}>
+          {[-1, 1].map((sd) => (
+            <group key={sd} rotation-y={sd * 0.18}>
+              <Part geo={rbox(0.11, 0.006, 0.014, 0.003)} m={I.steel} p={[0.05, 0, 0]} castShadow={false} />
+              <Part m={I.collar} p={[-0.025, 0, sd * 0.02]} rotation-x={Math.PI / 2} castShadow={false}>
+                <torusGeometry args={[0.018, 0.006, 6, 14]} />
+              </Part>
+            </group>
           ))}
         </group>
         {/* la bobine de fil, debout sur le bord de la peau */}
@@ -78,7 +103,11 @@ export function Mitten({ position }: { position: V3 }) {
       {/* l'aiguille (sa pointe à l'origine du groupe, le chas en haut) et son fil, dans le repère de la moufle */}
       <group position={GLOVE.p} rotation-y={GLOVE.ry} scale={GLOVE.s}>
         <group ref={needle}>
-          <Part geo={cyl(0.004, 0.0015, 0.09, 6)} m={I.needle} p={[0, 0.045, 0]} castShadow={false} />
+          <Part geo={cyl(0.0045, 0.0015, 0.12, 6)} m={I.needle} p={[0, 0.06, 0]} castShadow={false} />
+          {/* le chas */}
+          <Part m={I.needle} p={[0, 0.123, 0]} castShadow={false}>
+            <torusGeometry args={[0.007, 0.0022, 4, 10]} />
+          </Part>
         </group>
         <mesh ref={thread} material={I.thread}>
           <cylinderGeometry args={[0.003, 0.003, 1, 5]} />

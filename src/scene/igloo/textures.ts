@@ -161,3 +161,79 @@ export const ringTex = (() => {
   })
   return t as CanvasTexture
 })()
+
+/** Le cadran de la radio : fond crème, graduations, deux bandes (FM / AM) et leurs chiffres, l'aiguille rouge. */
+export const dialTex = canvasTex(256, 96, (x) => {
+  x.fillStyle = '#fff1cc'
+  x.fillRect(0, 0, 256, 96)
+  x.strokeStyle = '#5a4a3a'
+  x.fillStyle = '#5a4a3a'
+  x.font = 'bold 15px sans-serif'
+  x.textAlign = 'center'
+  for (const [y, nums, tag] of [[30, ['88', '92', '96', '100', '104', '108'], 'FM'], [72, ['53', '60', '80', '100', '130', '160'], 'AM']] as const) {
+    x.fillText(tag, 18, y + 5)
+    for (let i = 0; i <= 30; i++) {
+      const px = 40 + i * 6.8, h = i % 6 === 0 ? 10 : 5
+      x.lineWidth = i % 6 === 0 ? 2 : 1
+      x.beginPath(); x.moveTo(px, y + 8); x.lineTo(px, y + 8 - h); x.stroke()
+    }
+    nums.forEach((n, i) => x.fillText(n, 40 + i * 40.8, y - 6))
+  }
+  x.fillStyle = '#d8402e'
+  x.fillRect(150, 6, 4, 84)
+})
+
+/** Le pochoir des caisses de l'expédition : « VIVRES », un numéro, une flèche « haut », sur bois clair. */
+export const stencilTex = canvasTex(256, 128, (x) => {
+  x.fillStyle = 'rgba(0,0,0,0)'
+  x.fillRect(0, 0, 256, 128)
+  x.fillStyle = 'rgba(40, 28, 20, .82)'
+  x.font = 'bold 44px monospace'
+  x.textAlign = 'center'
+  x.fillText('VIVRES', 128, 62)
+  x.font = 'bold 22px monospace'
+  x.fillText('EXP. N° 7  ↑', 128, 100)
+})
+
+/** La glace claire de la fenêtre : un bleu très pâle, des bulles prises dedans, quelques fêlures et le givre aux bords. */
+export const iceTex = canvasTex(256, 192, (x) => {
+  const r = seeded(17)
+  const g = x.createRadialGradient(128, 96, 20, 128, 96, 150)
+  g.addColorStop(0, 'rgba(225, 245, 255, .15)'); g.addColorStop(0.75, 'rgba(210, 236, 250, .35)'); g.addColorStop(1, 'rgba(255, 255, 255, .9)')
+  x.fillStyle = g
+  x.fillRect(0, 0, 256, 192)
+  for (let i = 0; i < 60; i++) {
+    const cx = r() * 256, cy = r() * 192, rad = 1 + r() * 4
+    x.strokeStyle = 'rgba(255,255,255,.55)'; x.lineWidth = 1
+    x.beginPath(); x.arc(cx, cy, rad, 0, TAU); x.stroke()
+  }
+  x.strokeStyle = 'rgba(255,255,255,.6)'; x.lineWidth = 1.5
+  for (let i = 0; i < 5; i++) {
+    let px = r() * 256, py = r() * 192
+    x.beginPath(); x.moveTo(px, py)
+    for (let k = 0; k < 4; k++) { px += (r() - 0.5) * 60; py += (r() - 0.5) * 50; x.lineTo(px, py) }
+    x.stroke()
+  }
+})
+
+/** L'eau du trou : bleu nuit au fond, plus clair vers le bord de glace, et un reflet pâle. */
+export const holeTex = canvasTex(128, 128, (x) => {
+  const g = x.createRadialGradient(64, 64, 4, 64, 64, 64)
+  g.addColorStop(0, '#08182a'); g.addColorStop(0.7, '#14385a'); g.addColorStop(1, '#3f7aa0')
+  x.fillStyle = g
+  x.fillRect(0, 0, 128, 128)
+  x.fillStyle = 'rgba(220, 240, 255, .25)'
+  x.beginPath(); x.ellipse(46, 40, 26, 9, -0.5, 0, TAU); x.fill()
+})
+
+/** L'étiquette d'une boîte de cacao : crème et brun, une tasse fumante dessinée, « CACAO ». */
+export const cocoaTinTex = canvasTex(256, 96, (x) => {
+  x.fillStyle = '#7a3e24'
+  x.fillRect(0, 0, 256, 96)
+  x.fillStyle = '#f4e4c8'
+  x.fillRect(0, 22, 256, 52)
+  x.fillStyle = '#7a3e24'
+  x.font = 'bold 34px serif'
+  x.textAlign = 'center'
+  x.fillText('CACAO', 128, 60)
+}, [1, 1])

@@ -114,6 +114,8 @@ Les défauts qui reviennent le plus, à traquer avant de dire « fini » (explic
 - **Du contenu caché par du transparent** : l'eau ou le verre qui écrit la profondeur masque ses bulles et ses poissons ; matériau du contenant en `depthWrite: false`, teinte distincte du mur derrière.
 - **Un objet à l'envers ou de dos** : regarde de quel côté il fait face (la table à dessin montrait son dos). La caméra voit les faces +x et +z.
 - **Quelque chose qui tombe dans un lieu couvert** : une pièce qui a un toit ou des murs n'a pas de gouttes, de ronds dans l'eau ni de flocons à l'intérieur. La pluie se voit dehors (par la baie, dans le ciel autour du diorama) ; à l'intérieur on montre l'humidité par des reflets et des flaques calmes.
+- **Un visage qui fait casque** : sur un animal, le masque clair couvre tout le devant de la tête, yeux et bec posés dessus ; sinon la couleur du pelage entoure le visage comme un casque (les manchots de l'igloo).
+- **Un objet pas assez abouti** : lisible mais pauvre. Chaque objet a 5 formes au moins, deux matières, une trace d'usage et un accessoire voisin ; l'extérieur visible de la pièce est habillé (voir le skill `audit-room`, « Pas assez abouti »).
 - **Une radio qui ne va pas avec la pièce** : l'objet qui joue la musique est propre à la pièce (tourne-disque, shamisen, boombox, gramophone, ukulélé, jukebox…), pas une radio partout. Il a son id `radio`, le hook `useBeat` (`src/scene/objects/useBeat.ts`) et son libellé.
 
 Comment travailler un objet :

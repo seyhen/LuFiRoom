@@ -1,5 +1,6 @@
 import { AdditiveBlending, BackSide, DoubleSide, FrontSide, MeshBasicMaterial, MeshStandardMaterial } from 'three'
 import { M, gummy } from '../materials'
+import { cocoaTinTex, dialTex, holeTex, iceTex, stencilTex } from './textures'
 import { auroraTex, curtainMask, blockTex, fleeceTex, floorTex, greyFurTex, grilleTex, quiltTex, reindeerTex, ringTex } from './textures'
 
 /**
@@ -44,7 +45,6 @@ export const I = {
   canvas: gummy(0x6f7a52, { roughness: 0.8 }),
   orange: gummy(0xf07a2a, { roughness: 0.45, clearcoat: 0.6 }),
   grille: gummy(0xffffff, { map: grilleTex, roughness: 0.6 }),
-  dial: gummy(0xfff0c8, { emissive: 0xffc46a, emissiveIntensity: 0.15, roughness: 0.3 }),
   steel: gummy(0x9aa6b0, { roughness: 0.3, clearcoat: 0.8 }),
   darkSteel: gummy(0x3e464e, { roughness: 0.4, clearcoat: 0.6 }),
   thermos: gummy(0x3f7a5a, { roughness: 0.35, clearcoat: 0.7 }),
@@ -67,5 +67,24 @@ export const I = {
   bark: gummy(0x5a3e2e, { roughness: 0.8 }),
   fish: gummy(0x8a9aa6, { roughness: 0.2, clearcoat: 1 }),
   fishBelly: gummy(0xf0d8cc, { roughness: 0.3, clearcoat: 0.8 }),
+  // les détails de la deuxième passe
+  dialFace: new MeshStandardMaterial({ map: dialTex, emissiveMap: dialTex, emissive: 0xffc46a, emissiveIntensity: 0.15, roughness: 0.3 }),
+  rubber: gummy(0x2a2a2e, { roughness: 0.75, clearcoat: 0.1 }),
+  solar: gummy(0x1e2e52, { roughness: 0.15, clearcoat: 1 }),
+  led: gummy(0x4a1a1a, { emissive: 0xff3a2a, emissiveIntensity: 0, roughness: 0.3 }),
+  stencil: new MeshStandardMaterial({ map: stencilTex, transparent: true, roughness: 0.8, depthWrite: false }),
+  iceFace: new MeshStandardMaterial({ map: iceTex, transparent: true, roughness: 0.1, depthWrite: false }),
+  holeWater: gummy(0xffffff, { map: holeTex, roughness: 0.05, clearcoat: 1 }),
+  tin: gummy(0xffffff, { map: cocoaTinTex, roughness: 0.35, clearcoat: 0.7 }),
+  cork: gummy(0xc89a6a, { roughness: 0.85 }),
+  marsh: gummy(0xfff4f6, { roughness: 0.8, clearcoat: 0.1 }),
+  earPink: gummy(0xe8a6a8, { roughness: 0.7 }),
+  collar: gummy(0xc23a32, { roughness: 0.4, clearcoat: 0.6 }),
+  book: gummy(0x2f5a6a, { roughness: 0.6, clearcoat: 0.3 }),
+  paper: gummy(0xf6efe0, { roughness: 0.9 }),
+  gas: gummy(0x2f6fb0, { roughness: 0.3, clearcoat: 0.8 }),
+  hat: gummy(0x3f6e8a, { roughness: 0.9, clearcoat: 0.04 }),
+  // l'ombre du poisson sous l'eau du trou (au-dessus du fond, sous la surface : la surface claire reste devant)
+  fishShadow: new MeshBasicMaterial({ color: 0x04101c, transparent: true, opacity: 0.55, depthWrite: false }),
   ink: M.ink,
 }

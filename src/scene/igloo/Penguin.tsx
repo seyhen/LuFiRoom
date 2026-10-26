@@ -9,9 +9,10 @@ import { reduceMotion } from '../anim'
 import { I } from './materials'
 
 /** Les deux pelages : rose bonbon, et bleu glacier. Le ventre crème, le bec et les pattes orange, pour tous les deux. */
+// Une petite lueur de leur propre couleur : la nuit, la lumière bleue ferait virer le rose au violet.
 const COATS = {
-  pink: gummy(0xf29ac0, { roughness: 0.4, clearcoat: 0.7 }),
-  blue: gummy(0x6fa8e6, { roughness: 0.4, clearcoat: 0.7 }),
+  pink: gummy(0xf29ac0, { roughness: 0.4, clearcoat: 0.7, emissive: 0xf29ac0, emissiveIntensity: 0.14 }),
+  blue: gummy(0x6fa8e6, { roughness: 0.4, clearcoat: 0.7, emissive: 0x6fa8e6, emissiveIntensity: 0.1 }),
 }
 const belly = gummy(0xfff6ea, { roughness: 0.45, clearcoat: 0.6 })
 const beak = gummy(0xf7a23a, { roughness: 0.35, clearcoat: 0.8 })

@@ -21,7 +21,8 @@ Ce qui prend du temps dans les tests, par ordre : **recharger la page** (chaque 
    - `__lofi.store` : le store (`getState().goto('market')`, `.toggle('wok')`, `.setState({ night: true })`, `.toggleNight()`, `.getState().muteAll()`).
    - `__lofi.three()` : `{ scene, gl, camera }` (`gl.info.render.calls`, `gl.info.programs.length`, parcours de `scene` pour inspecter des maillages).
    - `__lofi.audio` : `{ bus, getKit() }` pour mesurer les niveaux (étape 1.5), sans toucher au code.
-4. **Changer d'état en une seule commande, en attendant des images et non des secondes** (colle dans `evaluate_script`, adapte la ligne `await aller(...)`) :
+4. **Sous WebGL logiciel (conteneur sans carte graphique), la page tourne à 2 ou 3 images par seconde** et les transitions plafonnent leur pas de temps : une capture prise 3 s après un changement de jour / nuit tombe au milieu du fondu. Attends des **images** (40 et plus), pas des secondes, et ne conclus rien sur une couleur tant que la transition n'est pas finie. Les animations simulées (neige, particules) se vérifient par le calcul à 60 images par seconde, pas sur la capture.
+5. **Changer d'état en une seule commande, en attendant des images et non des secondes** (colle dans `evaluate_script`, adapte la ligne `await aller(...)`) :
 
 ```js
 async () => {
@@ -40,14 +41,14 @@ async () => {
 ```
 
    À froid (page neuve) : `http://localhost:5173/?room=market&mix=sizzle.70,simmer.70&night=1&go` ouvre la pièce, de nuit, sons choisis (`go` n'existe qu'en développement). Pour attendre la fin du chargement : `while (document.getElementById('splash')) await frames(2)`.
-5. **Recadrer en une fois** : `take_screenshot` (2880×1800), puis **une seule planche** avec tous les objets :
+6. **Recadrer en une fois** : `take_screenshot` (2880×1800), puis **une seule planche** avec tous les objets :
 
 ```bash
 bash .claude/skills/audit-room/sheet.sh capture.png planche.png "x y w h" "x y w h" "x y w h" "x y w h"
 ```
 
    Chaque zone est ramenée à 640 px de large, deux par ligne : on lit **une** image au lieu de quatre. (`scratchpad/zoom.sh in out w h x y [largeur]` recadre une seule zone en grand quand un détail demande plus.) Les coordonnées sont celles de la capture : le point affiché sur l'écran × 1,44. Si `zoom.sh` a disparu, recrée-le : `ffmpeg -y -loglevel error -i "$1" -vf "crop=$3:$4:$5:$6,scale=${7:-1100}:-1:flags=lanczos" "$2"`.
-6. Boutons, si tu dois cliquer quand même : `[...document.querySelectorAll('button')].find(x => x.textContent.trim() === 'Marché de nuit').click()` ; les objets ont un `aria-label` qui commence par leur libellé.
+7. Boutons, si tu dois cliquer quand même : `[...document.querySelectorAll('button')].find(x => x.textContent.trim() === 'Marché de nuit').click()` ; les objets ont un `aria-label` qui commence par leur libellé.
 
 ## Étape 1 — Contrôles mécaniques (rien à regarder, tout à mesurer)
 
@@ -155,13 +156,30 @@ Note la pièce. Une ligne à 0 est à refaire avant de conclure ; viser un total
 | Matières | brillant et mat différenciés, un matériau par usage, palette propre à la pièce |
 | Lumière | une source chaude ou froide qui raconte la pièce (3 au plus), halos, reflets cohérents |
 | Signature | au moins une chose qui bouge et n'existe nulle part ailleurs (tram, baleine, faisceau, vapeur) |
-| Vie | un animal, un personnage ou un reflet de présence humaine, **modelé** : un chat a des oreilles qui se voient, un plastron, des pattes, une queue continue ; un client a des épaules, des bras, des mains. Un cylindre surmonté d'une boule (quille) = 0 |
+| Vie | un animal, un personnage ou un reflet de présence humaine, **modelé** : un chat a des oreilles qui se voient, un plastron, des pattes, une queue continue ; un client a des épaules, des bras, des mains. Un cylindre surmonté d'une boule (quille) = 0. Un visage d'animal qui « fait casque » = 1 au plus |
+| Accessoires | chaque objet a sa trace d'usage et un accessoire voisin qui raconte quelqu'un (voir « Pas assez abouti » ci-dessous) ; l'extérieur visible de la pièce est habillé |
 | Cadre | murs habillés (affiches, enseignes, tuyaux), pas de grand pan nu, rien d'entassé |
 | Objet de musique | propre à la pièce, avec `useBeat`, son libellé et son id `radio` |
 | Sons | chaque objet interactif pilote un son propre à l'ambiance, dosé (étape 1) |
 | Interface | `ui`, `light` et `sky` de la fiche propres à la pièce, jour **et** nuit |
 
 Les objets du quotidien se refont au niveau de la plage : une théière a un ventre rond, un couvercle à bouton, un bec, une anse et un pied (pas deux cylindres) ; un gril a des pieds, une auge à rebords, des braises au fond, une grille ; un tiroir a sa poignée. Si on hésite à reconnaître l'objet sans étiquette, il est à 0.
+
+**« Pas assez abouti » (remarque du propriétaire sur l'igloo, octobre 2026)** : une pièce peut avoir tous ses objets lisibles et rester pauvre. Pour chaque objet, vérifie ces quatre couches, dans l'ordre, et ajoute ce qui manque :
+
+1. **La forme** : au moins 5 formes distinctes, pas 2 ou 3 (une radio : boîtier, coins de caoutchouc, façade, haut-parleur et sa bague, cadran, boutons, poignée, antenne, manivelle ; un thermos : corps, bague, bec, bandeau, anse).
+2. **La matière** : au moins deux matières par objet (mat et brillant, bois et métal, laine et cuir), et une inscription quand l'objet en a dans la vraie vie : cadran gradué, pochoir sur une caisse, étiquette d'une boîte. Une inscription est une texture sur un **plan** (`planeGeometry`), jamais sur une `rbox`.
+3. **L'usage** : l'objet montre qu'on s'en sert (le couvercle entrouvert sur la neige qui fond, la cuillère dans le quart, les éclats d'émail, le livre ouvert retourné sur le duvet).
+4. **Le voisinage** : un accessoire posé à côté, qui raconte quelqu'un (les ciseaux près de la moufle, la boîte d'allumettes près du réchaud, la boussole sur l'appui de la fenêtre, l'écumoire près du trou de pêche).
+
+Et autour des objets :
+- **La pièce ne s'arrête pas à ses murs.** Si le socle déborde (une île, une terrasse, un quai), habille ce qui se voit dehors : un traîneau, des arbres, une lanterne, des traces de pas. Un anneau de neige nue « fait vide ».
+- **Un visage d'animal** : le masque clair couvre tout le devant de la tête ; sinon la tête de couleur entoure le visage et se lit comme un casque (les manchots de l'igloo). Les yeux, les joues et le bec se posent sur le masque.
+- **Les fils fins disparaissent** : une ligne de pêche, un laçage, un fil de couture sous 0,008 de rayon ne se voit plus à l'échelle de la pièce. Grossis-le (0,009 et plus), donne-lui une couleur qui tranche, ou serre le motif.
+- **Un cadre de neige ou de pierre autour d'une ouverture** prend la teinte de la paroi : blanc vif en relief, il se lit comme un meuble (deux colonnes).
+- **Une pièce ronde ou voûtée** : le haut de la paroi du fond est caché à la caméra par la voûte. Calcule jusqu'où la paroi est visible (rayon vers la caméra, voir `docs/ROOMS.md`, igloo) avant d'y poser une fenêtre ou une étagère.
+- **Un objet qui bouge avec son son** suit le geste qu'on entend, au même instant : le canal appelle `pulse(ctx, id, t)` (`src/audio/events.ts`) et la scène lit `pulses[id]` (le thermos qui verse, l'aiguille qui pique, le rond dans l'eau).
+- **Une couleur qui vire la nuit** (un rose qui devient violet sous la lumière bleue) : une petite lueur de sa propre couleur (`emissive` = la couleur, intensité 0,1 à 0,15).
 
 Recettes à suivre, tirées des pièces de référence :
 - Bouteille (`roof/Lounge.tsx`, `FrontCorner`) : cylindre pour le corps, sphère pour l'épaule, cylindre fin pour le goulot, petit cylindre doré pour la capsule.
@@ -176,7 +194,7 @@ Mesures : tsc ✓ / build ✓ / console ✓ — tracés : repos N, tout allumé 
 Objets vus en gros plan : <liste, un « vu » par objet, sinon « non vu »>
 Défauts trouvés → corrigés : …
 Défauts trouvés → restants (et pourquoi) : …
-Grille : total X / 22 — lignes à 0 : …
+Grille : total X / 24 — lignes à 0 : …
 Références comparées : plage / toit — écart : …
 ```
 

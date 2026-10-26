@@ -8,7 +8,7 @@ import { Thermos } from './Thermos'
 import { Mitten } from './Mitten'
 import { FishingHole } from './FishingHole'
 import { Husky } from './Husky'
-import { Backpack, Bedding, IceNiche, Rugs, Snowshoes, Stove, SupplyCrate, facing } from './Props'
+import { Backpack, Bedding, IceNiche, Pegs, Rugs, Snowshoes, Stove, SupplyCrate, facing } from './Props'
 import { BlockWall, Fir, Footprints, Skis, Sled, SnowLantern } from './Outside'
 import { DryingRack, FishBucket, FishingStool } from './Camp'
 import { Penguin } from './Penguin'
@@ -34,6 +34,7 @@ export function IglooScene() {
       <Bedding />
       <Rugs />
       <IceNiche a={212} y={1.2} />
+      <Pegs a={178} y={1.15} />
       <CrankRadio position={polar(200, 2.5, 0.45)} ry={facing(200)} />
       <SupplyCrate position={[1.55, 0, -1.75]} ry={facing(311) + Math.PI / 2} top={0.5} />
       <StormLantern position={[1.55, 0.5, -1.75]} />
@@ -44,7 +45,7 @@ export function IglooScene() {
       <Thermos position={[0.55, 0, 1.45]} />
       <Mitten position={[-1.45, 0, 1.55]} />
       <FishingHole position={[2.0, 0, 0.75]} />
-      <DryingRack position={[0.95, 0, -0.2]} ry={Math.PI / 4} />
+      <DryingRack position={[1.2, 0, -0.4]} ry={Math.PI / 4} />
       <FishingStool position={[2.95, 0, 1.25]} ry={0.6} />
       <FishBucket position={[2.85, 0, 0.05]} />
       {/* dehors, sur l'île : le traîneau, les sapins, la lanterne de neige, les skis à l'entrée, les traces de pas, le muret */}

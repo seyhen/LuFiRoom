@@ -59,9 +59,10 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite, 
    - `presets` : ajoute le son au préréglage où il a sa place (lire, dormir, travailler).
 2. **Types** : le nouvel identifiant dans `SoundId` (et `ObjectId` si l'objet est nouveau), `src/rooms/types.ts`.
 3. **Scène** : un fichier par objet dans `src/scene/<id>/`, posé avec `position` à son pied (rebond de clic), `userData={{ id }}` sur le groupe, `useSquash`. Ce qui ne bouge pas en `<Static>` imbriqué ; ce qui bouge quand le son joue lit `isActive(useStore.getState(), '<son>')` dans un `useFrame` (jamais de logique audio dans la scène).
-4. **Ce qu'il fait quand il joue** : une animation lente, liée au son (vitesse du geste ≈ rythme du son), qui respecte `reduceMotion`.
-5. **Traductions** : libellé, nom et sous-titre dans `src/i18n.ts` (français → anglais).
-6. **Icône** de la carte du mixeur : `soundIcons` dans `src/ui/icons.tsx`.
+4. **Ce qu'il fait quand il joue** : une animation lente, liée au son (vitesse du geste ≈ rythme du son), qui respecte `reduceMotion`. Pour un geste ponctuel (verser, piquer, une bulle), synchronise-le sur ce qu'on entend : le canal appelle `pulse(ctx, '<son>', t)` (`src/audio/events.ts`) et l'objet lit `useStore.getState().pulses['<son>']` dans son `useFrame` (voir `igloo/Thermos.tsx`).
+5. **Fini, pas seulement lisible** : 5 formes au moins, deux matières, une trace d'usage et un accessoire voisin (voir `audit-room`, « Pas assez abouti »).
+6. **Traductions** : libellé, nom et sous-titre dans `src/i18n.ts` (français → anglais).
+7. **Icône** de la carte du mixeur : `soundIcons` dans `src/ui/icons.tsx`.
 
 ## Étape 4 — Le son
 
