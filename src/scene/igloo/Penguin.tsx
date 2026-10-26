@@ -64,19 +64,20 @@ export function Penguin({ position, coat, ry = 0, s = 1 }: { position: V3; coat:
             <Part geo={SPH} m={m} scale={[0.03, 0.13, 0.07]} p={[sd * 0.02, -0.11, 0]} castShadow={false} />
           </group>
         ))}
-        {/* la tête : ronde, fondue dans le corps, le masque crème, les yeux, les joues, le bec */}
-        <group ref={head} position={[0, 0.5, 0.01]}>
+        {/* la tête : ronde, fondue dans le corps. Le visage crème couvre tout le devant (sinon la calotte de couleur fait un casque),
+            les yeux et les joues posés dessus, le bec */}
+        <group ref={head} position={[0, 0.48, 0.01]}>
          <Static>
           <Part geo={SPH} m={m} scale={0.14} />
-          <Part geo={SPH} m={belly} scale={[0.1, 0.085, 0.08]} p={[0, -0.01, 0.07]} castShadow={false} />
+          <Part geo={SPH} m={belly} scale={[0.122, 0.118, 0.1]} p={[0, -0.012, 0.05]} castShadow={false} />
           {[-1, 1].map((sd) => (
             <group key={sd}>
-              <Part geo={SPH} m={I.nose} scale={[0.02, 0.026, 0.014]} p={[sd * 0.05, 0.025, 0.125]} castShadow={false} />
-              <Part geo={SPH} m={belly} scale={0.007} p={[sd * 0.05 + 0.007, 0.035, 0.137]} castShadow={false} />
-              <Part geo={SPH} m={cheek} scale={[0.02, 0.012, 0.01]} p={[sd * 0.075, -0.015, 0.115]} castShadow={false} />
+              <Part geo={SPH} m={I.nose} scale={[0.019, 0.025, 0.012]} p={[sd * 0.048, 0.022, 0.142]} castShadow={false} />
+              <Part geo={SPH} m={belly} scale={0.0065} p={[sd * 0.048 + 0.007, 0.032, 0.152]} castShadow={false} />
+              <Part geo={SPH} m={cheek} scale={[0.02, 0.012, 0.009]} p={[sd * 0.074, -0.02, 0.13]} castShadow={false} />
             </group>
           ))}
-          <Part geo={SPH} m={beak} scale={[0.035, 0.025, 0.05]} p={[0, -0.015, 0.15]} castShadow={false} />
+          <Part geo={SPH} m={beak} scale={[0.034, 0.024, 0.048]} p={[0, -0.018, 0.165]} castShadow={false} />
          </Static>
         </group>
       </group>
