@@ -22,8 +22,6 @@ const COUNT: Record<Fall, number> = { drizzle: 45, rain: 110, storm: 170, snow: 
 function spawn(b: Bit, kind: Fall, w: number, h: number, anywhere: boolean) {
   b.kind = kind
   const snow = kind === 'snow' || kind === 'blizzard'
-  b.x = rand(-0.1, 1.15) * w
-  b.y = anywhere ? rand(0, h) : rand(-0.15, -0.02) * h
   if (kind === 'blizzard') {
     b.vx = rand(-420, -260)
     b.vy = rand(70, 150)
@@ -33,6 +31,18 @@ function spawn(b: Bit, kind: Fall, w: number, h: number, anywhere: boolean) {
   } else {
     b.vy = kind === 'drizzle' ? rand(420, 560) : rand(700, 980)
     b.vx = b.vy * (kind === 'storm' ? -0.22 : -0.08)
+  }
+  if (anywhere) {
+    b.x = rand(-0.05, 1.05) * w
+    b.y = rand(0, h)
+  } else if (Math.random() * (b.vy * w + Math.abs(b.vx) * h) < Math.abs(b.vx) * h) {
+    // Poussé de côté : ça entre aussi par le bord d'où vient le vent (la droite), en proportion de sa vitesse. Sinon, tout
+    // renaît en haut, sort par la gauche avant d'avoir descendu, et la neige reste dans le coin haut gauche.
+    b.x = w + rand(10, 70)
+    b.y = rand(-0.1, 1) * h
+  } else {
+    b.x = rand(0.02, 1.15) * w
+    b.y = rand(-0.15, -0.02) * h
   }
   b.size = snow ? rand(1.1, kind === 'blizzard' ? 2.2 : 2.8) : kind === 'drizzle' ? rand(6, 10) : rand(13, 22)
   b.phase = rand(0, Math.PI * 2)
