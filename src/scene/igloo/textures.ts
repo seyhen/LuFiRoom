@@ -237,3 +237,44 @@ export const cocoaTinTex = canvasTex(256, 96, (x) => {
   x.textAlign = 'center'
   x.fillText('CACAO', 128, 60)
 }, [1, 1])
+
+/**
+ * La glace du lac, dégagée à la pelle autour du trou : un bleu clair qui fonce vers le milieu, de longues fêlures blanches qui
+ * rayonnent depuis le trou, des bulles prises dans la glace et un voile de neige poudreuse vers le bord. Tuile 2 × 2 unités.
+ */
+export const lakeIceTex = canvasTex(256, 256, (x) => {
+  const r = seeded(23)
+  const g = x.createRadialGradient(128, 128, 20, 128, 128, 140)
+  g.addColorStop(0, '#5f9ec4'); g.addColorStop(0.45, '#8cc4e0'); g.addColorStop(1, '#d6ecf6')
+  x.fillStyle = g
+  x.fillRect(0, 0, 256, 256)
+  // les fêlures, du trou vers le bord
+  x.lineCap = 'round'
+  for (let i = 0; i < 9; i++) {
+    let a = (i / 9) * TAU + r() * 0.4, d = 40
+    let px = 128 + Math.cos(a) * d, py = 128 + Math.sin(a) * d
+    x.strokeStyle = `rgba(255,255,255,${0.35 + r() * 0.35})`
+    x.lineWidth = 1 + r() * 1.5
+    x.beginPath(); x.moveTo(px, py)
+    for (let k = 0; k < 5; k++) {
+      a += (r() - 0.5) * 0.6; d += 12 + r() * 14
+      px = 128 + Math.cos(a) * d; py = 128 + Math.sin(a) * d
+      x.lineTo(px, py)
+    }
+    x.stroke()
+  }
+  // les bulles prises dans la glace
+  for (let i = 0; i < 70; i++) {
+    const cx = r() * 256, cy = r() * 256, rad = 1 + r() * 3.5
+    x.strokeStyle = 'rgba(240,250,255,.6)'; x.lineWidth = 1
+    x.beginPath(); x.arc(cx, cy, rad, 0, TAU); x.stroke()
+  }
+  // la neige poudreuse que la pelle a laissée, vers le bord
+  for (let i = 0; i < 40; i++) {
+    const a = r() * TAU, d = 95 + r() * 30, cx = 128 + Math.cos(a) * d, cy = 128 + Math.sin(a) * d, rad = 8 + r() * 18
+    const h = x.createRadialGradient(cx, cy, 0, cx, cy, rad)
+    h.addColorStop(0, 'rgba(255,255,255,.55)'); h.addColorStop(1, 'rgba(255,255,255,0)')
+    x.fillStyle = h
+    x.fillRect(cx - rad, cy - rad, rad * 2, rad * 2)
+  }
+})

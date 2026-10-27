@@ -1,38 +1,81 @@
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Quaternion, Vector3, type Group, type Mesh } from 'three'
+import { ExtrudeGeometry, Object3D, Path, Quaternion, Shape, Vector3, type Group, type Mesh } from 'three'
 import { isActive, useStore } from '../../state/store'
-import { approach } from '../../math'
-import { Part, SPH, cyl, noRay, rbox, type V3 } from '../parts'
+import { TAU, approach } from '../../math'
+import { Batch, Part, SPH, cyl, noRay, rbox, type V3 } from '../parts'
 import { reduceMotion, useSquash } from '../anim'
-import { Static } from '../Static'
+import { LIVE, Static } from '../Static'
+import { seeded } from '../paint'
 import { I } from './materials'
 
-const HOLE = 0.36
-// Les éclats de glace autour du trou : [angle, distance, taille].
-const CHUNKS: [number, number, number][] = [[0.3, 0.47, 0.07], [1.4, 0.48, 0.05], [2.3, 0.46, 0.08], [3.5, 0.49, 0.06], [4.4, 0.47, 0.07], [5.5, 0.48, 0.05]]
-// La canne : posée sur sa fourche, le scion qui s'avance au-dessus du trou. Le bout du scion (repère du trou), d'où tombe la ligne.
-const TIP = new Vector3(0.11, 0.233, -0.38)
-const FLOAT = { x: 0.04, z: 0.06, y: 0.03 }
+const HOLE = 0.3
+const TOP = 0.07 // le dessus de la glace dégagée
+const WATER = 0.035 // l'eau, au fond du trou (la paroi de glace se voit entre les deux)
+/** Le bord de la plaque de glace dégagée (rayon selon l'angle) : un rond qui ondule, comme dégagé à la pelle. */
+const edge = (t: number) => 0.7 + 0.06 * Math.sin(3 * t + 1) + 0.04 * Math.sin(5 * t)
+// La canne : le manche posé sur la glace, le corps qui passe dans le support en X, le scion au-dessus du trou.
+const ROD = { p: [0.72, 0.1, -0.38] as V3, ry: 0.534, rz: -0.531, butt: 0.55, tip: 0.3 }
+const FLOAT = { x: 0.06, z: 0.02 }
 const UP = new Vector3(0, 1, 0), q = new Quaternion(), a = new Vector3(), b = new Vector3()
 
+function sheetGeometry() {
+  const s = new Shape(), n = 64
+  for (let i = 0; i <= n; i++) {
+    const t = (i / n) * TAU, r = edge(t)
+    i ? s.lineTo(Math.cos(t) * r, -Math.sin(t) * r) : s.moveTo(Math.cos(t) * r, -Math.sin(t) * r)
+  }
+  const hole = new Path()
+  hole.absarc(0, 0, HOLE, 0, TAU, true)
+  s.holes.push(hole)
+  const g = new ExtrudeGeometry(s, { depth: TOP - 0.03, bevelEnabled: true, bevelThickness: 0.013, bevelSize: 0.02, bevelSegments: 2, curveSegments: 48 })
+  g.rotateX(-Math.PI / 2)
+  g.translate(0, 0.017, 0)
+  // les UV du dessus suivent la pièce : la texture (centrée sur le trou) couvre la plaque
+  const p = g.attributes.position, uv = g.attributes.uv
+  for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i) / 1.6 + 0.5, p.getZ(i) / 1.6 + 0.5)
+  return g
+}
+
 /**
- * Le trou de pêche, creusé dans la glace au devant à droite. L'eau sombre en dégradé (claire au bord, noire au fond) et son reflet,
- * cerclée d'un bourrelet de glace et d'éclats ; sous la surface, l'ombre d'un poisson qui tourne lentement. La canne à pêche sur glace
- * (manche de liège, moulinet, anneaux, scion rouge) repose sur sa fourche de bois, la ligne tombe du bout du scion jusqu'au flotteur
- * rouge et blanc ; l'écumoire à glace est posée à côté. Quand le son joue, le flotteur danse sur le clapotis ; à chaque bulle qu'on
- * entend (le compteur `pulses.icehole`), un rond s'élargit et le flotteur plonge un instant.
+ * Le coin de pêche, au devant à droite : un trou percé dans la glace du lac. Autour, la glace a été dégagée à la pelle (une plaque
+ * bleue et vernie, ses fêlures et ses bulles) et la neige repoussée en bourrelet ; le trou a sa paroi de glace, l'eau sombre plus bas,
+ * des éclats de glace qui flottent, l'ombre d'un poisson qui tourne. La canne (manche de liège, moulinet, scion rouge) repose dans
+ * son support en X, son drapeau orange d'alerte replié ; la tarière qui a percé le trou est plantée dans la neige, la boîte d'appâts
+ * ouverte et l'écumoire posées sur la glace.
+ * Quand le son joue, le flotteur danse sur le clapotis ; à chaque bulle qu'on entend (`pulses.icehole`), un rond s'élargit, le
+ * flotteur plonge, le scion plie et le drapeau se dresse en tremblant.
  */
 export function FishingHole({ position }: { position: V3 }) {
   const g = useRef<Group>(null!), float = useRef<Group>(null!), ring = useRef<Mesh>(null!), fish = useRef<Group>(null!), line = useRef<Mesh>(null!)
-  const st = useRef({ seen: useStore.getState().pulses.icehole ?? 0, t: 9, ph: 0, k: 0, swim: 0 })
+  const tip = useRef<Group>(null!), tipEnd = useRef<Object3D>(null!), flag = useRef<Group>(null!)
+  const st = useRef({ seen: useStore.getState().pulses.icehole ?? 0, t: 9, ph: 0, k: 0, swim: 0, flag: 0 })
+  const sheet = useMemo(sheetGeometry, [])
+  // la neige repoussée autour de la plaque, et les éclats de glace qui flottent dans le trou
+  const { berm, slush } = useMemo(() => {
+    const r = seeded(41)
+    // des tas de tailles et de hauteurs différentes, qui se chevauchent, plus hauts là où la pelle a jeté plus de neige
+    const berm = Array.from({ length: 30 }, (_, i) => {
+      const t = (i / 30) * TAU + (r() - 0.5) * 0.15, d = edge(t) + 0.04 + r() * 0.07, w = 0.07 + r() * 0.13
+      const heap = 0.6 + 0.4 * Math.sin(t * 2 + 0.7)
+      return { p: [Math.cos(t) * d, 0.01, Math.sin(t) * d] as V3, s: [w, (0.025 + r() * 0.035) * (0.6 + heap), w * (0.6 + r() * 0.4)] as V3, r: [0, -t + (r() - 0.5) * 0.6, 0] as V3 }
+    })
+    const slush = Array.from({ length: 7 }, () => {
+      const t = r() * TAU, d = 0.06 + r() * 0.17, w = 0.012 + r() * 0.02
+      return { p: [Math.cos(t) * d, WATER + 0.003, Math.sin(t) * d] as V3, s: [w, 0.004, w * 0.8] as V3, r: [0, r() * TAU, 0] as V3 }
+    })
+    return { berm, slush }
+  }, [])
   useSquash('icehole', g)
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05), s = st.current, store = useStore.getState(), on = isActive(store, 'icehole')
     const n = store.pulses.icehole ?? 0
     if (n !== s.seen) {
       s.seen = n
-      if (on && !reduceMotion) s.t = 0
+      if (on && !reduceMotion) {
+        s.t = 0
+        s.flag = 1
+      }
     }
     s.t += dt
     s.k = approach(s.k, on ? 1 : 0, dt)
@@ -40,87 +83,137 @@ export function FishingHole({ position }: { position: V3 }) {
       s.ph += dt * 1.6
       s.swim += dt * (0.25 + s.k * 0.2)
     }
-    const dip = s.t < 0.6 ? Math.sin((s.t / 0.6) * Math.PI) * 0.03 : 0
-    float.current.position.y = FLOAT.y + Math.sin(s.ph) * 0.008 * s.k - dip
+    // la touche : le flotteur plonge, le scion plie un instant
+    const bite = s.t < 0.6 ? Math.sin((s.t / 0.6) * Math.PI) : 0
+    float.current.position.y = WATER + 0.012 + Math.sin(s.ph) * 0.007 * s.k - bite * 0.025
     float.current.rotation.z = Math.sin(s.ph * 0.7) * 0.15 * s.k
+    tip.current.rotation.z = -bite * 0.22 - Math.sin(s.ph) * 0.02 * s.k
+    // le drapeau se dresse et tremble, puis se replie lentement
+    s.flag = Math.max(0, s.flag - dt * 0.12)
+    const up = Math.min(1, s.flag * 3)
+    flag.current.rotation.z = (1 - up) * 1.35 + Math.sin(s.t * 14) * Math.exp(-s.t * 3) * 0.25 * up
     // la ligne, du bout du scion au flotteur
-    a.copy(TIP)
-    b.set(FLOAT.x, float.current.position.y + 0.06, FLOAT.z)
+    tipEnd.current.getWorldPosition(a)
+    g.current.worldToLocal(a)
+    b.set(FLOAT.x, float.current.position.y + 0.05, FLOAT.z)
     line.current.position.copy(a).add(b).multiplyScalar(0.5)
     line.current.quaternion.copy(q.setFromUnitVectors(UP, b.clone().sub(a).normalize()))
     line.current.scale.set(1, a.distanceTo(b), 1)
     // le poisson tourne en rond sous la glace, la tête dans le sens de la nage
-    fish.current.position.set(Math.cos(s.swim) * 0.17, 0.006, Math.sin(s.swim) * 0.17)
+    fish.current.position.set(Math.cos(s.swim) * 0.15, 0, Math.sin(s.swim) * 0.15)
     fish.current.rotation.y = -s.swim - Math.PI / 2
     // le rond dans l'eau : il s'élargit et s'efface en une seconde et demie
     const r = Math.min(1, s.t / 1.5)
-    ring.current.scale.setScalar(0.08 + r * 0.6)
+    ring.current.scale.setScalar(0.06 + r * 0.5)
     I.ring.opacity = s.t < 1.5 ? (1 - r) * 0.7 : 0
   })
   return (
     <group ref={g} userData={{ id: 'icehole' }} position={position}>
       <Static>
-        {/* le bourrelet de glace bleutée autour du trou, et les éclats */}
-        <Part m={I.iceRim} p={[0, 0.035, 0]} rotation-x={Math.PI / 2} scale={[1, 1, 0.6]}>
-          <torusGeometry args={[HOLE + 0.04, 0.06, 10, 36]} />
+        {/* la plaque de glace dégagée, et la neige repoussée en bourrelet tout autour */}
+        <mesh geometry={sheet} material={I.lakeIce} castShadow receiveShadow />
+        <Batch geo={SPH} m={I.snow} items={berm} shadow />
+        {/* la paroi du trou, dans l'épaisseur de la glace, et son bord arrondi */}
+        <mesh material={I.holeWall} position={[0, (TOP + WATER) / 2, 0]}>
+          <cylinderGeometry args={[HOLE, HOLE, TOP - WATER, 32, 1, true]} />
+        </mesh>
+        <Part m={I.iceRim} p={[0, TOP, 0]} rotation-x={Math.PI / 2} castShadow={false}>
+          <torusGeometry args={[HOLE, 0.016, 8, 40]} />
         </Part>
-        {CHUNKS.map(([a, d, s], i) => (
-          <Part key={i} geo={rbox(s * 1.4, s * 0.7, s, s * 0.3)} m={i % 2 ? I.iceRim : I.snow} p={[Math.cos(a) * d, s * 0.35, Math.sin(a) * d]} rotation-y={a * 1.7} castShadow={false} />
+        {/* les éclats tirés du trou par la tarière, posés sur la glace */}
+        {[[0.6, 0.42, 0.05], [1.7, 0.44, 0.04], [2.6, 0.4, 0.055], [3.9, 0.43, 0.045], [5.2, 0.41, 0.05]].map(([t, d, s], i) => (
+          <Part key={i} geo={rbox(s * 1.4, s * 0.7, s, s * 0.3)} m={i % 2 ? I.iceRim : I.snow} p={[Math.cos(t) * d, TOP + s * 0.3, Math.sin(t) * d]} rotation-y={t * 1.7} castShadow={false} />
         ))}
-        {/* la fourche de bois plantée dans la neige */}
-        <group position={[0.51, 0, -0.28]}>
-          <Part geo={cyl(0.013, 0.016, 0.09, 6)} m={I.wood} p={[0, 0.045, 0]} castShadow={false} />
+        {/* le support en X de la canne, posé sur la glace */}
+        <group position={[0.5, TOP, -0.25]} rotation-y={0.55}>
           {[-1, 1].map((sd) => (
-            <Part key={sd} geo={cyl(0.009, 0.011, 0.07, 6)} m={I.wood} p={[0, 0.115, sd * 0.02]} rotation-x={sd * 0.5} castShadow={false} />
+            <Part key={sd} geo={cyl(0.012, 0.014, 0.3, 6)} m={I.wood} p={[0, 0.12, 0]} rotation-z={sd * 0.55} castShadow={false} />
           ))}
-        </group>
-        {/* la canne : le manche de liège posé dans la neige, le moulinet et sa manivelle, le scion rouge et ses anneaux, qui
-            passe dans la fourche et s'avance au-dessus du trou */}
-        <group position={[0.82, 0.03, -0.2]} rotation={[0, -0.25, -0.27]}>
-          <Part geo={cyl(0.022, 0.022, 0.2, 10)} m={I.cork} p={[0, 0, 0]} rotation-z={Math.PI / 2} />
-          <Part geo={cyl(0.024, 0.024, 0.02, 10)} m={I.darkSteel} p={[-0.11, 0, 0]} rotation-z={Math.PI / 2} castShadow={false} />
-          <group position={[-0.06, -0.045, 0]}>
-            <Part geo={cyl(0.035, 0.035, 0.03, 16)} m={I.darkSteel} rotation-x={Math.PI / 2} castShadow={false} />
-            <Part geo={rbox(0.01, 0.045, 0.008, 0.003)} m={I.steel} p={[0.015, 0.0, 0.02]} castShadow={false} />
-            <Part geo={SPH} m={I.cork} scale={0.009} p={[0.015, 0.02, 0.025]} castShadow={false} />
+          {/* le drapeau d'alerte : sa tige de ressort, replié contre le support */}
+          <group ref={flag} position={[0, 0.07, 0.03]} userData={LIVE}>
+            <Part geo={cyl(0.004, 0.004, 0.3, 4)} m={I.darkSteel} p={[0, 0.15, 0]} castShadow={false} />
+            <mesh material={I.flag} position={[0.05, 0.27, 0]}>
+              <planeGeometry args={[0.1, 0.07]} />
+            </mesh>
           </group>
-          <Part geo={cyl(0.005, 0.008, 0.66, 6)} m={I.rust} p={[-0.43, 0, 0]} rotation-z={Math.PI / 2} castShadow={false} />
-          {[-0.25, -0.45, -0.66].map((x) => (
-            <Part key={x} m={I.steel} p={[x, -0.012, 0]} rotation-y={Math.PI / 2} castShadow={false}>
-              <torusGeometry args={[0.01, 0.002, 4, 10]} />
-            </Part>
-          ))}
         </group>
-        {/* l'écumoire à glace, posée sur la neige : son anneau, son fond percé, son manche */}
-        <group position={[-0.25, 0.012, 0.58]} rotation-y={0.7}>
+        {/* la tarière qui a percé le trou, plantée dans la neige : la spirale de sa mèche, le tube, la poignée en T et ses
+            poignées rouges */}
+        <group position={[-0.72, 0, 0.42]} rotation={[0.1, 0, 0.12]}>
+          <Part geo={cyl(0.018, 0.018, 0.75, 8)} m={I.steel} p={[0, 0.375, 0]} />
+          {Array.from({ length: 14 }, (_, k) => (
+            <Part key={k} geo={rbox(0.07, 0.007, 0.03, 0.003)} m={I.darkSteel} p={[Math.cos(k * 0.75) * 0.04, 0.05 + k * 0.022, -Math.sin(k * 0.75) * 0.04]} rotation={[0.35, k * 0.75, 0]} castShadow={false} />
+          ))}
+          <Part geo={cyl(0.012, 0.012, 0.4, 8)} m={I.steel} p={[0, 0.75, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+          {[-1, 1].map((sd) => (
+            <Part key={sd} geo={cyl(0.022, 0.022, 0.1, 10)} m={I.collar} p={[sd * 0.16, 0.75, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+          ))}
+          {/* un peu de neige au pied, là où elle est plantée */}
+          <Part geo={SPH} m={I.snow} scale={[0.09, 0.035, 0.08]} p={[0, 0.01, 0]} castShadow={false} />
+        </group>
+        {/* la boîte d'appâts ouverte, son couvercle à côté, les boulettes orange dedans */}
+        <group position={[0.36, TOP, 0.48]} rotation-y={0.4}>
+          <Part geo={cyl(0.055, 0.055, 0.04, 18)} m={I.steel} p={[0, 0.02, 0]} />
+          <Part geo={cyl(0.05, 0.05, 0.004, 18)} m={I.bark} p={[0, 0.036, 0]} castShadow={false} />
+          {[[0.02, 0.01], [-0.015, 0.02], [0.0, -0.02], [-0.02, -0.01]].map(([x, z], i) => (
+            <Part key={i} geo={SPH} m={I.bait} scale={0.012} p={[x, 0.044, z]} castShadow={false} />
+          ))}
+          <Part geo={cyl(0.058, 0.058, 0.01, 18)} m={I.steel} p={[0.1, 0.03, 0.03]} rotation={[0.3, 0, 1.1]} castShadow={false} />
+        </group>
+        {/* l'écumoire à glace, posée sur la glace : son anneau, son fond percé, son manche */}
+        <group position={[-0.48, TOP + 0.004, 0.28]} rotation-y={0.9}>
           <Part m={I.darkSteel} rotation-x={Math.PI / 2} castShadow={false}>
-            <torusGeometry args={[0.075, 0.008, 6, 20]} />
+            <torusGeometry args={[0.07, 0.008, 6, 20]} />
           </Part>
-          <Part geo={cyl(0.072, 0.072, 0.004, 20)} m={I.grille} p={[0, -0.004, 0]} castShadow={false} />
-          <Part geo={cyl(0.008, 0.008, 0.34, 6)} m={I.wood} p={[0.24, 0, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+          <Part geo={cyl(0.067, 0.067, 0.004, 20)} m={I.grille} p={[0, -0.003, 0]} castShadow={false} />
+          <Part geo={cyl(0.008, 0.008, 0.3, 6)} m={I.wood} p={[0.22, 0, 0]} rotation-z={Math.PI / 2} castShadow={false} />
         </group>
       </Static>
-      {/* l'eau, à peine sous le bord de glace, et l'ombre du poisson juste dessous */}
-      <mesh material={I.holeWater} position={[0, 0.012, 0]} rotation-x={-Math.PI / 2} receiveShadow>
+      {/* l'eau au fond du trou, les éclats qui flottent, l'ombre du poisson juste sous la surface */}
+      <mesh material={I.holeWater} position={[0, WATER, 0]} rotation-x={-Math.PI / 2} receiveShadow>
         <circleGeometry args={[HOLE, 36]} />
       </mesh>
-      <group ref={fish}>
-        <mesh material={I.fishShadow} position={[0, 0.011, 0]} rotation-x={-Math.PI / 2} scale={[0.05, 0.13, 1]} raycast={noRay}>
+      <Batch geo={SPH} m={I.snow} items={slush} />
+      <group ref={fish} position={[0, WATER + 0.002, 0]}>
+        <mesh material={I.fishShadow} rotation-x={-Math.PI / 2} scale={[0.045, 0.12, 1]} raycast={noRay}>
           <circleGeometry args={[1, 16]} />
         </mesh>
-        <mesh material={I.fishShadow} position={[0, 0.011, -0.15]} rotation-x={-Math.PI / 2} scale={[0.04, 0.035, 1]} raycast={noRay}>
+        <mesh material={I.fishShadow} position={[0, 0, -0.14]} rotation-x={-Math.PI / 2} scale={[0.035, 0.03, 1]} raycast={noRay}>
           <circleGeometry args={[1, 3]} />
         </mesh>
       </group>
-      <mesh ref={ring} material={I.ring} position={[FLOAT.x, 0.02, FLOAT.z]} rotation-x={-Math.PI / 2} raycast={noRay}>
+      <mesh ref={ring} material={I.ring} position={[FLOAT.x, WATER + 0.004, FLOAT.z]} rotation-x={-Math.PI / 2} raycast={noRay}>
         <planeGeometry args={[1, 1]} />
       </mesh>
+      {/* la canne : le manche de liège, le moulinet, le corps rouge ; le scion qui plie, et son bout, d'où part la ligne */}
+      <group position={ROD.p} rotation={[0, ROD.ry, ROD.rz]}>
+        <Part geo={cyl(0.022, 0.024, 0.18, 10)} m={I.cork} p={[-0.04, 0, 0]} rotation-z={Math.PI / 2} />
+        <Part geo={cyl(0.026, 0.026, 0.02, 10)} m={I.darkSteel} p={[-0.14, 0, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+        <group position={[-0.08, -0.045, 0]}>
+          <Part geo={cyl(0.035, 0.035, 0.03, 16)} m={I.darkSteel} rotation-x={Math.PI / 2} castShadow={false} />
+          <Part geo={rbox(0.01, 0.045, 0.008, 0.003)} m={I.steel} p={[0.015, 0, 0.02]} castShadow={false} />
+          <Part geo={SPH} m={I.cork} scale={0.009} p={[0.015, 0.02, 0.025]} castShadow={false} />
+        </group>
+        <Part geo={cyl(0.007, 0.01, ROD.butt - 0.15, 6)} m={I.rust} p={[-(0.15 + ROD.butt) / 2, 0, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+        {[-0.3, -0.48].map((x) => (
+          <Part key={x} m={I.steel} p={[x, -0.013, 0]} rotation-y={Math.PI / 2} castShadow={false}>
+            <torusGeometry args={[0.011, 0.002, 4, 10]} />
+          </Part>
+        ))}
+        <group ref={tip} position={[-ROD.butt, 0, 0]}>
+          <Part geo={cyl(0.004, 0.007, ROD.tip, 6)} m={I.rust} p={[-ROD.tip / 2, 0, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+          <Part m={I.steel} p={[-ROD.tip + 0.01, -0.008, 0]} rotation-y={Math.PI / 2} castShadow={false}>
+            <torusGeometry args={[0.007, 0.0018, 4, 8]} />
+          </Part>
+          <object3D ref={tipEnd} position={[-ROD.tip, 0, 0]} />
+        </group>
+      </group>
       {/* la ligne */}
       <mesh ref={line} material={I.thread}>
-        <cylinderGeometry args={[0.0022, 0.0022, 1, 4]} />
+        <cylinderGeometry args={[0.0025, 0.0025, 1, 4]} />
       </mesh>
       {/* le flotteur, rouge dessus, blanc dessous, sa petite antenne */}
-      <group ref={float} position={[FLOAT.x, FLOAT.y, FLOAT.z]}>
+      <group ref={float} position={[FLOAT.x, WATER + 0.012, FLOAT.z]}>
         <Part geo={SPH} m={I.woolRed} scale={[0.035, 0.03, 0.035]} p={[0, 0.012, 0]} castShadow={false} />
         <Part geo={SPH} m={I.enamel} scale={[0.034, 0.022, 0.034]} p={[0, -0.006, 0]} castShadow={false} />
         <Part geo={cyl(0.004, 0.004, 0.05, 6)} m={I.ink} p={[0, 0.045, 0]} castShadow={false} />
@@ -128,3 +221,4 @@ export function FishingHole({ position }: { position: V3 }) {
     </group>
   )
 }
+

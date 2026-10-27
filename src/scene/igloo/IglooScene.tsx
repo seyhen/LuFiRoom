@@ -46,8 +46,8 @@ export function IglooScene() {
       <Mitten position={[-1.45, 0, 1.55]} />
       <FishingHole position={[2.0, 0, 0.75]} />
       <DryingRack position={[1.2, 0, -0.4]} ry={Math.PI / 4} />
-      <FishingStool position={[2.95, 0, 1.25]} ry={0.6} />
-      <FishBucket position={[2.85, 0, 0.05]} />
+      <FishingStool position={[3.05, 0, 1.35]} ry={0.6} />
+      <FishBucket position={[2.95, 0, -0.05]} />
       {/* dehors, sur l'île : le traîneau, les sapins, la lanterne de neige, les skis à l'entrée, les traces de pas, le muret */}
       <Sled a={-8} />
       <Fir a={330} r={3.62} h={2.1} />

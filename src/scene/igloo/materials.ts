@@ -1,6 +1,6 @@
 import { AdditiveBlending, BackSide, DoubleSide, FrontSide, MeshBasicMaterial, MeshStandardMaterial } from 'three'
 import { M, gummy } from '../materials'
-import { cocoaTinTex, dialTex, holeTex, iceTex, stencilTex } from './textures'
+import { cocoaTinTex, dialTex, holeTex, iceTex, lakeIceTex, stencilTex } from './textures'
 import { auroraTex, curtainMask, blockTex, fleeceTex, floorTex, greyFurTex, grilleTex, quiltTex, reindeerTex, ringTex } from './textures'
 
 /**
@@ -85,6 +85,11 @@ export const I = {
   gas: gummy(0x2f6fb0, { roughness: 0.3, clearcoat: 0.8 }),
   hat: gummy(0x3f6e8a, { roughness: 0.9, clearcoat: 0.04 }),
   // l'ombre du poisson sous l'eau du trou (au-dessus du fond, sous la surface : la surface claire reste devant)
+  // la glace du lac autour du trou : lisse, vernie, ses fêlures et ses bulles ; la paroi du trou, plus sombre
+  lakeIce: gummy(0xffffff, { map: lakeIceTex, roughness: 0.05, clearcoat: 1, clearcoatRoughness: 0.05 }),
+  holeWall: gummy(0x6aa6c8, { roughness: 0.1, clearcoat: 1, side: DoubleSide }),
+  flag: gummy(0xff7a2a, { roughness: 0.5, clearcoat: 0.4, side: DoubleSide }),
+  bait: gummy(0xd8603a, { roughness: 0.4, clearcoat: 0.6 }),
   fishShadow: new MeshBasicMaterial({ color: 0x04101c, transparent: true, opacity: 0.55, depthWrite: false }),
   ink: M.ink,
 }
