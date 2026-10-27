@@ -299,3 +299,100 @@ export const lakeIceTex = canvasTex(256, 256, (x) => {
     x.fillRect(cx - rad, cy - rad, rad * 2, rad * 2)
   }
 })
+
+/** Des poils courts couchés le long de u (le sens du pelage sur un boudin `puff`), de la couleur `c`, sur la zone qu'on peint. */
+function strokes(x: CanvasRenderingContext2D, r: () => number, W: number, H: number, n: number, color: (v: number) => string) {
+  x.lineCap = 'round'
+  for (let i = 0; i < n; i++) {
+    const px = r() * W, py = r() * H, len = 4 + r() * 8, a = (r() - 0.5) * 0.5
+    x.strokeStyle = color(1 - py / H)
+    x.globalAlpha = 0.12 + r() * 0.2
+    x.lineWidth = 1 + r()
+    x.beginPath(); x.moveTo(px, py); x.lineTo(px + Math.cos(a) * len, py + Math.sin(a) * len); x.stroke()
+  }
+  x.globalAlpha = 1
+}
+
+/**
+ * Le pelage du husky, peint sur son corps roulé (un `puff` : u des hanches au poitrail, v autour). v = 0,25 est le ventre (le dedans
+ * de la boucle), v = 0,75 le dos : la selle gris foncé sur le dos, les flancs gris, le ventre et le dessous blancs, avec un passage
+ * doux de l'un à l'autre, et des poils couchés vers la tête.
+ */
+export const huskyTex = canvasTex(512, 256, (x) => {
+  const r = seeded(41), W = 512, H = 256
+  // du bas de la texture (v = 0) vers le haut (v = 1) : une bande verticale par couleur, en dégradé
+  const g = x.createLinearGradient(0, H, 0, 0)
+  g.addColorStop(0, '#f0f2f4'); g.addColorStop(0.36, '#f0f2f4'); g.addColorStop(0.46, '#8a939e'); g.addColorStop(0.56, '#5a636e')
+  g.addColorStop(0.66, '#3e4650'); g.addColorStop(0.8, '#4a535e'); g.addColorStop(0.9, '#8a939e'); g.addColorStop(0.97, '#f0f2f4'); g.addColorStop(1, '#f0f2f4')
+  x.fillStyle = g
+  x.fillRect(0, 0, W, H)
+  strokes(x, r, W, H, 3200, (v) => (v > 0.42 && v < 0.92 ? (r() < 0.5 ? '#9aa3ad' : '#4a525c') : r() < 0.5 ? '#ffffff' : '#dde2e8'))
+}, [1, 1])
+
+/** La queue en panache : grise dessus avec une ligne plus sombre, blanche dessous et blanche au bout (u > 0,8). */
+export const tailTex = canvasTex(256, 64, (x) => {
+  const r = seeded(43), W = 256, H = 64
+  const g = x.createLinearGradient(0, H, 0, 0)
+  g.addColorStop(0, '#f0f2f4'); g.addColorStop(0.3, '#e4e8ec'); g.addColorStop(0.4, '#7a8490'); g.addColorStop(0.5, '#454d58')
+  g.addColorStop(0.6, '#7a8490'); g.addColorStop(0.7, '#e4e8ec'); g.addColorStop(1, '#f0f2f4')
+  x.fillStyle = g
+  x.fillRect(0, 0, W, H)
+  const t = x.createLinearGradient(0, 0, W, 0)
+  t.addColorStop(0.72, 'rgba(240,242,244,0)'); t.addColorStop(0.84, 'rgba(240,242,244,1)')
+  x.fillStyle = t
+  x.fillRect(0, 0, W, H)
+  strokes(x, r, W, H, 900, (v) => (v > 0.38 && v < 0.62 ? '#5a636e' : '#ffffff'))
+}, [1, 1])
+
+/**
+ * Le sac de couchage momie, rouille : les coutures entre les boudins (le relief vient de la forme, la couture assombrit le creux),
+ * la fermeture éclair qui court le long du flanc côté caméra (v ≈ 0,31) et sa tirette, un liseré plus clair en bas.
+ */
+export const bagTex = canvasTex(512, 128, (x) => {
+  const W = 512, H = 128
+  x.fillStyle = '#c4552e'
+  x.fillRect(0, 0, W, H)
+  // un léger dégradé de nylon : plus clair sur le dessus
+  const g = x.createLinearGradient(0, H, 0, 0)
+  g.addColorStop(0, 'rgba(90,30,14,.25)'); g.addColorStop(0.5, 'rgba(255,170,120,.18)'); g.addColorStop(1, 'rgba(90,30,14,.25)')
+  x.fillStyle = g
+  x.fillRect(0, 0, W, H)
+  for (let k = 1; k < 9; k++) {
+    const px = (k / 9) * W
+    x.fillStyle = 'rgba(70, 20, 8, .45)'
+    x.fillRect(px - 2, 0, 4, H)
+  }
+  // la fermeture éclair : un ruban sombre et fin, ses dents à peine plus claires
+  const zy = H * (1 - 0.31)
+  x.fillStyle = '#5a2414'
+  x.fillRect(W * 0.04, zy - 2, W * 0.88, 4)
+  x.fillStyle = 'rgba(200, 160, 140, .35)'
+  for (let px = W * 0.04; px < W * 0.92; px += 4) x.fillRect(px, zy - 1, 2, 2)
+}, [1, 1])
+
+/** La couverture de laine jetée sur les pieds : rouge, deux larges bandes crème en travers, une trame de laine. */
+export const drapeTex = canvasTex(256, 128, (x) => {
+  const r = seeded(47), W = 256, H = 128
+  x.fillStyle = '#b83a32'
+  x.fillRect(0, 0, W, H)
+  for (const [a, b] of [[0.16, 0.24], [0.66, 0.74]]) {
+    x.fillStyle = '#eee4d0'
+    x.fillRect(a * W, 0, (b - a) * W, H)
+    x.fillStyle = '#2f5a6a'
+    x.fillRect(a * W + (b - a) * W * 0.4, 0, (b - a) * W * 0.2, H)
+  }
+  for (let i = 0; i < 1400; i++) {
+    x.fillStyle = r() < 0.5 ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.08)'
+    x.fillRect(r() * W, r() * H, 2, 1)
+  }
+}, [1, 1])
+
+/** La flanelle à carreaux qui double la capuche du sac. */
+export const plaidTex = canvasTex(64, 64, (x) => {
+  x.fillStyle = '#efe2c8'
+  x.fillRect(0, 0, 64, 64)
+  x.fillStyle = 'rgba(184, 58, 50, .55)'
+  for (const p of [8, 40]) { x.fillRect(p, 0, 12, 64); x.fillRect(0, p, 64, 12) }
+  x.fillStyle = 'rgba(47, 90, 106, .5)'
+  for (const p of [26, 58]) { x.fillRect(p, 0, 3, 64); x.fillRect(0, p, 64, 3) }
+}, [3, 3])

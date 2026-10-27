@@ -1,6 +1,6 @@
 import { AdditiveBlending, BackSide, DoubleSide, FrontSide, MeshBasicMaterial, MeshStandardMaterial } from 'three'
 import { M, gummy } from '../materials'
-import { cocoaTinTex, dialTex, holeTex, iceTex, lakeIceTex, stencilTex } from './textures'
+import { bagTex, cocoaTinTex, dialTex, drapeTex, holeTex, huskyTex, iceTex, lakeIceTex, plaidTex, stencilTex, tailTex } from './textures'
 import { auroraTex, curtainMask, blockTex, fleeceTex, floorTex, greyFurTex, grilleTex, quiltTex, reindeerTex, ringTex } from './textures'
 
 /**
@@ -59,6 +59,14 @@ export const I = {
   brass: M.brass,
   lampGlass: gummy(0xfff4dc, { emissive: 0xffb45e, emissiveIntensity: 0.1, roughness: 0.1, transparent: true, opacity: 0.6, depthWrite: false }),
   flame: new MeshBasicMaterial({ color: 0xffc766 }),
+  // le pelage peint sur le corps roulé et la queue du husky (voir huskyTex, tailTex)
+  huskyCoat: gummy(0xffffff, { map: huskyTex, roughness: 0.85, clearcoat: 0.06 }),
+  huskyTail: gummy(0xffffff, { map: tailTex, roughness: 0.85, clearcoat: 0.06 }),
+  // le couchage : le sac momie, la couverture jetée dessus (vue des deux côtés), la flanelle de la capuche, le tapis de mousse
+  bag: gummy(0xffffff, { map: bagTex, roughness: 0.45, clearcoat: 0.45 }),
+  drape: gummy(0xffffff, { map: drapeTex, roughness: 0.9, clearcoat: 0.04, side: DoubleSide }),
+  plaid: gummy(0xffffff, { map: plaidTex, roughness: 0.9, clearcoat: 0.03 }),
+  pad: gummy(0x3f8a8a, { roughness: 0.7, clearcoat: 0.15 }),
   husky: gummy(0x707a86, { roughness: 0.85, clearcoat: 0.05 }),
   huskyLight: gummy(0xf0f2f4, { roughness: 0.85, clearcoat: 0.05 }),
   huskyDark: gummy(0x3e4650, { roughness: 0.8, clearcoat: 0.05 }),

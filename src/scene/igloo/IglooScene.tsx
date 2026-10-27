@@ -40,7 +40,7 @@ export function IglooScene() {
       <Snowshoes a={292} />
       <Backpack a={276} />
       <Stove position={[0.15, 0, -0.55]} />
-      <Husky position={[-1.15, 0.01, 0.25]} ry={0.4} />
+      <Husky position={[-1.15, 0.01, 0.25]} ry={0.8} />
       <Thermos position={[0.55, 0, 1.45]} />
       <Mitten position={[-1.45, 0, 1.55]} />
       <FishingHole position={[2.0, 0, 0.75]} />

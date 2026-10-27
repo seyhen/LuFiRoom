@@ -1,63 +1,88 @@
 import { useLayoutEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { AdditiveBlending, ExtrudeGeometry, Shape, type Group, type Mesh } from 'three'
+import { AdditiveBlending, ExtrudeGeometry, Shape, Vector3, type Group, type Mesh } from 'three'
 import { TAU } from '../../math'
-import { Part, SPH, cyl, noRay, rbox, worldUV, type V3 } from '../parts'
+import { Part, SPH, cyl, noRay, rbox, type V3 } from '../parts'
 import { LIVE } from '../Static'
 import { reduceMotion, useParticles } from '../anim'
 import { glowTex, mistTex } from '../textures'
 import { rand } from '../../math'
 import { I } from './materials'
 import { Vessel } from './Vessel'
+import { puff } from './puff'
 import { BENCH, along, polar } from './IglooShell'
 
 /** L'angle qui fait regarder un objet vers le centre de l'igloo depuis la direction `a` (degrés). */
 export const facing = (a: number) => Math.atan2(-Math.cos((a * Math.PI) / 180), -Math.sin((a * Math.PI) / 180))
 
-/** Le couchage sur la banquette : une peau de mouton étalée, le duvet rouille matelassé, un oreiller de laine, une couverture pliée. */
+// Le sac de couchage momie, le long de la banquette : des pieds (x = -0,6) aux épaules (x = 0,5), la capuche au bout. Son rayon
+// s'élargit des pieds aux épaules, et chaque boudin du matelassage (neuf) gonfle entre deux coutures.
+const BAG = { x0: -0.6, x1: 0.5, y: 0.05, up: 0.6, down: 0.3 }
+const bagR = (u: number) => (0.13 + 0.07 * Math.min(1, u / 0.75) ** 0.8 - 0.012 * Math.max(0, (u - 0.85) / 0.15)) * (1 + 0.06 * Math.sin(Math.PI * 9 * u) ** 2)
+const bagPts = (x0: number, x1: number) => [0, 0.25, 0.5, 0.75, 1].map((t) => new Vector3(x0 + (x1 - x0) * t, BAG.y, 0))
+// la hauteur du dessus du sac à l'abscisse x (pour y poser le livre, la frontale, la couverture)
+const bagTop = (x: number, z = 0) => {
+  const r = bagR((x - BAG.x0) / (BAG.x1 - BAG.x0))
+  return BAG.y + BAG.up * r * Math.sqrt(Math.max(0, 1 - (z / r) ** 2))
+}
+
+/**
+ * Le couchage sur la banquette de neige, en couches comme au bivouac : une peau de mouton découpée, le tapis de mousse à côtes,
+ * le sac de couchage momie (rouille, ses boudins gonflés, sa fermeture éclair sur le flanc, sa capuche doublée de flanelle à
+ * carreaux et son cordon à deux arrêts, l'oreiller de laine dedans), la couverture de laine rayée jetée sur les pieds, et posés
+ * dessus le livre ouvert retourné et la frontale.
+ */
 export function Bedding() {
   const h = BENCH.h
+  const geo = useMemo(() => {
+    const bag = puff(bagPts(BAG.x0, BAG.x1), bagR, { n: 72, radial: 22, up: BAG.up, down: BAG.down })
+    // la couverture : une demi-coque un peu plus large que le sac, qui retombe des deux côtés jusqu'au tapis
+    const u1 = 0.4, drape = puff(bagPts(BAG.x0 - 0.04, BAG.x0 + (BAG.x1 - BAG.x0) * u1), (u) => bagR(u * u1) * 1.0 + 0.03, {
+      n: 24, radial: 20, up: BAG.up, down: 1, phi0: -0.35, phi1: Math.PI + 0.35,
+    })
+    return { bag, drape, sheep: hide() }
+  }, [])
   return (
     <>
-      <group position={polar(222, 2.43, h)} rotation-y={along(222)}>
-        <Part geo={rbox(2.0, 0.035, 0.86, 0.015)} m={I.fleece} p={[0, 0.018, 0]} />
+      {/* la peau de mouton, découpée (la même forme que la peau de renne du sol), à plat sur la banquette */}
+      <group position={polar(224, 2.43, h)} rotation-y={along(224)}>
+        <mesh geometry={geo.sheep} material={I.fleece} position={[0, 0.012, 0]} scale={[1.05, 1, 0.92]} receiveShadow />
       </group>
-      <group position={polar(234, 2.45, h + 0.035)} rotation-y={along(234)}>
-        {/* le duvet, gonflé, un peu ouvert sur le haut */}
-        {/* (UV à la taille de la scène : les boudins du matelassage traversent le duvet en largeur, tous les 10 cm) */}
-        <Part geo={worldUV(rbox(1.45, 0.17, 0.6, 0.08), 1.2, 'z')} m={I.quilt} p={[0, 0.085, 0]} />
-        <Part geo={rbox(0.5, 0.1, 0.56, 0.05)} m={I.rust} p={[0.52, 0.2, 0.0]} rotation-z={-0.12} />
-        {/* la capuche du duvet, ronde, son ouverture plus sombre et son cordon à deux arrêts */}
-        <Part geo={SPH} m={I.rust} scale={[0.2, 0.13, 0.3]} p={[0.75, 0.13, 0]} />
-        <Part geo={SPH} m={I.leatherDark} scale={[0.06, 0.07, 0.17]} p={[0.62, 0.17, 0]} castShadow={false} />
-        {[-0.08, 0.08].map((z) => (
-          <Part key={z} geo={SPH} m={I.rust} scale={[0.018, 0.012, 0.018]} p={[0.6, 0.245, z]} castShadow={false} />
+      <group position={polar(232, 2.45, h + 0.032)} rotation-y={along(232)}>
+        {/* le tapis de mousse, ses côtes en travers */}
+        <Part geo={rbox(1.42, 0.03, 0.6, 0.012)} m={I.pad} p={[0, 0.015, 0]} />
+        {Array.from({ length: 11 }, (_, k) => (
+          <Part key={k} geo={rbox(0.06, 0.016, 0.58, 0.007)} m={I.pad} p={[-0.62 + k * 0.124, 0.032, 0]} castShadow={false} />
         ))}
-        {/* la fermeture éclair, le long du flanc */}
-        <Part geo={rbox(1.2, 0.012, 0.012, 0.004)} m={I.darkSteel} p={[-0.05, 0.17, 0.296]} castShadow={false} />
-        {/* l'oreiller de laine, au bout près de la paroi */}
-        <Part geo={SPH} m={I.wool} scale={[0.17, 0.08, 0.24]} p={[0.95, 0.12, 0]} />
-        {/* un livre ouvert retourné sur le duvet, la frontale à côté */}
-        <group position={[-0.05, 0.18, 0.08]} rotation-y={0.4}>
-          {[-1, 1].map((sd) => (
-            <Part key={sd} geo={rbox(0.16, 0.014, 0.22, 0.006)} m={I.book} p={[sd * 0.08, 0.008 - Math.abs(sd) * 0.0, 0]} rotation-z={sd * -0.18} castShadow={false} />
+        <group position={[0, 0.03, 0]}>
+          {/* le sac, son pied arrondi */}
+          <mesh geometry={geo.bag} material={I.bag} castShadow receiveShadow />
+          <Part geo={SPH} m={I.rust} scale={[0.07, 0.075, 0.13]} p={[BAG.x0, 0.058, 0]} />
+          {/* la capuche : un dôme rond au bout, son ouverture doublée de flanelle, l'oreiller de laine qui dépasse, le cordon */}
+          <Part geo={SPH} m={I.rust} scale={[0.17, 0.15, 0.21]} p={[0.55, 0.1, 0]} />
+          <Part geo={SPH} m={I.plaid} scale={[0.1, 0.045, 0.14]} p={[0.55, 0.215, 0]} rotation-z={0.3} castShadow={false} />
+          <Part geo={SPH} m={I.wool} scale={[0.075, 0.04, 0.1]} p={[0.57, 0.24, 0]} rotation-z={0.3} castShadow={false} />
+          {[-1, 1].map((z) => (
+            <Part key={z} geo={cyl(0.014, 0.014, 0.035, 10)} m={I.rubber} p={[0.44, 0.165, z * 0.12]} castShadow={false} />
           ))}
-          <Part geo={rbox(0.3, 0.008, 0.2, 0.004)} m={I.paper} p={[0, 0.0, 0]} castShadow={false} />
-        </group>
-        {/* la frontale posée à plat : son bandeau, le boîtier orange et sa lentille tournés vers nous */}
-        <group position={[0.14, 0.186, -0.13]} rotation-y={-0.5}>
-          <Part m={I.rubber} rotation-x={Math.PI / 2} castShadow={false}>
-            <torusGeometry args={[0.075, 0.014, 6, 20]} />
-          </Part>
-          <Part geo={rbox(0.08, 0.05, 0.05, 0.016)} m={I.orange} p={[0.075, 0.02, 0]} castShadow={false} />
-          <Part geo={cyl(0.017, 0.017, 0.01, 12)} m={I.lampGlass} p={[0.118, 0.022, 0]} rotation-z={Math.PI / 2} castShadow={false} />
-        </group>
-        {/* la couverture de laine rouge pliée au pied du duvet, rayée de deux bandes crème (elles en font le tour) */}
-        <group position={[-0.47, 0.17, 0]}>
-          <Part geo={rbox(0.4, 0.11, 0.5, 0.04)} m={I.woolRed} p={[0, 0.055, 0]} />
-          {[-0.1, 0.1].map((x) => (
-            <Part key={x} geo={rbox(0.045, 0.124, 0.514, 0.045)} m={I.wool} p={[x, 0.055, 0]} castShadow={false} />
-          ))}
+          {/* la tirette de la fermeture éclair, au bout de la glissière, côté caméra */}
+          <Part geo={rbox(0.045, 0.02, 0.008, 0.005)} m={I.darkSteel} p={[0.38, BAG.y + 0.04, 0.195]} rotation-x={-0.6} castShadow={false} />
+          {/* la couverture de laine rouge jetée sur les pieds */}
+          <mesh geometry={geo.drape} material={I.drape} castShadow receiveShadow />
+          {/* le livre ouvert, retourné sur le sac, et la frontale posée à plat, sa lentille vers nous */}
+          <group position={[0.04, bagTop(0.04) + 0.012, 0.0]} rotation-y={0.4}>
+            {[-1, 1].map((sd) => (
+              <Part key={sd} geo={rbox(0.16, 0.014, 0.22, 0.006)} m={I.book} p={[sd * 0.08, 0.008, 0]} rotation-z={sd * -0.18} castShadow={false} />
+            ))}
+            <Part geo={rbox(0.3, 0.008, 0.2, 0.004)} m={I.paper} castShadow={false} />
+          </group>
+          <group position={[0.24, bagTop(0.24, -0.07) + 0.01, -0.07]} rotation-y={-0.5}>
+            <Part m={I.rubber} rotation-x={Math.PI / 2} castShadow={false}>
+              <torusGeometry args={[0.075, 0.014, 6, 20]} />
+            </Part>
+            <Part geo={rbox(0.08, 0.05, 0.05, 0.016)} m={I.orange} p={[0.075, 0.02, 0]} castShadow={false} />
+            <Part geo={cyl(0.017, 0.017, 0.01, 12)} m={I.lampGlass} p={[0.118, 0.022, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+          </group>
         </group>
       </group>
     </>
@@ -65,7 +90,7 @@ export function Bedding() {
 }
 
 /** Une peau de renne posée au sol : le corps, le cou et les quatre pattes, découpés dans un seul cuir. */
-function hide() {
+export function hide() {
   const s = new Shape()
   const pts: [number, number][] = [
     [-0.62, 0], [-0.55, 0.22], [-0.78, 0.38], [-0.5, 0.34], [-0.3, 0.42], [0.25, 0.42], [0.45, 0.36], [0.72, 0.46], [0.55, 0.22],
