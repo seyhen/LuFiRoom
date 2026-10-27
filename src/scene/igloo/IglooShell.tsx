@@ -106,7 +106,7 @@ export function IglooShell() {
         <mesh material={I.cut} position={[R + 0.43, 0, 0]} rotation-y={Math.PI / 2}>
           <ringGeometry args={[0.6, 0.72, 24, 1, 0, Math.PI]} />
         </mesh>
-        <mesh material={I.doorway} position={[r - 0.03, 0, 0]} rotation-y={-Math.PI / 2} scale={[DOOR.w, DOOR.h / DOOR.w, 1]}>
+        <mesh material={I.doorway} position={[r - 0.03, 0, 0]} rotation-y={-Math.PI / 2} scale={[DOOR.w, DOOR.h, 1]}>
           <circleGeometry args={[1, 32, 0, Math.PI]} />
         </mesh>
         {/* la peau qui ferme l'entrée la nuit, roulée et nouée au-dessus, sur deux chevilles de bois plantées dans la neige */}

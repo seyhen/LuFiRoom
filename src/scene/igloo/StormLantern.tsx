@@ -5,6 +5,7 @@ import { smooth } from '../../math'
 import { Part, SPH, cyl, noRay, rbox, type V3 } from '../parts'
 import { mood, reduceMotion, useSquash } from '../anim'
 import { glowTex } from '../textures'
+import { Static } from '../Static'
 import { I } from './materials'
 
 /**
@@ -26,12 +27,14 @@ export function StormLantern({ position }: { position: V3 }) {
   return (
     <group ref={g} userData={{ id: 'lamp' }} position={position}>
       <group scale={1.2}>
+       <mesh ref={flame} geometry={SPH} material={I.flame} position={[0, 0.19, 0]} scale={[0.022, 0.05, 0.022]} raycast={noRay} />
+       {/* tout le reste ne bouge pas : un seul tracé par matériau */}
+       <Static>
         {/* le réservoir, sa bague */}
         <Part geo={cyl(0.1, 0.11, 0.08, 24)} m={I.rust} p={[0, 0.04, 0]} />
         <Part geo={cyl(0.075, 0.1, 0.03, 24)} m={I.darkSteel} p={[0, 0.095, 0]} castShadow={false} />
-        {/* le verre et sa flamme */}
+        {/* le verre (sa flamme est au-dessus, hors du Static) */}
         <Part geo={SPH} m={I.lampGlass} scale={[0.07, 0.1, 0.07]} p={[0, 0.2, 0]} castShadow={false} />
-        <mesh ref={flame} geometry={SPH} material={I.flame} position={[0, 0.19, 0]} scale={[0.022, 0.05, 0.022]} raycast={noRay} />
         {/* la cage de fil autour du verre */}
         {[0, 1, 2, 3].map((i) => (
           <Part key={i} geo={cyl(0.006, 0.006, 0.22, 6)} m={I.darkSteel} p={[Math.cos((i * Math.PI) / 2) * 0.078, 0.2, Math.sin((i * Math.PI) / 2) * 0.078]} castShadow={false} />
@@ -39,11 +42,16 @@ export function StormLantern({ position }: { position: V3 }) {
         {/* le chapeau, sa cheminée percée, l'anse */}
         <Part geo={cyl(0.04, 0.095, 0.05, 24)} m={I.rust} p={[0, 0.325, 0]} />
         <Part geo={cyl(0.03, 0.03, 0.04, 12)} m={I.darkSteel} p={[0, 0.37, 0]} castShadow={false} />
-        <Part m={I.darkSteel} p={[0, 0.36, 0]} castShadow={false}>
-          <torusGeometry args={[0.1, 0.007, 6, 24, Math.PI]} />
+        {/* l'anse part de deux oreilles rivées au bord du chapeau */}
+        <Part m={I.darkSteel} p={[0, 0.31, 0]} castShadow={false}>
+          <torusGeometry args={[0.094, 0.009, 6, 24, Math.PI]} />
         </Part>
+        {[-1, 1].map((sd) => (
+          <Part key={sd} geo={SPH} m={I.brass} scale={[0.012, 0.016, 0.012]} p={[sd * 0.092, 0.31, 0]} castShadow={false} />
+        ))}
         {/* le bouton de la mèche */}
         <Part geo={rbox(0.03, 0.03, 0.03, 0.008)} m={I.brass} p={[0.1, 0.1, 0]} castShadow={false} />
+       </Static>
       </group>
       <pointLight ref={light} color={0xffb466} intensity={0} distance={7} decay={1.4} position={[0, 0.45, 0.25]} />
       <sprite ref={glow} scale={1.1} position={[0, 0.25, 0.05]} raycast={noRay}>

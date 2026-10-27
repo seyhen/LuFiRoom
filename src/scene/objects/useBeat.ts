@@ -12,8 +12,11 @@ import type { V3 } from '../parts'
  * s'envolent. `rise` : hauteur d'où partent les notes. `onFrame(on, t, pulse)` : `pulse` vaut 1 au kick puis retombe vers 0.
  * Le composant pose `g` sur son groupe (avec `userData={{ id: 'radio' }}`) et `notes.group` à la racine de la pièce.
  */
-export function useBeat(position: V3, rise: number, onFrame?: (on: boolean, t: number, pulse: number) => void, bump = 0.04) {
-  const [px, py, pz] = position
+/** Le vol des notes : vitesse de montée, durée, décalage du départ (sous une voûte, on les fait partir vers le centre et monter moins haut). */
+type Fly = { vy?: number; life?: number; dx?: number; dz?: number }
+
+export function useBeat(position: V3, rise: number, onFrame?: (on: boolean, t: number, pulse: number) => void, bump = 0.04, fly: Fly = {}) {
+  const [px, py, pz] = position, { vy = 0.55, life = 2.6, dx = 0, dz = 0 } = fly
   const g = useRef<Group>(null!)
   const notes = useParticles()
   const beat = useRef({ seen: useStore.getState().kicks, at: -10, flip: false })
@@ -24,7 +27,7 @@ export function useBeat(position: V3, rise: number, onFrame?: (on: boolean, t: n
       b.at = t
       if (on) {
         b.flip = !b.flip
-        notes.emit(b.flip ? noteTexA : noteTexB, px + rand(-0.3, 0.3), py + rise, pz + rand(-0.1, 0.25), { size: 0.26, life: 2.6, vy: 0.55, sway: 0.12 })
+        notes.emit(b.flip ? noteTexA : noteTexB, px + dx + rand(-0.3, 0.3), py + rise, pz + dz + rand(-0.1, 0.25), { size: 0.26, life, vy, sway: 0.12 })
       }
     }
     onFrame?.(on, t, Math.exp(-(t - b.at) * 9))

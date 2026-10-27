@@ -23,7 +23,8 @@ export function CrankRadio({ position, ry = 0 }: { position: V3; ry?: number }) 
     crank.current.rotation.x = turn.current
     I.dialFace.emissiveIntensity = on ? 0.55 + pulse * 0.3 : 0.1
     I.led.emissiveIntensity = on ? 0.4 + pulse * 1.2 : 0
-  })
+    // sous la voûte : les notes partent vers le centre du dôme et montent moins haut (sinon elles sortent par le toit)
+  }, 0.04, { vy: 0.3, life: 2.4, dx: 0.47, dz: 0.17 })
   return (
     <>
       <group ref={g} userData={{ id: 'radio' }} position={position} rotation-y={ry}>

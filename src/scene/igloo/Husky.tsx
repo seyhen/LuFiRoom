@@ -56,7 +56,7 @@ export function Husky({ position, ry = 0 }: { position: V3; ry?: number }) {
           {[-1, 1].map((s) => (
             <group key={s}>
               {/* l'œil fermé, la tache blanche au-dessus */}
-              <Part geo={SPH} m={I.huskyDark} scale={[0.024, 0.005, 0.012]} p={[0.115, 0.015, s * 0.06]} rotation-y={s * 0.35} castShadow={false} />
+              <Part geo={SPH} m={I.huskyDark} scale={[0.026, 0.008, 0.014]} p={[0.122, 0.015, s * 0.06]} rotation-y={s * 0.35} castShadow={false} />
               <Part geo={SPH} m={I.huskyLight} scale={[0.02, 0.012, 0.018]} p={[0.1, 0.055, s * 0.05]} castShadow={false} />
               {/* l'oreille dressée et son intérieur rose */}
               <Part m={I.husky} p={[-0.02, 0.15, s * 0.07]} rotation={[s * 0.25, 0, -0.15]}>
@@ -67,11 +67,11 @@ export function Husky({ position, ry = 0 }: { position: V3; ry?: number }) {
               </Part>
             </group>
           ))}
-          {/* le collier et sa médaille */}
-          <Part m={I.collar} p={[-0.06, -0.07, 0]} rotation={[0, 0, 1.2]} castShadow={false}>
-            <torusGeometry args={[0.11, 0.014, 8, 24]} />
+          {/* le collier autour du cou (un anneau autour de l'axe tête-corps, juste derrière la tête) et sa médaille, côté caméra */}
+          <Part m={I.collar} p={[-0.11, -0.05, 0]} rotation-y={Math.PI / 2} castShadow={false}>
+            <torusGeometry args={[0.1, 0.017, 8, 28]} />
           </Part>
-          <Part geo={cyl(0.022, 0.022, 0.006, 14)} m={I.brass} p={[0.0, -0.17, 0.0]} rotation-z={1.2} castShadow={false} />
+          <Part geo={cyl(0.026, 0.026, 0.007, 16)} m={I.brass} p={[-0.105, -0.13, 0.085]} rotation-x={(3 * Math.PI) / 4} castShadow={false} />
         </Static>
       </group>
     </group>

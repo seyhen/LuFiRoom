@@ -76,13 +76,14 @@ export function Mitten({ position }: { position: V3 }) {
             return <Part key={k} geo={SPH} m={I.woolRed} scale={[0.016, 0.006, 0.011]} p={[0.06 + Math.cos(a) * 0.02, 0.073, Math.sin(a) * 0.02]} rotation-y={-a} castShadow={false} />
           })}
           <Part geo={SPH} m={I.marsh} scale={[0.009, 0.006, 0.009]} p={[0.06, 0.076, 0]} castShadow={false} />
-          {/* la couture déjà faite, en points clairs sur le bord */}
+          {/* la couture déjà faite, en points de fil bleu sur le bord */}
           {[-0.06, -0.01, 0.04, 0.09, 0.14].map((x) => (
-            <Part key={x} geo={SPH} m={I.thread} scale={[0.012, 0.006, 0.004]} p={[x, 0.05, 0.095 - Math.abs(x - 0.04) * 0.35]} castShadow={false} />
+            <Part key={x} geo={SPH} m={I.enamelRim} scale={[0.012, 0.007, 0.006]} p={[x, 0.05, 0.095 - Math.abs(x - 0.04) * 0.35]} castShadow={false} />
           ))}
         </group>
-        {/* la paire de ciseaux posée sur la peau : deux lames croisées, deux anneaux rouges */}
-        <group position={[-0.17, SEAT + 0.01, 0.14]} rotation-y={0.8}>
+        {/* la paire de ciseaux posée sur la peau, devant la moufle (sur la toison, pas dedans : la peau est bombée, elle
+            descend vers le bord) : deux lames croisées, deux anneaux rouges */}
+        <group position={[-0.05, 0.412, 0.235]} rotation-y={-0.3}>
           {[-1, 1].map((sd) => (
             <group key={sd} rotation-y={sd * 0.18}>
               <Part geo={rbox(0.11, 0.006, 0.014, 0.003)} m={I.steel} p={[0.05, 0, 0]} castShadow={false} />
@@ -92,9 +93,9 @@ export function Mitten({ position }: { position: V3 }) {
             </group>
           ))}
         </group>
-        {/* la bobine de fil, debout sur le bord de la peau */}
-        <group position={[0.17, SEAT, -0.13]}>
-          <Part geo={cyl(0.028, 0.028, 0.07, 14)} m={I.thread} p={[0, 0.035, 0]} castShadow={false} />
+        {/* la bobine de fil bleu, debout sur la peau, à droite de la moufle (côté caméra) */}
+        <group position={[0.22, 0.392, 0.17]}>
+          <Part geo={cyl(0.028, 0.028, 0.07, 14)} m={I.enamelRim} p={[0, 0.035, 0]} castShadow={false} />
           {[0.004, 0.066].map((y) => (
             <Part key={y} geo={cyl(0.038, 0.038, 0.01, 14)} m={I.wood} p={[0, y, 0]} castShadow={false} />
           ))}
@@ -109,8 +110,8 @@ export function Mitten({ position }: { position: V3 }) {
             <torusGeometry args={[0.007, 0.0022, 4, 10]} />
           </Part>
         </group>
-        <mesh ref={thread} material={I.thread}>
-          <cylinderGeometry args={[0.003, 0.003, 1, 5]} />
+        <mesh ref={thread} material={I.enamelRim}>
+          <cylinderGeometry args={[0.006, 0.006, 1, 5]} />
         </mesh>
       </group>
     </group>

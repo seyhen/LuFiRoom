@@ -14,6 +14,8 @@ export const I = {
   domeOut: gummy(0xffffff, { map: blockTex, roughness: 0.7, clearcoat: 0.18, side: FrontSide, emissive: 0xa8bcd4, emissiveMap: blockTex, emissiveIntensity: 0.22 }),
   domeIn: gummy(0xf4f8ff, { map: blockTex, roughness: 0.72, clearcoat: 0.15, side: BackSide, emissive: 0x8aa0bc, emissiveMap: blockTex, emissiveIntensity: 0.12 }),
   cut: gummy(0xeef4fb, { roughness: 0.6, clearcoat: 0.3, side: DoubleSide, emissive: 0xa8bcd4, emissiveIntensity: 0.2 }),
+  // l'encadrement de la fenêtre : des blocs de la paroi, de sa teinte (pas un blanc plus vif, qui ferait meuble)
+  frame: gummy(0xffffff, { map: blockTex, roughness: 0.72, clearcoat: 0.15, emissive: 0x8aa0bc, emissiveMap: blockTex, emissiveIntensity: 0.12 }),
   snow: gummy(0xf2f7fc, { roughness: 0.7, clearcoat: 0.2 }),
   snowShade: gummy(0xd2e0ee, { roughness: 0.75, clearcoat: 0.15 }),
   // les boules de la lanterne de neige : la bougie les éclaire du dedans le soir (voir SnowLantern)
@@ -49,6 +51,9 @@ export const I = {
   darkSteel: gummy(0x3e464e, { roughness: 0.4, clearcoat: 0.6 }),
   thermos: gummy(0x3f7a5a, { roughness: 0.35, clearcoat: 0.7 }),
   enamel: gummy(0xf6f4ee, { roughness: 0.25, clearcoat: 0.9 }),
+  // le dedans des récipients ouverts (Vessel) : la paroi vue de l'intérieur, un peu plus sombre
+  enamelIn: gummy(0xe2ddd2, { roughness: 0.3, clearcoat: 0.8, side: BackSide }),
+  steelIn: gummy(0x56606a, { roughness: 0.35, clearcoat: 0.6, side: BackSide }),
   enamelRim: gummy(0x2f5f9a, { roughness: 0.25, clearcoat: 0.9 }),
   cocoa: gummy(0x6a3a22, { roughness: 0.2, clearcoat: 0.9 }),
   brass: M.brass,
@@ -88,8 +93,10 @@ export const I = {
   // la glace du lac autour du trou : lisse, vernie, ses fêlures et ses bulles ; la paroi du trou, plus sombre
   lakeIce: gummy(0xffffff, { map: lakeIceTex, roughness: 0.05, clearcoat: 1, clearcoatRoughness: 0.05 }),
   holeWall: gummy(0x6aa6c8, { roughness: 0.1, clearcoat: 1, side: DoubleSide }),
+  // la lame en hélice de la tarière, vue des deux côtés
+  auger: gummy(0x37404a, { roughness: 0.65, clearcoat: 0.1, side: DoubleSide }),
   flag: gummy(0xff7a2a, { roughness: 0.5, clearcoat: 0.4, side: DoubleSide }),
   bait: gummy(0xd8603a, { roughness: 0.4, clearcoat: 0.6 }),
-  fishShadow: new MeshBasicMaterial({ color: 0x04101c, transparent: true, opacity: 0.55, depthWrite: false }),
+  fishShadow: new MeshBasicMaterial({ color: 0x04101c, transparent: true, opacity: 0.7, depthWrite: false }),
   ink: M.ink,
 }

@@ -8,6 +8,7 @@ import { mood, reduceMotion } from '../anim'
 import { glowTex } from '../textures'
 import { seeded } from '../paint'
 import { I } from './materials'
+import { SPH_LO, SPH_MID } from './spheres'
 import { along, polar } from './IglooShell'
 
 /**
@@ -19,10 +20,10 @@ export function Sled({ a }: { a: number }) {
     <group position={polar(a, 3.55, 0)} rotation-y={along(a)}>
       {[-0.22, 0.22].map((z) => (
         <group key={z} position={[0, 0, z]}>
-          {/* le patin et sa pointe relevée */}
+          {/* le patin, et sa pointe qui part de son bout, monte et revient en crosse vers la rambarde */}
           <Part geo={rbox(1.25, 0.04, 0.05, 0.015)} m={I.wood} p={[-0.05, 0.03, 0]} />
-          <Part m={I.wood} p={[0.58, 0.13, 0]} rotation-z={Math.PI / 2}>
-            <torusGeometry args={[0.1, 0.022, 8, 16, Math.PI / 2]} />
+          <Part m={I.wood} p={[0.575, 0.13, 0]} rotation-z={-Math.PI / 2} scale={[1, 1, 1.4]}>
+            <torusGeometry args={[0.1, 0.02, 8, 20, Math.PI]} />
           </Part>
           {/* les montants */}
           {[-0.5, -0.15, 0.2, 0.45].map((x) => (
@@ -46,10 +47,13 @@ export function Sled({ a }: { a: number }) {
       ))}
       {/* le tapis roulé sur le dessus, la pelle couchée, la neige qui a pris sur la bâche */}
       <Part geo={cyl(0.08, 0.08, 0.44, 16)} m={I.rust} p={[-0.1, 0.65, 0.02]} rotation-x={Math.PI / 2} />
-      <Part geo={SPH} m={I.snow} scale={[0.3, 0.035, 0.16]} p={[-0.28, 0.59, -0.1]} castShadow={false} />
-      <group position={[0.43, 0.42, -0.1]} rotation={[0, 0.25, -0.9]}>
-        <Part geo={cyl(0.016, 0.016, 0.5, 8)} m={I.wood} p={[0, 0.1, 0]} castShadow={false} />
-        <Part geo={rbox(0.18, 0.2, 0.02, 0.02)} m={I.orange} p={[0, -0.22, 0]} castShadow={false} />
+      <Part geo={SPH} m={I.snow} scale={[0.15, 0.03, 0.17]} p={[-0.37, 0.585, 0]} castShadow={false} />
+      {/* la pelle à neige plantée à côté du traîneau (côté caméra), le manche appuyé sur la rambarde */}
+      <group position={[0.42, 0.16, -0.38]} rotation-x={0.45}>
+        <Part geo={rbox(0.18, 0.2, 0.02, 0.02)} m={I.orange} p={[0, -0.08, 0]} />
+        <Part geo={cyl(0.016, 0.016, 0.42, 8)} m={I.wood} p={[0, 0.23, 0]} castShadow={false} />
+        <Part geo={rbox(0.11, 0.025, 0.03, 0.012)} m={I.leatherDark} p={[0, 0.45, 0]} castShadow={false} />
+        <Part geo={SPH} m={I.snow} scale={[0.13, 0.03, 0.08]} p={[0, -0.16, 0.02]} castShadow={false} />
       </group>
       {/* la corde de trait, enroulée sur la neige devant les patins */}
       {[0.11, 0.085, 0.06].map((r, i) => (
@@ -61,6 +65,13 @@ export function Sled({ a }: { a: number }) {
   )
 }
 
+// Les festons du bord d'un étage (les bouts des branches), en sphères légères : il y en a plus de cent (des Part : le Static les fusionne).
+const fringe = (w: number) =>
+  Array.from({ length: 9 }, (_, k) => {
+    const a = (k / 9) * TAU
+    return { p: [Math.cos(a) * w * 0.86, 0.04, Math.sin(a) * w * 0.86] as [number, number, number], s: [w * 0.26, w * 0.13, w * 0.26] as [number, number, number] }
+  })
+
 /**
  * Un sapin chargé de neige : un tronc court, quatre étages de branches arrondies (pas de pointe : on reste « gummy »), chacun
  * coiffé d'une couche de neige qui déborde un peu.
@@ -71,9 +82,14 @@ export function Fir({ a, r, h = 2, ry = 0 }: { a: number; r: number; h?: number;
     <group position={polar(a, r, 0)} rotation-y={ry} scale={k}>
       <Part geo={cyl(0.07, 0.09, 0.3, 10)} m={I.bark} p={[0, 0.15, 0]} />
       {[[0.5, 0.3, 0.42], [0.42, 0.68, 0.36], [0.32, 1.02, 0.3], [0.2, 1.32, 0.24]].map(([w, y, hh], i) => (
-        <group key={i} position={[0, y, 0]}>
-          <Part geo={cyl(w * 0.35, w, hh, 18)} m={i % 2 ? I.pine : I.pineDeep} p={[0, hh / 2, 0]} />
-          <Part geo={SPH} m={I.snow} scale={[w * 0.85, hh * 0.32, w * 0.85]} p={[0, hh * 0.78, 0]} castShadow={false} />
+        <group key={i} position={[0, y, 0]} rotation-y={i * 0.9}>
+          {/* l'étage de branches : un cône doux, son bord qui retombe en festons (des branches, pas un abat-jour) */}
+          <Part geo={cyl(w * 0.35, w * 0.92, hh, 32)} m={i % 2 ? I.pine : I.pineDeep} p={[0, hh / 2, 0]} />
+          {fringe(w).map((f, k) => (
+            <Part key={k} geo={SPH_LO} m={i % 2 ? I.pine : I.pineDeep} scale={f.s} p={f.p} castShadow={false} />
+          ))}
+          {/* la neige posée sur le dessus, qui déborde un peu d'un côté */}
+          <Part geo={SPH} m={I.snow} scale={[w * 0.66, hh * 0.28, w * 0.6]} p={[w * 0.04, hh * 0.82, 0]} castShadow={false} />
         </group>
       ))}
       <Part geo={SPH} m={I.snow} scale={[0.13, 0.15, 0.13]} p={[0, 1.62, 0]} castShadow={false} />
@@ -106,7 +122,7 @@ export function SnowLantern({ a }: { a: number }) {
   })
   return (
     <group position={polar(a, 3.55, 0)}>
-      <Batch geo={SPH} m={I.snowLit} items={balls} shadow />
+      <Batch geo={SPH_MID} m={I.snowLit} items={balls} shadow />
       {/* la bougie au cœur, et sa lueur */}
       <Part geo={cyl(0.03, 0.03, 0.08, 10)} m={I.wool} p={[0, 0.04, 0]} castShadow={false} />
       <Part geo={SPH} m={I.flame} scale={[0.02, 0.04, 0.02]} p={[0, 0.12, 0]} castShadow={false} />
@@ -128,13 +144,14 @@ export function Skis({ a }: { a: number }) {
     glow.current.material.opacity = 0.1 + smooth(mood.night) * 0.6
   })
   return (
-    <group position={polar(a, 3.62, 0)} rotation-y={along(a)}>
+    <group position={polar(a, 3.62, 0)} rotation-y={Math.PI / 4}>
+      {/* tournés vers nous : la semelle face à la caméra, pas la tranche */}
       {[-0.09, 0.09].map((x, i) => (
         <group key={x} position={[x, 0, 0]} rotation-z={i ? -0.06 : 0.05}>
           <Part geo={rbox(0.08, 1.55, 0.025, 0.012)} m={i ? I.rust : I.orange} p={[0, 0.74, 0]} />
-          {/* la spatule relevée, en haut */}
-          <Part m={i ? I.rust : I.orange} p={[0, 1.52, -0.05]} rotation-y={Math.PI / 2}>
-            <torusGeometry args={[0.06, 0.013, 6, 12, Math.PI / 2]} />
+          {/* la spatule, qui prolonge le ski et se recourbe vers l'arrière, aussi large que lui */}
+          <Part m={i ? I.rust : I.orange} p={[0, 1.515, -0.06]} rotation-y={-Math.PI / 2} scale={[1, 1, 3]}>
+            <torusGeometry args={[0.06, 0.0125, 6, 12, Math.PI / 2]} />
           </Part>
           <Part geo={rbox(0.085, 0.06, 0.04, 0.01)} m={I.darkSteel} p={[0, 0.62, 0.02]} castShadow={false} />
         </group>
@@ -147,9 +164,9 @@ export function Skis({ a }: { a: number }) {
           <Part geo={cyl(0.022, 0.02, 0.14, 10)} m={I.leatherDark} p={[0, 1.2, 0]} castShadow={false} />
         </group>
       ))}
-      {/* la lanterne, pendue par son anse à la poignée du bâton de gauche */}
-      <group position={[-0.47, 1.0, 0.12]}>
-        <Part geo={cyl(0.004, 0.004, 0.2, 4)} m={I.darkSteel} p={[0.06, 0.1, 0]} rotation-z={-0.5} castShadow={false} />
+      {/* la lanterne, pendue par une dragonne de cuir à la poignée du bâton qui monte vers la droite */}
+      <group position={[0.15, 1.0, 0.12]}>
+        <Part geo={cyl(0.009, 0.009, 0.12, 6)} m={I.leatherDark} p={[-0.04, 0.16, 0]} rotation-z={0.755} castShadow={false} />
         <Part geo={cyl(0.05, 0.055, 0.04, 14)} m={I.darkSteel} p={[0, -0.04, 0]} castShadow={false} />
         <Part geo={SPH} m={I.lampGlass} scale={[0.045, 0.06, 0.045]} p={[0, 0.03, 0]} castShadow={false} />
         <Part geo={cyl(0.025, 0.05, 0.03, 14)} m={I.darkSteel} p={[0, 0.1, 0]} castShadow={false} />
@@ -169,11 +186,11 @@ export function Footprints({ a0, a1, r0, r1 }: { a0: number; a1: number; r0: num
     for (let i = 0; i < n; i++) {
       const t = i / (n - 1), a = a0 + (a1 - a0) * t, r = r0 + (r1 - r0) * t, side = i % 2 ? 1 : -1
       const [x, , z] = polar(a, r + side * 0.07, 0), yaw = along(a) + (a1 > a0 ? Math.PI : 0)
-      out.push({ p: [x, 0.006, z], s: [0.075, 0.012, 0.042], r: [0, yaw + (rnd() - 0.5) * 0.25, 0] })
+      out.push({ p: [x, 0.0015, z], s: [0.075, 0.004, 0.042], r: [0, yaw + (rnd() - 0.5) * 0.25, 0] })
     }
     return out
   }, [a0, a1, r0, r1])
-  return <Batch geo={SPH} m={I.snowShade} items={items} />
+  return <Batch geo={SPH_LO} m={I.snowShade} items={items} />
 }
 
 /**

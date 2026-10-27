@@ -5,7 +5,7 @@ import type { Group, Mesh } from 'three'
 import { isActive, useStore } from '../../state/store'
 import { approach, smooth } from '../../math'
 import { Part, SPH, cyl, noRay, rbox } from '../parts'
-import { LIVE } from '../Static'
+import { LIVE, Static } from '../Static'
 import { mood, reduceMotion, useSquash } from '../anim'
 import { I } from './materials'
 import { DOME, polar } from './IglooShell'
@@ -19,8 +19,8 @@ export const WINDOW = polar(WIN_A, WIN_R - 0.02, WIN_Y)
 // Les rideaux de l'aurore, derrière le dôme : [x, y, z, largeur, hauteur, vitesse de défilement].
 // Centrés au-dessus du dôme à l'écran (x ≈ z), assez bas pour ne pas passer sous les puces des pièces.
 const CURTAINS: [number, number, number, number, number, number][] = [
-  [-3.2, 3.7, -3.2, 10, 3.4, 0.012],
-  [-4.4, 4.4, -4.4, 9, 2.8, -0.008],
+  [-3.2, 3.2, -3.2, 10, 3.0, 0.012],
+  [-4.4, 3.7, -4.4, 9, 2.4, -0.008],
 ]
 
 /** Un rideau plissé : un plan dont le pied ondule en profondeur (des plis lents), plus fort en bas qu'en haut. */
@@ -96,29 +96,23 @@ export function IceWindow() {
   useLayoutEffect(() => g.current.lookAt(0, WIN_Y * 0.55, 0), [])
   return (
     <group ref={g} userData={{ id: 'icewindow' }} position={WINDOW}>
+     <Static>
       {/* le fond de l'embrasure, plus bleu, puis le bloc de glace */}
       <Part geo={rbox(0.8, 0.64, 0.08, 0.06)} m={I.snowShade} p={[0, 0, -0.01]} castShadow={false} />
       <Part geo={rbox(0.66, 0.5, 0.1, 0.05)} m={I.pane} p={[0, 0, 0.02]} castShadow={false} />
-      <mesh material={I.auroraPane} position={[0, 0, 0.076]} raycast={noRay}>
-        <planeGeometry args={[0.6, 0.46]} />
+      {/* l'aurore et le givre, sur la face plate du bloc (sans déborder sur ses bords arrondis) */}
+      <mesh material={I.auroraPane} position={[0, 0, 0.073]} raycast={noRay}>
+        <planeGeometry args={[0.56, 0.4]} />
       </mesh>
-      <mesh material={I.iceFace} position={[0, 0, 0.082]} raycast={noRay}>
-        <planeGeometry args={[0.62, 0.48]} />
+      <mesh material={I.iceFace} position={[0, 0, 0.077]} raycast={noRay}>
+        <planeGeometry args={[0.56, 0.4]} />
       </mesh>
       {/* les joints de glace (le bloc est fait de quatre morceaux) */}
-      <Part geo={rbox(0.018, 0.5, 0.13, 0.008)} m={I.iceRim} p={[0, 0, 0.022]} castShadow={false} />
-      <Part geo={rbox(0.66, 0.018, 0.13, 0.008)} m={I.iceRim} p={[0, 0.02, 0.022]} castShadow={false} />
-      {/* l'encadrement : le linteau, les deux jambages, l'appui qui avance en rebord */}
-      {/* (à peine en relief, de la teinte de la paroi : des blocs de l'igloo, pas un meuble) */}
-      <Part geo={rbox(0.9, 0.1, 0.09, 0.04)} m={I.cut} p={[0, 0.3, 0.03]} castShadow={false} />
-      {[-1, 1].map((sd) => (
-        <Part key={sd} geo={rbox(0.1, 0.52, 0.08, 0.04)} m={I.cut} p={[sd * 0.39, -0.01, 0.025]} castShadow={false} />
-      ))}
-      <Part geo={rbox(0.92, 0.08, 0.22, 0.035)} m={I.cut} p={[0, -0.3, 0.08]} />
-      {/* le givre, en petits amas doux dans les coins de la glace */}
-      {[[-0.28, 0.2], [0.29, 0.19], [-0.29, -0.2], [0.28, -0.21]].map(([x, y], i) => (
-        <Part key={i} geo={SPH} m={I.snow} scale={[0.06, 0.045, 0.02]} p={[x, y, 0.075]} castShadow={false} />
-      ))}
+      <Part geo={rbox(0.018, 0.46, 0.13, 0.008)} m={I.iceRim} p={[0, 0, 0.022]} castShadow={false} />
+      <Part geo={rbox(0.6, 0.018, 0.13, 0.008)} m={I.iceRim} p={[0, 0.02, 0.022]} castShadow={false} />
+      {/* pas d'encadrement en relief (il faisait meuble, deux colonnes) : le bloc est serti dans un creux bleuté de la paroi,
+          et seul l'appui avance, de la teinte de la paroi. Le givre est peint dans la glace (iceTex). */}
+      <Part geo={rbox(0.92, 0.08, 0.22, 0.035)} m={I.frame} p={[0, -0.3, 0.08]} />
       {/* sur le rebord : une boussole de laiton et une petite pile de trois boules de neige qu'on a roulées */}
       <group position={[-0.22, -0.27, 0.15]}>
         <Part geo={cyl(0.05, 0.05, 0.02, 20)} m={I.brass} p={[0, 0.01, 0]} castShadow={false} />
@@ -128,6 +122,7 @@ export function IceWindow() {
       {[[0.2, 0.05], [0.28, 0.045], [0.24, 0.04]].map(([x, s], i) => (
         <Part key={i} geo={SPH} m={I.snow} scale={s} p={[x, -0.28 + s + (i === 2 ? 0.06 : 0), 0.15 + (i === 2 ? 0 : 0.01)]} castShadow={false} />
       ))}
+     </Static>
     </group>
   )
 }

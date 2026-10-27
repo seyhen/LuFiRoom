@@ -1,6 +1,6 @@
 import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { ExtrudeGeometry, Object3D, Path, Quaternion, Shape, Vector3, type Group, type Mesh } from 'three'
+import { Curve, ExtrudeGeometry, Object3D, Path, PlaneGeometry, Quaternion, Shape, TubeGeometry, Vector3, type Group, type Mesh } from 'three'
 import { isActive, useStore } from '../../state/store'
 import { TAU, approach } from '../../math'
 import { Batch, Part, SPH, cyl, noRay, rbox, type V3 } from '../parts'
@@ -8,6 +8,8 @@ import { reduceMotion, useSquash } from '../anim'
 import { LIVE, Static } from '../Static'
 import { seeded } from '../paint'
 import { I } from './materials'
+import { SPH_LO, SPH_MID } from './spheres'
+import { Vessel } from './Vessel'
 
 const HOLE = 0.3
 const TOP = 0.07 // le dessus de la glace dégagée
@@ -36,6 +38,31 @@ function sheetGeometry() {
   for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i) / 1.6 + 0.5, p.getZ(i) / 1.6 + 0.5)
   return g
 }
+
+/** La lame de la tarière : une bande en hélice (de r0 à r1 autour de l'axe), `turns` tours sur la hauteur `h`. */
+function helicoid(r0: number, r1: number, h: number, turns: number) {
+  const g = new PlaneGeometry(1, 1, 96, 1), p = g.attributes.position
+  for (let i = 0; i < p.count; i++) {
+    const u = p.getX(i) + 0.5, v = p.getY(i) + 0.5, a = u * turns * TAU, r = r0 + (r1 - r0) * v
+    p.setXYZ(i, Math.cos(a) * r, u * h, -Math.sin(a) * r)
+  }
+  g.computeVertexNormals()
+  return g
+}
+/** Le bord de la lame : la même hélice, au rayon extérieur (un tube suit cette courbe). */
+class Helix extends Curve<Vector3> {
+  r: number; h: number; turns: number
+  constructor(r: number, h: number, turns: number) {
+    super()
+    this.r = r; this.h = h; this.turns = turns
+  }
+  getPoint(u: number, out = new Vector3()) {
+    const a = u * this.turns * TAU
+    return out.set(Math.cos(a) * this.r, u * this.h, -Math.sin(a) * this.r)
+  }
+}
+const AUGER = helicoid(0.016, 0.058, 0.32, 3)
+const AUGER_EDGE = new TubeGeometry(new Helix(0.058, 0.32, 3), 120, 0.005, 5)
 
 /**
  * Le coin de pêche, au devant à droite : un trou percé dans la glace du lac. Autour, la glace a été dégagée à la pelle (une plaque
@@ -101,7 +128,7 @@ export function FishingHole({ position }: { position: V3 }) {
     line.current.scale.set(1, a.distanceTo(b), 1)
     // le poisson tourne en rond sous la glace, la tête dans le sens de la nage
     fish.current.position.set(Math.cos(s.swim) * 0.15, 0, Math.sin(s.swim) * 0.15)
-    fish.current.rotation.y = -s.swim - Math.PI / 2
+    fish.current.rotation.y = -s.swim
     // le rond dans l'eau : il s'élargit et s'efface en une seconde et demie
     const r = Math.min(1, s.t / 1.5)
     ring.current.scale.setScalar(0.06 + r * 0.5)
@@ -112,7 +139,7 @@ export function FishingHole({ position }: { position: V3 }) {
       <Static>
         {/* la plaque de glace dégagée, et la neige repoussée en bourrelet tout autour */}
         <mesh geometry={sheet} material={I.lakeIce} castShadow receiveShadow />
-        <Batch geo={SPH} m={I.snow} items={berm} shadow />
+        <Batch geo={SPH_MID} m={I.snow} items={berm} shadow />
         {/* la paroi du trou, dans l'épaisseur de la glace, et son bord arrondi */}
         <mesh material={I.holeWall} position={[0, (TOP + WATER) / 2, 0]}>
           <cylinderGeometry args={[HOLE, HOLE, TOP - WATER, 32, 1, true]} />
@@ -131,7 +158,7 @@ export function FishingHole({ position }: { position: V3 }) {
           ))}
           {/* le drapeau d'alerte : sa tige de ressort, replié contre le support */}
           <group ref={flag} position={[0, 0.07, 0.03]} userData={LIVE}>
-            <Part geo={cyl(0.004, 0.004, 0.3, 4)} m={I.darkSteel} p={[0, 0.15, 0]} castShadow={false} />
+            <Part geo={cyl(0.006, 0.006, 0.3, 5)} m={I.darkSteel} p={[0, 0.15, 0]} castShadow={false} />
             <mesh material={I.flag} position={[0.05, 0.27, 0]}>
               <planeGeometry args={[0.1, 0.07]} />
             </mesh>
@@ -141,9 +168,9 @@ export function FishingHole({ position }: { position: V3 }) {
             poignées rouges */}
         <group position={[-0.72, 0, 0.42]} rotation={[0.1, 0, 0.12]}>
           <Part geo={cyl(0.018, 0.018, 0.75, 8)} m={I.steel} p={[0, 0.375, 0]} />
-          {Array.from({ length: 14 }, (_, k) => (
-            <Part key={k} geo={rbox(0.07, 0.007, 0.03, 0.003)} m={I.darkSteel} p={[Math.cos(k * 0.75) * 0.04, 0.05 + k * 0.022, -Math.sin(k * 0.75) * 0.04]} rotation={[0.35, k * 0.75, 0]} castShadow={false} />
-          ))}
+          {/* la mèche : une lame en hélice continue autour de la tige, son bord roulé */}
+          <Part geo={AUGER} m={I.auger} p={[0, 0.04, 0]} castShadow={false} />
+          <Part geo={AUGER_EDGE} m={I.steel} p={[0, 0.04, 0]} castShadow={false} />
           <Part geo={cyl(0.012, 0.012, 0.4, 8)} m={I.steel} p={[0, 0.75, 0]} rotation-z={Math.PI / 2} castShadow={false} />
           {[-1, 1].map((sd) => (
             <Part key={sd} geo={cyl(0.022, 0.022, 0.1, 10)} m={I.collar} p={[sd * 0.16, 0.75, 0]} rotation-z={Math.PI / 2} castShadow={false} />
@@ -153,12 +180,16 @@ export function FishingHole({ position }: { position: V3 }) {
         </group>
         {/* la boîte d'appâts ouverte, son couvercle à côté, les boulettes orange dedans */}
         <group position={[0.36, TOP, 0.48]} rotation-y={0.4}>
-          <Part geo={cyl(0.055, 0.055, 0.04, 18)} m={I.steel} p={[0, 0.02, 0]} />
-          <Part geo={cyl(0.05, 0.05, 0.004, 18)} m={I.bark} p={[0, 0.036, 0]} castShadow={false} />
-          {[[0.02, 0.01], [-0.015, 0.02], [0.0, -0.02], [-0.02, -0.01]].map(([x, z], i) => (
-            <Part key={i} geo={SPH} m={I.bait} scale={0.012} p={[x, 0.044, z]} castShadow={false} />
+          <Vessel p={[0, 0, 0]} rt={0.07} rb={0.07} h={0.045} m={I.steel} inner={I.steelIn} />
+          <Part geo={cyl(0.06, 0.06, 0.004, 18)} m={I.bark} p={[0, 0.03, 0]} castShadow={false} />
+          {[[0.025, 0.012], [-0.018, 0.026], [0.004, -0.026], [-0.028, -0.008], [0.0, 0.0]].map(([x, z], i) => (
+            <Part key={i} geo={SPH} m={I.bait} scale={0.015} p={[x, 0.036, z]} castShadow={false} />
           ))}
-          <Part geo={cyl(0.058, 0.058, 0.01, 18)} m={I.steel} p={[0.1, 0.03, 0.03]} rotation={[0.3, 0, 1.1]} castShadow={false} />
+          {/* le couvercle, posé à plat à côté, retourné */}
+          <Part geo={cyl(0.073, 0.073, 0.012, 18)} m={I.steel} p={[0.16, 0.006, 0.0]} castShadow={false} />
+          <Part m={I.darkSteel} p={[0.16, 0.012, 0]} rotation-x={Math.PI / 2} castShadow={false}>
+            <torusGeometry args={[0.066, 0.004, 4, 20]} />
+          </Part>
         </group>
         {/* l'écumoire à glace, posée sur la glace : son anneau, son fond percé, son manche */}
         <group position={[-0.48, TOP + 0.004, 0.28]} rotation-y={0.9}>
@@ -173,12 +204,12 @@ export function FishingHole({ position }: { position: V3 }) {
       <mesh material={I.holeWater} position={[0, WATER, 0]} rotation-x={-Math.PI / 2} receiveShadow>
         <circleGeometry args={[HOLE, 36]} />
       </mesh>
-      <Batch geo={SPH} m={I.snow} items={slush} />
+      <Batch geo={SPH_LO} m={I.snow} items={slush} />
       <group ref={fish} position={[0, WATER + 0.002, 0]}>
         <mesh material={I.fishShadow} rotation-x={-Math.PI / 2} scale={[0.045, 0.12, 1]} raycast={noRay}>
           <circleGeometry args={[1, 16]} />
         </mesh>
-        <mesh material={I.fishShadow} position={[0, 0, -0.14]} rotation-x={-Math.PI / 2} scale={[0.035, 0.03, 1]} raycast={noRay}>
+        <mesh material={I.fishShadow} position={[0, 0, -0.135]} rotation={[-Math.PI / 2, 0, -Math.PI / 2]} scale={[0.05, 0.05, 1]} raycast={noRay}>
           <circleGeometry args={[1, 3]} />
         </mesh>
       </group>
@@ -187,6 +218,7 @@ export function FishingHole({ position }: { position: V3 }) {
       </mesh>
       {/* la canne : le manche de liège, le moulinet, le corps rouge ; le scion qui plie, et son bout, d'où part la ligne */}
       <group position={ROD.p} rotation={[0, ROD.ry, ROD.rz]}>
+       <Static>
         <Part geo={cyl(0.022, 0.024, 0.18, 10)} m={I.cork} p={[-0.04, 0, 0]} rotation-z={Math.PI / 2} />
         <Part geo={cyl(0.026, 0.026, 0.02, 10)} m={I.darkSteel} p={[-0.14, 0, 0]} rotation-z={Math.PI / 2} castShadow={false} />
         <group position={[-0.08, -0.045, 0]}>
@@ -200,6 +232,7 @@ export function FishingHole({ position }: { position: V3 }) {
             <torusGeometry args={[0.011, 0.002, 4, 10]} />
           </Part>
         ))}
+       </Static>
         <group ref={tip} position={[-ROD.butt, 0, 0]}>
           <Part geo={cyl(0.004, 0.007, ROD.tip, 6)} m={I.rust} p={[-ROD.tip / 2, 0, 0]} rotation-z={Math.PI / 2} castShadow={false} />
           <Part m={I.steel} p={[-ROD.tip + 0.01, -0.008, 0]} rotation-y={Math.PI / 2} castShadow={false}>
@@ -210,13 +243,15 @@ export function FishingHole({ position }: { position: V3 }) {
       </group>
       {/* la ligne */}
       <mesh ref={line} material={I.thread}>
-        <cylinderGeometry args={[0.0025, 0.0025, 1, 4]} />
+        <cylinderGeometry args={[0.0045, 0.0045, 1, 5]} />
       </mesh>
       {/* le flotteur, rouge dessus, blanc dessous, sa petite antenne */}
       <group ref={float} position={[FLOAT.x, WATER + 0.012, FLOAT.z]}>
+       <Static>
         <Part geo={SPH} m={I.woolRed} scale={[0.035, 0.03, 0.035]} p={[0, 0.012, 0]} castShadow={false} />
         <Part geo={SPH} m={I.enamel} scale={[0.034, 0.022, 0.034]} p={[0, -0.006, 0]} castShadow={false} />
-        <Part geo={cyl(0.004, 0.004, 0.05, 6)} m={I.ink} p={[0, 0.045, 0]} castShadow={false} />
+        <Part geo={cyl(0.008, 0.008, 0.05, 6)} m={I.ink} p={[0, 0.045, 0]} castShadow={false} />
+       </Static>
       </group>
     </group>
   )

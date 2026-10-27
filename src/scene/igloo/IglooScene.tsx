@@ -1,5 +1,4 @@
 import { Static } from '../Static'
-import { Motes } from '../Floaters'
 import { IglooShell, polar } from './IglooShell'
 import { Aurora, IceWindow } from './Aurora'
 import { CrankRadio } from './CrankRadio'
@@ -35,7 +34,7 @@ export function IglooScene() {
       <Rugs />
       <IceNiche a={212} y={1.2} />
       <Pegs a={178} y={1.15} />
-      <CrankRadio position={polar(200, 2.5, 0.45)} ry={facing(200)} />
+      <CrankRadio position={polar(200, 2.5, 0.48)} ry={facing(200)} />
       <SupplyCrate position={[1.55, 0, -1.75]} ry={facing(311) + Math.PI / 2} top={0.5} />
       <StormLantern position={[1.55, 0.5, -1.75]} />
       <Snowshoes a={292} />
@@ -46,11 +45,11 @@ export function IglooScene() {
       <Mitten position={[-1.45, 0, 1.55]} />
       <FishingHole position={[2.0, 0, 0.75]} />
       <DryingRack position={[1.2, 0, -0.4]} ry={Math.PI / 4} />
-      <FishingStool position={[3.05, 0, 1.35]} ry={0.6} />
-      <FishBucket position={[2.95, 0, -0.05]} />
+      <FishingStool position={[3.15, 0, 1.45]} ry={0.6} />
+      <FishBucket position={[2.85, 0, -0.3]} />
       {/* dehors, sur l'île : le traîneau, les sapins, la lanterne de neige, les skis à l'entrée, les traces de pas, le muret */}
       <Sled a={-8} />
-      <Fir a={330} r={3.62} h={2.1} />
+      <Fir a={325} r={3.62} h={2.1} />
       <Fir a={183} r={3.72} h={1.8} ry={0.7} />
       <Fir a={104} r={3.62} h={1.05} ry={1.3} />
       {/* deux manchots, un rose et un bleu, tournés vers nous et un peu l'un vers l'autre, à deux pas du seau de la truite */}
@@ -60,7 +59,6 @@ export function IglooScene() {
       <BlockWall a={76} />
       <Skis a={140} />
       <Footprints a0={112} a1={156} r0={3.88} r1={3.74} />
-      <Motes colors={[0xffffff, 0xd8fff0]} opacity={[0.35, 0.55]} />
      </group>
     </Static>
   )

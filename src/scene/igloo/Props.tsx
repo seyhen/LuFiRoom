@@ -2,12 +2,13 @@ import { useLayoutEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, ExtrudeGeometry, Shape, type Group, type Mesh } from 'three'
 import { TAU } from '../../math'
-import { Part, SPH, cyl, noRay, rbox, type V3 } from '../parts'
+import { Part, SPH, cyl, noRay, rbox, worldUV, type V3 } from '../parts'
 import { LIVE } from '../Static'
 import { reduceMotion, useParticles } from '../anim'
 import { glowTex, mistTex } from '../textures'
 import { rand } from '../../math'
 import { I } from './materials'
+import { Vessel } from './Vessel'
 import { BENCH, along, polar } from './IglooShell'
 
 /** L'angle qui fait regarder un objet vers le centre de l'igloo depuis la direction `a` (degrés). */
@@ -23,7 +24,8 @@ export function Bedding() {
       </group>
       <group position={polar(234, 2.45, h + 0.035)} rotation-y={along(234)}>
         {/* le duvet, gonflé, un peu ouvert sur le haut */}
-        <Part geo={rbox(1.45, 0.17, 0.6, 0.08)} m={I.quilt} p={[0, 0.085, 0]} />
+        {/* (UV à la taille de la scène : les boudins du matelassage traversent le duvet en largeur, tous les 10 cm) */}
+        <Part geo={worldUV(rbox(1.45, 0.17, 0.6, 0.08), 1.2, 'z')} m={I.quilt} p={[0, 0.085, 0]} />
         <Part geo={rbox(0.5, 0.1, 0.56, 0.05)} m={I.rust} p={[0.52, 0.2, 0.0]} rotation-z={-0.12} />
         {/* la capuche du duvet, ronde, son ouverture plus sombre et son cordon à deux arrêts */}
         <Part geo={SPH} m={I.rust} scale={[0.2, 0.13, 0.3]} p={[0.75, 0.13, 0]} />
@@ -36,23 +38,27 @@ export function Bedding() {
         {/* l'oreiller de laine, au bout près de la paroi */}
         <Part geo={SPH} m={I.wool} scale={[0.17, 0.08, 0.24]} p={[0.95, 0.12, 0]} />
         {/* un livre ouvert retourné sur le duvet, la frontale à côté */}
-        <group position={[-0.15, 0.18, 0.05]} rotation-y={0.4}>
+        <group position={[-0.05, 0.18, 0.08]} rotation-y={0.4}>
           {[-1, 1].map((sd) => (
             <Part key={sd} geo={rbox(0.16, 0.014, 0.22, 0.006)} m={I.book} p={[sd * 0.08, 0.008 - Math.abs(sd) * 0.0, 0]} rotation-z={sd * -0.18} castShadow={false} />
           ))}
           <Part geo={rbox(0.3, 0.008, 0.2, 0.004)} m={I.paper} p={[0, 0.0, 0]} castShadow={false} />
         </group>
-        <group position={[0.35, 0.18, -0.1]}>
+        {/* la frontale posée à plat : son bandeau, le boîtier orange et sa lentille tournés vers nous */}
+        <group position={[0.14, 0.186, -0.13]} rotation-y={-0.5}>
           <Part m={I.rubber} rotation-x={Math.PI / 2} castShadow={false}>
-            <torusGeometry args={[0.07, 0.009, 6, 20]} />
+            <torusGeometry args={[0.075, 0.014, 6, 20]} />
           </Part>
-          <Part geo={rbox(0.05, 0.035, 0.035, 0.012)} m={I.orange} p={[0.07, 0.01, 0]} castShadow={false} />
+          <Part geo={rbox(0.08, 0.05, 0.05, 0.016)} m={I.orange} p={[0.075, 0.02, 0]} castShadow={false} />
+          <Part geo={cyl(0.017, 0.017, 0.01, 12)} m={I.lampGlass} p={[0.118, 0.022, 0]} rotation-z={Math.PI / 2} castShadow={false} />
         </group>
-      </group>
-      {/* la couverture de laine rouge pliée, au pied */}
-      <group position={polar(206, 2.42, h + 0.035)} rotation-y={along(206)}>
-        <Part geo={rbox(0.42, 0.12, 0.5, 0.04)} m={I.woolRed} p={[0.05, 0.06, -0.12]} />
-        <Part geo={rbox(0.4, 0.015, 0.48, 0.005)} m={I.wool} p={[0.05, 0.09, -0.12]} castShadow={false} />
+        {/* la couverture de laine rouge pliée au pied du duvet, rayée de deux bandes crème (elles en font le tour) */}
+        <group position={[-0.47, 0.17, 0]}>
+          <Part geo={rbox(0.4, 0.11, 0.5, 0.04)} m={I.woolRed} p={[0, 0.055, 0]} />
+          {[-0.1, 0.1].map((x) => (
+            <Part key={x} geo={rbox(0.045, 0.124, 0.514, 0.045)} m={I.wool} p={[x, 0.055, 0]} castShadow={false} />
+          ))}
+        </group>
       </group>
     </>
   )
@@ -118,12 +124,12 @@ export function Stove({ position }: { position: V3 }) {
           <cylinderGeometry args={[0.055, 0.04, 0.03, 16, 1, true]} />
           <meshBasicMaterial color={0x6ab0ff} transparent opacity={0.7} />
         </mesh>
-        {/* la casserole, son anse repliée, son couvercle et sa poignée */}
-        <Part geo={cyl(0.15, 0.14, 0.16, 28)} m={I.darkSteel} p={[0, 0.27, 0]} />
-        {/* la neige qui fond dans la casserole, sous le couvercle entrouvert posé de biais sur le bord */}
-        <Part geo={cyl(0.135, 0.135, 0.02, 28)} m={I.snow} p={[0, 0.34, 0]} castShadow={false} />
-        <Part geo={SPH} m={I.snow} scale={[0.09, 0.03, 0.08]} p={[-0.03, 0.352, 0.02]} castShadow={false} />
-        <group position={[0.05, 0.37, -0.06]} rotation-x={-0.35}>
+        {/* la casserole ouverte, son anse levée, son couvercle et sa poignée */}
+        <Vessel p={[0, 0.19, 0]} rt={0.15} rb={0.14} h={0.16} m={I.darkSteel} inner={I.steelIn} rim={I.steel} />
+        {/* la neige qui fond dans la casserole, sous le bord ; le couvercle appuyé debout sur le bord du fond */}
+        <Part geo={cyl(0.136, 0.134, 0.02, 28)} m={I.snow} p={[0, 0.31, 0]} castShadow={false} />
+        <Part geo={SPH} m={I.snow} scale={[0.09, 0.03, 0.08]} p={[-0.03, 0.322, 0.02]} castShadow={false} />
+        <group position={[0, 0.485, -0.204]} rotation-x={1.0}>
           <Part geo={cyl(0.155, 0.155, 0.015, 28)} m={I.steel} castShadow={false} />
           <Part geo={SPH} m={I.steel} scale={[0.14, 0.03, 0.14]} p={[0, 0.005, 0]} castShadow={false} />
           <Part geo={SPH} m={I.darkSteel} scale={0.025} p={[0, 0.04, 0]} castShadow={false} />
@@ -208,17 +214,19 @@ export function Snowshoes({ a }: { a: number }) {
 /** Le sac d'expédition, debout contre la paroi : toile kaki, rabat, sangles de cuir, le tapis de sol roulé sur le dessus. */
 export function Backpack({ a }: { a: number }) {
   return (
-    <group position={polar(a, 2.55, 0)} rotation-y={along(a) + Math.PI} rotation-x={0}>
-      <group rotation-x={0.12}>
+    <group position={polar(a, 2.55, 0)} rotation-y={along(a)}>
+      {/* le dos contre la paroi, la face (poche, sangles, piolet) vers nous ; il s'appuie un peu en arrière */}
+      <group rotation-x={-0.12}>
         <Part geo={rbox(0.44, 0.58, 0.28, 0.1)} m={I.canvas} p={[0, 0.29, 0]} />
-        <Part geo={rbox(0.42, 0.2, 0.3, 0.07)} m={I.canvas} p={[0, 0.52, 0.02]} />
+        <Part geo={rbox(0.47, 0.2, 0.33, 0.07)} m={I.canvas} p={[0, 0.52, 0.02]} />
         <Part geo={rbox(0.3, 0.16, 0.08, 0.04)} m={I.canvas} p={[0, 0.2, 0.16]} />
+        {/* les sangles : sur le rabat, puis sur le corps jusqu'aux boucles de laiton */}
         {[-0.1, 0.1].map((x) => (
-          <Part key={x} geo={rbox(0.035, 0.3, 0.02, 0.008)} m={I.leatherDark} p={[x, 0.42, 0.16]} castShadow={false} />
-        ))}
-        {/* les boucles de laiton des sangles */}
-        {[-0.1, 0.1].map((x) => (
-          <Part key={x} geo={rbox(0.045, 0.03, 0.02, 0.006)} m={I.brass} p={[x, 0.3, 0.17]} castShadow={false} />
+          <group key={x}>
+            <Part geo={rbox(0.035, 0.18, 0.02, 0.008)} m={I.leatherDark} p={[x, 0.52, 0.19]} castShadow={false} />
+            <Part geo={rbox(0.035, 0.14, 0.02, 0.008)} m={I.leatherDark} p={[x, 0.36, 0.15]} castShadow={false} />
+            <Part geo={rbox(0.05, 0.035, 0.03, 0.008)} m={I.brass} p={[x, 0.42, 0.175]} castShadow={false} />
+          </group>
         ))}
         {/* la gourde dans sa poche de côté, le mousqueton accroché à la bretelle */}
         <Part geo={cyl(0.05, 0.05, 0.22, 14)} m={I.thermos} p={[0.25, 0.25, 0.02]} />
@@ -227,8 +235,8 @@ export function Backpack({ a }: { a: number }) {
         <Part m={I.brass} p={[-0.24, 0.45, 0.05]} rotation-y={Math.PI / 2} castShadow={false}>
           <torusGeometry args={[0.03, 0.006, 6, 14]} />
         </Part>
-        {/* le piolet sanglé dans le dos du sac : son manche, sa tête de métal */}
-        <group position={[-0.08, 0.38, 0.2]} rotation-z={0.15}>
+        {/* le piolet sanglé sur le devant du sac : son manche, sa tête de métal */}
+        <group position={[-0.08, 0.38, 0.235]} rotation-z={0.15}>
           <Part geo={cyl(0.014, 0.016, 0.62, 8)} m={I.wood} castShadow={false} />
           <Part geo={rbox(0.2, 0.035, 0.03, 0.01)} m={I.steel} p={[0, 0.3, 0]} castShadow={false} />
         </group>

@@ -6,6 +6,7 @@ import { Part, SPH, cyl, rbox, type V3 } from '../parts'
 import { LIVE, Static } from '../Static'
 import { reduceMotion } from '../anim'
 import { I } from './materials'
+import { Vessel } from './Vessel'
 
 // Ce qui sèche sur le séchoir : [x le long de la barre, sorte, couleur].
 const LAUNDRY: [number, 'sock' | 'mitten' | 'scarf', 'red' | 'wool' | 'grey'][] = [
@@ -82,14 +83,11 @@ export function DryingRack({ position, ry = 0 }: { position: V3; ry?: number }) 
 export function FishBucket({ position }: { position: V3 }) {
   return (
     <group position={position}>
-      <Part geo={cyl(0.15, 0.12, 0.26, 24)} m={I.steel} p={[0, 0.13, 0]} />
-      <Part m={I.darkSteel} p={[0, 0.26, 0]} rotation-x={Math.PI / 2} castShadow={false}>
-        <torusGeometry args={[0.15, 0.012, 8, 24]} />
-      </Part>
+      <Vessel p={[0, 0, 0]} rt={0.15} rb={0.12} h={0.26} m={I.steel} inner={I.steelIn} rim={I.darkSteel} t={0.012} />
       <Part m={I.darkSteel} p={[0, 0.26, 0]} rotation={[0, 0.5, 0]} castShadow={false}>
         <torusGeometry args={[0.15, 0.006, 6, 20, Math.PI]} />
       </Part>
-      <Part geo={cyl(0.14, 0.14, 0.01, 24)} m={I.water} p={[0, 0.23, 0]} castShadow={false} />
+      <Part geo={cyl(0.129, 0.127, 0.01, 24)} m={I.water} p={[0, 0.215, 0]} castShadow={false} />
       {/* la truite : le corps qui sort de l'eau en biais, son ventre clair, la queue en V arrondi */}
       <group position={[0.02, 0.26, 0.02]} rotation={[0.2, 0.6, 0.9]}>
         <Part geo={SPH} m={I.fish} scale={[0.14, 0.04, 0.03]} p={[0.04, 0, 0]} />

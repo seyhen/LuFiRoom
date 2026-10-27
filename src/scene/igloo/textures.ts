@@ -214,6 +214,27 @@ export const iceTex = canvasTex(256, 192, (x) => {
     for (let k = 0; k < 4; k++) { px += (r() - 0.5) * 60; py += (r() - 0.5) * 50; x.lineTo(px, py) }
     x.stroke()
   }
+  // le givre, qui pousse depuis les coins en fougères blanches sur un voile laiteux
+  for (const [cx, cy] of [[0, 0], [256, 0], [0, 192], [256, 192]]) {
+    const v = x.createRadialGradient(cx, cy, 0, cx, cy, 70)
+    v.addColorStop(0, 'rgba(255,255,255,.85)'); v.addColorStop(1, 'rgba(255,255,255,0)')
+    x.fillStyle = v
+    x.fillRect(0, 0, 256, 192)
+    x.strokeStyle = 'rgba(255,255,255,.8)'; x.lineWidth = 1.4
+    const base = Math.atan2(96 - cy, 128 - cx)
+    for (let i = 0; i < 5; i++) {
+      const a = base + (i - 2) * 0.28, len = 34 + r() * 26
+      const ex = cx + Math.cos(a) * len, ey = cy + Math.sin(a) * len
+      x.beginPath(); x.moveTo(cx, cy); x.lineTo(ex, ey); x.stroke()
+      // les barbes de la fougère, de chaque côté de la tige
+      for (let k = 1; k < 5; k++) {
+        const f = k / 5, bx = cx + (ex - cx) * f, by = cy + (ey - cy) * f, bl = (1 - f) * 10 + 3
+        for (const sd of [-1, 1]) {
+          x.beginPath(); x.moveTo(bx, by); x.lineTo(bx + Math.cos(a + sd * 0.7) * bl, by + Math.sin(a + sd * 0.7) * bl); x.stroke()
+        }
+      }
+    }
+  }
 })
 
 /** L'eau du trou : bleu nuit au fond, plus clair vers le bord de glace, et un reflet pâle. */

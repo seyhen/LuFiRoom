@@ -77,7 +77,9 @@ async () => {
 async () => {
   const { scene } = window.__lofi.three(); const V = scene.position.constructor; scene.updateMatrixWorld(true)
   let best = null; scene.traverse((o) => { if (o.isGroup) { const n = o.children.filter((c) => c.isMesh && c.visible).length; if (!best || n > best.n) best = { o, n } } })
-  const root = best.o, first = root.children.find((c) => c.isMesh); first.geometry.computeBoundingBox(); const Box = first.geometry.boundingBox.constructor, objs = []
+  // la racine des composants : sous un <Static> unique ou un groupe mis à l'échelle (l'igloo), on descend tant qu'il n'y a qu'un groupe
+  let root = best.o; for (;;) { const gs = root.children.filter((c) => !c.isMesh && !c.isSprite && !c.isLight); if (gs.length !== 1) break; root = gs[0] }
+  let first = null; scene.traverse((o) => { if (!first && o.isMesh && o.geometry) first = o }); first.geometry.computeBoundingBox(); const Box = first.geometry.boundingBox.constructor, objs = []
   for (const g of root.children) {
     if (g.isMesh || g.isSprite || g.isLight) continue
     const box = new Box(); let n = 0
@@ -97,6 +99,7 @@ async () => {
 }
 ```
 
+   Il doit trouver plusieurs dizaines de composants : une liste vide sur une pièce garnie veut dire qu'il a pris la mauvaise racine (pas « aucun défaut »). Les boîtes d'un `Batch` (bourrelet de neige, pyramide de boules) sont gonflées : écarte leurs faux positifs à l'œil.
    Lis chaque ligne : les coordonnées `ca` / `cb` disent où regarder. Un chevauchement voulu (un objet posé sur une table, une guirlande qui court au-dessus) se justifie ; tout le reste se déplace d'au moins 0,15. Ce n'est pas tout : un objet peut traverser **le mur ou le sol** (non testé ici) et une guirlande peut passer devant la face d'un distributeur (à vérifier à l'œil).
 7. **Rien ne tombe dans un lieu couvert** : pluie, gouttes, flocons, ronds dans l'eau n'existent qu'à l'extérieur (baie, autour du diorama, nuage).
 

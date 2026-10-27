@@ -8,10 +8,12 @@ import { reduceMotion, useSquash } from '../anim'
 import { Static } from '../Static'
 import { Steam } from '../objects/Steam'
 import { I } from './materials'
+import { Vessel } from './Vessel'
 
 const TOP = 0.32 // le dessus de la caisse
 const MUG = { x: 0.12, z: 0.04 }
-const POUR = 2.8 // s, la durée d'un versement (le son dure 2,2 à 3 s)
+// le geste, en secondes, calé sur le son (channels/cocoa.ts) : lever, verser, reposer (le « toc » tombe à la fin)
+const LIFT = 0.8, FLOW = 2.4, DOWN = 0.6
 
 /**
  * Le thermos de cacao, sur une petite caisse de bois au devant de la pièce, à côté d'un quart émaillé blanc cerclé de bleu.
@@ -20,7 +22,7 @@ const POUR = 2.8 // s, la durée d'un versement (le son dure 2,2 à 3 s)
  */
 export function Thermos({ position }: { position: V3 }) {
   const g = useRef<Group>(null!), flask = useRef<Group>(null!), stream = useRef<Mesh>(null!), level = useRef<Group>(null!)
-  const st = useRef({ seen: useStore.getState().pulses.cocoa ?? 0, t: 99, fill: 0.55, on: 0 })
+  const st = useRef({ seen: useStore.getState().pulses.cocoa ?? 0, t: 99, fill: 0.75, on: 0 })
   useSquash('thermos', g)
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05), s = st.current, store = useStore.getState(), on = isActive(store, 'thermos')
@@ -31,16 +33,16 @@ export function Thermos({ position }: { position: V3 }) {
     }
     s.t += dt
     s.on = approach(s.on, on ? 1 : 0, dt)
-    const p = s.t / POUR
-    // lever et pencher (0 → 0,25), verser (0,25 → 0,85), reposer (0,85 → 1)
-    const k = p >= 1 ? 0 : smooth(clamp(p / 0.25, 0, 1)) * (1 - smooth(clamp((p - 0.85) / 0.15, 0, 1)))
+    const t = s.t, end = LIFT + FLOW
+    const k = smooth(clamp(t / LIFT, 0, 1)) * (1 - smooth(clamp((t - end) / DOWN, 0, 1)))
     flask.current.position.set(lerp(-0.12, MUG.x - 0.13, k), TOP + 0.135 + 0.26 * k, lerp(-0.02, MUG.z, k))
     flask.current.rotation.z = -1.85 * k
-    const pouring = p > 0.3 && p < 0.84
+    const pouring = t > LIFT && t < end
     stream.current.visible = pouring
-    if (pouring) s.fill = Math.min(0.9, s.fill + dt * 0.12)
-    else s.fill = Math.max(0.35, s.fill - dt * 0.004) // on boit, lentement
-    level.current.position.y = TOP + 0.012 + 0.11 * s.fill
+    if (pouring) s.fill = Math.min(0.95, s.fill + dt * 0.1)
+    else s.fill = Math.max(0.6, s.fill - dt * 0.004) // on boit, lentement
+    // le quart est ouvert (Vessel) : le cacao reste haut, sinon le bord de devant le cache
+    level.current.position.y = TOP + 0.025 + 0.09 * s.fill
   })
   return (
     <group ref={g} userData={{ id: 'thermos' }} position={position} rotation-y={-0.5} scale={1.3}>
@@ -58,16 +60,13 @@ export function Thermos({ position }: { position: V3 }) {
         {/* la boîte de cacao, son couvercle, et une cuillère posée en travers */}
         <Part geo={cyl(0.048, 0.048, 0.11, 20)} m={I.tin} p={[-0.21, TOP + 0.055, 0.12]} />
         <Part geo={cyl(0.05, 0.05, 0.015, 20)} m={I.darkSteel} p={[-0.21, TOP + 0.117, 0.12]} castShadow={false} />
-        <group position={[0.02, TOP + 0.006, 0.17]} rotation-y={0.4}>
+        <group position={[0.07, TOP + 0.006, 0.18]} rotation-y={0.4}>
           <Part geo={rbox(0.11, 0.008, 0.016, 0.004)} m={I.steel} p={[0, 0, 0]} castShadow={false} />
           <Part geo={SPH} m={I.steel} scale={[0.024, 0.008, 0.017]} p={[0.07, 0.002, 0]} castShadow={false} />
         </group>
         {/* le quart émaillé : le corps blanc, son bord bleu, son anse */}
         <group position={[MUG.x, TOP, MUG.z]}>
-          <Part geo={cyl(0.065, 0.06, 0.13, 24)} m={I.enamel} p={[0, 0.065, 0]} />
-          <Part m={I.enamelRim} p={[0, 0.13, 0]} rotation-x={Math.PI / 2} castShadow={false}>
-            <torusGeometry args={[0.064, 0.007, 8, 24]} />
-          </Part>
+          <Vessel p={[0, 0, 0]} rt={0.065} rb={0.06} h={0.13} m={I.enamel} inner={I.enamelIn} rim={I.enamelRim} />
           <Part m={I.enamel} p={[0.075, 0.07, 0]} castShadow={false}>
             <torusGeometry args={[0.035, 0.009, 8, 16]} />
           </Part>
@@ -83,7 +82,7 @@ export function Thermos({ position }: { position: V3 }) {
       {/* le cacao dans le quart, qui monte quand on verse */}
       <group ref={level} position={[MUG.x, TOP + 0.07, MUG.z]}>
         <mesh material={I.cocoa}>
-          <cylinderGeometry args={[0.059, 0.059, 0.006, 24]} />
+          <cylinderGeometry args={[0.054, 0.054, 0.006, 24]} />
         </mesh>
         {/* deux guimauves qui flottent */}
         <Part geo={rbox(0.028, 0.02, 0.028, 0.009)} m={I.marsh} p={[0.02, 0.008, 0.012]} rotation-y={0.5} castShadow={false} />
@@ -105,8 +104,8 @@ export function Thermos({ position }: { position: V3 }) {
         </Part>
       </group>
       {/* le filet de cacao, du bec au quart, pendant qu'on verse */}
-      <mesh ref={stream} material={I.cocoa} position={[MUG.x + 0.02, TOP + 0.245, MUG.z]} visible={false}>
-        <cylinderGeometry args={[0.007, 0.009, 0.2, 8]} />
+      <mesh ref={stream} material={I.cocoa} position={[MUG.x + 0.02, TOP + 0.225, MUG.z]} visible={false}>
+        <cylinderGeometry args={[0.007, 0.009, 0.24, 8]} />
       </mesh>
       <Steam at={[MUG.x, TOP + 0.15, MUG.z]} every={1.4} />
     </group>
