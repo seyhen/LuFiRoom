@@ -7,6 +7,7 @@ import { LIVE, Static } from '../Static'
 import { reduceMotion } from '../anim'
 import { I } from './materials'
 import { Vessel } from './Vessel'
+import { Trout } from './Trout'
 
 // Ce qui sèche sur le séchoir : [x le long de la barre, sorte, couleur].
 const LAUNDRY: [number, 'sock' | 'mitten' | 'scarf', 'red' | 'wool' | 'grey'][] = [
@@ -88,14 +89,8 @@ export function FishBucket({ position }: { position: V3 }) {
         <torusGeometry args={[0.15, 0.006, 6, 20, Math.PI]} />
       </Part>
       <Part geo={cyl(0.129, 0.127, 0.01, 24)} m={I.water} p={[0, 0.215, 0]} castShadow={false} />
-      {/* la truite : le corps qui sort de l'eau en biais, son ventre clair, la queue en V arrondi */}
-      <group position={[0.02, 0.26, 0.02]} rotation={[0.2, 0.6, 0.9]}>
-        <Part geo={SPH} m={I.fish} scale={[0.14, 0.04, 0.03]} p={[0.04, 0, 0]} />
-        <Part geo={SPH} m={I.fishBelly} scale={[0.12, 0.022, 0.026]} p={[0.04, -0.018, 0]} castShadow={false} />
-        {[-1, 1].map((s) => (
-          <Part key={s} geo={SPH} m={I.fish} scale={[0.05, 0.022, 0.008]} p={[0.2, s * 0.024, 0]} rotation-z={s * 0.6} castShadow={false} />
-        ))}
-      </group>
+      {/* la truite : d'une seule peau (voir Trout.tsx), le corps qui sort de l'eau en biais, la queue en l'air */}
+      <Trout />
     </group>
   )
 }
