@@ -3,36 +3,28 @@ import { useFrame } from '@react-three/fiber'
 import type { Group } from 'three'
 import { isActive, useStore } from '../../state/store'
 import { approach } from '../../math'
-import { gummy } from '../materials'
 import { Part, SPH, cyl, orient, rbox, type V3 } from '../parts'
 import { reduceMotion } from '../anim'
 import { LIVE, Static } from '../Static'
 import { K } from './materials'
+import {
+  CAT_PAW, CHEF_HAND, CHEF_HEAD_Y, CHEF_SHOULDER, catBody, catPaw, chefArmL, chefArmR, chefBody, chefHead, customerBody, customerHead, customerLegs,
+  figBrow, figEye, figGlint, figGold, figGoldDark, figHandle, figMouth, figSkin, figSteel, figWhisker, ladleCup,
+} from './figures'
 
-const skin = gummy(0xf4c7a0, { roughness: 0.5, clearcoat: 0.35 })
-const cheek = gummy(0xf59a9a, { roughness: 0.6, clearcoat: 0.1 })
-const eye = gummy(0x1d1218, { roughness: 0.3, clearcoat: 0.8 })
-const gold = gummy(0xf2c24a, { roughness: 0.3, clearcoat: 0.9 })
-const catWhite = gummy(0xfff6ea, { roughness: 0.4, clearcoat: 0.6 })
-
-/** Un bras d'une épaule à une main : manche blanche, poignet de peau. Les extrémités sont des points du repère de la carriole. */
-function Arm({ from, to, r = 0.055 }: { from: V3; to: V3; r?: number }) {
-  const d: V3 = [to[0] - from[0], to[1] - from[1], to[2] - from[2]], len = Math.hypot(...d)
-  return (
-    <>
-      <Part geo={cyl(r, r * 0.92, len * 0.82, 10)} m={K.cream} p={[from[0] + d[0] * 0.41, from[1] + d[1] * 0.41, from[2] + d[2] * 0.41]} rotation={orient(d)} castShadow={false} />
-      <Part geo={SPH} m={skin} scale={r * 1.15} p={to} castShadow={false} />
-    </>
-  )
-}
+const sub = (a: V3, b: V3): V3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]]
+/** La louche du cuisinier : manche de bois, coupelle d'acier. Repère : la main, le manche le long de +y, la coupelle ouverte vers +z. */
+const LADLE_DIR: V3 = [0, -0.45, 0.89]
 
 /**
- * Le cuisinier, derrière le comptoir : un petit bonhomme rond en veste blanche et tablier d'indigo, un tenugui noué sur le front.
- * Il tient la poignée du wok de sa main droite ; quand le wok saute, il se balance en rythme et sa tête suit le geste ; au repos
- * il respire doucement, cligne des yeux et regarde les clients.
+ * Le cuisinier, derrière le comptoir : une figurine ronde en veste blanche et tablier d'indigo, un tenugui noué sur la tête, de
+ * grands yeux brillants. Il tient la poignée du wok de la main droite et remue avec une louche de la gauche ; quand le wok saute,
+ * il se balance en rythme, ses bras suivent et sa tête accompagne le geste ; au repos il respire doucement, cligne des yeux et
+ * regarde les clients.
  */
 export function Chef({ position }: { position: V3 }) {
-  const g = useRef<Group>(null!), head = useRef<Group>(null!), eyes = useRef<Group>(null!), k = useRef(0)
+  const g = useRef<Group>(null!), head = useRef<Group>(null!), eyes = useRef<Group>(null!), armR = useRef<Group>(null!), armL = useRef<Group>(null!), k = useRef(0)
+  const reachR = Math.hypot(...sub(CHEF_HAND.r, CHEF_SHOULDER.r))
   useFrame(({ clock }, delta) => {
     const t = clock.elapsedTime, dt = Math.min(delta, 0.05)
     k.current = approach(k.current, isActive(useStore.getState(), 'wok') ? 1 : 0, dt * 2)
@@ -43,49 +35,57 @@ export function Chef({ position }: { position: V3 }) {
     head.current.rotation.y = reduceMotion ? 0 : Math.sin(t * 0.37) * 0.35 * (1 - kk * 0.8)
     const blink = reduceMotion ? 1 : Math.max(0.08, 1 - Math.max(0, Math.sin(t * 1.9) - 0.985) * 70)
     eyes.current.scale.y = blink
+    // la main droite suit la poignée du wok, qui monte et descend avec le poignet ; la gauche remue la louche
+    const rise = -0.0504 * Math.sin(beat) + 0.028 * Math.max(0, Math.sin(beat + 0.4))
+    armR.current.rotation.x = (-rise / reachR) * kk
+    const s = reduceMotion ? 0 : t * 0.9
+    armL.current.rotation.y = Math.sin(beat * 0.5) * 0.13 * kk + Math.sin(s) * 0.015
+    armL.current.rotation.x = Math.cos(beat * 0.5) * 0.05 * kk
   })
   return (
     <group ref={g} userData={LIVE} position={position}>
       <Static>
-      {/* le bassin et les jambes (cachés derrière la carriole), le buste, le tablier */}
-      <Part geo={cyl(0.17, 0.17, 0.5, 14)} m={K.iron} p={[0, 0.72, 0]} castShadow={false} />
-      <Part geo={cyl(0.17, 0.21, 0.5, 18)} m={K.cream} p={[0, 1.12, 0]} />
-      <Part geo={rbox(0.26, 0.4, 0.03, 0.012)} m={K.indigo} p={[0, 1.04, 0.2]} castShadow={false} />
-      {[1.22, 1.12].map((y) => (
-        <Part key={y} geo={SPH} m={K.brass} scale={0.014} p={[0, y, 0.205]} castShadow={false} />
-      ))}
-      <Part geo={cyl(0.07, 0.08, 0.06, 12)} m={skin} p={[0, 1.4, 0]} castShadow={false} />
-      {/* le bras droit tend la poignée du wok, le gauche pend au flanc */}
-      <Arm from={[-0.2, 1.3, 0.0]} to={[-0.28, 1.42, 0.56]} />
-      <Arm from={[0.2, 1.3, 0]} to={[0.26, 1.02, 0.16]} />
+        {/* le buste et le tablier, les jambes courtes et les sabots (cachés derrière la carriole) */}
+        <Part geo={chefBody()} m={figSkin} />
       </Static>
-      {/* la tête : visage rond, joues, yeux, sourire, tenugui noué */}
-      <group ref={head} userData={LIVE} position={[0, 1.58, 0]}>
-        <Static>
-        <Part geo={SPH} m={skin} scale={[0.17, 0.16, 0.16]} />
-        {[-1, 1].map((s) => (
-          <group key={s}>
-            <Part geo={SPH} m={cheek} scale={[0.03, 0.02, 0.012]} p={[s * 0.1, -0.03, 0.14]} castShadow={false} />
-            <Part geo={SPH} m={skin} scale={0.035} p={[s * 0.168, -0.01, 0]} castShadow={false} />
+      {/* le bras droit tend la poignée du wok */}
+      <group ref={armR} userData={LIVE} position={CHEF_SHOULDER.r}>
+        <Part geo={chefArmR()} m={figSkin} />
+      </group>
+      {/* le bras gauche tient la louche au-dessus du wok */}
+      <group ref={armL} userData={LIVE} position={CHEF_SHOULDER.l}>
+        <Part geo={chefArmL()} m={figSkin} />
+        <group position={sub(CHEF_HAND.l, CHEF_SHOULDER.l)} rotation={orient(LADLE_DIR)}>
+          <Part geo={cyl(0.0125, 0.014, 0.64, 8)} m={figHandle} p={[0, 0.2, 0]} castShadow={false} />
+          <Part geo={cyl(0.016, 0.016, 0.02, 8)} m={figGold} p={[0, 0.51, 0]} castShadow={false} />
+          <group position={[0, 0.56, -0.023]} rotation-x={Math.PI / 2}>
+            <Part geo={ladleCup} m={figSteel} castShadow={false} />
           </group>
-        ))}
-        <Part m={eye} p={[0, -0.04, 0.152]} rotation-z={Math.PI} castShadow={false}>
-          <torusGeometry args={[0.03, 0.005, 5, 10, Math.PI * 0.8]} />
-        </Part>
-        <Part m={K.indigo} p={[0, 0.09, 0]} rotation-x={Math.PI / 2} castShadow={false}>
-          <torusGeometry args={[0.158, 0.035, 8, 26]} />
-        </Part>
-        <Part geo={SPH} m={K.indigo} scale={[0.06, 0.04, 0.03]} p={[0, 0.1, -0.17]} castShadow={false} />
-        {[-1, 1].map((s) => (
-          <Part key={s} geo={cyl(0.012, 0.004, 0.14, 5)} m={K.indigo} p={[s * 0.05, 0.05, -0.2]} rotation={[0.5, 0, s * 0.35]} castShadow={false} />
-        ))}
-        {Array.from({ length: 5 }, (_, i) => (
-          <Part key={i} geo={SPH} m={K.cream} scale={0.008} p={[Math.sin((i - 2) * 0.55) * 0.158, 0.1, Math.cos((i - 2) * 0.55) * 0.158]} castShadow={false} />
-        ))}
-        </Static>
-        <group ref={eyes} userData={LIVE}>
+          <Part m={figSteel} p={[0, 0.56, 0.023]} castShadow={false}>
+            <torusGeometry args={[0.052, 0.0045, 6, 20]} />
+          </Part>
+        </group>
+      </group>
+      {/* la tête : visage rond, joues rosées, grands yeux brillants, sourire, tenugui noué */}
+      <group ref={head} userData={LIVE} position={[0, CHEF_HEAD_Y, 0]} scale={0.92}>
+        <Static>
+          <Part geo={chefHead()} m={figSkin} />
+          <Part m={figMouth} p={[0, -0.093, 0.2185]} rotation-z={Math.PI * 1.1} castShadow={false}>
+            <torusGeometry args={[0.036, 0.008, 5, 14, Math.PI * 0.8]} />
+          </Part>
           {[-1, 1].map((s) => (
-            <Part key={s} geo={SPH} m={eye} scale={[0.017, 0.024, 0.012]} p={[s * 0.055, 0.02, 0.152]} castShadow={false} />
+            <Part key={s} m={figBrow} p={[s * 0.088, 0.012, 0.208]} rotation={[0, 0, s * -0.2]} castShadow={false}>
+              <torusGeometry args={[0.026, 0.006, 4, 10, Math.PI * 0.55]} />
+            </Part>
+          ))}
+        </Static>
+        <group ref={eyes} userData={LIVE} position={[0, -0.025, 0]}>
+          {[-1, 1].map((s) => (
+            <group key={s} position={[s * 0.092, 0, 0.2]}>
+              <Part geo={SPH} m={figEye} scale={[0.036, 0.046, 0.024]} castShadow={false} />
+              <Part geo={SPH} m={figGlint} scale={0.0125} p={[0.011, 0.02, 0.019]} castShadow={false} />
+              <Part geo={SPH} m={figGlint} scale={0.0058} p={[-0.012, -0.017, 0.02]} castShadow={false} />
+            </group>
           ))}
         </group>
       </group>
@@ -94,8 +94,8 @@ export function Chef({ position }: { position: V3 }) {
 }
 
 /**
- * Un maneki-neko sur le comptoir : chat de porcelaine blanc, collier rouge à grelot, une pièce d'or dans la patte gauche et la droite
- * levée qui salue sans arrêt. Il porte chance à la carriole.
+ * Un maneki-neko sur le comptoir : chat de porcelaine blanc taché de roux et de noir, collier rouge à grelot, une pièce d'or
+ * dans la patte gauche et la droite levée qui salue sans arrêt. Il porte chance à la carriole.
  */
 export function LuckyCat({ position }: { position: V3 }) {
   const paw = useRef<Group>(null!)
@@ -103,31 +103,40 @@ export function LuckyCat({ position }: { position: V3 }) {
     paw.current.rotation.z = reduceMotion ? -0.3 : -0.3 + Math.sin(clock.elapsedTime * 3.2) * 0.45
   })
   return (
-    <group position={position} rotation-y={-0.6}>
-      <Part geo={cyl(0.085, 0.095, 0.03, 18)} m={K.red} p={[0, 0.015, 0]} castShadow={false} />
-      <Part geo={SPH} m={catWhite} scale={[0.085, 0.1, 0.075]} p={[0, 0.115, 0]} />
-      <Part geo={SPH} m={catWhite} scale={[0.09, 0.08, 0.08]} p={[0, 0.235, 0.005]} />
+    <group position={position} rotation-y={0.5}>
+      <Part geo={catBody()} m={figSkin} />
+      {/* les yeux en arcs contents, le museau, les moustaches */}
       {[-1, 1].map((s) => (
         <group key={s}>
-          <Part geo={cyl(0.002, 0.04, 0.05, 4)} m={catWhite} p={[s * 0.058, 0.3, 0]} rotation-z={s * -0.25} castShadow={false} />
-          <Part geo={SPH} m={eye} scale={[0.008, 0.01, 0.006]} p={[s * 0.032, 0.245, 0.077]} castShadow={false} />
-          <Part geo={SPH} m={cheek} scale={[0.014, 0.01, 0.006]} p={[s * 0.052, 0.225, 0.07]} castShadow={false} />
+          <Part m={figEye} p={[s * 0.043, 0.249, 0.0935]} rotation={[0, s * 0.3, s * -0.12]} castShadow={false}>
+            <torusGeometry args={[0.0165, 0.0052, 5, 12, Math.PI]} />
+          </Part>
+          <Part m={figMouth} p={[s * 0.0105, 0.2225, 0.1095]} rotation-z={Math.PI} castShadow={false}>
+            <torusGeometry args={[0.0105, 0.003, 4, 8, Math.PI]} />
+          </Part>
+          {[-1, 0, 1].map((i) => (
+            <Part key={i} geo={cyl(0.0013, 0.0013, 0.06, 4)} m={figWhisker} p={[s * 0.1, 0.222 + i * 0.011, 0.07]} rotation={orient([s, i * 0.28, 0.35])} castShadow={false} />
+          ))}
         </group>
       ))}
-      <Part geo={SPH} m={cheek} scale={[0.01, 0.007, 0.006]} p={[0, 0.226, 0.082]} castShadow={false} />
-      <Part m={K.red} p={[0, 0.17, 0.02]} rotation-x={Math.PI / 2} castShadow={false}>
-        <torusGeometry args={[0.058, 0.013, 6, 18]} />
-      </Part>
-      <Part geo={SPH} m={gold} scale={0.017} p={[0, 0.15, 0.075]} castShadow={false} />
-      <Part geo={cyl(0.034, 0.034, 0.008, 14)} m={gold} p={[-0.06, 0.1, 0.055]} rotation-x={Math.PI / 2} castShadow={false} />
-      <group ref={paw} position={[0.06, 0.15, 0.04]}>
-        <Part geo={SPH} m={catWhite} scale={[0.022, 0.05, 0.022]} p={[0.012, 0.045, 0]} castShadow={false} />
+      {/* le grelot du collier */}
+      <Part geo={SPH} m={figGold} scale={0.0215} p={[0, 0.146, 0.106]} castShadow={false} />
+      <Part geo={rbox(0.034, 0.0045, 0.006, 0.002)} m={figGoldDark} p={[0, 0.141, 0.1265]} castShadow={false} />
+      {/* la pièce d'or (koban), tenue dans la patte gauche */}
+      <group position={[-0.056, 0.136, 0.118]} rotation={[0, 0.12, 0.08]}>
+        <Part geo={SPH} m={figGoldDark} scale={[0.037, 0.051, 0.0042]} castShadow={false} />
+        <Part geo={SPH} m={figGold} scale={[0.032, 0.0455, 0.005]} p={[0, 0, 0.002]} castShadow={false} />
+        {[0.019, 0.0, -0.019].map((y) => (
+          <Part key={y} geo={rbox(0.023, 0.004, 0.004, 0.0015)} m={figGoldDark} p={[0, y, 0.0075]} castShadow={false} />
+        ))}
+      </group>
+      {/* la patte droite levée : elle salue sans arrêt */}
+      <group ref={paw} userData={LIVE} position={CAT_PAW}>
+        <Part geo={catPaw()} m={figSkin} castShadow={false} />
       </group>
     </group>
   )
 }
-
-const pants = gummy(0x2c2a44, { roughness: 0.6, clearcoat: 0.2 })
 
 /**
  * Un client attablé au comptoir, vu de dos : son manteau (ou son ciré à capuche), ses cheveux (ou son chignon), les coudes sur le
@@ -135,6 +144,7 @@ const pants = gummy(0x2c2a44, { roughness: 0.6, clearcoat: 0.2 })
  */
 export function Customer({ position, coat, hair, hood = false, ph = 0 }: { position: V3; coat: typeof K.cream; hair: typeof K.iron; hood?: boolean; ph?: number }) {
   const head = useRef<Group>(null!), body = useRef<Group>(null!)
+  const coatHex = coat.color.getHex(), hairHex = hair.color.getHex()
   useFrame(({ clock }) => {
     const t = reduceMotion ? 0 : clock.elapsedTime
     const dip = Math.max(0, Math.sin(t * 0.75 + ph)) ** 4
@@ -145,36 +155,19 @@ export function Customer({ position, coat, hair, hood = false, ph = 0 }: { posit
   return (
     <group position={position} userData={LIVE}>
       <Static>
-      {/* les cuisses vers le comptoir, les mollets pendus, les chaussures */}
-      {[-0.08, 0.08].map((x) => (
-        <group key={x}>
-          <Part geo={cyl(0.055, 0.05, 0.3, 10)} m={pants} p={[x, 0.66, -0.15]} rotation-x={Math.PI / 2} castShadow={false} />
-          <Part geo={cyl(0.048, 0.04, 0.42, 10)} m={pants} p={[x, 0.45, -0.3]} castShadow={false} />
-          <Part geo={SPH} m={K.iron} scale={[0.05, 0.03, 0.08]} p={[x, 0.22, -0.34]} castShadow={false} />
-        </group>
-      ))}
+        {/* les cuisses vers le comptoir, les mollets pendus, les chaussures */}
+        <Part geo={customerLegs()} m={figSkin} castShadow={false} />
       </Static>
       <group ref={body} userData={LIVE} position={[0, 0.62, 0]}>
         <Static>
-        <Part geo={cyl(0.155, 0.175, 0.46, 16)} m={coat} p={[0, 0.25, 0]} />
-        <Part geo={SPH} m={coat} scale={[0.19, 0.09, 0.13]} p={[0, 0.47, 0]} castShadow={false} />
-        <Arm from={[-0.19, 0.44, -0.02]} to={[-0.12, 0.4, -0.5]} r={0.045} />
-        <Arm from={[0.19, 0.44, -0.02]} to={[0.12, 0.4, -0.5]} r={0.045} />
+          <Part geo={customerBody(coatHex)} m={figSkin} />
         </Static>
-        <group ref={head} userData={LIVE} position={[0, 0.62, 0]}>
+        <group ref={head} userData={LIVE} position={[0, 0.7, 0]} scale={1.08}>
           <Static>
-          <Part geo={SPH} m={skin} scale={[0.12, 0.125, 0.12]} />
-          {hood ? (
-            <>
-              <Part geo={SPH} m={coat} scale={[0.17, 0.165, 0.17]} p={[0, 0.012, 0.012]} />
-              <Part geo={cyl(0.12, 0.155, 0.04, 16)} m={coat} p={[0, -0.1, 0.03]} castShadow={false} />
-            </>
-          ) : (
-            <>
-              <Part geo={SPH} m={hair} scale={[0.13, 0.125, 0.127]} p={[0, 0.012, 0.014]} />
-              <Part geo={SPH} m={hair} scale={0.055} p={[0, 0.14, 0.01]} castShadow={false} />
-            </>
-          )}
+            <Part geo={customerHead(coatHex, hairHex, hood)} m={figSkin} />
+            {[-1, 1].map((s) => (
+              <Part key={s} geo={SPH} m={figEye} scale={[0.0165, 0.022, 0.012]} p={[s * 0.058, -0.012, -0.119]} castShadow={false} />
+            ))}
           </Static>
         </group>
       </group>
