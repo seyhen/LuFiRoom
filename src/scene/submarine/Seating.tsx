@@ -1,7 +1,7 @@
-import { TAU } from '../../math'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { S } from './materials'
 import { PORT } from './SubShell'
+import { Octopus } from './Creatures'
 
 /** Un rang de clous de laiton le long d'une arête. */
 function Studs({ n, from, to, y, z }: { n: number; from: number; to: number; y: number; z: number }) {
@@ -11,31 +11,6 @@ function Studs({ n, from, to, y, z }: { n: number; from: number; to: number; y: 
         <Part key={i} geo={SPH} m={S.brass} scale={0.018} p={[from + ((to - from) * i) / (n - 1), y, z]} castShadow={false} />
       ))}
     </>
-  )
-}
-
-/** Un petit poulpe en peluche : tête ronde, huit tentacules qui s'enroulent, deux yeux. */
-function Octopus() {
-  return (
-    <group>
-      <Part geo={SPH} m={S.red} scale={[0.1, 0.11, 0.1]} p={[0, 0.17, 0]} />
-      <Part geo={SPH} m={S.red} scale={[0.09, 0.05, 0.09]} p={[0, 0.07, 0]} castShadow={false} />
-      {Array.from({ length: 8 }, (_, i) => {
-        const a = (i / 8) * TAU
-        return (
-          <group key={i} rotation-y={-a}>
-            <Part geo={SPH} m={S.red} scale={[0.07, 0.022, 0.026]} p={[0.1, 0.028, 0]} rotation-z={0.15} castShadow={false} />
-            <Part geo={SPH} m={S.red} scale={[0.035, 0.018, 0.02]} p={[0.17, 0.03, 0.025]} castShadow={false} />
-          </group>
-        )
-      })}
-      {[-1, 1].map((s) => (
-        <group key={s} position={[0.075, 0.18, s * 0.04]}>
-          <Part geo={SPH} m={S.cream} scale={0.026} castShadow={false} />
-          <Part geo={SPH} m={S.iron} scale={0.014} p={[0.016, 0, 0]} castShadow={false} />
-        </group>
-      ))}
-    </group>
   )
 }
 
@@ -56,7 +31,7 @@ export function Seating() {
           <Part key={x} geo={rbox(0.5, 0.36, 0.14, 0.07)} m={S.teal} p={[x, 0.76, -0.2]} rotation={[-0.2, i ? -0.2 : 0.15, 0]} />
         ))}
         {/* le poulpe, assis au bout, et un rouleau de cartes marines */}
-        <group position={[0.98, 0.6, 0.0]} rotation-y={-0.5}>
+        <group position={[0.98, 0.6, 0.0]} rotation-y={1.0}>
           <Octopus />
         </group>
         <group position={[0.0, 0.64, 0.1]} rotation-y={0.4}>

@@ -7,6 +7,7 @@ import { mood, reduceMotion, useSquash } from '../anim'
 import { glowTex } from '../textures'
 import { LIVE } from '../Static'
 import { S } from './materials'
+import { FISH_BODY, FISH_MAT, FISH_TAIL, FishEyes } from './Creatures'
 
 /** La table ronde : son centre au sol et la hauteur du plateau. */
 export const TABLE = { x: 0.8, z: -0.5, top: 0.8 }
@@ -65,11 +66,12 @@ function Goldfish() {
   return (
     <group userData={LIVE}>
       {[0, 1].map((i) => (
-        <group key={i} ref={(el) => void (el && (fish.current[i] = el))}>
-          <Part geo={SPH} m={S.fish} scale={[0.058, 0.036, 0.03]} castShadow={false} />
-          <group position={[-0.052, 0, 0]}>
-            <Part geo={SPH} m={S.fish} scale={[0.044, 0.04, 0.008]} p={[-0.03, 0, 0]} castShadow={false} />
+        <group key={i} ref={(el) => void (el && (fish.current[i] = el))} scale={0.85}>
+          <mesh geometry={FISH_BODY} material={FISH_MAT} />
+          <group position={[-0.055, 0, 0]}>
+            <mesh geometry={FISH_TAIL} material={FISH_MAT} />
           </group>
+          <FishEyes />
         </group>
       ))}
     </group>
