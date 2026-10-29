@@ -39,7 +39,7 @@ export function Static({ children }: { children: ReactNode }) {
         const mesh = c as Mesh
         if (mesh.isMesh && !(mesh as unknown as InstancedMesh).isInstancedMesh && !Array.isArray(mesh.material) && !mesh.material.transparent) {
           const g = mesh.geometry.index ? mesh.geometry.toNonIndexed() : mesh.geometry.clone()
-          for (const name of Object.keys(g.attributes)) if (name !== 'position' && name !== 'normal' && name !== 'uv') g.deleteAttribute(name)
+          for (const name of Object.keys(g.attributes)) if (name !== 'position' && name !== 'normal' && name !== 'uv' && name !== 'color') g.deleteAttribute(name)
           if (!g.attributes.normal || !g.attributes.uv) g.dispose()
           else {
             g.applyMatrix4(new Matrix4().multiplyMatrices(inv, mesh.matrixWorld))

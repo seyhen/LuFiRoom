@@ -15,6 +15,9 @@ ShaderChunk.lights_pars_begin = ShaderChunk.lights_pars_begin.replace(
 export const gummy = (color: number, o: MeshPhysicalMaterialParameters = {}) =>
   new MeshPhysicalMaterial({ color, roughness: 0.46, metalness: 0, clearcoat: 0.55, clearcoatRoughness: 0.3, ...o })
 
+/** Gummy dont la couleur vient des sommets (voir `blob.ts` : une créature d'une seule peau). */
+export const skin = (o: MeshPhysicalMaterialParameters = {}) => gummy(0xffffff, { vertexColors: true, roughness: 0.62, clearcoat: 0.25, ...o })
+
 /** Palette partagée. */
 export const M = {
   wallLeft: gummy(0xf3e8e1, { roughness: 0.78, clearcoat: 0.12 }),
