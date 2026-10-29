@@ -1,5 +1,5 @@
 import { DoubleSide, MeshStandardMaterial } from 'three'
-import { M, gummy } from '../materials'
+import { M, gummy, skin } from '../materials'
 import { leafy } from '../nature/materials'
 import { boardTex, juteTex, kilimTex, plankTex, stripes, weaveTex } from './textures'
 
@@ -59,6 +59,9 @@ export const B = {
   gull: gummy(0xffffff, { roughness: 0.6, clearcoat: 0.3 }),
   gullGrey: gummy(0xb9c3cf, { roughness: 0.6 }),
   beak: gummy(0xf6c544),
+  /** La mouette d'une seule peau (scene/blob.ts) : plumage, bec et pattes en couleurs de sommets ; les yeux (billes, reflet). */
+  gullSkin: skin({ roughness: 0.62, clearcoat: 0.15 }),
+  gullBead: gummy(0xffffff, { vertexColors: true, roughness: 0.12, clearcoat: 1 }),
   ink: M.ink,
   rope: gummy(0xd8c49c, { roughness: 0.9, clearcoat: 0 }),
 }

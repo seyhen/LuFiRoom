@@ -1,5 +1,5 @@
 import { DoubleSide, MeshBasicMaterial, MeshStandardMaterial } from 'three'
-import { M, gummy } from '../materials'
+import { M, gummy, skin } from '../materials'
 import { foliage, leafy } from '../nature/materials'
 import { brickTex, deckTex, facadeGlowTex, facadeTex, rugTex, staveTex } from './textures'
 
@@ -63,6 +63,9 @@ export const R = {
   pigeonNeck: gummy(0x6fa392, { roughness: 0.35, clearcoat: 0.8 }),
   beak: gummy(0x3a3438),
   feet: gummy(0xd9787a),
+  /** Les pigeons d'une seule peau (scene/blob.ts) : plumage, col irisé, bec et pattes en couleurs de sommets ; les yeux (billes orange, pupille, reflet). */
+  pigeonSkin: skin({ roughness: 0.55, clearcoat: 0.4 }),
+  pigeonBead: gummy(0xffffff, { vertexColors: true, roughness: 0.12, clearcoat: 1 }),
   wine: gummy(0x7a1f30, { transparent: true, opacity: 0.85, roughness: 0.1, clearcoat: 1 }),
   glass: M.glass,
   zinc: gummy(0xaab4bf, { roughness: 0.35, clearcoat: 0.7 }),
