@@ -44,7 +44,7 @@ interface Opts {
   pad?: number
 }
 
-const tmp = new Vector3()
+const tmp = new Vector3(), q = new Vector3()
 const smin = (a: number, b: number, k: number) => {
   if (k <= 0) return Math.min(a, b)
   const h = Math.max(k - Math.abs(a - b), 0) / k
@@ -64,12 +64,13 @@ interface Compiled {
 function distance(p: Vector3, b: Compiled) {
   const s = b.src
   if (s.t === 'ell') {
-    tmp.copy(p).sub(b.c)
-    if (b.inv) tmp.applyMatrix4(b.inv)
+    // un vecteur à part : `p` peut être `tmp` lui-même (le calcul des normales appelle field(tmp.set(...)))
+    q.copy(p).sub(b.c)
+    if (b.inv) q.applyMatrix4(b.inv)
     const [rx, ry, rz] = s.r
-    const ax = tmp.x / rx, ay = tmp.y / ry, az = tmp.z / rz
+    const ax = q.x / rx, ay = q.y / ry, az = q.z / rz
     const k0 = Math.hypot(ax, ay, az)
-    const k1 = Math.hypot(tmp.x / (rx * rx), tmp.y / (ry * ry), tmp.z / (rz * rz))
+    const k1 = Math.hypot(q.x / (rx * rx), q.y / (ry * ry), q.z / (rz * rz))
     return k1 < 1e-9 ? -Math.min(rx, ry, rz) : (k0 * (k0 - 1)) / k1
   }
   // cône arrondi (Inigo Quilez)
@@ -87,8 +88,12 @@ function distance(p: Vector3, b: Compiled) {
 }
 
 /** Fabrique le maillage continu d'une liste de volumes (voir l'en-tête). */
-export function blob(parts: (Blob | Blob[])[], { h = 0.02, k: K = 0.04, paint, pad = 0.06 }: Opts = {}): BufferGeometry {
-  const list: Compiled[] = parts.flat().map((src) => {
+/** Des volumes, ou des listes (imbriquées à volonté) de volumes. */
+export type Parts = Blob | Parts[]
+const flatten = (p: Parts): Blob[] => (Array.isArray(p) ? p.flatMap(flatten) : [p])
+
+export function blob(parts: Parts, { h = 0.02, k: K = 0.04, paint, pad = 0.06 }: Opts = {}): BufferGeometry {
+  const list: Compiled[] = flatten(parts).map((src) => {
     let inv: Matrix4 | null = null
     if (src.t === 'ell' && src.rot) inv = new Matrix4().makeRotationFromEuler(new Euler(...src.rot)).invert()
     return { src, inv, c: new Vector3(...(src.t === 'ell' ? src.c : [0, 0, 0])), col: new Color(src.color ?? 0xffffff), k: src.k ?? K, sub: src.op === 'sub' }
