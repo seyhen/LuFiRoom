@@ -87,7 +87,7 @@ const roofCat = (() => {
       pair(cone([0.05, 0.3, 0.06], [0.05, 0.035, 0.115], 0.04, 0.034, { color: BLACK }), 'x'),
       pair(ell([0.05, 0.022, 0.14], [0.04, 0.022, 0.05], { color: BLACK }), 'x'),
       pair(ell([0.115, 0.025, 0.06], [0.045, 0.025, 0.07], { color: BLACK }), 'x'),
-    ], { h: 0.013, k: 0.04 })
+    ], { h: 0.015, k: 0.04 })
     const hollow = [1, -1].map((s) => ell([s * 0.083, 0.112, 0.03], [0.026, 0.04, 0.028], { op: 'sub', k: 0.03 }))
     const pink = new Color(EAR)
     const head = blob([
@@ -100,7 +100,7 @@ const roofCat = (() => {
       ...[1, -1].map((s) => cone([s * 0.075, 0.065, -0.005], [s * 0.092, 0.165, -0.005], 0.054, 0.027, { color: BLACK, k: 0.03 })),
       ...hollow,
     ], {
-      h: 0.011, k: 0.035,
+      h: 0.013, k: 0.035,
       paint: (p, c) => {
         for (const s of [1, -1]) {
           const e = Math.hypot((p.x - s * 0.083) / 0.036, (p.y - 0.112) / 0.052, (p.z - 0.03) / 0.04)
@@ -110,7 +110,7 @@ const roofCat = (() => {
       },
     })
     const T: V3[] = [[0, 0.04, -0.14], [0, 0.035, -0.24], [0, 0.08, -0.32], [0, 0.18, -0.35], [0, 0.29, -0.33], [0, 0.36, -0.28]]
-    const tail = blob(T.slice(1).map((b, i) => cone(T[i], b, 0.04 - i * 0.002, 0.038 - i * 0.002, { color: BLACK, k: 0.03 })), { h: 0.012, k: 0.03 })
+    const tail = blob(T.slice(1).map((b, i) => cone(T[i], b, 0.04 - i * 0.002, 0.038 - i * 0.002, { color: BLACK, k: 0.03 })), { h: 0.014, k: 0.03 })
     tail.translate(-T[0][0], -T[0][1], -T[0][2])
     const up = new Vector3(0, 1, 0), whiskers: { p: V3; q: Quaternion }[] = []
     for (const s of [1, -1]) {

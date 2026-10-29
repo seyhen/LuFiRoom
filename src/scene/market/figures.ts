@@ -91,7 +91,7 @@ export const chefBody = once(() => {
       ...pair(ell([0.065, y(0.915), -0.25], [0.055, 0.04, 0.03], { color: C.indigo, rot: [0, 0, 0.4], k: 0.02 }), 'x'),
       ...pair(cone([0.03, y(0.89), -0.245], [0.07, y(0.72), -0.26], 0.03, 0.024, { color: C.indigo, k: 0.02 }), 'x'),
     ],
-    { h: 0.026, k: 0.06, pad: 0.05 },
+    { h: 0.03, k: 0.06, pad: 0.05 },
   )
 })
 
@@ -111,7 +111,7 @@ function arm(side: 'r' | 'l') {
       // la main : une moufle ronde
       ell(H, [0.064, 0.06, 0.066], { color: C.skin, k: 0.03 }),
     ],
-    { h: 0.02, k: 0.05, pad: 0.05 },
+    { h: 0.024, k: 0.05, pad: 0.05 },
   )
 }
 export const chefArmR = once(() => arm('r'))
@@ -136,7 +136,7 @@ export const chefHead = once(() => {
       cone([-0.02, 0.08, -0.255], [-0.06, -0.03, -0.28], 0.034, 0.028, { color: C.indigo, k: 0.02 }),
     ],
     {
-      h: 0.02,
+      h: 0.024,
       k: 0.05,
       paint: (p, c) => {
         tint(c, C.indigo, sstep(yb - 0.034, yb - 0.022, p.y))
@@ -181,7 +181,7 @@ export const catBody = once(() =>
       ...pair(cone([0.064, 0.295, 0.0], [0.086, 0.34, -0.004], 0.038, 0.028, { color: CAT.white, k: 0.03 }), 'x'),
     ],
     {
-      h: 0.0105,
+      h: 0.012,
       k: 0.035,
       pad: 0.03,
       paint: (p, c) => {
@@ -211,7 +211,7 @@ export const catPaw = once(() =>
       ell([0.004, 0.12, 0.004], [0.046, 0.05, 0.039], { color: CAT.white, k: 0.03 }),
     ],
     {
-      h: 0.0095,
+      h: 0.011,
       k: 0.03,
       pad: 0.03,
       paint: (p, c) => {
@@ -241,7 +241,7 @@ export const customerLegs = once(() =>
         ell([s * 0.09, 0.215, -0.365], [0.058, 0.042, 0.09], { color: C.iron, k: 0.02 }),
       ]),
     ],
-    { h: 0.024, k: 0.05, pad: 0.04 },
+    { h: 0.028, k: 0.05, pad: 0.04 },
   ),
 )
 
@@ -262,7 +262,7 @@ export function customerBody(coat: number) {
           ...pair(cone([0.225, 0.31, -0.26], [0.13, 0.4, -0.45], 0.05, 0.042, { color: coat, k: 0.03 }), 'x'),
           ...pair(ell([0.125, 0.405, -0.5], [0.055, 0.052, 0.06], { color: C.skin, k: 0.012 }), 'x'),
         ],
-        { h: 0.024, k: 0.05, pad: 0.04 },
+        { h: 0.028, k: 0.05, pad: 0.04 },
       )),
     )
   return g
@@ -291,7 +291,7 @@ export function customerHead(coat: number, hair: number, hood: boolean) {
               ]),
         ],
         {
-          h: 0.02,
+          h: 0.024,
           k: 0.045,
           paint: (p, c) => {
             if (p.z < -0.05) for (const s of [-1, 1]) tint(c, C.blush, 1 - sstep(0.025, 0.05, Math.hypot(p.x - s * 0.085, (p.y + 0.05) * 1.2)))

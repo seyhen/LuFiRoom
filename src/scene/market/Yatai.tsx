@@ -179,7 +179,7 @@ export function Yatai() {
         <Part key={x} geo={cyl(0.022, 0.022, 0.04, 10)} m={K.red} p={[x, top - 0.09, 0.56]} rotation-x={Math.PI / 2} castShadow={false} />
       ))}
       <Chef position={[-0.95, 0, -0.78]} />
-      <LuckyCat position={[0.98, top, -0.3]} />
+      <LuckyCat position={[1.1, top, -0.46]} />
       {/* la pile de paniers vapeur et la pile de bols propres, derrière la planche à découper */}
       <group position={[-0.1, top, -0.3]}>
         {[0, 1, 2].map((i) => (

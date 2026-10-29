@@ -84,7 +84,8 @@ export const FISH_TAIL = blob(
   ],
   { h: 0.005, k: 0.012 },
 )
-export const FISH_MAT = skin({ roughness: 0.3, clearcoat: 0.85 })
+// une petite lueur orange propre au poisson : la nuit, dans le bocal à l’ombre de la lampe, il virait au noir
+export const FISH_MAT = skin({ roughness: 0.3, clearcoat: 0.85, emissive: 0xff9a3a, emissiveIntensity: 0.55 })
 /** Les yeux d'un poisson : de grosses billes brillantes sur les côtés de la tête. */
 export function FishEyes() {
   return (

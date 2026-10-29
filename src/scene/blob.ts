@@ -56,6 +56,9 @@ interface Compiled {
   src: Blob
   inv: Matrix4 | null
   c: Vector3
+  /** Sphère qui contient le volume : sert à ne pas calculer ceux qui sont trop loin pour compter. */
+  ctr: Vector3
+  rad: number
   col: Color
   k: number
   sub: boolean
@@ -96,13 +99,17 @@ export function blob(parts: Parts, { h = 0.02, k: K = 0.04, paint, pad = 0.06 }:
   const list: Compiled[] = flatten(parts).map((src) => {
     let inv: Matrix4 | null = null
     if (src.t === 'ell' && src.rot) inv = new Matrix4().makeRotationFromEuler(new Euler(...src.rot)).invert()
-    return { src, inv, c: new Vector3(...(src.t === 'ell' ? src.c : [0, 0, 0])), col: new Color(src.color ?? 0xffffff), k: src.k ?? K, sub: src.op === 'sub' }
+    const ctr = new Vector3(...(src.t === 'ell' ? src.c : [(src.a[0] + src.b[0]) / 2, (src.a[1] + src.b[1]) / 2, (src.a[2] + src.b[2]) / 2]))
+    const rad = src.t === 'ell' ? Math.max(...src.r) : new Vector3(...src.a).distanceTo(new Vector3(...src.b)) / 2 + Math.max(src.ra, src.rb)
+    return { src, inv, c: new Vector3(...(src.t === 'ell' ? src.c : [0, 0, 0])), ctr, rad, col: new Color(src.color ?? 0xffffff), k: src.k ?? K, sub: src.op === 'sub' }
   })
   const adds = list.filter((b) => !b.sub), subs = list.filter((b) => b.sub)
   const field = (p: Vector3) => {
+    // un volume dont toute la sphère englobante est à plus de `k` au-delà de ce qu'on a déjà ne change rien à l'union lisse
+    // (smin vaut alors le minimum) : on ne le calcule pas. Même résultat, bien moins d'appels.
     let d = 1e9
-    for (const b of adds) d = smin(d, distance(p, b), b.k)
-    for (const b of subs) d = smax(d, -distance(p, b), b.k)
+    for (const b of adds) if (p.distanceTo(b.ctr) - b.rad < d + b.k) d = smin(d, distance(p, b), b.k)
+    for (const b of subs) if (p.distanceTo(b.ctr) - b.rad < b.k - d) d = smax(d, -distance(p, b), b.k)
     return d
   }
   // la boîte englobante des volumes « add »
@@ -157,7 +164,7 @@ export function blob(parts: Parts, { h = 0.02, k: K = 0.04, paint, pad = 0.06 }:
   const g = new Vector3(), C = new Color(), eps = h * 0.5
   for (let v = 0; v < nv; v++) {
     P.set(pos[v * 3], pos[v * 3 + 1], pos[v * 3 + 2])
-    for (let it = 0; it < 2; it++) {
+    for (let it = 0; it < 1; it++) {
       const d = field(P)
       g.set(field(tmp.set(P.x + eps, P.y, P.z)) - field(tmp.set(P.x - eps, P.y, P.z)), field(tmp.set(P.x, P.y + eps, P.z)) - field(tmp.set(P.x, P.y - eps, P.z)), field(tmp.set(P.x, P.y, P.z + eps)) - field(tmp.set(P.x, P.y, P.z - eps)))
       const len = g.length() || 1
@@ -168,8 +175,10 @@ export function blob(parts: Parts, { h = 0.02, k: K = 0.04, paint, pad = 0.06 }:
     nor[v * 3] = g.x; nor[v * 3 + 1] = g.y; nor[v * 3 + 2] = g.z
     // la couleur : moyenne des volumes qui comptent ici, pondérée par leur proximité de la surface
     let wsum = 0, r = 0, gg = 0, bb = 0, dmin = 1e9
-    const ds = adds.map((b) => { const d = distance(P, b); if (d < dmin) dmin = d; return d })
+    // (les volumes à plus de 3 k + 3 cm n'ont plus de poids : on ne les calcule pas)
+    const ds = adds.map((b) => { if (P.distanceTo(b.ctr) - b.rad > b.k * 3 + 0.03) return 1e9; const d = distance(P, b); if (d < dmin) dmin = d; return d })
     adds.forEach((b, i) => {
+      if (ds[i] > 1e8) return
       const w = Math.exp(-Math.max(0, ds[i] - dmin) / (b.k * 0.5 + 1e-4))
       wsum += w; r += b.col.r * w; gg += b.col.g * w; bb += b.col.b * w
     })
