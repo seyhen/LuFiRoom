@@ -1,6 +1,8 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import type { Group, Mesh } from 'three'
+import { BackSide, Quaternion, Vector3, type BufferGeometry, type Group, type Mesh } from 'three'
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
+import { Vessel, innerR } from '../igloo/Vessel'
 import { isActive, useStore } from '../../state/store'
 import { TAU, approach, lerp } from '../../math'
 import { gummy } from '../materials'
@@ -13,6 +15,30 @@ import { O } from './materials'
 export const MATCHA = { x: -0.55, z: 1.95, top: 0.44 }
 const tea = gummy(0x6f9a3c, { roughness: 0.4, clearcoat: 0.9 })
 const froth = gummy(0xb4d878, { roughness: 0.9, clearcoat: 0.05 })
+const celadonIn = O.celadon.clone()
+celadonIn.side = BackSide
+// le bol (repère du bol, avant l'échelle 1,4) : rayon en haut, en bas, hauteur de la panse ; le thé à 70 % de sa hauteur
+const BOWL = { rt: 0.13, rb: 0.075, h: 0.1 }
+const TEA_Y = 0.02 + BOWL.h * 0.7
+const TEA_R = innerR(BOWL.rt, BOWL.rb, BOWL.h, BOWL.h * 0.7, 0.008) - 0.002
+const REST_Y = 0.055
+// les dents du fouet : chacune part de la ligature, s'écarte en bulbe puis se recourbe vers la pointe (deux segments)
+const TINES = (() => {
+  const parts: BufferGeometry[] = [], up = new Vector3(0, 1, 0)
+  const seg = (a: Vector3, b: Vector3, r: number) => {
+    const d = b.clone().sub(a), g = cyl(r, r, d.length(), 4).clone()
+    g.applyQuaternion(new Quaternion().setFromUnitVectors(up, d.normalize()))
+    g.translate((a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2)
+    parts.push(g)
+  }
+  for (let i = 0; i < 20; i++) {
+    const a = (i / 20) * TAU, c = Math.cos(a), sn = Math.sin(a)
+    const p0 = new Vector3(c * 0.017, 0.135, sn * 0.017), p1 = new Vector3(c * 0.044, 0.06, sn * 0.044), p2 = new Vector3(c * 0.032, 0.004, sn * 0.032)
+    seg(p0, p1, 0.0042)
+    seg(p1, p2, 0.0042)
+  }
+  return mergeGeometries(parts)!
+})()
 
 /**
  * La table de pierre où l'on bat le thé : un bol de céladon, du matcha, et le chasen de bambou. Quand le son joue, le fouet décrit de
@@ -28,9 +54,9 @@ export function MatchaTable() {
     s.foam = approach(s.foam, on ? 1 : 0.15, dt * (on ? 0.12 : 0.25))
     if (on && !reduceMotion) s.a += dt * 9 // phase image après image (le fouet bat plus vite quand on s'y met)
     const r = 0.045 * s.k
-    whisk.current.position.set(lerp(0.22, Math.cos(s.a) * r, s.k), lerp(0.03, 0.2, s.k), lerp(-0.15, Math.sin(s.a) * r, s.k))
+    whisk.current.position.set(lerp(0.22, Math.cos(s.a) * r, s.k), lerp(REST_Y, TEA_Y + 0.012, s.k), lerp(-0.15, Math.sin(s.a) * r, s.k))
     whisk.current.rotation.set(lerp(1.5, 0, s.k) + 0.3 * s.k * Math.cos(s.a - 0.6), 0, 0.3 * s.k * Math.sin(s.a - 0.6))
-    foam.current.scale.set(0.1 * (0.55 + 0.45 * s.foam), 0.005 + 0.04 * s.foam, 0.1 * (0.55 + 0.45 * s.foam))
+    foam.current.scale.set(TEA_R * (0.6 + 0.38 * s.foam), 0.004 + 0.012 * s.foam, TEA_R * (0.6 + 0.38 * s.foam))
     foam.current.visible = s.foam > 0.2
   })
   return (
@@ -40,27 +66,23 @@ export function MatchaTable() {
         <Part geo={cyl(0.2, 0.25, 0.06, 20)} m={O.stone[1]} p={[0, 0.03, 0]} />
         <Part geo={cyl(0.13, 0.17, 0.34, 20)} m={O.stone[1]} p={[0, 0.23, 0]} />
         <Part geo={cyl(0.36, 0.33, 0.07, 28)} m={O.stone[0]} p={[0, MATCHA.top - 0.035, 0]} />
-        {/* le bol : un pied, une panse évasée, un bord, le thé */}
+        {/* le bol ouvert : un pied, la panse évasée (dehors céladon, dedans plus clair), le bord, et le thé dedans, sous le bord */}
         <group position={[0, MATCHA.top, 0]} scale={1.4}>
           <Part geo={cyl(0.06, 0.06, 0.02, 16)} m={O.ceramic} p={[0, 0.01, 0]} castShadow={false} />
-          <Part geo={cyl(0.13, 0.075, 0.1, 26)} m={O.celadon} p={[0, 0.07, 0]} />
-          <Part m={O.celadon} p={[0, 0.12, 0]} rotation-x={Math.PI / 2} castShadow={false}>
-            <torusGeometry args={[0.128, 0.012, 8, 28]} />
-          </Part>
-          <Part geo={cyl(0.116, 0.116, 0.008, 26)} m={tea} p={[0, 0.126, 0]} castShadow={false} />
+          <Vessel p={[0, 0.02, 0]} rt={BOWL.rt} rb={BOWL.rb} h={BOWL.h} m={O.celadon} inner={celadonIn} t={0.008} />
+          <Part geo={cyl(TEA_R, TEA_R, 0.006, 26)} m={tea} p={[0, TEA_Y, 0]} castShadow={false} />
         </group>
       </Static>
       <group position={[0, MATCHA.top, 0]} scale={1.4}>
-        {/* la mousse, qui monte */}
-        <mesh ref={foam} geometry={SPH} material={froth} position={[0, 0.134, 0]} scale={[0.06, 0.01, 0.06]} />
-        {/* le chasen : manche de bambou, tête de fines baguettes, sa pointe à l'origine du groupe */}
-        <group ref={whisk} position={[0.22, 0.03, -0.15]} rotation-x={1.5}>
-          <Part geo={cyl(0.017, 0.02, 0.1, 10)} m={O.bambooDry} p={[0, 0.17, 0]} castShadow={false} />
-          <Part geo={cyl(0.021, 0.021, 0.012, 10)} m={O.rope} p={[0, 0.115, 0]} castShadow={false} />
-          <Part geo={SPH} m={O.bambooDry} scale={[0.05, 0.075, 0.05]} p={[0, 0.06, 0]} castShadow={false} />
-          {Array.from({ length: 6 }, (_, i) => (
-            <Part key={i} geo={cyl(0.003, 0.003, 0.1, 4)} m={O.bambooDry} p={[Math.cos((i / 6) * TAU) * 0.036, 0.045, Math.sin((i / 6) * TAU) * 0.036]} rotation={[Math.sin((i / 6) * TAU) * 0.25, 0, -Math.cos((i / 6) * TAU) * 0.25]} castShadow={false} />
-          ))}
+        {/* la mousse, qui monte sans jamais passer le bord */}
+        <mesh ref={foam} geometry={SPH} material={froth} position={[0, TEA_Y + 0.004, 0]} scale={[0.06, 0.004, 0.06]} />
+        {/* le chasen : manche de bambou, ligature, et la tête en bulbe de fines dents recourbées ; sa pointe à l'origine du groupe */}
+        <group ref={whisk} position={[0.22, REST_Y, -0.15]} rotation-x={1.5}>
+          <Part geo={cyl(0.016, 0.019, 0.12, 12)} m={O.bambooDry} p={[0, 0.205, 0]} castShadow={false} />
+          <Part geo={cyl(0.0195, 0.0195, 0.008, 12)} m={O.bark} p={[0, 0.235, 0]} castShadow={false} />
+          <Part geo={cyl(0.021, 0.021, 0.014, 12)} m={O.rope} p={[0, 0.14, 0]} castShadow={false} />
+          <Part geo={SPH} m={O.bambooDry} scale={[0.016, 0.05, 0.016]} p={[0, 0.085, 0]} castShadow={false} />
+          <mesh geometry={TINES} material={O.bambooDry} />
         </group>
       </group>
     </group>

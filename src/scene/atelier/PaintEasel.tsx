@@ -7,6 +7,7 @@ import { Part, SPH, cyl, rbox } from '../parts'
 import { reduceMotion, useSquash } from '../anim'
 import { Static } from '../Static'
 import { A } from './materials'
+import { washTex } from './textures'
 
 /** Le chevalet : son pied au sol, comme l'ancien (il garde sa place et son orientation). */
 export const EASEL = { x: 2.35, z: -0.85, ry: 0.6 }
@@ -15,6 +16,7 @@ const WASH = [0xc7703e, 0x2c4a6e, 0xd9a441, 0x9db59a] // terre cuite, bleu de Pr
 const ROWS = [{ y: -0.24, w: 0.5 }, { y: -0.09, w: 0.38 }, { y: 0.06, w: 0.46 }]
 const X0 = -0.27
 const ROW_T = 4.2 // secondes par aplat
+const OPACITY = 0.72
 
 /**
  * Le chevalet et sa toile : l'aquarelle des toits, à moitié finie, et le pinceau du peintre. Quand le son joue, le pinceau quitte la
@@ -23,7 +25,8 @@ const ROW_T = 4.2 // secondes par aplat
  */
 export function PaintEasel() {
   const g = useRef<Group>(null!), brush = useRef<Group>(null!), patches = useRef<(Mesh | null)[]>([])
-  const mats = useRef(ROWS.map(() => new MeshStandardMaterial({ color: WASH[0], roughness: 0.85, transparent: true, opacity: 0.88, depthWrite: false })))
+  // chaque aplat a sa copie de la texture : on en dévoile la partie gauche à mesure qu'il grandit (sans l'étirer)
+  const mats = useRef(ROWS.map(() => new MeshStandardMaterial({ color: WASH[0], map: washTex.clone(), roughness: 0.85, transparent: true, opacity: OPACITY, depthWrite: false })))
   const st = useRef({ k: 0, row: 0, p: 0, cycle: 0, fade: 0, hold: 0, t: 0 })
   useSquash('brush', g)
   useFrame((_, delta) => {
@@ -53,9 +56,10 @@ export function PaintEasel() {
       if (!m) return
       mat.color.setHex(WASH[(s.cycle + i) % WASH.length])
       const w = i < s.row ? 1 : i === s.row && s.fade === 0 ? s.p : 0
-      mat.opacity = 0.88 * (1 - s.fade)
+      mat.opacity = OPACITY * (1 - s.fade)
       m.visible = w > 0.004 && mat.opacity > 0.01
-      m.scale.set(Math.max(r.w * w, 0.001), 0.11, 1)
+      m.scale.set(Math.max(r.w * w, 0.001), 0.13, 1)
+      mat.map!.repeat.x = Math.max(w, 0.001)
       m.position.x = X0 + (r.w * w) / 2
     })
     // le pinceau : de la tablette à la pointe de l'aplat en cours, avec le va-et-vient du poignet
@@ -75,7 +79,7 @@ export function PaintEasel() {
         <Part geo={rbox(0.78, 0.04, 0.08, 0.015)} m={A.oakDark} p={[0, 0.7, 0.04]} />
         <group position={[0, CANVAS_Y, 0.06]} rotation-x={-0.08}>
           <Part geo={rbox(0.62, 0.8, 0.03, 0.01)} m={A.white} />
-          <mesh material={A.painting} position={[0, 0, 0.017]}>
+          <mesh material={A.painting} position={[0, 0, 0.023]}>
             <planeGeometry args={[0.58, 0.76]} />
           </mesh>
         </group>
@@ -90,7 +94,7 @@ export function PaintEasel() {
       {/* les aplats qui grandissent sur la toile */}
       <group position={[0, CANVAS_Y, 0.06]} rotation-x={-0.08}>
         {ROWS.map((r, i) => (
-          <mesh key={i} ref={(m) => { patches.current[i] = m }} material={mats.current[i]} position={[X0, r.y, 0.024]}>
+          <mesh key={i} ref={(m) => { patches.current[i] = m }} material={mats.current[i]} position={[X0, r.y, 0.031]}>
             <planeGeometry args={[1, 1]} />
           </mesh>
         ))}

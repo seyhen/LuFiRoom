@@ -1,9 +1,14 @@
+import { BackSide } from 'three'
+import { TAU } from '../../math'
 import { Part, SPH, cyl, rbox } from '../parts'
+import { Vessel } from '../igloo/Vessel'
 import { Steam } from '../objects/Steam'
 import { O } from './materials'
 import { FLAT_ROCKS, Rock } from '../nature/Rock'
 
 const DECK = 0.42
+const hinokiIn = O.hinoki.clone()
+hinokiIn.side = BackSide
 
 /** Sur l'engawa : le plateau de thé (bouilloire de fonte, deux bols, des gâteaux), un coussin, le yukata plié. */
 export function TeaTray() {
@@ -84,14 +89,21 @@ export function BathThings() {
           </Part>
         </group>
       ))}
-      <group position={[-0.55, 0, 0.75]}>
-        <Part geo={cyl(0.2, 0.17, 0.24, 18)} m={O.hinoki} p={[0, 0.12, 0]} />
-        {[0.05, 0.19].map((y) => (
-          <Part key={y} geo={cyl(0.205, 0.205, 0.02, 18)} m={O.iron} p={[0, y, 0]} castShadow={false} />
+      {/* le seau de hinoki (oke), ouvert : ses douelles, deux cercles de fer, l'eau dedans */}
+      <group position={[-0.45, 0, 1.0]}>
+        <Vessel p={[0, 0, 0]} rt={0.2} rb={0.17} h={0.24} m={O.hinoki} inner={hinokiIn} t={0.014} />
+        {Array.from({ length: 14 }, (_, i) => {
+          const a = (i / 14) * TAU
+          return <Part key={i} geo={rbox(0.008, 0.22, 0.012, 0.003)} m={O.deck} p={[Math.cos(a) * 0.187, 0.12, Math.sin(a) * 0.188]} rotation={[0, -a, -Math.atan2(0.03, 0.24)]} castShadow={false} />
+        })}
+        {[[0.05, 0.176], [0.19, 0.194]].map(([y, r]) => (
+          <Part key={y} m={O.iron} p={[0, y, 0]} rotation-x={Math.PI / 2} castShadow={false}>
+            <torusGeometry args={[r, 0.011, 6, 28]} />
+          </Part>
         ))}
-        <Part geo={cyl(0.18, 0.18, 0.01, 18)} m={O.water} p={[0, 0.2, 0]} castShadow={false} />
+        <Part geo={cyl(0.17, 0.17, 0.01, 22)} m={O.water} p={[0, 0.18, 0]} castShadow={false} />
       </group>
-      <group position={[-0.95, 0, 1.05]} rotation-y={0.3}>
+      <group position={[-1.0, 0, 1.1]} rotation-y={0.3}>
         <Part geo={rbox(0.36, 0.04, 0.26, 0.015)} m={O.hinoki} p={[0, 0.22, 0]} />
         {[-0.14, 0.14].map((x) => (
           <Part key={x} geo={rbox(0.04, 0.2, 0.24, 0.01)} m={O.hinoki} p={[x, 0.1, 0]} />

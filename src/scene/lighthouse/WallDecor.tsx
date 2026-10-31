@@ -1,3 +1,5 @@
+import { BackSide } from 'three'
+import { Vessel } from '../igloo/Vessel'
 import { TAU } from '../../math'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { Garment } from '../objects/Garment'
@@ -5,13 +7,16 @@ import { L } from './materials'
 import { shipPainting } from './textures'
 
 /** Une botte de marin : tige, pied, semelle crantée. */
+const bootIn = L.boot.clone()
+bootIn.side = BackSide
+
 function Boot({ position, rotation }: { position: [number, number, number]; rotation: number }) {
   return (
     <group position={position} rotation-y={rotation}>
-      <Part geo={cyl(0.075, 0.085, 0.36, 14)} m={L.boot} p={[0, 0.2, -0.04]} />
+      {/* la tige est ouverte (on voit dedans), son revers rouge au bord */}
+      <Vessel p={[0, 0.03, -0.04]} rt={0.08} rb={0.08} h={0.36} m={L.boot} inner={bootIn} rim={L.red} t={0.012} />
       <Part geo={rbox(0.17, 0.12, 0.32, 0.05)} m={L.boot} p={[0, 0.08, 0.06]} />
       <Part geo={rbox(0.185, 0.04, 0.34, 0.02)} m={L.sole} p={[0, 0.02, 0.06]} castShadow={false} />
-      <Part geo={cyl(0.082, 0.082, 0.025, 14)} m={L.red} p={[0, 0.375, -0.04]} castShadow={false} />
     </group>
   )
 }
@@ -37,8 +42,9 @@ export function WallDecor() {
         })}
         <Part geo={cyl(0.02, 0.02, 0.1, 6)} m={L.iron} p={[0, 0.5, -0.02]} castShadow={false} />
       </group>
-      {/* la barre à roue d'un vieux voilier, au-dessus du hublot : jante, moyeu, huit manetons */}
-      <group position={[1.35, 4.0, -2.95]}>
+      {/* la barre à roue d'un vieux voilier, au-dessus du baromètre (au-dessus du hublot, elle mordait sur son cadre) : jante,
+          moyeu, huit manetons */}
+      <group position={[-0.35, 3.82, -2.95]} scale={0.75}>
         <Part m={L.oak}>
           <torusGeometry args={[0.3, 0.032, 10, 36]} />
         </Part>
@@ -110,8 +116,8 @@ export function WallDecor() {
         </mesh>
       </group>
       {/* les bottes qui sèchent devant le poêle */}
-      <Boot position={[-1.55, 0, -1.7]} rotation={0.5} />
-      <Boot position={[-1.35, 0, -1.55]} rotation={0.9} />
+      <Boot position={[-1.5, 0, -1.68]} rotation={0.5} />
+      <Boot position={[-1.12, 0, -1.42]} rotation={0.9} />
     </>
   )
 }

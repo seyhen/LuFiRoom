@@ -12,6 +12,8 @@ import { A } from './materials'
 const AT: [number, number, number] = [0.2, 0, -2.05]
 // Positif : le plateau regarde la pièce (vers +z) et l'auget à crayons est au bord bas. Négatif, on ne voyait que son dos.
 const TILT = 0.62
+// L'écart des pieds du chevalet : 0,3 au sol de chaque côté, 0,9 de haut.
+const LEG = Math.atan2(0.3, 0.9)
 const head = new SphereGeometry(0.11, 22, 10, 0, TAU, 0, Math.PI / 2)
 
 /** La lampe d'architecte, posée sur le bureau : deux bras, un ressort, une tête qui éclaire (le bras part vers -x, `rotationY` π le retourne). Jour / nuit. */
@@ -73,11 +75,18 @@ export function DraftingTable() {
   useSquash('pencil', g)
   return (
     <group position={AT}>
-      {/* le piètement : deux montants en A et une traverse */}
+      {/* le piètement : de chaque côté un chevalet en A (deux pieds qui s'écartent vers le sol, une entretoise), la tête sous le
+          pivot du plateau ; une traverse relie les deux A. Les pieds restent sous le plateau incliné, sans le traverser. */}
       {[-0.55, 0.55].map((x) => (
         <group key={x} position={[x, 0, 0]}>
-          <Part geo={rbox(0.05, 1.0, 0.05, 0.02)} m={A.oakDark} p={[0, 0.5, 0.25]} rotation-x={0.18} />
-          <Part geo={rbox(0.05, 1.0, 0.05, 0.02)} m={A.oakDark} p={[0, 0.5, -0.25]} rotation-x={-0.18} />
+          {[1, -1].map((s) => (
+            // le pied part du sol à z = ±0,3 et monte vers la tête (z = 0, y = 0,9) : il penche vers le centre en haut
+            <Part key={s} geo={rbox(0.05, 0.95, 0.05, 0.02)} m={A.oakDark} p={[0, 0.45, s * 0.15]} rotation-x={-s * LEG} />
+          ))}
+          <Part geo={rbox(0.045, 0.04, 0.44, 0.015)} m={A.oakDark} p={[0, 0.3, 0]} castShadow={false} />
+          {/* la tête du chevalet et le pivot du plateau, avec son bouton de serrage en laiton */}
+          <Part geo={rbox(0.07, 0.1, 0.1, 0.03)} m={A.oakDark} p={[0, 0.875, 0]} />
+          <Part geo={cyl(0.028, 0.028, 0.03, 12)} m={A.brass} p={[x > 0 ? 0.045 : -0.045, 0.885, 0]} rotation-z={Math.PI / 2} castShadow={false} />
         </group>
       ))}
       <Part geo={rbox(1.15, 0.04, 0.04, 0.015)} m={A.oakDark} p={[0, 0.3, 0]} castShadow={false} />

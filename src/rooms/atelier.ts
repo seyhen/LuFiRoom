@@ -44,9 +44,9 @@ export const atelier: Room = {
   objects: [
     { id: 'radio', target: 'radio', label: 'Tourne-disque · lofi', anchor: [2.3, 0.85, -2.6] },
     { id: 'pencil', target: 'pencil', label: 'Table à dessin · crayon', anchor: [0.1, 1.55, -2.0] },
-    { id: 'keyboard', target: 'keys', label: 'Clavier · on écrit', anchor: [-2.4, 1.0, -1.1] },
+    { id: 'keyboard', target: 'keys', label: 'Clavier · on écrit', anchor: [-2.4, 0.86, -1.05] },
     { id: 'kettle', target: 'kettle', label: 'Bouilloire · thé', anchor: [-2.6, 1.45, 0.95] },
-    { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-2.6, 1.1, -1.9] },
+    { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-2.68, 1.3, -1.9] },
     { id: 'brush', target: 'brush', label: 'Chevalet · le pinceau', anchor: [2.4, 1.25, -0.8] },
   ],
   sounds: [

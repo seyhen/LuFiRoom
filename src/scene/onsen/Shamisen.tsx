@@ -7,8 +7,12 @@ import { Part, SPH, cyl, rbox, type V3 } from '../parts'
 import { reduceMotion, useParticles, useSquash } from '../anim'
 import { noteTexA, noteTexB } from '../textures'
 import { O } from './materials'
+import { gummy } from '../materials'
 
-const STRINGS = [-0.014, 0, 0.014] as const
+const silk = gummy(0xf2c84a, { roughness: 0.4, clearcoat: 0.5 })
+
+// écartées de 18 mm (rayon 7 mm dans le groupe à l'échelle 1,3 : 9 mm dans la pièce), de soie jaune pour se détacher de la peau
+const STRINGS = [-0.018, 0, 0.018] as const
 
 /**
  * Un shamisen debout sur son petit support, sur l'engawa, la peau tournée vers la pièce. C'est l'objet « radio » de l'onsen :
@@ -26,7 +30,8 @@ export function Shamisen({ position }: { position: V3 }) {
       b.at = t
       if (on) {
         b.flip = !b.flip
-        notes.emit(b.flip ? noteTexA : noteTexB, px + rand(-0.3, 0.3), py + 1.0, pz + rand(-0.1, 0.25), { size: 0.26, life: 2.6, vy: 0.55, sway: 0.12 })
+        // les notes partent au-dessus de la tête de l'instrument (1,65 de haut) et un peu derrière : elles ne le cachent plus
+        notes.emit(b.flip ? noteTexA : noteTexB, px + rand(-0.3, 0.3), py + 1.85, pz + rand(-0.2, 0.05), { size: 0.26, life: 2.6, vy: 0.55, sway: 0.12 })
       }
     }
     strings.current.forEach((c, i) => {
@@ -60,7 +65,7 @@ export function Shamisen({ position }: { position: V3 }) {
         {/* les trois cordes, du chevalet à la tête */}
         {STRINGS.map((x, i) => (
           <group key={x} ref={(el) => void (el && (strings.current[i] = el))} position={[x, 0, 0]}>
-            <Part geo={cyl(0.003, 0.003, 0.95, 4)} m={O.paper} p={[0, 0.66, 0.062]} rotation-x={-0.075} castShadow={false} />
+            <Part geo={cyl(0.007, 0.007, 0.95, 6)} m={silk} p={[0, 0.66, 0.062]} rotation-x={-0.075} castShadow={false} />
           </group>
         ))}
        </group>

@@ -45,11 +45,11 @@ export const lighthouse: Room = {
   objects: [
     { id: 'window', target: 'waves', label: 'Hublot · la houle', anchor: [1.35, 2.55, -2.9] },
     { id: 'barometer', target: 'wind', label: 'Baromètre · la tempête', anchor: [-0.55, 3.0, -2.85] },
-    { id: 'foghorn', target: 'foghorn', label: 'Corne de brume · au large', anchor: [-2.45, 3.0, -1.95] },
+    { id: 'foghorn', target: 'foghorn', label: 'Corne de brume · au large', anchor: [-2.45, 3.0, -1.65] },
     { id: 'bell', target: 'bell', label: 'Cloche · la bouée', anchor: [2.68, 1.65, -2.55] },
     { id: 'stove', target: 'fire', label: 'Poêle · feu', anchor: [-2.2, 0.75, -2.0] },
     { id: 'lamp', target: 'night', label: 'Lampe à huile · jour / nuit', anchor: [0.12, 1.5, -2.45] },
-    { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-0.75, 0.75, 0.7] },
+    { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-0.75, 0.32, 0.62] },
     { id: 'radio', target: 'radio', label: 'Concertina · lofi', anchor: [2.45, 1.05, 0.2] },
     { id: 'quill', target: 'quill', label: 'Journal de bord · la plume', anchor: [-0.48, 0.72, 2.47] },
   ],

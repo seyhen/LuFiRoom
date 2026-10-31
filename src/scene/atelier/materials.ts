@@ -1,4 +1,4 @@
-import { MeshStandardMaterial } from 'three'
+import { BackSide, MeshStandardMaterial } from 'three'
 import { M, gummy } from '../materials'
 import { foliage, leafy } from '../nature/materials'
 import { berberTex, corkTex, parquetTex, plasterTex, screenTex, sketchTex, watercolorTex } from './textures'
@@ -57,5 +57,12 @@ export const A = {
   baguette: gummy(0xd9a066, { roughness: 0.6 }),
   paper: gummy(0xe9dcc0, { roughness: 0.9, clearcoat: 0 }),
   basket: gummy(0xc9a26a, { roughness: 0.8, clearcoat: 0.05 }),
+  // l'intérieur des récipients ouverts (tasses, pots) : vu par la face arrière du cylindre intérieur
+  glazeIn: gummy(0xf2ece0, { roughness: 0.4, clearcoat: 0.6, side: BackSide }),
+  potIn: gummy(0x8a5a3c, { roughness: 0.8, side: BackSide }),
+  tea: gummy(0x9a5a2a, { roughness: 0.15, clearcoat: 0.9 }),
+  soil: gummy(0x5a4030, { roughness: 0.95, clearcoat: 0 }),
+  // le chat noir de l'atelier : pelage en couleurs de sommets (voir Cat.tsx)
+  catEye: gummy(0xddd2dc, { roughness: 0.5 }),
   lampShade: gummy(0xf3e7d2, { roughness: 0.85, emissive: 0xffc07a, emissiveIntensity: 0 }),
 }

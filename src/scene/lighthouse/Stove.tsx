@@ -57,7 +57,7 @@ export function Stove() {
         </group>
       </Static>
       {/* le mica : il brille de la lueur du feu */}
-      <mesh material={L.ember} position={[0, 0.5, 0.366]}>
+      <mesh material={L.ember} position={[0, 0.5, 0.375]}>
         <planeGeometry args={[0.28, 0.2]} />
       </mesh>
       <group ref={steam}>

@@ -1,6 +1,7 @@
 import { Part, SPH, cyl, rbox } from '../parts'
 import { LatheGeometry, Vector2 } from 'three'
 import { A } from './materials'
+import { BlackCat } from './BlackCat'
 
 /** Le coussin du repose-pieds : un cylindre bas aux bords bien ronds, le dessus un peu bombé. */
 const cushion = (() => {
@@ -18,7 +19,7 @@ const cushion = (() => {
 })()
 
 /**
- * Devant le fauteuil, son repose-pieds ; par terre, une pile de livres d'art avec une tasse dessus ; près des toiles, un
+ * Devant le fauteuil, son repose-pieds et le chat noir qui y dort ; par terre, une pile de livres d'art avec une tasse dessus ; près des toiles, un
  * panier de dessins roulés.
  */
 export function FloorNook() {
@@ -34,7 +35,8 @@ export function FloorNook() {
         {[[0, 0], [0.12, 0.05], [-0.12, -0.05], [0.05, -0.12], [-0.05, 0.12]].map(([x, z], i) => (
           <Part key={i} geo={SPH} m={A.ochreDeep} scale={[0.016, 0.008, 0.016]} p={[x, 0.335, z]} castShadow={false} />
         ))}
-        <Part geo={rbox(0.2, 0.02, 0.15, 0.008)} m={A.prussian} p={[0.06, 0.345, 0.02]} rotation-y={0.5} castShadow={false} />
+        {/* le chat noir de l'atelier dort dessus, roulé en boule */}
+        <BlackCat position={[0, 0.332, 0]} rotation={-0.9} />
       </group>
       <group position={[0.2, 0, 2.85]} rotation-y={0.3}>
         {[[0.36, 0.05, A.prussian], [0.32, 0.04, A.sage], [0.34, 0.06, A.cream], [0.28, 0.04, A.terracotta]].map(([w, h, m], i, arr) => {

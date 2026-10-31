@@ -37,7 +37,7 @@ export function Gallery() {
       {FRAMES.map(([z, y, w, h, k], i) => (
         <group key={i} position={[-2.97, y, z]} rotation-y={Math.PI / 2}>
           <Part geo={rbox(w, h, 0.03, 0.01)} m={i % 2 ? A.oak : A.ink} castShadow={false} />
-          <mesh position={[0, 0, 0.017]}>
+          <mesh position={[0, 0, 0.024]}>
             <planeGeometry args={[w - 0.06, h - 0.06]} />
             <meshStandardMaterial map={prints[k]} roughness={0.8} />
           </mesh>

@@ -114,3 +114,33 @@ export const watercolorTex = canvasTex(256, 320, (x) => {
   x.beginPath(); x.moveTo(190, 60); x.lineTo(200, 140); x.moveTo(190, 60); x.lineTo(180, 140); x.moveTo(184, 110); x.lineTo(196, 110); x.stroke()
   x.strokeStyle = 'rgba(70,70,80,.3)'; for (let i = 0; i < 6; i++) { x.beginPath(); x.moveTo(20, 250 + i * 10); x.lineTo(236, 248 + i * 10); x.stroke() }
 })
+
+/**
+ * Un aplat d'aquarelle, en blanc (le matériau le teinte) : bords irréguliers et fondus, le liseré plus foncé où le pigment
+ * s'accumule en séchant, des traînées horizontales du pinceau, le bout gauche arrondi. Le canal alpha porte la forme.
+ */
+export const washTex = (() => {
+  const W = 256, H = 64, rnd = seeded(41)
+  const ph = Array.from({ length: 6 }, () => rnd() * TAU)
+  const edge = (u: number, k: number) => Math.sin(u * 9 + ph[k]) * 3 + Math.sin(u * 23 + ph[k + 1]) * 1.6 + Math.sin(u * 51 + ph[k + 2]) * 0.8
+  const streak = Array.from({ length: H }, () => 0.9 + rnd() * 0.1)
+  const t = canvasTex(W, H, (x) => {
+    const img = x.createImageData(W, H)
+    for (let i = 0; i < W; i++) {
+      const u = i / W, top = 12 + edge(u, 0), bot = H - 12 + edge(u, 3)
+      for (let j = 0; j < H; j++) {
+        // distance au bord le plus proche (haut, bas, et le début arrondi à gauche)
+        const dl = i - 4 - Math.max(0, 14 - Math.min(j - top, bot - j)) * 0.6
+        const d = Math.min(j - top, bot - j, dl)
+        const a = Math.max(0, Math.min(1, (d + 1.5) / 4))
+        const rim = d > 0 && d < 5 ? 0.82 + 0.18 * (d / 5) : 1
+        const v = Math.round(255 * rim * streak[j] * (0.96 + 0.04 * Math.sin(i * 0.3 + j)))
+        const o = (j * W + i) * 4
+        img.data[o] = img.data[o + 1] = img.data[o + 2] = v
+        img.data[o + 3] = Math.round(a * 255 * (0.85 + 0.15 * streak[j]))
+      }
+    }
+    x.putImageData(img, 0, 0)
+  })
+  return t
+})()

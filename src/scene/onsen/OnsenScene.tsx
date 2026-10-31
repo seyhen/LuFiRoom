@@ -35,7 +35,8 @@ export function OnsenScene() {
       <TowelRack />
       {/* le baigneur : un macaque, et son petit près du bord */}
       <Macaque p={[POOL.cx - 0.55, POOL.y - 0.1, POOL.cz - 0.4]} />
-      <Macaque p={[POOL.cx - 0.05, POOL.y - 0.07, POOL.cz - 0.55]} s={0.6} ry={0.5} />
+      {/* le petit, un peu à l'écart de sa mère (ils se fondaient l'un dans l'autre) */}
+      <Macaque p={[POOL.cx + 0.13, POOL.y - 0.07, POOL.cz - 0.65]} s={0.6} ry={0.5} />
       <Shrubs />
       <Noren />
       <Chochin />

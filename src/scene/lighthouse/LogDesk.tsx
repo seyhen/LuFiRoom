@@ -58,7 +58,8 @@ export function LogDesk() {
     const k = s.k
     const q = quill.current
     q.position.set(lerp(INK.x, wx, k), lerp(PAGE + 0.07, PAGE + 0.012 + Math.abs(bob), k), lerp(INK.z, wz, k))
-    q.rotation.set(lerp(0.15, 0.55, k), 0, lerp(-0.2, -0.55, k))
+    // penchée vers le haut à gauche de l'écran (vers -x, +z) : vue de profil ; penchée vers la caméra, elle se lisait en raccourci
+    q.rotation.set(lerp(0.15, 0.5, k), 0, lerp(0.2, 0.5, k))
   })
   return (
     <group ref={g} userData={{ id: 'quill' }} position={[LOG.x, 0, LOG.z]} rotation-y={0.3}>
@@ -96,9 +97,23 @@ export function LogDesk() {
       </group>
       {/* la plume d'oie : sa pointe à l'origine du groupe, le tuyau monte, les barbes en éventail */}
       <group ref={quill} position={[INK.x, TOP + 0.14, INK.z]}>
-        <Part geo={cyl(0.004, 0.006, 0.36, 6)} m={L.cream} p={[0, 0.18, 0]} castShadow={false} />
-        <Part geo={SPH} m={L.cream} scale={[0.032, 0.15, 0.007]} p={[0.012, 0.25, 0]} rotation-z={-0.08} castShadow={false} />
-        <Part geo={SPH} m={L.paper} scale={[0.02, 0.09, 0.006]} p={[-0.016, 0.3, 0]} rotation-z={0.12} castShadow={false} />
+       {/* tournée sur son axe pour que les barbes fassent face à la caméra */}
+       <group rotation-y={0.5}>
+        {/* le bec taillé, noirci d'encre */}
+        <Part geo={cyl(0.007, 0.0015, 0.04, 8)} m={L.navyDark} p={[0, 0.02, 0]} castShadow={false} />
+        {/* le tuyau, puis le rachis qui court jusqu'au bout de la plume */}
+        <Part geo={cyl(0.0075, 0.007, 0.12, 8)} m={L.paper} p={[0, 0.1, 0]} castShadow={false} />
+        <Part geo={cyl(0.005, 0.0025, 0.3, 6)} m={L.cream} p={[0, 0.3, 0]} castShadow={false} />
+        {/* les barbes : un grand côté et un petit, un peu courbés, plus épais qu'avant pour se lire de biais */}
+        <Part geo={SPH} m={L.cream} scale={[0.05, 0.17, 0.012]} p={[0.034, 0.3, 0]} rotation-z={-0.1} castShadow={false} />
+        <Part geo={SPH} m={L.cream} scale={[0.028, 0.14, 0.011]} p={[-0.02, 0.32, 0]} rotation-z={0.1} castShadow={false} />
+        {/* le bout barré de brun, comme une plume d'oie grise */}
+        {[0.36, 0.4].map((y, i) => (
+          <Part key={y} geo={SPH} m={L.oakDark} scale={[0.04 - i * 0.008, 0.012, 0.014]} p={[0.03 - i * 0.004, y, 0]} rotation-z={-0.25} castShadow={false} />
+        ))}
+        {/* le duvet, en bas des barbes */}
+        <Part geo={SPH} m={L.paper} scale={[0.03, 0.025, 0.014]} p={[0.012, 0.16, 0]} castShadow={false} />
+       </group>
       </group>
     </group>
   )

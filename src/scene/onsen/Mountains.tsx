@@ -20,10 +20,11 @@ const TREES: [number, number, number, number, number, number][] = (() => {
   }
   return out
 })()
-// Les montagnes : [x, hauteur, demi-largeur], sur deux rangs.
+// Les montagnes : [x, hauteur, demi-largeur], sur deux rangs. À droite elles s'arrêtent au bord du socle (x ≈ 3,2) :
+// le diorama garde sa silhouette au lieu d'avoir des pentes qui pendent dans le vide.
 const RANGES: [number, number, [number, number, number][]][] = [
-  [-4.1, 0.4, [[-2.6, 2.9, 1.7], [-0.6, 3.25, 1.9], [1.5, 3.0, 1.8], [3.0, 2.5, 1.2]]],
-  [-4.7, 0.35, [[-1.6, 3.55, 2.3], [0.9, 3.85, 2.4], [2.9, 3.1, 1.5]]],
+  [-4.1, 0.4, [[-2.6, 2.9, 1.7], [-0.6, 3.25, 1.9], [1.4, 3.0, 1.6], [2.45, 2.3, 0.75]]],
+  [-4.7, 0.35, [[-1.6, 3.55, 2.3], [0.9, 3.85, 2.2], [2.25, 2.9, 0.95]]],
 ]
 const mists: SpriteMaterial[] = []
 // Les deux rangs : bleu-vert puis bleu lavande le jour, nuit d'encre le soir.
@@ -63,8 +64,10 @@ export function Mountains() {
   return (
     <group raycast={noRay}>
       {RANGES.map(([z, d, peaks], r) =>
+        // pas de rotation-y : la mise à l'échelle aplatit la montagne en z (profondeur `d`) ; tournée, sa largeur `w` partait
+        // vers le jardin et débordait du socle
         peaks.map(([x, h, w], i) => (
-          <Part key={`${r}${i}`} geo={mountainGeo} m={O.mountains[r + 1]} p={[x, -0.1, z]} scale={[w, h, d]} rotation-y={i * 1.3} castShadow={false} receiveShadow={false} />
+          <Part key={`${r}${i}`} geo={mountainGeo} m={O.mountains[r + 1]} p={[x, -0.1, z]} scale={[w, h, d]} castShadow={false} receiveShadow={false} />
         )),
       )}
       {/* la lisière : feuillus roux et dorés, quelques conifères sombres et élancés */}

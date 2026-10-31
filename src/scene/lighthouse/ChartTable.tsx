@@ -57,7 +57,12 @@ export function ChartTable() {
       <Part geo={rbox(0.6, 0.14, 0.04, 0.015)} m={L.oakPale} p={[x - 0.2, top - 0.16, z + 0.45]} />
       <Part geo={SPH} m={L.brass} scale={0.028} p={[x - 0.2, top - 0.16, z + 0.48]} castShadow={false} />
       {/* la carte, ses coins relevés par un livre de bord et un presse-papier de laiton */}
-      <Part geo={rbox(0.98, 0.012, 0.66, 0.006)} m={L.chart} p={[x - 0.1, top + 0.006, z - 0.02]} rotation-y={0.05} castShadow={false} />
+      {/* (un plan, pas une boîte : sur une rbox la texture ne montrait que son centre) */}
+      <group position={[x - 0.1, top + 0.006, z - 0.02]} rotation-y={0.05}>
+        <mesh material={L.chart} rotation-x={-Math.PI / 2} receiveShadow>
+          <planeGeometry args={[0.98, 0.66]} />
+        </mesh>
+      </group>
       <Part geo={cyl(0.04, 0.045, 0.05, 12)} m={L.brass} p={[x + 0.32, top + 0.035, z + 0.24]} castShadow={false} />
       {/* le compas à pointes sèches : deux branches, une charnière */}
       <group position={[x - 0.2, top + 0.018, z + 0.1]} rotation-y={0.5}>

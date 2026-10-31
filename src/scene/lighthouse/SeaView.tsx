@@ -163,13 +163,19 @@ export function SeaView() {
   )
 }
 
+// Le laiton du battant garde une lueur propre : de nuit, sans lumière qui l'atteigne de face, il devenait un anneau noir.
+const sashBrass = L.brass.clone()
+sashBrass.emissive.set(0x5a4020)
+sashBrass.emissiveIntensity = 0.45
+
 /** Le battant du hublot, qui s'ouvre vers la pièce quand on écoute la mer ; la pluie coule sur sa vitre. */
 export function Porthole() {
   const sash = useRef<Group>(null!), open = useRef(0)
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05)
     open.current = approach(open.current, isActive(useStore.getState(), 'window') ? 1 : 0, dt * 1.4)
-    sash.current.rotation.y = -smooth(open.current) * 1.15
+    // 0,75 et pas plus : plus ouvert, le battant passait devant le verre de la lampe à huile de la table à cartes
+    sash.current.rotation.y = -smooth(open.current) * 0.75
     const m = L.streaks.map
     if (m && !reduceMotion) m.offset.y = (m.offset.y - dt * 0.16 + 1) % 1
   })
@@ -178,7 +184,7 @@ export function Porthole() {
     <group userData={{ id: 'window' }}>
       <group ref={sash} position={[hinge, PORT.y, -2.96]}>
         <group position={[PORT.r + 0.11, 0, 0]}>
-          <Part m={L.brass}>
+          <Part m={sashBrass}>
             <torusGeometry args={[PORT.r - 0.05, 0.055, 12, 48]} />
           </Part>
           <Part geo={cyl(PORT.r - 0.07, PORT.r - 0.07, 0.02, 48)} m={L.glass} rotation-x={Math.PI / 2} castShadow={false} />

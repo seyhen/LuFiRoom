@@ -2,6 +2,13 @@ import { TAU } from '../../math'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { Steam } from '../objects/Steam'
 import { L } from './materials'
+import { BackSide } from 'three'
+import { gummy } from '../materials'
+import { Vessel } from '../igloo/Vessel'
+
+const mugIn = L.mug.clone()
+mugIn.side = BackSide
+const coffee = gummy(0x5a3420, { roughness: 0.15, clearcoat: 0.9 })
 
 /** Le tapis rond de cordage, au milieu de la pièce. */
 export const RUG = { x: 0.35, z: 0.25, r: 1.5 }
@@ -47,12 +54,18 @@ export function Reading() {
         <Part geo={cyl(0.035, 0.05, 0.5, 10)} m={L.oakDark} p={[0, 0.27, 0]} />
         {[0, 1, 2].map((i) => {
           const a = (i / 3) * TAU + 0.5
-          return <Part key={i} geo={cyl(0.02, 0.02, 0.3, 6)} m={L.oakDark} p={[Math.cos(a) * 0.14, 0.06, Math.sin(a) * 0.14]} rotation={[-Math.sin(a) * 0.7, 0, Math.cos(a) * 0.7]} castShadow={false} />
+          // le centre du pied à 0,12 : penché de 0,7 rad, il touche le sol (0,005) au lieu de s'y enfoncer
+          return <Part key={i} geo={cyl(0.02, 0.02, 0.3, 6)} m={L.oakDark} p={[Math.cos(a) * 0.14, 0.12, Math.sin(a) * 0.14]} rotation={[-Math.sin(a) * 0.7, 0, Math.cos(a) * 0.7]} castShadow={false} />
         })}
         <Part geo={rbox(0.26, 0.05, 0.19, 0.015)} m={L.navy} p={[-0.06, 0.595, -0.02]} rotation-y={0.3} />
         <Part geo={rbox(0.23, 0.035, 0.16, 0.01)} m={L.paper} p={[-0.06, 0.607, -0.02]} rotation-y={0.3} castShadow={false} />
-        <Part geo={cyl(0.04, 0.036, 0.09, 14)} m={L.mug} p={[0.12, 0.62, 0.07]} />
-        <Steam at={[0.12, 0.7, 0.07]} every={0.8} />
+        {/* le mug, ouvert, son café et son anse */}
+        <Vessel p={[0.12, 0.56, 0.07]} rt={0.04} rb={0.036} h={0.09} m={L.mug} inner={mugIn} t={0.005} />
+        <Part geo={cyl(0.033, 0.033, 0.006, 14)} m={coffee} p={[0.12, 0.63, 0.07]} castShadow={false} />
+        <Part m={L.mug} p={[0.16, 0.605, 0.07]} rotation-z={-Math.PI * 0.55} castShadow={false}>
+          <torusGeometry args={[0.024, 0.007, 6, 12, Math.PI * 1.1]} />
+        </Part>
+        <Steam at={[0.12, 0.66, 0.07]} every={0.8} />
         {[-1, 1].map((s) => (
           <Part key={s} m={L.brassDull} p={[-0.08 + s * 0.045, 0.64, 0.12]} rotation-x={Math.PI / 2} castShadow={false}>
             <torusGeometry args={[0.025, 0.004, 6, 14]} />

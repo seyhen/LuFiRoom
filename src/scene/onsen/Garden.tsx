@@ -28,15 +28,23 @@ export function Furin() {
     strip.current.rotation.x = Math.sin(t * 1.9) * 0.25 * k.current
   })
   return (
-    <group ref={g} userData={{ id: 'furin' }} position={[-2.0, 3.02, 0.95]}>
-      <group ref={swing} userData={LIVE}>
-        <Part geo={cyl(0.004, 0.004, 0.3, 4)} m={O.ink} p={[0, -0.15, 0]} castShadow={false} />
-        <Part geo={bell} m={O.furin} p={[0, -0.32, 0]} />
-        <Part geo={SPH} m={O.red} scale={[0.02, 0.012, 0.02]} p={[0, -0.25, 0]} castShadow={false} />
-        <Part geo={cyl(0.003, 0.003, 0.14, 4)} m={O.ink} p={[0, -0.39, 0]} castShadow={false} />
-        <Part geo={SPH} m={O.furin} scale={0.012} p={[0, -0.38, 0]} castShadow={false} />
-        <group ref={strip} userData={LIVE} position={[0, -0.46, 0]}>
-          <Part geo={rbox(0.06, 0.2, 0.004, 0.002)} m={O.tanzaku} p={[0, -0.1, 0]} castShadow={false} />
+    <group ref={g} userData={{ id: 'furin' }} position={[-1.9, 3.02, 0.35]}>
+      {/* une fois et demie la taille d'avant : on doit lire la clochette, son battant et sa bande de papier sous l'avant-toit */}
+      <group ref={swing} userData={LIVE} scale={1.5}>
+        <Part geo={cyl(0.006, 0.006, 0.2, 5)} m={O.ink} p={[0, -0.1, 0]} castShadow={false} />
+        <Part geo={bell} m={O.furin} p={[0, -0.27, 0]} />
+        {/* le bord peint en rouge et deux poissons rouges sur le verre */}
+        <Part m={O.red} p={[0, -0.268, 0]} rotation-x={Math.PI / 2} castShadow={false}>
+          <torusGeometry args={[0.074, 0.006, 6, 24]} />
+        </Part>
+        {[0.6, 2.2].map((a, i) => (
+          <Part key={i} geo={SPH} m={O.red} scale={[0.018, 0.011, 0.006]} p={[Math.cos(a) * 0.058, -0.235, Math.sin(a) * 0.058]} rotation-y={-a + Math.PI / 2} castShadow={false} />
+        ))}
+        <Part geo={SPH} m={O.red} scale={[0.02, 0.012, 0.02]} p={[0, -0.2, 0]} castShadow={false} />
+        <Part geo={cyl(0.004, 0.004, 0.14, 4)} m={O.ink} p={[0, -0.34, 0]} castShadow={false} />
+        <Part geo={SPH} m={O.furin} scale={0.014} p={[0, -0.32, 0]} castShadow={false} />
+        <group ref={strip} userData={LIVE} position={[0, -0.41, 0]}>
+          <Part geo={rbox(0.06, 0.2, 0.006, 0.003)} m={O.tanzaku} p={[0, -0.1, 0]} castShadow={false} />
         </group>
       </group>
     </group>
@@ -60,9 +68,11 @@ export function StoneLantern() {
       <Part geo={cyl(0.3, 0.22, 0.12, 6)} m={O.stone[0]} p={[0, 0.9, 0]} />
       {/* la chambre du feu, ses fenêtres de papier */}
       <Part geo={cyl(0.19, 0.19, 0.3, 6)} m={O.stone[2]} p={[0, 1.11, 0]} />
-      {[0, 1, 2].map((i) => {
-        const a = (i / 3) * TAU + Math.PI / 6
-        return <Part key={i} geo={rbox(0.15, 0.17, 0.02, 0.01)} m={O.lanternGlow} p={[Math.cos(a) * 0.17, 1.11, Math.sin(a) * 0.17]} rotation-y={-a + Math.PI / 2} castShadow={false} />
+      {/* une fenêtre au milieu de chaque face tournée vers la pièce (les faces du prisme à six pans sont à 0°, 60°, 120°… ;
+          posées à 30°, elles tombaient sur une arête et en sortaient coupées) */}
+      {[0, 1, 2, 3].map((i) => {
+        const a = (i / 6) * TAU
+        return <Part key={i} geo={rbox(0.13, 0.17, 0.02, 0.008)} m={O.lanternGlow} p={[Math.cos(a) * 0.166, 1.11, Math.sin(a) * 0.166]} rotation-y={-a + Math.PI / 2} castShadow={false} />
       })}
       {/* le toit large aux bords relevés, et son bouton */}
       <Part m={O.stone[1]} p={[0, 1.38, 0]}>
@@ -109,9 +119,9 @@ export function Maple() {
         {/* le tronc qui s'incline vers le bassin, deux branches */}
         <Part geo={cyl(0.07, 0.13, 1.5, 12)} m={O.bark} p={[-0.1, 0.72, 0.05]} rotation-z={0.15} />
         <Part geo={cyl(0.05, 0.075, 1.2, 10)} m={O.bark} p={[-0.55, 1.8, 0.25]} rotation={[0.25, 0, 0.75]} />
-        <Part geo={cyl(0.04, 0.06, 1.0, 10)} m={O.bark} p={[0.1, 2.0, -0.05]} rotation-z={-0.2} />
-        <Part geo={cyl(0.025, 0.04, 0.8, 8)} m={O.bark} p={[-1.15, 2.35, 0.7]} rotation={[0.6, 0, 1.0]} />
-        <Part geo={cyl(0.025, 0.035, 0.7, 8)} m={O.bark} p={[-0.6, 2.75, 0.05]} rotation={[-0.3, 0, 0.5]} />
+        <Part geo={cyl(0.04, 0.06, 1.0, 10)} m={O.bark} p={[-0.11, 1.95, 0.05]} rotation-z={-0.2} />
+        <Part geo={cyl(0.025, 0.04, 0.8, 8)} m={O.bark} p={[-1.09, 2.19, 0.43]} rotation={[0.6, 0, 1.0]} />
+        <Part geo={cyl(0.025, 0.035, 0.7, 8)} m={O.bark} p={[-0.72, 2.09, 0.16]} rotation={[-0.3, 0, 0.5]} />
         {/* les racines qui affleurent */}
         {[0.4, 2.2, 4.1].map((a, i) => (
           <Part key={i} geo={cyl(0.02, 0.05, 0.36, 8)} m={O.bark} p={[Math.cos(a) * 0.14, 0.04, Math.sin(a) * 0.14]} rotation={[-Math.sin(a) * 1.3, 0, Math.cos(a) * 1.3]} castShadow={false} />

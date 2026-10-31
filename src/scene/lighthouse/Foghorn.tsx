@@ -8,7 +8,8 @@ import { reduceMotion, useSquash } from '../anim'
 import { L } from './materials'
 
 /** La corne de brume : le pied de la corne sur le mur de gauche (x, y, z). */
-export const HORN = { x: -2.9, y: 3.05, z: -1.95 }
+// (z = -1,65 : à -1,95 le pavillon se plaquait devant le tuyau du poêle)
+export const HORN = { x: -2.9, y: 3.05, z: -1.65 }
 
 // Le pavillon de laiton : une trompe qui s'évase de plus en plus vite, de 5 cm à 33 cm de rayon sur 1 m.
 const bell = new LatheGeometry(Array.from({ length: 26 }, (_, i) => new Vector2(0.05 + 0.28 * Math.pow(i / 25, 2.3), (i / 25) * 1.0)), 32)
