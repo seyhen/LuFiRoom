@@ -359,3 +359,53 @@ function firTexture() {
   return t
 }
 export const firTex = firTexture()
+
+/** Écorce des bûches : stries brunes qui courent le long du bois, quelques nœuds (u fait le tour de la bûche, v sa longueur). */
+function barkTexture() {
+  const W = 256, H = 256
+  const [c, x] = makeCanvas(W, H)
+  x.fillStyle = '#9a6244'
+  x.fillRect(0, 0, W, H)
+  for (let i = 0; i < 46; i++) {
+    const X = rnd() * W, w = 3 + rnd() * 7
+    x.fillStyle = rnd() < 0.5 ? 'rgba(92,52,34,0.55)' : 'rgba(190,132,92,0.4)'
+    x.beginPath()
+    let y = -10, xx = X
+    x.moveTo(xx, y)
+    while (y < H + 10) {
+      y += 18 + rnd() * 20
+      xx += (rnd() - 0.5) * 6
+      x.lineTo(xx, y)
+    }
+    x.lineTo(xx + w, H + 10)
+    x.lineTo(X + w, -10)
+    x.fill()
+  }
+  for (let i = 0; i < 4; i++) {
+    const X = 30 + rnd() * (W - 60), Y = 30 + rnd() * (H - 60)
+    x.fillStyle = 'rgba(80,44,30,0.7)'
+    x.beginPath(); x.ellipse(X, Y, 7, 11, 0, 0, TAU); x.fill()
+    x.strokeStyle = 'rgba(200,146,104,0.6)'; x.lineWidth = 2
+    x.beginPath(); x.ellipse(X, Y, 11, 16, 0, 0, TAU); x.stroke()
+  }
+  return tiled(c, 1, 1)
+}
+/** Le bout coupé d'une bûche : cernes concentriques, l'écorce au bord, une fente (la face du dessus d'un cylindre). */
+function ringsTexture() {
+  const S = 256
+  const [c, x] = makeCanvas(S, S)
+  x.fillStyle = '#7a4a34'
+  x.fillRect(0, 0, S, S)
+  x.fillStyle = '#f0c897'
+  x.beginPath(); x.arc(S / 2, S / 2, S * 0.44, 0, TAU); x.fill()
+  for (let r = 10; r < S * 0.43; r += 9 + rnd() * 5) {
+    x.strokeStyle = `rgba(196,140,92,${(0.35 + rnd() * 0.3).toFixed(2)})`
+    x.lineWidth = 2 + rnd() * 2
+    x.beginPath(); x.ellipse(S / 2 + (rnd() - 0.5) * 4, S / 2 + (rnd() - 0.5) * 4, r, r * (0.94 + rnd() * 0.08), 0, 0, TAU); x.stroke()
+  }
+  x.strokeStyle = 'rgba(120,76,50,0.7)'; x.lineWidth = 3
+  x.beginPath(); x.moveTo(S / 2, S / 2); x.lineTo(S / 2 + 70, S / 2 - 30); x.stroke()
+  return tiled(c, 1, 1)
+}
+export const barkTex = barkTexture()
+export const ringsTex = ringsTexture()

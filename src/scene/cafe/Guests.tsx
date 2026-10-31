@@ -10,6 +10,7 @@ import { bubbleTex } from './textures'
 import { LIVE, Static } from '../Static'
 import { K } from './materials'
 import { Candle } from '../objects/Candle'
+import { Vessel, innerR } from '../igloo/Vessel'
 
 const AT = [1.4, 0, -2.22] as const
 
@@ -130,11 +131,28 @@ export function Guests() {
           <Part geo={cyl(0.5, 0.5, 0.06, 32)} m={K.oak} p={[0, 0.8, 0]} />
           <Part geo={cyl(0.07, 0.09, 0.76, 14)} m={K.walnut} p={[0, 0.4, 0]} />
           <Part geo={cyl(0.3, 0.32, 0.04, 24)} m={K.walnut} p={[0, 0.02, 0]} />
+          {/* la théière : pied, panse, bec, anse, couvercle et son bouton, posée sur un dessous-de-plat */}
+          <Part geo={cyl(0.12, 0.12, 0.012, 24)} m={K.walnut} p={[0, 0.836, 0]} castShadow={false} />
+          <Part geo={cyl(0.07, 0.08, 0.03, 20)} m={M.pink} p={[0, 0.855, 0]} />
           <Part geo={SPH} m={M.pink} scale={[0.13, 0.11, 0.11]} p={[0, 0.96, 0]} />
           <Part geo={cyl(0.012, 0.025, 0.12, 8)} m={M.pink} p={[0.15, 0.98, 0]} rotation-z={-0.9} />
-          <Part geo={SPH} m={M.cream} scale={0.025} p={[0, 1.07, 0]} />
-          <Part geo={cyl(0.06, 0.052, 0.1, 18)} m={M.mug} p={[-0.28, 0.88, 0.2]} />
-          <Part geo={cyl(0.06, 0.052, 0.1, 18)} m={M.mug} p={[0.3, 0.88, -0.18]} />
+          <Part m={M.pink} p={[-0.125, 0.975, 0]} rotation-z={Math.PI * 0.4}>
+            <torusGeometry args={[0.058, 0.016, 8, 18, Math.PI * 1.2]} />
+          </Part>
+          <Part geo={cyl(0.065, 0.075, 0.025, 22)} m={M.cream} p={[0, 1.062, 0]} />
+          <Part geo={SPH} m={M.cream} scale={[0.07, 0.025, 0.07]} p={[0, 1.075, 0]} />
+          <Part geo={SPH} m={M.pink} scale={0.026} p={[0, 1.112, 0]} />
+          {/* les tasses : ouvertes, le thé dedans, leur anse, leur soucoupe */}
+          {([[-0.28, 0.2, 0.6], [0.3, -0.18, -2.4]] as const).map(([x, z, r], i) => (
+            <group key={i} position={[x, 0.83, z]} rotation-y={r}>
+              <Part geo={cyl(0.085, 0.078, 0.01, 22)} m={M.cream} p={[0, 0.005, 0]} castShadow={false} />
+              <Vessel p={[0, 0.01, 0]} rt={0.06} rb={0.048} h={0.09} m={M.mug} inner={K.cupInner} t={0.008} />
+              <Part geo={cyl(innerR(0.06, 0.048, 0.09, 0.07, 0.008), innerR(0.06, 0.048, 0.09, 0.07, 0.008), 0.006, 20)} m={K.tea} p={[0, 0.08, 0]} castShadow={false} />
+              <Part m={M.mug} p={[0.052, 0.055, 0]} rotation-z={-Math.PI / 2}>
+                <torusGeometry args={[0.024, 0.008, 6, 14, Math.PI]} />
+              </Part>
+            </group>
+          ))}
           <Part geo={cyl(0.1, 0.09, 0.012, 22)} m={M.cream} p={[0.06, 0.84, 0.28]} castShadow={false} />
           {[[-0.03, 0.02], [0.05, -0.02]].map(([dx, dz], i) => (
             <Part key={i} geo={rbox(0.07, 0.025, 0.035, 0.01)} m={K.scone} p={[0.06 + dx, 0.86, 0.28 + dz]} rotation-y={i * 0.6} castShadow={false} />

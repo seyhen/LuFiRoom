@@ -52,8 +52,8 @@ export const cafe: Room = {
     { id: 'guests', target: 'murmur', label: 'Clients · conversations', anchor: [1.4, 1.55, -2.2] },
     { id: 'fireplace', target: 'fire', label: 'Cheminée · feu', anchor: [-2.45, 1.0, 0] },
     { id: 'books', target: 'pages', label: 'Bibliothèque · pages', anchor: [-2.55, 2.6, 1.85] },
-    { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-0.42, 1.0, -0.81] },
-    { id: 'drip', target: 'drip', label: 'Manteau mouillé · gouttes', anchor: [3.0, 1.15, 1.14] },
+    { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-0.11, 1.0, -0.67] },
+    { id: 'drip', target: 'drip', label: 'Manteau mouillé · gouttes', anchor: [2.97, 1.45, 1.08] },
   ],
   sounds: [
     { id: 'radio', name: 'Jukebox lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },

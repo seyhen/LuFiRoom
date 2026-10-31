@@ -4,19 +4,26 @@ import { Candles } from '../objects/Candles'
 import { Vines } from '../nature/Vines'
 import { B } from './materials'
 
-// Livres serrés de gauche à droite ; le dernier penche.
+// Livres serrés de gauche à droite ; le dernier penche vers la gauche, son coin du haut appuyé contre son voisin, son coin du bas
+// posé sur la planche (y = 2,34) : il reste entre les livres et le cadre photo, sans entrer dans l'un ni dans l'autre.
+const TILT = 0.3
 const BOOKS = (() => {
   const mats = [M.pink, M.mint, M.butter, M.peri, M.teal, M.terracotta]
   let x = -2.1
   return mats.map((m, i) => {
     const w = 0.09 + (i % 3) * 0.02, h = 0.36 + ((i * 7) % 5) * 0.03, last = i === mats.length - 1
-    const book = { m, w, h, x: x + w / 2 + (last ? 0.08 : 0), y: 2.34 + h / 2 - (last ? 0.03 : 0), tilt: last ? -0.32 : 0 }
+    const c = Math.cos(TILT), s = Math.sin(TILT)
+    // le coin le plus bas (bas gauche, une fois penché) et le coin le plus à gauche (haut gauche)
+    const low = (w / 2) * s + (h / 2) * c, left = (w / 2) * c + (h / 2) * s
+    const book = last
+      ? { m, w, h, x: x - 0.012 + 0.006 + left, y: 2.34 + low, tilt: TILT }
+      : { m, w, h, x: x + w / 2, y: 2.34 + h / 2, tilt: 0 }
     x += w + 0.012
     return book
   })
 })()
 
-const CANDLE = [{ p: [-1.12, 2.34, -2.8] as [number, number, number], h: 0.15, r: 0.065 }]
+const CANDLE = [{ p: [-0.93, 2.34, -2.8] as [number, number, number], h: 0.15, r: 0.065 }]
 
 /** Étagère sur équerres : livres, cadre photo, bougie, pot d'où retombe une plante. Trois cadres au mur au-dessus. */
 export function Shelf() {
@@ -30,10 +37,14 @@ export function Shelf() {
         <Part key={i} geo={rbox(b.w, b.h, 0.26, 0.025)} m={b.m} p={[b.x, b.y, -2.83]} rotation-z={b.tilt} />
       ))}
       {/* petit cadre photo debout */}
-      <Part geo={rbox(0.24, 0.3, 0.03, 0.015)} m={M.plum} p={[-1.4, 2.5, -2.85]} rotation-y={0.2} />
-      <mesh position={[-1.4, 2.5, -2.832]} rotation-y={0.2} material={B.moonPrint}>
-        <planeGeometry args={[0.19, 0.24]} />
-      </mesh>
+      <group position={[-1.13, 2.34, -2.86]} rotation-y={0.2}>
+        <Part geo={rbox(0.22, 0.28, 0.03, 0.015)} m={M.plum} p={[0, 0.15, 0]} rotation-x={-0.1} />
+        <mesh position={[0, 0.151, 0.0175]} rotation-x={-0.1} material={B.moonPrint}>
+          <planeGeometry args={[0.175, 0.225]} />
+        </mesh>
+        {/* la béquille du cadre, derrière */}
+        <Part geo={rbox(0.03, 0.2, 0.012, 0.005)} m={M.plum} p={[0, 0.1, -0.05]} rotation-x={0.35} castShadow={false} />
+      </group>
       {/* le pothos : le pot au bord de la planche (le bord avant est à z = -2,66), les tiges pendent dans le vide, devant */}
       <Part geo={cyl(0.09, 0.075, 0.15, 18)} m={M.terracotta} p={[-0.75, 2.415, -2.73]} />
       <Vines p={[-0.75, 2.48, -2.73]} strands={[[-0.07, 0.12, 0.75], [0.0, 0.13, 0.5], [0.07, 0.12, 0.9]]} m={M.leaf} m2={B.leafDeep} size={0.085} crown={7} seed={4} />

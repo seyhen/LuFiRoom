@@ -1,7 +1,7 @@
-import { MeshBasicMaterial, MeshStandardMaterial } from 'three'
-import { gummy } from '../materials'
+import { BackSide, MeshBasicMaterial, MeshStandardMaterial } from 'three'
+import { gummy, skin } from '../materials'
 import { knitTex } from '../textures'
-import { braidTex, candyTex, floorTex, labelTex, lidTex, snowPrintTex, stoneTex, tartanTex, vinylTex, wallTex, wickerTex, firTex } from './textures'
+import { barkTex, ringsTex, braidTex, candyTex, floorTex, labelTex, lidTex, snowPrintTex, stoneTex, tartanTex, vinylTex, wallTex, wickerTex, firTex } from './textures'
 
 const knitPouf = knitTex.clone()
 knitPouf.repeat.set(3, 2)
@@ -41,6 +41,18 @@ export const C = {
   knitPouf: gummy(0xffffff, { map: knitPouf, roughness: 0.85, clearcoat: 0.05 }),
   braid: gummy(0xffffff, { map: braidTex, roughness: 0.85, clearcoat: 0.05 }),
   wicker: gummy(0xffffff, { map: wickerTex, roughness: 0.7, clearcoat: 0.15 }),
+  /** Le dedans d'un panier d'osier ouvert (Vessel), vu de l'intérieur, un peu plus sombre. */
+  wickerInner: gummy(0xd9c2a8, { map: wickerTex, roughness: 0.75, clearcoat: 0.1, side: BackSide }),
+  /** Le dedans du mug et du pot (Vessel). */
+  cranberryInner: gummy(0xb94a60, { side: BackSide }),
+  potInner: gummy(0x9a5a44, { side: BackSide }),
+  /** Écorce et bout coupé des bûches. */
+  bark: gummy(0xffffff, { map: barkTex, roughness: 0.78, clearcoat: 0.12 }),
+  rings: gummy(0xffffff, { map: ringsTex, roughness: 0.65, clearcoat: 0.15 }),
+  /** Laine, peau de mouton : la couleur vient des sommets (blob). */
+  fleece: skin({ roughness: 0.92, clearcoat: 0.04 }),
+  /** Fer forgé du coffre. */
+  iron: gummy(0x4a3a3f, { roughness: 0.45, clearcoat: 0.5 }),
   cocoa: gummy(0x7a4a3a, { roughness: 0.3 }),
   candy: gummy(0xffffff, { map: candyTex, roughness: 0.3, clearcoat: 0.9 }),
   snowPrint: new MeshStandardMaterial({ map: snowPrintTex, roughness: 0.8 }),

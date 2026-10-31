@@ -17,7 +17,7 @@ const ENDS: Item[] = LOGS.map(([x, z, rx, rz]): Item => {
   return { p: [x + ax[0] * HALF, 0.42 + ax[1] * HALF, z + ax[2] * HALF], s: [R * 0.92, 0.012, R * 0.92], r: [rx, 0, rz] }
 })
 
-/** Panier en osier plein de bûches, à côté du feu. */
+/** Panier en osier plein de bûches, à côté du feu : écorce striée, cernes au bout coupé. */
 export function LogBasket() {
   return (
     <group position={[-0.28, 0, -2.52]}>
@@ -26,8 +26,8 @@ export function LogBasket() {
       <Part m={C.beam} p={[0, 0.4, 0]} rotation-x={Math.PI / 2}>
         <torusGeometry args={[0.36, 0.035, 8, 32]} />
       </Part>
-      <Batch geo={cyl(1, 1, 1, 14)} m={C.log} items={BARK} shadow />
-      <Batch geo={cyl(1, 1, 1, 14)} m={C.cut} items={ENDS} />
+      <Batch geo={cyl(1, 1, 1, 14)} m={C.bark} items={BARK} shadow />
+      <Batch geo={cyl(1, 1, 1, 18)} m={C.rings} items={ENDS} />
     </group>
   )
 }

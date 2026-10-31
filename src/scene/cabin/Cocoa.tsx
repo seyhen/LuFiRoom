@@ -8,6 +8,7 @@ import { reduceMotion, useParticles } from '../anim'
 import { wispTex, wispTexes } from '../textures'
 import { C } from './materials'
 import { starGeo } from './ChristmasTree'
+import { Vessel, innerR } from '../igloo/Vessel'
 
 // Sur la table d'appoint, côté pièce : un gros mug (plus gros que nature, pour qu'on le voie), un napperon, deux biscuits.
 const P = [2.4, 0.62, -0.53] as const
@@ -41,17 +42,14 @@ export function Cocoa() {
         {/* napperon */}
         <Part geo={cyl(0.27, 0.27, 0.006, 32)} m={M.cream} p={[-0.02, 0.003, 0.02]} castShadow={false} />
         {/* mug : corps canneberge, bord crème, chocolat, anse tournée vers la droite de l'écran */}
-        <Part geo={cyl(0.135, 0.12, 0.25, 26)} m={C.cranberry} p={[0, 0.131, 0]} />
-        <Part m={M.cream} p={[0, 0.256, 0]} rotation-x={Math.PI / 2} castShadow={false}>
-          <torusGeometry args={[0.122, 0.014, 8, 26]} />
-        </Part>
-        <mesh geometry={cyl(0.114, 0.114, 0.01, 26)} material={C.cocoa} position={[0, 0.262, 0]} />
+        {/* un vrai mug ouvert (Vessel) : le chocolat est dedans, 2 cm sous le bord crème */}
+        <Vessel p={[0, 0.006, 0]} rt={0.135} rb={0.12} h={0.25} m={C.cranberry} inner={C.cranberryInner} rim={M.cream} t={0.012} />
+        <mesh geometry={cyl(innerR(0.135, 0.12, 0.25, 0.23, 0.012), innerR(0.135, 0.12, 0.25, 0.23, 0.012), 0.01, 28)} material={C.cocoa} position={[0, 0.236, 0]} />
         <Part m={C.cranberry} p={[0.1, 0.14, -0.1]} rotation-y={Math.PI / 4} castShadow={false}>
           <torusGeometry args={[0.065, 0.02, 10, 20]} />
         </Part>
-        <Part geo={rbox(0.15, 0.04, 0.15, 0.02)} m={C.cranberryLight} p={[0, 0.19, 0]} scale={[1, 0.25, 1]} castShadow={false} />
         {[[-0.045, 0.03, 0.3], [0.04, -0.01, -0.4], [-0.01, -0.06, 0.9]].map(([x, z, r]) => (
-          <Part key={r} geo={rbox(0.065, 0.05, 0.065, 0.022)} m={M.pillow} p={[x, 0.275, z]} rotation-y={r} castShadow={false} />
+          <Part key={r} geo={rbox(0.065, 0.05, 0.065, 0.022)} m={M.pillow} p={[x, 0.252, z]} rotation-y={r} castShadow={false} />
         ))}
         <mesh geometry={candyGeo} material={C.candy} position={[0.045, 0.15, 0.01]} rotation={[0, 0.8, -0.22]} castShadow />
         {/* biscuits en étoile : pain d'épice et sablé, une perle rouge au centre */}

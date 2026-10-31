@@ -1,9 +1,9 @@
 import { Batch, Part, rbox, type Item } from '../parts'
 import { C } from './materials'
 
-// Contre le mur du fond, à droite du coffre. Les deux parois côté caméra (+x et +z) sont basses : on voit les pochettes se tenir
+// Devant le coffre, à sa droite, à 0,2 de lui (et non collée contre) : on y choisit le prochain disque. Les deux parois côté caméra (+x et +z) sont basses : on voit les pochettes se tenir
 // debout dans la caisse, au lieu de les voir sortir d'un bloc plein.
-const X = 2.9, Z = -2.62
+const X = 2.85, Z = -1.78
 const FRONT = 0.15, BACK = 0.3
 
 // Pochettes debout, rangées contre la paroi du fond, un peu penchées : canneberge, crème, sapin, or, ciel, rose, bois.

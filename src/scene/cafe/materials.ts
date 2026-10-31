@@ -1,5 +1,5 @@
-import { DoubleSide, MeshBasicMaterial, MeshStandardMaterial } from 'three'
-import { M, gummy } from '../materials'
+import { BackSide, DoubleSide, MeshBasicMaterial, MeshStandardMaterial } from 'three'
+import { M, gummy, skin } from '../materials'
 import { leafy } from '../nature/materials'
 import { WIN } from '../parts'
 import { paneH, paneW } from '../objects/Window'
@@ -27,7 +27,8 @@ export const K = {
   navy: gummy(0x25365e),
   teal: gummy(0x37a3b5),
   cream: gummy(0xf6ead6),
-  tweed: gummy(0x8a7458, { roughness: 0.9, clearcoat: 0.03 }),
+  // le camel luit un peu de sa propre couleur : la nuit, sous la lumière bleue, le duffle-coat ne passe pas au noir
+  tweed: gummy(0x8a7458, { roughness: 0.9, clearcoat: 0.03, emissive: 0x8a7458, emissiveIntensity: 0.32 }),
   paper: new MeshStandardMaterial({ map: wallpaperTex, roughness: 0.8 }),
   coir: gummy(0xffffff, { map: matTex, roughness: 0.95, clearcoat: 0 }),
   marble: gummy(0xf4efe8, { roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.1 }),
@@ -61,6 +62,17 @@ export const K = {
   pot: gummy(0xc9764f),
   dog: gummy(0x8d8794, { roughness: 0.85, clearcoat: 0.05 }),
   dogLight: gummy(0xb9b3bd, { roughness: 0.85, clearcoat: 0.05 }),
+  /** Le dedans des récipients ouverts (Vessel), vu de l'intérieur. */
+  cupInner: gummy(0xeee4ef, { side: BackSide }),
+  brassInner: gummy(0xb8913d, { roughness: 0.4, clearcoat: 0.6, side: BackSide }),
+  wickerInner: gummy(0x8f6040, { roughness: 0.7, side: BackSide }),
+  greenInner: gummy(0x1f4337, { side: BackSide }),
+  tea: gummy(0x9a5530, { roughness: 0.15, clearcoat: 1 }),
+  soil: gummy(0x4a3a30, { roughness: 0.95, clearcoat: 0 }),
+  /** La toile du parapluie ouvert, vue des deux côtés. */
+  stewartOpen: gummy(0xffffff, { map: tartanSmallTex, roughness: 0.85, clearcoat: 0.05, side: DoubleSide }),
+  /** Le poil du terrier : la couleur vient des sommets (blob). */
+  fur: skin({ roughness: 0.88, clearcoat: 0.05 }),
   puddle: gummy(0x5a6b80, { roughness: 0.05, clearcoat: 1, clearcoatRoughness: 0.02, transparent: true, opacity: 0.55 }),
   // Ce qui brille de soi-même : verre de lampe, ampoules, braises (leur intensité suit le jour / nuit ou le feu).
   bankerGlass: gummy(0x2f8a5c, { roughness: 0.2, clearcoat: 1, emissive: 0x3fbf7a, emissiveIntensity: 0.05, side: DoubleSide }),

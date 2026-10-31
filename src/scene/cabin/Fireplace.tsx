@@ -70,7 +70,7 @@ export function Fireplace() {
         <Part geo={rbox(1.14, 1.3, 0.1, 0.04)} m={C.soot} p={[0, 0.85, -0.3]} />
         {/* bûches, le bout en bois clair */}
         {LOGS.map(({ y, z, r }, i) => (
-          <Part key={i} geo={cyl(r, r, 0.9, 14)} m={i === 2 ? C.charred : C.log} p={[0, y, z]} rotation-z={tilt(i)} />
+          <Part key={i} geo={cyl(r, r, 0.9, 14)} m={i === 2 ? C.charred : C.bark} p={[0, y, z]} rotation-z={tilt(i)} />
         ))}
         <Batch geo={cyl(1, 1, 1, 14)} m={C.cut} items={ENDS} />
         <Stockings />

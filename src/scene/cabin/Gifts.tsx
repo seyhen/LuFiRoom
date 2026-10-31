@@ -14,12 +14,13 @@ interface Gift {
   paper: number
   ribbon: number
 }
-// Au pied du sapin, du côté de la pièce : sous le bord des branches (à 0.4 du sol).
+// Au pied du sapin, du côté de la pièce. Le dessous des branches est à 0,36 du sol au plus bas (bout des lobes de l'étage du bas) :
+// aucun paquet ne dépasse 24 cm, nœud compris ; ceux qui glissent sous les branches évitent les boules (vérifié point par point).
 const GIFTS: Gift[] = [
-  { x: -1.12, z: 1.45, w: 0.44, h: 0.34, d: 0.44, r: 0.35, paper: 0xd9506a, ribbon: 0xfff3dc },
-  { x: -1.0, z: 2.22, w: 0.52, h: 0.27, d: 0.38, r: -0.25, paper: 0x7fbf9e, ribbon: 0xd9506a },
-  { x: -1.02, z: 2.2, y: 0.27, w: 0.26, h: 0.22, d: 0.26, r: 0.45, paper: 0xf6d071, ribbon: 0xd9506a },
-  { x: -1.62, z: 2.78, w: 0.34, h: 0.3, d: 0.34, r: 0.12, paper: 0x4fb0bf, ribbon: 0xf6d071 },
+  { x: -0.98, z: 1.52, w: 0.42, h: 0.24, d: 0.42, r: 0.35, paper: 0xd9506a, ribbon: 0xfff3dc },
+  { x: -0.92, z: 2.35, w: 0.5, h: 0.22, d: 0.36, r: -0.25, paper: 0x7fbf9e, ribbon: 0xd9506a },
+  { x: -0.5, z: 2.85, w: 0.26, h: 0.22, d: 0.26, r: 0.45, paper: 0xf6d071, ribbon: 0xd9506a },
+  { x: -1.62, z: 2.78, w: 0.34, h: 0.24, d: 0.34, r: 0.12, paper: 0x4fb0bf, ribbon: 0xf6d071 },
   { x: -2.7, z: 2.9, w: 0.3, h: 0.22, d: 0.26, r: -0.4, paper: 0xfff4e6, ribbon: 0xd9506a },
 ]
 

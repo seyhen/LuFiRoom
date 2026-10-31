@@ -38,7 +38,7 @@ export function BedroomScene() {
         <Nightstand />
         <Shelf />
         <Desk />
-        <Laptop position={[1.42, 1.364, -2.55]} />
+        <Laptop position={[1.3, 1.364, -2.55]} />
         <Chair />
         <Monstera />
         <SnakePlant />
@@ -53,9 +53,10 @@ export function BedroomScene() {
       <WindowLight />
       <Lamp position={[-2.68, 0.73, -2.72]} />
       <MoonGarland />
-      <Motes />
+      {/* la nuit, des poussières dorées dans la lumière de la lampe (pas des lucioles bleues : la chambre est un soir chaud) */}
+      <Motes colors={[0xfffaf0, 0xffe2c4]} opacity={[0.3, 0.42]} />
       <Diffuser />
-      <Radio position={[2.25, 1.35, -2.6]} />
+      <Radio position={[2.36, 1.35, -2.6]} />
       <Fan position={[0.62, 1.35, -2.6]} />
       <Cat position={[-1.25, 0.9, -0.6]} rotation={-0.25} />
     </>

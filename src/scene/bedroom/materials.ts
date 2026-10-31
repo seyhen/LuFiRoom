@@ -1,5 +1,5 @@
-import { AdditiveBlending, DoubleSide, MeshBasicMaterial, MeshStandardMaterial } from 'three'
-import { gummy } from '../materials'
+import { AdditiveBlending, BackSide, DoubleSide, MeshBasicMaterial, MeshStandardMaterial } from 'three'
+import { gummy, skin } from '../materials'
 import { knitTex } from '../textures'
 import {
   floorTex, keysTex, leafPrintTex, moonPrintTex, moonsTex, muralTex, notebookTex, polaroidsTex, quiltTex, rainGlassTex, rugTex, screenTex,
@@ -55,4 +55,15 @@ export const B = {
   leafDeep: gummy(0x3f9f78),
   leafPale: gummy(0x9fdcb0),
   soil: gummy(0x5a4046, { roughness: 0.9, clearcoat: 0 }),
+  /** Le dedans d'un pot ouvert (Vessel) : on le voit de l'intérieur. */
+  potInner: gummy(0x58b3a3, { side: BackSide }),
+  /** Peluche, velours, chaussons : la couleur vient des sommets (blob). */
+  plush: skin({ roughness: 0.82, clearcoat: 0.08, emissive: 0xffffff, emissiveIntensity: 0.12 }),
 }
+
+// La peluche luit très doucement de la couleur de ses sommets : la nuit, la lune ne vire pas à l'olive, le pouf menthe ni les
+// chaussons roses ne passent au bleu nuit (règle « une couleur qui vire la nuit »).
+B.plush.onBeforeCompile = (sh) => {
+  sh.fragmentShader = sh.fragmentShader.replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n#ifdef USE_COLOR\n\ttotalEmissiveRadiance *= vColor.rgb;\n#endif')
+}
+B.plush.customProgramCacheKey = () => 'bedroom-plush-glow'

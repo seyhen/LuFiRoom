@@ -1,6 +1,6 @@
-import { ExtrudeGeometry, Shape } from 'three'
-import { TAU } from '../../math'
+import { Color } from 'three'
 import { M } from '../materials'
+import { blob, ell } from '../blob'
 import { Part, SPH, cyl, rbox, worldUV } from '../parts'
 import { B } from './materials'
 
@@ -8,16 +8,19 @@ const LEGS = [[-2.85, -1.82], [-2.85, 0.42], [-0.35, -1.82], [-0.35, 0.42]]
 // Les bosses du nuage qui sert de tête de lit : z, hauteur du centre, rayon sur z, rayon sur y.
 const PUFFS = [[-1.8, 0.95, 0.34, 0.32], [-1.27, 1.08, 0.4, 0.38], [-0.7, 1.18, 0.46, 0.44], [-0.13, 1.08, 0.4, 0.38], [0.4, 0.95, 0.34, 0.32]]
 
-// Croissant de lune en peluche : un grand disque moins un petit, décalé.
-const moon = (() => {
-  const R = 0.27, r = 0.23, d = 0.1
-  const x0 = (d * d + R * R - r * r) / (2 * d), y0 = Math.sqrt(R * R - x0 * x0)
-  const a = Math.atan2(y0, x0), b = Math.atan2(y0, x0 - d)
-  const s = new Shape()
-  s.absarc(0, 0, R, a, TAU - a, false)
-  s.absarc(d, 0, r, TAU - b, b, true)
-  return new ExtrudeGeometry(s, { depth: 0.1, bevelEnabled: true, bevelThickness: 0.04, bevelSize: 0.04, bevelSegments: 4, curveSegments: 18 })
-})()
+// Croissant de lune en peluche, d'une seule peau toute ronde (blob) : un gros galet creusé par un autre, décalé, assez peu pour
+// garder un croissant dodu. Sur sa face, une joue rose.
+const cheek = new Color(0xf3a6bd)
+const moon = blob([ell([0, 0, 0.05], [0.29, 0.29, 0.12], { color: 0xf6d071 }), ell([0.17, 0.06, 0.05], [0.21, 0.21, 0.3], { op: 'sub', k: 0.05 })], {
+  h: 0.012,
+  k: 0.04,
+  paint: (p, c) => {
+    if (p.z < 0.1) return c
+    const e = Math.hypot(p.x + 0.17, p.y + 0.07)
+    if (e < 0.055) c.lerp(cheek, 0.6 * Math.min(1, (0.055 - e) / 0.03))
+    return c
+  },
+})
 
 /** Lit : cadre en bois clair, matelas, tête de lit nuage, couette matelassée, oreillers, plaid tricoté et lune en peluche. */
 export function Bed() {
@@ -42,7 +45,7 @@ export function Bed() {
       {[-1.28, -0.12].map((z, i) => (
         <Part key={z} geo={rbox(0.5, 0.26, 0.98, 0.12)} m={M.pillow} p={[-2.25, 0.9, z]} rotation={[0, i ? 0.06 : -0.05, 0.18]} />
       ))}
-      <Part geo={moon} m={M.butter} p={[-2.0, 1.0, -0.55]} rotation={[0, Math.PI / 2 + 0.15, 0.5]} />
+      <Part geo={moon} m={B.plush} p={[-2.0, 1.0, -0.55]} rotation={[0, Math.PI / 4 + 0.25, 0.35]} />
       {/* plaid tricoté jeté au pied du lit */}
       <Part geo={rbox(0.5, 0.1, 2.52, 0.05)} m={B.knitBlush} p={[-0.52, 0.95, -0.7]} />
       <Part geo={rbox(0.1, 0.42, 2.5, 0.05)} m={B.knitBlush} p={[-0.2, 0.7, -0.7]} />

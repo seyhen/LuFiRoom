@@ -35,7 +35,7 @@ export function Desk() {
       {LEGS.map(([x, z]) => (
         <Part key={`${x}${z}`} geo={cyl(0.045, 0.04, 1.23, 12)} m={M.woodLeg} p={[x, 0.615, z]} />
       ))}
-      <Part geo={rbox(1.15, 0.014, 0.52, 0.01)} m={B.lilac} p={[1.42, 1.357, -2.3]} castShadow={false} />
+      <Part geo={rbox(1.15, 0.014, 0.52, 0.01)} m={B.lilac} p={[1.3, 1.357, -2.3]} castShadow={false} />
       <Part geo={rbox(0.6, 0.03, 0.4, 0.015)} m={B.notebook} p={[1.3, 1.372, -2.1]} rotation-y={0.12} />
       <Part geo={cyl(0.011, 0.011, 0.3, 8)} m={M.butter} p={[1.58, 1.4, -2.08]} rotation={[0, 0.5, Math.PI / 2]} castShadow={false} />
       <Part geo={cyl(0.08, 0.065, 0.17, 18)} m={M.mint} p={[POT[0], POT[1] + 0.085, POT[2]]} />

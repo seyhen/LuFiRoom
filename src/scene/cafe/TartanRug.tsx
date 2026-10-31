@@ -8,7 +8,7 @@ export function TartanRug() {
   return (
     <group position={[-1.62, 0, 0.0]}>
       <Part geo={rbox(1.75, 0.03, 2.6, 0.015)} m={K.navy} p={[0, 0.015, 0]} />
-      <mesh material={K.tartan} position={[0, 0.031, 0]} rotation-x={-Math.PI / 2} receiveShadow>
+      <mesh material={K.tartan} position={[0, 0.036, 0]} rotation-x={-Math.PI / 2} receiveShadow>
         <planeGeometry args={[1.72, 2.57]} />
       </mesh>
       {[-1, 1].map((s) =>

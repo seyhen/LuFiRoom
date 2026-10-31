@@ -3,11 +3,11 @@ import { useFrame } from '@react-three/fiber'
 import { CatmullRomCurve3, Color, Matrix4, Quaternion, TubeGeometry, Vector3, type BufferGeometry, type Group, type Material } from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { isActive, useStore } from '../../state/store'
-import { TAU, rand } from '../../math'
+import { TAU, approach, rand, smooth as ease } from '../../math'
 import { blob, cone, ell, pair } from '../blob'
 import { M, skin } from '../materials'
 import { SPH, cyl, type V3 } from '../parts'
-import { useParticles, useSquash } from '../anim'
+import { mood, useParticles, useSquash } from '../anim'
 import { heartTex } from '../textures'
 
 export interface Coat {
@@ -21,7 +21,13 @@ export type CatPattern = 'tabby' | 'bib'
 
 const WHISKER = cyl(0.003, 0.0055, 0.12, 6)
 const hexOf = (m: Material) => (m as Material & { color?: Color }).color?.getHex() ?? 0xffffff
-const FUR = skin()
+// Le pelage luit très doucement de sa propre couleur (celle des sommets) : la nuit, sous la lumière bleue, un chat gris ne vire
+// ni au bleu nuit ni au noir, un roux ne passe pas à l'olive (règle « une couleur qui vire la nuit »).
+const FUR = skin({ emissive: 0xffffff, emissiveIntensity: 0.05 })
+FUR.onBeforeCompile = (sh) => {
+  sh.fragmentShader = sh.fragmentShader.replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\n#ifdef USE_COLOR\n\ttotalEmissiveRadiance *= vColor.rgb;\n#endif')
+}
+FUR.customProgramCacheKey = () => 'cat-fur-glow'
 const PINK = 0xf6a8bc
 
 // Le chat est dessiné dans son propre repère (x vers l'avant, le visage vers +x, y en haut, z sur le flanc visible), puis tourné d'un
@@ -207,13 +213,21 @@ export function Cat({ position = [-1.15, 0.88, -0.55], rotation = -0.25, coat, p
   const cat = useMemo(() => buildCat(F, L, D, pat), [F, L, D, pat])
   const g = useRef<Group>(null!), body = useRef<Group>(null!), tail = useRef<Group>(null!)
   const hearts = useParticles(), since = useRef(0)
+  // la respiration et le balancement de la queue : des phases qu'on additionne image après image (changer la fréquence d'un
+  // sin(t·f) ferait sauter le chat quand le ronron s'allume), et des amplitudes qui glissent vers leur cible
+  const breath = useRef({ ph: 0, amp: 0.022, tailPh: 0, tailAmp: 0 })
   useSquash('cat', g)
-  useFrame(({ clock }, delta) => {
-    const t = clock.elapsedTime, purr = isActive(useStore.getState(), 'cat')
-    const k = (purr ? 0.045 : 0.022) * Math.sin((t * TAU) / (purr ? 2.7 : 3.8))
+  useFrame((_, delta) => {
+    const dt = Math.min(delta, 0.05), purr = isActive(useStore.getState(), 'cat'), b = breath.current
+    FUR.emissiveIntensity = 0.05 + 0.09 * ease(mood.night)
+    b.ph = (b.ph + (dt * TAU) / (purr ? 2.7 : 3.8)) % TAU
+    b.amp = approach(b.amp, purr ? 0.045 : 0.022, dt * 0.02)
+    const k = b.amp * Math.sin(b.ph)
     body.current.scale.set(1 + k * 0.4, 1 + k, 1 + k * 0.4)
-    tail.current.rotation.y = purr ? Math.sin(t * 1.7) * 0.11 : 0
-    since.current += Math.min(delta, 0.05)
+    b.tailPh = (b.tailPh + dt * 1.7) % TAU
+    b.tailAmp = approach(b.tailAmp, purr ? 0.11 : 0, dt * 0.12)
+    tail.current.rotation.y = Math.sin(b.tailPh) * b.tailAmp
+    since.current += dt
     if (purr && since.current > 1.3) {
       since.current = 0
       hearts.emit(heartTex, position[0] + 0.3 + rand(-0.1, 0.1), position[1] + 0.37, position[2] + 0.15, { size: 0.2, life: 2.2, vy: 0.4, sway: 0.08 })

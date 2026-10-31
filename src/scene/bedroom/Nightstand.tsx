@@ -2,14 +2,15 @@ import { M } from '../materials'
 import { Batch, Part, SPH, cyl, rbox, type Item } from '../parts'
 import { B } from './materials'
 
-// Trois livres empilés, de travers : couverture rose, menthe, beurre ; les pages dépassent un peu sur la tranche.
+// Deux livres empilés, de travers, dans le coin de devant, hors de l'ombre du chapeau de la lampe (rayon 0,335 autour de
+// x = -2,68, z = -2,72) : couverture rose et menthe ; les pages dépassent un peu sur la tranche.
 const book = (y: number, w: number, d: number, r: number, c: number): Item[] => [
-  { p: [-2.3, y, -2.33], s: [w, 0.08, d], r: [0, r, 0], c },
-  { p: [-2.3, y, -2.33], s: [w - 0.03, 0.06, d + 0.012], r: [0, r, 0], c: 0xfff5e6 },
+  { p: [-2.25, y, -2.25], s: [w, 0.08, d], r: [0, r, 0], c },
+  { p: [-2.25, y, -2.25], s: [w - 0.03, 0.06, d + 0.012], r: [0, r, 0], c: 0xfff5e6 },
 ]
-const BOOKS: Item[] = [...book(0.77, 0.42, 0.3, 0.2, 0xf3afc6), ...book(0.85, 0.38, 0.27, -0.12, 0x8fd8c6), ...book(0.93, 0.33, 0.24, 0.3, 0xf6d071)]
+const BOOKS: Item[] = [...book(0.8, 0.34, 0.25, 0.2, 0xf3afc6), ...book(0.88, 0.3, 0.22, -0.15, 0x8fd8c6)]
 
-/** Table de chevet rose : deux tiroirs à boutons, une pile de livres et un petit cactus. La lampe est posée dessus (voir BedroomScene). */
+/** Table de chevet rose : deux tiroirs à boutons et deux livres. La lampe est posée dessus (voir BedroomScene). */
 export function Nightstand() {
   return (
     <>
@@ -25,10 +26,6 @@ export function Nightstand() {
         </group>
       ))}
       <Batch geo={rbox(1, 1, 1, 0.1)} m={B.trim} items={BOOKS} shadow />
-      {/* cactus sur les livres */}
-      <Part geo={cyl(0.075, 0.06, 0.1, 14)} m={M.terracotta} p={[-2.31, 1.02, -2.33]} />
-      <Part geo={SPH} m={M.leaf} scale={[0.06, 0.1, 0.06]} p={[-2.31, 1.14, -2.33]} />
-      <Part geo={SPH} m={M.leaf} scale={[0.03, 0.05, 0.03]} p={[-2.25, 1.13, -2.33]} />
     </>
   )
 }

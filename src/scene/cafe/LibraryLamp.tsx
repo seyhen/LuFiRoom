@@ -10,9 +10,11 @@ import { K } from './materials'
 import { bulbGlowTex } from '../textures'
 
 import { Steam } from '../objects/Steam'
+import { Vessel, innerR } from '../igloo/Vessel'
 
 const dome = new SphereGeometry(1, 28, 10, 0, TAU, 0, Math.PI / 2)
-const AT: V3 = [-0.45, 0, -0.75]
+// à 15 cm et plus de l'accoudoir droit du fauteuil (et de son plaid) : le plateau ne rentre plus dedans
+const AT: V3 = [-0.14, 0, -0.61]
 
 /** Guéridon de noyer à côté du fauteuil : une tasse de thé, deux livres. */
 function SideTable() {
@@ -27,7 +29,8 @@ function SideTable() {
       <Part geo={rbox(0.26, 0.05, 0.19, 0.015)} m={K.green} p={[-0.08, 0.69, 0.1]} rotation-y={0.3} />
       <Part geo={rbox(0.22, 0.04, 0.16, 0.015)} m={K.burgundy} p={[-0.08, 0.735, 0.1]} rotation-y={0.1} />
       <Part geo={cyl(0.075, 0.07, 0.012, 20)} m={M.cream} p={[0.15, 0.668, 0.12]} castShadow={false} />
-      <Part geo={cyl(0.045, 0.035, 0.06, 16)} m={M.cream} p={[0.15, 0.705, 0.12]} castShadow={false} />
+      <Vessel p={[0.15, 0.674, 0.12]} rt={0.045} rb={0.035} h={0.06} m={M.cream} inner={K.cupInner} t={0.007} />
+      <Part geo={cyl(innerR(0.045, 0.035, 0.06, 0.045, 0.007), innerR(0.045, 0.035, 0.06, 0.045, 0.007), 0.005, 16)} m={K.tea} p={[0.15, 0.719, 0.12]} castShadow={false} />
       <Steam at={[0.15, 0.75, 0.12]} every={1.1} />
     </>
   )

@@ -74,7 +74,7 @@ export function CabinScene() {
       <Turntable position={[1.9, 0.71, -2.64]} />
       <Lamp position={[1.55, 0.62, -0.73]} />
       <Cocoa />
-      <Cat position={[-1.55, 0.12, -1.3]} rotation={0.1} />
+      <Cat position={[-1.55, 0.085, -1.22]} rotation={0.1} />
     </>
   )
 }
