@@ -46,10 +46,10 @@ export const roof: Room = {
   objects: [
     { id: 'city', target: 'city', label: 'La ville · rumeur', anchor: [0.6, 4.6, -3.9] },
     { id: 'brazier', target: 'fire', label: 'Braséro · feu', anchor: [-0.85, 0.85, 0.35] },
-    { id: 'laundry', target: 'wind', label: 'Linge · le vent', anchor: [2.85, 1.5, 0.15] },
+    { id: 'laundry', target: 'wind', label: 'Linge · le vent', anchor: [2.85, 1.45, 0.25] },
     { id: 'pigeons', target: 'pigeons', label: 'Pigeons · roucoulements', anchor: [1.15, 1.5, -3.15] },
     { id: 'radio', target: 'radio', label: 'Boombox · lofi', anchor: [-2.55, 0.75, 2.35] },
-    { id: 'lamp', target: 'night', label: 'Guirlande · jour / nuit', anchor: [3.0, 2.8, 0.4] },
+    { id: 'lamp', target: 'night', label: 'Guirlande · jour / nuit', anchor: [3.0, 1.3, 2.95] },
     { id: 'watering', target: 'watering', label: 'Arrosoir · l’eau', anchor: [-0.5, 0.8, -2.11] },
   ],
   sounds: [

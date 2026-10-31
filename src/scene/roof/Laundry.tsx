@@ -9,7 +9,7 @@ import { R } from './materials'
 
 const X = 2.85, Z0 = -1.75, Z1 = 2.1, TOP = 2.0, SAG = 0.12
 const lineY = (z: number) => TOP - SAG * Math.sin((Math.PI * (z - Z0)) / (Z1 - Z0))
-const rope = new TubeGeometry(new CatmullRomCurve3(Array.from({ length: 21 }, (_, i) => { const z = Z0 + ((Z1 - Z0) * i) / 20; return new Vector3(X, lineY(z), z) })), 40, 0.008, 4, false)
+const rope = new TubeGeometry(new CatmullRomCurve3(Array.from({ length: 21 }, (_, i) => { const z = Z0 + ((Z1 - Z0) * i) / 20; return new Vector3(X, lineY(z), z) })), 40, 0.011, 5, false)
 // Le linge : [début, largeur, hauteur, matériau].
 const CLOTHES: [number, number, number, Material][] = [[-1.5, 1.0, 1.1, R.sheet], [-0.4, 0.5, 0.42, R.sheetBlue], [0.2, 0.9, 0.95, R.sheetStripe], [1.2, 0.36, 0.5, R.sheet], [1.65, 0.3, 0.32, R.sheetBlue]]
 

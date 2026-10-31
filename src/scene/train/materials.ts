@@ -1,4 +1,4 @@
-import { DoubleSide, MeshBasicMaterial } from 'three'
+import { BackSide, DoubleSide, MeshBasicMaterial } from 'three'
 import { M, gummy } from '../materials'
 import { leafy } from '../nature/materials'
 import { boardTex, carpetTex, panelTex, persianTex, streakTex } from './textures'
@@ -39,8 +39,18 @@ export const T = {
   leaf: gummy(0x4f8a5a),
   leafV: leafy(0x5a9a68),
   croissant: gummy(0xd99a52, { roughness: 0.55 }),
+  croissantDark: gummy(0xc07f3c, { roughness: 0.55 }),
+  roseDark: gummy(0x9c2f48),
   tea: gummy(0xb5552a, { transparent: true, opacity: 0.85, roughness: 0.1, clearcoat: 1 }),
   glass: M.glass,
+  glassIn: (() => { const g = M.glass.clone(); g.side = BackSide; return g })(),
+  /** Porcelaine du service (assiette, tasses, lavabo) : blanche, liseré bleu ; son dedans. */
+  plate: gummy(0xf4f0e6, { roughness: 0.25, clearcoat: 0.9 }),
+  plateRim: gummy(0x2f4a8a, { roughness: 0.3, clearcoat: 0.8 }),
+  plateIn: gummy(0xe4dfd2, { roughness: 0.3, clearcoat: 0.6, side: BackSide }),
+  wickerIn: gummy(0x9a7444, { roughness: 0.8, side: BackSide }),
+  water: gummy(0xbfe0ee, { transparent: true, opacity: 0.8, roughness: 0.05, clearcoat: 1, depthWrite: false }),
+  steel: gummy(0xc9ccd2, { roughness: 0.3, clearcoat: 0.6 }),
   mirror: gummy(0xdfe6ee, { roughness: 0.05, clearcoat: 1, metalness: 0.4, emissive: 0x404858, emissiveIntensity: 0.4 }),
   persian: gummy(0xffffff, { map: persianTex, roughness: 0.95, clearcoat: 0 }),
   stickerA: gummy(0xe2b25a), stickerB: gummy(0x4f8a5a), stickerC: gummy(0xd9536a), stickerD: gummy(0x6a8ab8),

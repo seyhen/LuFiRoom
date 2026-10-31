@@ -1,6 +1,7 @@
 import { canvasTex } from '../paint'
 import { Part, SPH, cyl, rbox } from '../parts'
 import { T } from './materials'
+import { Vessel, innerR } from '../igloo/Vessel'
 import { Garment } from '../objects/Garment'
 
 /** Une affiche de voyage à l'ancienne : un col de montagne, un train, « Les Alpes ». */
@@ -73,11 +74,13 @@ export function Washstand() {
       </group>
       <group position={[-1.6, 0, -2.85]}>
         <Part geo={rbox(0.6, 0.7, 0.32, 0.03)} m={T.mahogany} p={[0, 0.65, 0]} />
-        <Part geo={cyl(0.18, 0.12, 0.08, 20)} m={T.sheet} p={[0, 1.02, 0.02]} />
+        {/* le lavabo, ouvert : cuvette de porcelaine, dedans, liseré bleu, l'eau à mi-hauteur ; un robinet qui la domine */}
+        <Vessel p={[0, 1.0, 0.02]} rt={0.18} rb={0.12} h={0.08} m={T.plate} inner={T.plateIn} rim={T.plateRim} t={0.008} />
+        <Part geo={cyl(innerR(0.18, 0.12, 0.08, 0.05, 0.008), innerR(0.18, 0.12, 0.08, 0, 0.008), 0.05, 22)} m={T.water} p={[0, 1.032, 0.02]} castShadow={false} />
         <Part geo={cyl(0.012, 0.012, 0.16, 6)} m={T.brass} p={[0, 1.12, -0.1]} rotation-x={0.6} castShadow={false} />
         <Part geo={rbox(0.5, 0.62, 0.03, 0.03)} m={T.brass} p={[0, 1.6, -0.14]} />
         <Part geo={rbox(0.44, 0.56, 0.01, 0.02)} m={T.mirror} p={[0, 1.6, -0.12]} castShadow={false} />
-        <Part geo={rbox(0.12, 0.03, 0.1, 0.01)} m={T.sheet} p={[0.2, 1.04, 0.06]} castShadow={false} />
+        <Part geo={rbox(0.12, 0.03, 0.1, 0.01)} m={T.sheet} p={[0.23, 1.017, 0.1]} castShadow={false} />
       </group>
     </>
   )

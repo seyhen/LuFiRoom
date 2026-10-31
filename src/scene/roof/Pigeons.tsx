@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Color, type Group } from 'three'
 import { isActive, useStore } from '../../state/store'
-import { smooth } from '../../math'
+import { approach, smooth } from '../../math'
 import { Part } from '../parts'
 import { blob, cone, ell, pair } from '../blob'
 import { reduceMotion, useSquash } from '../anim'
@@ -82,15 +82,18 @@ const LEGS = blob(
 const HX = 0.075, HY = 0.15
 
 function Pigeon({ x, rot, ph, coo }: { x: number; rot: number; ph: number; coo: { current: boolean } }) {
-  const body = useRef<Group>(null!), head = useRef<Group>(null!)
-  useFrame(({ clock }) => {
+  const body = useRef<Group>(null!), head = useRef<Group>(null!), w = useRef(0), peck = useRef(0)
+  useFrame(({ clock }, delta) => {
     if (reduceMotion) return
-    const t = clock.elapsedTime + ph, on = coo.current
-    // le roucoulement : la gorge gonfle, la tête plonge et remonte ; sinon, de petits coups de tête
-    const c = on ? Math.max(0, Math.sin(t * 2.4)) : 0
+    const t = clock.elapsedTime + ph, dt = Math.min(delta, 0.05)
+    // le roucoulement : la gorge gonfle, la tête plonge et remonte ; sinon, de petits coups de tête. Les deux se fondent l'un dans
+    // l'autre (w, peck) : à l'allumage, rien ne saute.
+    w.current = approach(w.current, coo.current ? 1 : 0, dt * 1.5)
+    peck.current = approach(peck.current, Math.sin(t * 0.7) > 0.6 ? 1 : 0, dt * 4)
+    const c = w.current * Math.max(0, Math.sin(t * 2.4))
     body.current.scale.set(1, 1 + c * 0.12, 1 + c * 0.1)
-    head.current.position.x = HX + (on ? -c * 0.03 : Math.sin(t * 5) * 0.01 * (Math.sin(t * 0.7) > 0.6 ? 1 : 0))
-    head.current.rotation.z = on ? -c * 0.5 : 0
+    head.current.position.x = HX - c * 0.03 + (1 - w.current) * Math.sin(t * 5) * 0.01 * peck.current
+    head.current.rotation.z = -c * 0.5
     head.current.rotation.y = Math.sin(t * 0.6) * 0.5
   })
   return (

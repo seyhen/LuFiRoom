@@ -1,4 +1,4 @@
-import { DoubleSide, MeshStandardMaterial } from 'three'
+import { BackSide, DoubleSide, MeshStandardMaterial } from 'three'
 import { M, gummy, skin } from '../materials'
 import { leafy } from '../nature/materials'
 import { boardTex, juteTex, kilimTex, plankTex, stripes, weaveTex } from './textures'
@@ -54,6 +54,8 @@ export const B = {
   stripeTowel: gummy(0xffffff, { map: stripes('#3fb8b0', '#f6d071', 6), roughness: 0.85, clearcoat: 0.03 }),
   lemonade: gummy(0xf9e27a, { transparent: true, opacity: 0.85, roughness: 0.1, clearcoat: 1 }),
   glass: M.glass,
+  /** Le dedans d'un verre ou d'un bocal ouvert (Vessel). */
+  glassIn: (() => { const g = M.glass.clone(); g.side = BackSide; return g })(),
   sheer: gummy(0xfffcf6, { transparent: true, opacity: 0.72, roughness: 0.9, clearcoat: 0, side: DoubleSide, depthWrite: false }),
   lampShade: gummy(0xffffff, { map: weaveTex, roughness: 0.7, emissive: 0xffa95e, emissiveIntensity: 0.0 }),
   gull: gummy(0xffffff, { roughness: 0.6, clearcoat: 0.3 }),

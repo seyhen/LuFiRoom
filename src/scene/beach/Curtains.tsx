@@ -14,12 +14,15 @@ const W = 0.78, H = 3.55, TOP = DOOR.y1 + 0.22, Z = -2.88
 function Sheer({ x, side, wind }: { x: number; side: 1 | -1; wind: { current: number } }) {
   const geo = useMemo(() => new PlaneGeometry(W, H, 10, 20), [])
   const rest = useMemo(() => Float32Array.from(geo.attributes.position.array), [geo])
-  useFrame(({ clock }) => {
+  // la phase du gonflement s'additionne image après image (sa vitesse suit le vent : un sin(t × f) sauterait)
+  const ph = useRef(0)
+  useFrame(({ clock }, delta) => {
     const t = clock.elapsedTime, p = geo.attributes.position, k = wind.current
+    ph.current += Math.min(delta, 0.05) * (1.1 + k)
     for (let i = 0; i < p.count; i++) {
       const u = rest[i * 3] / W + 0.5, v = 0.5 - rest[i * 3 + 1] / H // v : 0 en haut, 1 en bas
       const folds = Math.sin(u * TAU * 3.5) * 0.05 * (1 - u * 0.5)
-      const billow = reduceMotion ? 0 : v * v * (0.04 + k * 0.4) * (0.6 + 0.4 * Math.sin(t * (1.1 + k) + u * 2 + side))
+      const billow = reduceMotion ? 0 : v * v * (0.04 + k * 0.4) * (0.6 + 0.4 * Math.sin(ph.current + u * 2 + side))
       const sway = reduceMotion ? 0 : v * v * Math.sin(t * 0.9 + side * 1.3) * (0.02 + k * 0.12)
       p.setXYZ(i, rest[i * 3] + sway * side, rest[i * 3 + 1], folds + billow)
     }

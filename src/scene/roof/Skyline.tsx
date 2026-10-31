@@ -13,10 +13,10 @@ type Kind = 'flat' | 'deco' | 'spire' | 'needle' | 'tank'
 // [x, z, largeur, profondeur, hauteur, matériau (0-3), forme] : rangée proche derrière le parapet du fond, puis rangée lointaine.
 const NEAR: [number, number, number, number, number, number, Kind][] = [
   [-2.55, -3.85, 1.3, 0.6, 3.1, 0, 'flat'], [-1.4, -3.9, 0.9, 0.6, 3.9, 1, 'deco'], [-0.4, -3.8, 1.05, 0.55, 2.5, 2, 'tank'],
-  [0.6, -3.95, 0.85, 0.6, 4.2, 3, 'spire'], [1.6, -3.8, 1.05, 0.55, 2.2, 0, 'flat'], [2.65, -3.85, 1.2, 0.6, 3.3, 1, 'deco'],
+  [0.6, -3.95, 0.85, 0.6, 4.2, 3, 'spire'], [1.6, -3.8, 1.05, 0.55, 2.2, 0, 'flat'], [2.45, -3.85, 1.1, 0.6, 3.3, 1, 'deco'],
 ]
 const FAR: [number, number, number, number, number, number, Kind][] = [
-  [-2.1, -4.75, 1.3, 0.5, 4.6, 0, 'flat'], [-0.95, -4.8, 0.9, 0.5, 5.1, 0, 'needle'], [1.25, -4.75, 1.1, 0.5, 4.8, 0, 'flat'], [2.45, -4.7, 1.0, 0.5, 3.9, 0, 'flat'],
+  [-2.1, -4.75, 1.3, 0.5, 4.6, 0, 'flat'], [-0.95, -4.8, 0.9, 0.5, 5.1, 0, 'needle'], [1.25, -4.75, 1.1, 0.5, 4.8, 0, 'flat'], [1.95, -4.7, 0.9, 0.5, 3.9, 0, 'flat'],
 ]
 // À gauche, derrière le parapet : [z, largeur, hauteur].
 const LEFT: [number, number, number, number][] = [[-0.25, 1.15, 2.5, 2], [1.05, 1.1, 1.85, 3], [2.3, 1.2, 2.9, 1]]

@@ -37,12 +37,22 @@ export function NeonSign() {
     glow.current.material.opacity = n * 0.45 * buzz
   })
   return (
-    <group position={[2.6, 3.55, -3.45]} scale={1.5}>
-      {[-0.55, 0.55].map((x) => (
-        <Part key={x} geo={cyl(0.015, 0.015, 0.75, 6)} m={R.steel} p={[x, 0.32, -0.05]} castShadow={false} />
+    <group position={[2.3, 3.55, -3.45]} scale={1.5}>
+      {/* le panneau sombre où courent les tubes (on les voit aussi le jour), son liseré, ses deux pieds et leurs jambes de force */}
+      <Part geo={rbox(1.48, 0.5, 0.03, 0.012)} m={R.steel} p={[0, 0.48, -0.025]} castShadow={false} />
+      {[[0, 0.735, 1.5, 0.025], [0, 0.225, 1.5, 0.025]].map(([x, y, w, h], i) => (
+        <Part key={i} geo={rbox(w, h, 0.04, 0.01)} m={R.rust} p={[x, y, -0.02]} castShadow={false} />
       ))}
-      <Part geo={rbox(1.3, 0.03, 0.03, 0.01)} m={R.steel} p={[0, 0.1, -0.05]} castShadow={false} />
-      <mesh material={neonMat} position={[0, 0.48, 0]} userData={LIVE} raycast={noRay}>
+      {[-0.74, 0.74].map((x) => (
+        <Part key={x} geo={rbox(0.025, 0.535, 0.04, 0.01)} m={R.rust} p={[x, 0.48, -0.02]} castShadow={false} />
+      ))}
+      {[-0.5, 0.5].map((x) => (
+        <group key={x}>
+          <Part geo={cyl(0.018, 0.018, 0.3, 6)} m={R.steel} p={[x, 0.07, -0.06]} castShadow={false} />
+          <Part geo={cyl(0.012, 0.012, 0.42, 6)} m={R.steel} p={[x, 0.2, -0.2]} rotation-x={0.75} castShadow={false} />
+        </group>
+      ))}
+      <mesh material={neonMat} position={[0, 0.48, 0.002]} userData={LIVE} raycast={noRay}>
         <planeGeometry args={[1.4, 0.44]} />
       </mesh>
       <sprite ref={glow} scale={[2.4, 1.2, 1]} position={[0, 0.48, 0.05]} raycast={noRay}>
@@ -59,15 +69,15 @@ export function FireEscape() {
       {[0.6, 1.35].map((y) => (
         <group key={y} position={[0, y, 0]}>
           <Part geo={rbox(0.36, 0.03, 0.95, 0.01)} m={R.steel} castShadow={false} />
-          <Part geo={cyl(0.008, 0.008, 0.95, 4)} m={R.steel} p={[0.17, 0.3, 0]} rotation-x={Math.PI / 2} castShadow={false} />
+          <Part geo={cyl(0.011, 0.011, 0.95, 6)} m={R.steel} p={[0.17, 0.3, 0]} rotation-x={Math.PI / 2} castShadow={false} />
           {[-0.45, -0.15, 0.15, 0.45].map((z) => (
-            <Part key={z} geo={cyl(0.007, 0.007, 0.3, 4)} m={R.steel} p={[0.17, 0.15, z]} castShadow={false} />
+            <Part key={z} geo={cyl(0.01, 0.01, 0.3, 6)} m={R.steel} p={[0.17, 0.15, z]} castShadow={false} />
           ))}
         </group>
       ))}
       <group position={[0.06, 0.98, -0.1]} rotation-x={0.75}>
         {[-0.08, 0.08].map((x) => (
-          <Part key={x} geo={cyl(0.007, 0.007, 1.0, 4)} m={R.steel} p={[x, 0, 0]} castShadow={false} />
+          <Part key={x} geo={cyl(0.011, 0.011, 1.0, 6)} m={R.steel} p={[x, 0, 0]} castShadow={false} />
         ))}
         {[-0.35, -0.12, 0.12, 0.35].map((y) => (
           <Part key={y} geo={rbox(0.16, 0.012, 0.05, 0.004)} m={R.steel} p={[0, y, 0]} castShadow={false} />

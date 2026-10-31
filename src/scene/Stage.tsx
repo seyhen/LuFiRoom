@@ -107,11 +107,19 @@ function Room({ room, hotspotLayer }: { room: RoomData; hotspotLayer: Layer }) {
   const group = useRef<Group>(null!)
   const turn = useTapAndTurn(group, room)
   const Scene = scenes[room.id]
+  const gl = useThree((s) => s.gl)
   // Dans un effet de mise en page : il se défait avant que React Three Fiber détache les objets de la pièce (qu'il vide ensuite).
   useLayoutEffect(() => {
     const g = group.current
-    return () => freeScene(g)
-  }, [])
+    return () => {
+      freeScene(g)
+      // three.js ne remet à jour une géométrie qu'une fois par image : la passe des ombres de l'image précédente a déjà marqué
+      // les géométries partagées (SPH, cylindres…) qu'on vient de libérer, qui seraient alors dessinées sans leurs tampons (les
+      // flammes du braséro, les boutons de la boombox, les gouttes de l'arrosoir n'apparaissaient jamais après un changement de
+      // pièce). Avancer le compteur d'images force la remise en mémoire au prochain rendu.
+      gl.info.render.frame++
+    }
+  }, [gl])
   useFrame(({ clock }, delta) => {
     const t = turn.current
     t.angle += (t.target - t.angle) * Math.min(1, Math.min(delta, 0.05) * 6)

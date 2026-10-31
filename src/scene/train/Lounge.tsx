@@ -4,6 +4,7 @@ import { Cat } from '../objects/Cat'
 import { T } from './materials'
 import { Garment } from '../objects/Garment'
 import { Leaf } from '../nature/Leaf'
+import { Vessel, innerR } from '../igloo/Vessel'
 
 /** Le tapis persan au milieu du compartiment, et sa frange. */
 export function PersianRug() {
@@ -36,13 +37,44 @@ export function ChessTable() {
         return <Part key={i} geo={rbox(0.25, 0.04, 0.05, 0.02)} m={T.mahoganyDark} p={[Math.cos(a) * 0.12, 0.03, Math.sin(a) * 0.12]} rotation-y={-a} />
       })}
       {/* l'échiquier et ses pièces, assez grands pour qu'on les reconnaisse */}
-      <Part geo={rbox(0.44, 0.025, 0.44, 0.01)} m={T.board} p={[0, 0.655, 0]} />
-      {PIECES.map(([c, r, w, big], i) => (
-        <group key={i} position={[-0.1925 + c * 0.055, 0.67, -0.1925 + r * 0.055]}>
-          <Part geo={cyl(0.015, 0.02, big ? 0.07 : 0.045, 10)} m={w ? T.chessW : T.chessB} p={[0, big ? 0.035 : 0.022, 0]} castShadow={false} />
-          <Part geo={SPH} m={w ? T.chessW : T.chessB} scale={big ? 0.019 : 0.015} p={[0, big ? 0.082 : 0.054, 0]} castShadow={false} />
-        </group>
-      ))}
+      {/* un cadre de bois et un plan à la texture d'échiquier (huit cases par huit : une rbox n'en montrait que quatre au centre) */}
+      <Part geo={rbox(0.44, 0.025, 0.44, 0.01)} m={T.mahoganyDark} p={[0, 0.655, 0]} />
+      <mesh material={T.board} position={[0, 0.6685, 0]} rotation-x={-Math.PI / 2} receiveShadow>
+        <planeGeometry args={[0.4, 0.4]} />
+      </mesh>
+      {PIECES.map(([c, r, w, big], i) => {
+        const m = w ? T.chessW : T.chessB
+        return (
+          <group key={i} position={[-0.175 + c * 0.05, 0.669, -0.175 + r * 0.05]}>
+            <Part geo={cyl(0.019, 0.021, 0.008, 12)} m={m} p={[0, 0.004, 0]} castShadow={false} />
+            {big ? (
+              // une tour (créneaux) ou un roi (couronne et croix), alternés
+              i % 2 ? (
+                <>
+                  <Part geo={cyl(0.014, 0.019, 0.06, 12)} m={m} p={[0, 0.038, 0]} castShadow={false} />
+                  <Part geo={cyl(0.019, 0.019, 0.012, 12)} m={m} p={[0, 0.07, 0]} castShadow={false} />
+                  {[0, 1, 2, 3].map((k) => <Part key={k} geo={rbox(0.008, 0.012, 0.008, 0.002)} m={m} p={[Math.cos((k * TAU) / 4) * 0.014, 0.082, Math.sin((k * TAU) / 4) * 0.014]} castShadow={false} />)}
+                </>
+              ) : (
+                <>
+                  <Part geo={cyl(0.012, 0.019, 0.06, 12)} m={m} p={[0, 0.038, 0]} castShadow={false} />
+                  <Part geo={cyl(0.017, 0.017, 0.008, 12)} m={m} p={[0, 0.07, 0]} castShadow={false} />
+                  <Part geo={SPH} m={m} scale={[0.014, 0.012, 0.014]} p={[0, 0.082, 0]} castShadow={false} />
+                  <Part geo={rbox(0.006, 0.026, 0.006, 0.002)} m={m} p={[0, 0.105, 0]} castShadow={false} />
+                  <Part geo={rbox(0.018, 0.006, 0.006, 0.002)} m={m} p={[0, 0.108, 0]} castShadow={false} />
+                </>
+              )
+            ) : (
+              // un pion : socle, tige qui s'évase vers le bas, collerette, tête ronde
+              <>
+                <Part geo={cyl(0.007, 0.015, 0.03, 12)} m={m} p={[0, 0.023, 0]} castShadow={false} />
+                <Part geo={cyl(0.013, 0.013, 0.005, 12)} m={m} p={[0, 0.04, 0]} castShadow={false} />
+                <Part geo={SPH} m={m} scale={0.012} p={[0, 0.05, 0]} castShadow={false} />
+              </>
+            )}
+          </group>
+        )
+      })}
       {/* le verre de cognac et les lunettes, sur le bord du guéridon, hors de l'échiquier */}
       <Part geo={SPH} m={T.tea} scale={[0.035, 0.025, 0.035]} p={[0.3, 0.66, 0.2]} castShadow={false} />
       <Part geo={SPH} m={T.glass} scale={[0.045, 0.045, 0.045]} p={[0.3, 0.68, 0.2]} castShadow={false} />
@@ -94,13 +126,12 @@ export function CatBasket() {
   return (
     <>
       <group position={[-0.45, 0, 0.2]}>
-        <Part geo={cyl(0.4, 0.34, 0.2, 22)} m={T.wicker} p={[0, 0.1, 0]} />
-        <Part m={T.wicker} p={[0, 0.2, 0]} rotation-x={Math.PI / 2} castShadow={false}>
-          <torusGeometry args={[0.38, 0.05, 8, 24]} />
-        </Part>
-        <Part geo={cyl(0.34, 0.34, 0.05, 22)} m={T.plaidLight} p={[0, 0.17, 0]} castShadow={false} />
+        {/* le panier est ouvert : paroi, dedans, fond, bourrelet ; le plaid est au fond, sous le chat, un coin dépasse du bord */}
+        <Vessel p={[0, 0, 0]} rt={0.4} rb={0.34} h={0.2} m={T.wicker} inner={T.wickerIn} t={0.012} />
+        <Part geo={cyl(innerR(0.4, 0.34, 0.2, 0.1, 0.012), innerR(0.4, 0.34, 0.2, 0.1, 0.012), 0.05, 22)} m={T.plaidLight} p={[0, 0.095, 0]} castShadow={false} />
+        <Part geo={rbox(0.2, 0.025, 0.14, 0.012)} m={T.plaidLight} p={[0.33, 0.185, 0.16]} rotation={[0.35, 0.5, -0.3]} castShadow={false} />
       </group>
-      <Cat position={[-0.5, 0.16, 0.16]} rotation={0.5} coat={{ fur: T.ginger, light: T.gingerLight, dark: T.gingerDark }} />
+      <Cat position={[-0.5, 0.12, 0.16]} rotation={0.5} coat={{ fur: T.ginger, light: T.gingerLight, dark: T.gingerDark }} />
     </>
   )
 }
@@ -110,13 +141,32 @@ export function Flowers() {
   return (
     <>
       <group position={[-2.6, 0.76, 2.05]}>
-        <Part geo={cyl(0.06, 0.05, 0.22, 14)} m={T.glass} p={[0, 0.11, 0]} castShadow={false} />
+        {/* le vase de cristal est ouvert, l'eau monte aux deux tiers, les tiges y plongent */}
+        <Vessel p={[0, 0, 0]} rt={0.06} rb={0.05} h={0.22} m={T.glass} inner={T.glassIn} t={0.005} />
+        <Part geo={cyl(0.052, 0.049, 0.14, 16)} m={T.water} p={[0, 0.075, 0]} castShadow={false} />
         {Array.from({ length: 9 }, (_, i) => {
-          const a = i * 2.3, r = 0.04 + (i % 3) * 0.035
+          const a = i * 2.3, r = 0.04 + (i % 3) * 0.035, lilac = i % 3 !== 0
+          const tx = Math.cos(a) * r, tz = Math.sin(a) * r, ty = 0.44 + (i % 2) * 0.04
           return (
             <group key={i}>
-              <Part geo={cyl(0.004, 0.004, 0.3, 4)} m={T.leaf} p={[Math.cos(a) * r * 0.5, 0.32, Math.sin(a) * r * 0.5]} rotation={[Math.sin(a) * 0.3, 0, -Math.cos(a) * 0.3]} castShadow={false} />
-              <Part geo={SPH} m={i % 3 ? T.lilac : T.daisy} scale={[0.04, 0.06, 0.04]} p={[Math.cos(a) * r, 0.47 + (i % 2) * 0.04, Math.sin(a) * r]} castShadow={false} />
+              <Part geo={cyl(0.004, 0.004, 0.34, 4)} m={T.leaf} p={[tx * 0.5, 0.29, tz * 0.5]} rotation={[tz * 1.6, 0, -tx * 1.6]} castShadow={false} />
+              {lilac ? (
+                // une grappe de lilas : une pointe de petits fleurons serrés, plus larges en bas
+                <group position={[tx, ty - 0.08, tz]} rotation={[tz * 1.2, 0, -tx * 1.2]}>
+                  {Array.from({ length: 14 }, (_, k) => {
+                    const h = k / 13, ang = k * 2.4, rr = 0.022 * (1 - h) + 0.004
+                    return <Part key={k} geo={SPH} m={T.lilac} scale={0.011 * (1 - h * 0.35)} p={[Math.cos(ang) * rr, 0.02 + h * 0.13, Math.sin(ang) * rr]} castShadow={false} />
+                  })}
+                </group>
+              ) : (
+                // une marguerite : huit pétales à plat autour d'un cœur jaune
+                <group position={[tx, ty - 0.02, tz]} rotation={[-0.5 + tz * 1.2, 0, -tx * 1.2]}>
+                  {Array.from({ length: 8 }, (_, k) => (
+                    <Part key={k} geo={SPH} m={T.daisy} scale={[0.02, 0.004, 0.009]} p={[Math.cos((k * TAU) / 8) * 0.022, 0, Math.sin((k * TAU) / 8) * 0.022]} rotation-y={-(k * TAU) / 8} castShadow={false} />
+                  ))}
+                  <Part geo={SPH} m={T.mustard} scale={[0.011, 0.007, 0.011]} p={[0, 0.003, 0]} castShadow={false} />
+                </group>
+              )}
               {i % 2 === 0 && (
                 <group position={[0, 0.24, 0]} rotation-y={a}>
                   <Leaf kind="lance" r={[-0.7, 0, 0]} w={0.018} l={0.13} m={T.leafV} />
@@ -131,10 +181,16 @@ export function Flowers() {
       ))}
       {/* les boîtes à chapeaux, dans l'angle du fond à droite, loin de la valise ouverte */}
       <group position={[2.55, 0, 2.5]}>
-        <Part geo={cyl(0.22, 0.22, 0.32, 22)} m={T.cream} p={[0, 0.16, 0]} />
-        <Part geo={cyl(0.225, 0.225, 0.05, 22)} m={T.velvet} p={[0, 0.3, 0]} castShadow={false} />
-        <Part geo={cyl(0.16, 0.16, 0.24, 20)} m={T.teal} p={[0.05, 0.47, 0.02]} />
-        <Part geo={cyl(0.165, 0.165, 0.04, 20)} m={T.gold} p={[0.05, 0.58, 0.02]} castShadow={false} />
+        {/* la grande boîte : couvercle rouge, ruban doré noué, étiquette de voyage ; la petite repose entièrement dessus */}
+        <Part geo={cyl(0.22, 0.22, 0.28, 22)} m={T.cream} p={[0, 0.14, 0]} />
+        <Part geo={cyl(0.225, 0.225, 0.05, 22)} m={T.velvet} p={[0, 0.305, 0]} castShadow={false} />
+        <Part geo={cyl(0.2255, 0.2255, 0.018, 22)} m={T.gold} p={[0, 0.2, 0]} castShadow={false} />
+        <Part geo={cyl(0.07, 0.07, 0.006, 16)} m={T.stickerA} p={[0.14, 0.13, 0.17]} rotation={[Math.PI / 2, 0, 0]} rotation-z={-0.65} castShadow={false} />
+        <Part geo={rbox(0.05, 0.018, 0.018, 0.006)} m={T.gold} p={[-0.17, 0.34, 0.08]} rotation-y={0.5} castShadow={false} />
+        <Part geo={cyl(0.16, 0.16, 0.2, 20)} m={T.teal} p={[0.03, 0.43, 0.02]} />
+        <Part geo={cyl(0.165, 0.165, 0.04, 20)} m={T.gold} p={[0.03, 0.53, 0.02]} castShadow={false} />
+        <Part geo={SPH} m={T.gold} scale={0.025} p={[0.03, 0.56, 0.02]} castShadow={false} />
+        <Part geo={cyl(0.1, 0.1, 0.006, 16)} m={T.stickerC} p={[0.14, 0.42, 0.17]} rotation={[Math.PI / 2, 0, 0]} rotation-z={-0.6} castShadow={false} />
       </group>
     </>
   )

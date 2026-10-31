@@ -98,7 +98,8 @@ export function Bunks() {
         <Part key={z} geo={rbox(0.06, 2.35, 0.06, 0.02)} m={T.mahogany} p={[X + 0.45, 1.17, z]} />
       ))}
       {/* l'échelle, au pied */}
-      <group position={[X + 0.62, 0, Z1 - 0.12]} rotation-z={0.22}>
+      {/* il s'appuie au bord de la couchette du haut et son pied s'écarte vers la pièce : il ne traverse plus les couchettes */}
+      <group position={[X + 0.95, 0, Z1 - 0.12]} rotation-z={0.145}>
         {[-0.15, 0.15].map((z) => (
           <Part key={z} geo={cyl(0.018, 0.018, 2.35, 8)} m={T.brass} p={[0, 1.17, z]} />
         ))}

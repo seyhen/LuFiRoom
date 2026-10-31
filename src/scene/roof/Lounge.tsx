@@ -3,6 +3,21 @@ import { Candle } from '../objects/Candle'
 import { R } from './materials'
 import { Foliage } from '../nature/Foliage'
 import { Aloe } from './Planters'
+import { Vessel, innerR } from '../igloo/Vessel'
+
+/** Une bouteille de vin debout : corps, épaule arrondie, goulot, capsule et étiquette. `p` est son pied. */
+function WineBottle({ p, m = R.wine, s = 1 }: { p: [number, number, number]; m?: typeof R.wine; s?: number }) {
+  return (
+    <group position={p} scale={s}>
+      <Part geo={cyl(0.04, 0.04, 0.17, 16)} m={m} p={[0, 0.085, 0]} />
+      <Part geo={SPH} m={m} scale={[0.04, 0.035, 0.04]} p={[0, 0.17, 0]} castShadow={false} />
+      <Part geo={cyl(0.014, 0.018, 0.09, 12)} m={m} p={[0, 0.24, 0]} castShadow={false} />
+      <Part geo={cyl(0.017, 0.017, 0.045, 12)} m={R.brass} p={[0, 0.28, 0]} castShadow={false} />
+      {/* l'étiquette fait le tour du corps, un peu plus large que lui */}
+      <Part geo={cyl(0.042, 0.042, 0.07, 16)} m={R.label} p={[0, 0.08, 0]} castShadow={false} />
+    </group>
+  )
+}
 
 /** Le canapé d'extérieur en teck contre le parapet : gros coussins, un plaid, un coussin moutarde et un rouille. */
 export function Sofa() {
@@ -73,10 +88,17 @@ export function FireCorner() {
             <Part geo={cyl(0.032, 0.022, 0.06, 12)} m={R.wine} p={[0, 0.1, 0]} castShadow={false} />
           </group>
         ))}
-        <Part geo={cyl(0.03, 0.035, 0.24, 12)} m={R.wine} p={[0.17, 0.54, 0.14]} />
-        <Part geo={cyl(0.012, 0.012, 0.08, 6)} m={R.wine} p={[0.17, 0.7, 0.14]} castShadow={false} />
+        <WineBottle p={[0.15, 0.42, 0.12]} />
+        {/* le bouchon tiré, posé à côté ; des lattes et la marque au pochoir sur les faces vues */}
+        <Part geo={cyl(0.012, 0.012, 0.035, 10)} m={R.label} p={[-0.16, 0.425, -0.12]} rotation-z={Math.PI / 2} castShadow={false} />
+        {[0.1, 0.21, 0.32].map((y) => (
+          <group key={y}>
+            <Part geo={rbox(0.46, 0.012, 0.012, 0.005)} m={R.log} p={[0, y, 0.215]} castShadow={false} />
+            <Part geo={rbox(0.012, 0.012, 0.38, 0.005)} m={R.log} p={[0.255, y, 0]} castShadow={false} />
+          </group>
+        ))}
       </group>
-      <Lantern position={[-0.15, 0, -1.6]} />
+      <Lantern position={[0.25, 0, -1.45]} />
       <Lantern position={[1.55, 0, 0.45]} />
     </>
   )
@@ -163,21 +185,22 @@ export function Telescope() {
 export function FrontCorner() {
   return (
     <>
-      <group position={[1.0, 0, 1.75]}>
-        <Part geo={cyl(0.32, 0.28, 0.36, 22)} m={R.zinc} p={[0, 0.18, 0]} />
+      {/* le bac de zinc, ouvert : la glace pilée à mi-hauteur, quatre bouteilles penchées dedans (corps, étiquette, goulot) */}
+      <group position={[1.45, 0, 2.2]}>
+        <Vessel p={[0, 0, 0]} rt={0.32} rb={0.27} h={0.36} m={R.zinc} inner={R.zincIn} t={0.014} />
         {[-1, 1].map((s) => (
-          <Part key={s} m={R.zinc} p={[s * 0.33, 0.3, 0]} rotation-y={Math.PI / 2} castShadow={false}>
+          <Part key={s} m={R.zinc} p={[s * 0.335, 0.29, 0]} rotation-y={Math.PI / 2} castShadow={false}>
             <torusGeometry args={[0.05, 0.012, 6, 12, Math.PI]} />
           </Part>
         ))}
-        <Part geo={cyl(0.29, 0.29, 0.04, 22)} m={R.ice} p={[0, 0.355, 0]} castShadow={false} />
-        {[[-0.1, 0.05, R.wine], [0.08, -0.06, R.leafDark], [0.12, 0.12, R.mustard], [-0.05, -0.14, R.leafDark]].map(([x, z, m], i) => (
-          <group key={i} position={[x as number, 0.2, z as number]} rotation={[0.2 * (i % 2 ? 1 : -1), 0, 0.15]}>
-            {/* une bouteille plantée dans la glace : corps, épaule, goulot et capsule dorée dépassent du bac */}
-            <Part geo={cyl(0.045, 0.045, 0.2, 12)} m={m as typeof R.wine} p={[0, 0.1, 0]} castShadow={false} />
-            <Part geo={SPH} m={m as typeof R.wine} scale={[0.045, 0.045, 0.045]} p={[0, 0.2, 0]} castShadow={false} />
-            <Part geo={cyl(0.016, 0.022, 0.12, 10)} m={m as typeof R.wine} p={[0, 0.27, 0]} castShadow={false} />
-            <Part geo={cyl(0.02, 0.02, 0.035, 10)} m={R.brass} p={[0, 0.34, 0]} castShadow={false} />
+        <Part geo={cyl(innerR(0.32, 0.27, 0.36, 0.27, 0.014), innerR(0.32, 0.27, 0.36, 0.27, 0.014), 0.02, 22)} m={R.ice} p={[0, 0.26, 0]} castShadow={false} />
+        {/* des glaçons qui dépassent de la glace pilée */}
+        {[[0.16, 0.08], [-0.17, 0.1], [0.02, 0.19], [-0.08, -0.16], [0.15, -0.12]].map(([x, z], i) => (
+          <Part key={i} geo={rbox(0.07, 0.06, 0.07, 0.02)} m={R.ice} p={[x, 0.285, z]} rotation={[0.3 * i, i, 0.2]} castShadow={false} />
+        ))}
+        {([[-0.1, 0.06, R.wine, -0.2], [0.08, -0.07, R.leafDark, 0.22], [0.1, 0.1, R.mustard, 0.15], [-0.06, -0.12, R.leafDark, -0.25]] as const).map(([x, z, m, a], i) => (
+          <group key={i} position={[x, 0.12, z]} rotation={[a, 0, a * 0.6]}>
+            <WineBottle p={[0, 0, 0]} m={m} s={1.05} />
           </group>
         ))}
       </group>
@@ -186,11 +209,29 @@ export function FrontCorner() {
         <Part geo={rbox(0.45, 0.3, 0.36, 0.02)} m={R.teak} p={[0.05, 0.47, 0.0]} rotation-y={0.2} />
         <Part geo={cyl(0.12, 0.1, 0.16, 14)} m={R.terracotta} p={[0.05, 0.7, 0]} />
         <Aloe position={[0.05, 0.77, 0]} />
-        <Part geo={cyl(0.1, 0.09, 0.14, 14)} m={R.terracotta} p={[-0.15, 0.39, 0.1]} />
-        <Foliage v={3} p={[-0.15, 0.44, 0.1]} s={[0.12, 0.12, 0.11]} m={R.herbF[0]} shadow={false} />
-        {[0, 1, 2, 3].map((i) => (
-          <Part key={i} geo={SPH} m={R.tomato} scale={0.03} p={[-0.15 + Math.cos(i * 1.6) * 0.08, 0.53 + (i % 2) * 0.03, 0.1 + Math.sin(i * 1.6) * 0.08]} castShadow={false} />
+        {/* les lattes des deux caisses, sur les faces vues */}
+        {[0.08, 0.2].map((y) => (
+          <group key={y}>
+            <Part geo={rbox(0.5, 0.012, 0.012, 0.005)} m={R.log} p={[0, y, 0.205]} castShadow={false} />
+            <Part geo={rbox(0.012, 0.012, 0.35, 0.005)} m={R.log} p={[0.28, y, 0]} castShadow={false} />
+          </group>
         ))}
+        {/* le pot de tomates, par terre au pied des caisses : pot, terre sous le bord, tuteur et ficelle, feuillage, grappe */}
+        <group position={[-0.5, 0, 0.12]}>
+          <Vessel p={[0, 0, 0]} rt={0.13} rb={0.1} h={0.22} m={R.terracotta} inner={R.soil} t={0.012} />
+          <Part geo={cyl(innerR(0.13, 0.1, 0.22, 0.19, 0.012), innerR(0.13, 0.1, 0.22, 0.19, 0.012), 0.02, 16)} m={R.soil} p={[0, 0.19, 0]} castShadow={false} />
+          <Part geo={cyl(0.01, 0.01, 0.62, 6)} m={R.log} p={[0.03, 0.47, -0.02]} castShadow={false} />
+          {[0.36, 0.52].map((y) => (
+            <Part key={y} m={R.rope} p={[0.03, y, -0.02]} rotation-x={Math.PI / 2} castShadow={false}>
+              <torusGeometry args={[0.018, 0.005, 5, 10]} />
+            </Part>
+          ))}
+          <Foliage v={3} p={[0, 0.36, 0]} s={[0.16, 0.2, 0.15]} m={R.tomatoF} shadow={false} />
+          <Foliage v={1} p={[0.02, 0.58, 0]} s={[0.1, 0.1, 0.1]} m={R.tomatoF} shadow={false} />
+          {[[0.12, 0.34, 0.06], [0.14, 0.28, -0.02], [0.08, 0.44, 0.12], [-0.1, 0.4, 0.11], [0.04, 0.3, 0.15]].map(([x, y, z], i) => (
+            <Part key={i} geo={SPH} m={R.tomato} scale={[0.038, 0.034, 0.038]} p={[x, y, z]} castShadow={false} />
+          ))}
+        </group>
       </group>
     </>
   )

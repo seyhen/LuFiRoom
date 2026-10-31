@@ -51,8 +51,9 @@ export function BeachScene() {
       <Ukulele position={[-2.45, 0.5, 1.55]} />
       <Hats />
       <Surfboard />
-      <HangingPothos position={[-2.95, 3.0, 2.15]} />
-      <Kentia position={[2.98, 0, -2.72]} />
+      <HangingPothos position={[-2.95, 3.0, 0.9]} />
+      {/* le kentia, loin du voilage (qui le traversait en gonflant) et du cabas */}
+      <Kentia position={[2.7, 0, 0.6]} />
       <Monstera position={[2.85, 0, -1.25]} />
       <EggChair />
       <RainStick />

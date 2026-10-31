@@ -1,4 +1,4 @@
-import { DoubleSide, MeshBasicMaterial, MeshStandardMaterial } from 'three'
+import { BackSide, DoubleSide, MeshBasicMaterial, MeshStandardMaterial } from 'three'
 import { M, gummy, skin } from '../materials'
 import { foliage, leafy } from '../nature/materials'
 import { brickTex, deckTex, facadeGlowTex, facadeTex, rugTex, staveTex } from './textures'
@@ -69,6 +69,11 @@ export const R = {
   wine: gummy(0x7a1f30, { transparent: true, opacity: 0.85, roughness: 0.1, clearcoat: 1 }),
   glass: M.glass,
   zinc: gummy(0xaab4bf, { roughness: 0.35, clearcoat: 0.7 }),
+  /** Le dedans des récipients de zinc (bac à glace, arrosoir) : un peu plus sombre, vu de l'intérieur. */
+  zincIn: gummy(0x8a949f, { roughness: 0.4, clearcoat: 0.4, side: BackSide }),
+  /** Étiquette crème d'une bouteille, capsule dorée. */
+  label: gummy(0xf3e6c8, { roughness: 0.7, clearcoat: 0.1 }),
+  soil: gummy(0x5a4030, { roughness: 0.95, clearcoat: 0 }),
   ice: gummy(0xeaf6ff, { roughness: 0.1, clearcoat: 1, transparent: true, opacity: 0.85 }),
   brass: M.brass,
   bulb: M.bulb,

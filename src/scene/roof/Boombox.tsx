@@ -3,6 +3,7 @@ import type { Group } from 'three'
 import { M } from '../materials'
 import { Part, SPH, cyl, rbox, type V3 } from '../parts'
 import { useBeat } from '../objects/useBeat'
+import { approach } from '../../math'
 import { R } from './materials'
 
 /**
@@ -10,10 +11,15 @@ import { R } from './materials'
  * de la cassette dont les bobines tournent, une poignée. C'est l'objet « radio » du toit.
  */
 export function Boombox({ position }: { position: V3 }) {
-  const cones = useRef<Group[]>([]), reels = useRef<Group[]>([])
+  const cones = useRef<Group[]>([]), reels = useRef<Group[]>([]), spin = useRef({ a: 0, v: 0, last: -1 })
   const { g, notes } = useBeat(position, 0.9, (on, t, pulse) => {
     cones.current.forEach((c) => c.scale.setScalar(1 + (on ? pulse * 0.22 : 0)))
-    reels.current.forEach((r) => (r.rotation.z = on ? -t * 3 : 0))
+    // les bobines : leur angle s'additionne image après image et leur vitesse monte ou retombe en douceur (pas de saut à l'allumage)
+    const s = spin.current, dt = s.last < 0 ? 0 : Math.min(t - s.last, 0.05)
+    s.last = t
+    s.v = approach(s.v, on ? 3 : 0, dt * 4)
+    s.a -= s.v * dt
+    reels.current.forEach((r) => (r.rotation.z = s.a))
   }, 0.03)
   return (
     <>

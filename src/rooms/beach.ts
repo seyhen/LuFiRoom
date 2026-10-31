@@ -47,7 +47,7 @@ export const beach: Room = {
     { id: 'gull', target: 'gulls', label: 'Mouette · cris au loin', anchor: [-0.28, 1.25, -3.6] },
     { id: 'chimes', target: 'chimes', label: 'Carillon · brise', anchor: [1.85, 2.95, -2.9] },
     { id: 'radio', target: 'radio', label: 'Ukulélé · lofi', anchor: [-2.45, 1.15, 1.55] },
-    { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-2.35, 1.05, -0.4] },
+    { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-2.35, 0.85, -0.4] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-1.25, 1.0, -2.55] },
     { id: 'rainstick', target: 'rainstick', label: 'Bâton de pluie · bascule', anchor: [-1.8, 2.35, -2.8] },
   ],

@@ -18,9 +18,16 @@ const HORN_DIR = orient([0.9, 0.72, 0.12])
  */
 export function Gramophone({ position }: { position: V3 }) {
   const disc = useRef<Group>(null!), arm = useRef<Group>(null!), bell = useRef<Group>(null!)
+  const turn = useRef({ a: 0, v: 0, arm: 0.05, last: -1 })
   const { g, notes } = useBeat(position, 1.05, (on, t, pulse) => {
-    if (!reduceMotion) disc.current.rotation.y = on ? -t * 3.4 : disc.current.rotation.y
-    arm.current.rotation.y = on ? 0.5 : 0.05
+    // le disque prend sa vitesse et la perd en douceur, son angle s'additionne ; le bras glisse vers sa position (pas de saut)
+    const s = turn.current, dt = s.last < 0 ? 0 : Math.min(t - s.last, 0.05)
+    s.last = t
+    s.v += ((on && !reduceMotion ? 3.4 : 0) - s.v) * Math.min(1, dt * 2.5)
+    s.a -= s.v * dt
+    disc.current.rotation.y = s.a
+    s.arm += ((on ? 0.5 : 0.05) - s.arm) * Math.min(1, dt * 3)
+    arm.current.rotation.y = s.arm
     bell.current.scale.setScalar(1 + (on ? pulse * 0.05 : 0))
   }, 0.03)
   return (

@@ -1,5 +1,5 @@
 import { SphereGeometry, DoubleSide } from 'three'
-import { Part, SPH, cyl, rbox } from '../parts'
+import { worldUV, Part, SPH, cyl, rbox } from '../parts'
 import { B } from './materials'
 
 // La coque : une sphère ouverte sur le devant (on retire un quartier, tourné vers +z).
@@ -22,9 +22,9 @@ export function EggChair() {
       <group position={[0, 1.05, 0]}>
         <mesh geometry={shell} material={shellMat} scale={[1, 1.25, 1]} rotation-y={Math.PI / 2} castShadow receiveShadow />
         <Part geo={SPH} m={B.linen} scale={[0.42, 0.14, 0.4]} p={[0, -0.42, 0]} />
-        <Part geo={rbox(0.5, 0.45, 0.16, 0.1)} m={B.stripeNavy} p={[0, -0.12, -0.3]} rotation-x={-0.2} />
+        <Part geo={worldUV(rbox(0.5, 0.45, 0.16, 0.1), 0.6)} m={B.stripeNavy} p={[0, -0.12, -0.3]} rotation-x={-0.2} />
         <Part geo={SPH} m={B.butter} scale={[0.14, 0.13, 0.08]} p={[0.2, -0.24, -0.12]} />
-        <Part geo={rbox(0.36, 0.04, 0.5, 0.02)} m={B.seaglass} p={[-0.12, -0.33, 0.12]} rotation={[0.1, 0.4, -0.15]} />
+        <Part geo={rbox(0.36, 0.04, 0.5, 0.02)} m={B.seaglass} p={[-0.12, -0.255, 0.12]} rotation={[0.08, 0.4, -0.1]} />
       </group>
     </group>
   )

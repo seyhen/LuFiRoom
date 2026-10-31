@@ -1,5 +1,6 @@
 import { Part, SPH, cyl, rbox } from '../parts'
 import { T } from './materials'
+import { Vessel, innerR } from '../igloo/Vessel'
 
 /** Une valise de cuir à sangles et coins de laiton, avec ses étiquettes de voyage. */
 function Suitcase({ p, size, m, rot = 0 }: { p: [number, number, number]; size: [number, number, number]; m: typeof T.leather; rot?: number }) {
@@ -74,7 +75,7 @@ export function ClubChair() {
 /** La valise ouverte sur son porte-bagages pliant : des pulls pliés, un appareil photo, une carte. */
 export function OpenSuitcase() {
   return (
-    <group position={[1.75, 0, 1.55]} rotation-y={-0.5}>
+    <group position={[1.4, 0, 1.95]} rotation-y={-0.5}>
       {[-0.32, 0.32].map((x) => (
         <group key={x}>
           <Part geo={cyl(0.015, 0.015, 0.62, 6)} m={T.mahoganyDark} p={[x, 0.28, 0]} rotation-x={0.45} />
@@ -94,8 +95,19 @@ export function OpenSuitcase() {
         {/* les affaires : un pull moutarde, un pull crème, une écharpe roulée, l'appareil photo */}
         <Part geo={rbox(0.34, 0.09, 0.38, 0.045)} m={T.mustard} p={[-0.18, 0.18, 0.02]} />
         <Part geo={rbox(0.3, 0.08, 0.34, 0.04)} m={T.wool} p={[-0.17, 0.26, 0.03]} rotation-y={0.12} />
-        <Part geo={cyl(0.06, 0.06, 0.3, 14)} m={T.blanket} p={[0.2, 0.18, 0.12]} rotation-x={Math.PI / 2} rotation-z={0.3} />
-        <group position={[0.2, 0.22, -0.08]}>
+        {/* l'écharpe roulée, posée dans le fond de la valise (elle flottait) : son rouleau, deux rayures, la frange aux deux bouts */}
+        <group position={[0.2, 0.205, 0.12]} rotation-y={0.3}>
+          <Part geo={cyl(0.06, 0.06, 0.3, 14)} m={T.blanket} rotation-x={Math.PI / 2} />
+          {[-0.07, 0.07].map((z) => (
+            <Part key={z} geo={cyl(0.0615, 0.0615, 0.03, 14)} m={T.mustard} p={[0, 0, z]} rotation-x={Math.PI / 2} castShadow={false} />
+          ))}
+          {[-1, 1].map((s) =>
+            [-0.04, -0.02, 0, 0.02, 0.04].map((x) => (
+              <Part key={`${s}${x}`} geo={cyl(0.004, 0.004, 0.05, 4)} m={T.blanket} p={[x, -0.025, s * 0.17]} rotation-x={Math.PI / 2} castShadow={false} />
+            )),
+          )}
+        </group>
+        <group position={[0.2, 0.19, -0.1]}>
           <Part geo={rbox(0.16, 0.09, 0.06, 0.02)} m={T.iron} />
           <Part geo={cyl(0.035, 0.035, 0.05, 14)} m={T.iron} p={[0, 0, 0.05]} rotation-x={Math.PI / 2} castShadow={false} />
           <Part geo={cyl(0.025, 0.025, 0.01, 14)} m={T.glass} p={[0, 0, 0.078]} rotation-x={Math.PI / 2} castShadow={false} />
@@ -108,7 +120,7 @@ export function OpenSuitcase() {
 /** Le chariot de thé du wagon-restaurant, oublié là : théière d'argent, tasses, une assiette de biscuits. */
 export function TeaTrolley() {
   return (
-    <group position={[2.85, 0, 0.15]} rotation-y={-1.2}>
+    <group position={[2.85, 0, -0.5]} rotation-y={-1.2}>
       {[0.25, 0.7].map((y) => (
         <Part key={y} geo={rbox(0.8, 0.04, 0.48, 0.02)} m={T.mahogany} p={[0, y, 0]} />
       ))}
@@ -133,8 +145,13 @@ export function TeaTrolley() {
       </group>
       {[[0.18, -0.1], [0.24, 0.12]].map(([x, z], i) => (
         <group key={i} position={[x, 0.73, z]}>
-          <Part geo={cyl(0.065, 0.055, 0.01, 18)} m={T.sheet} castShadow={false} />
-          <Part geo={cyl(0.045, 0.035, 0.055, 16)} m={T.sheet} p={[0, 0.03, 0]} />
+          <Part geo={cyl(0.065, 0.055, 0.01, 18)} m={T.plate} castShadow={false} />
+          {/* une tasse ouverte : le thé s'arrête sous le bord, une anse */}
+          <Vessel p={[0, 0.005, 0]} rt={0.045} rb={0.035} h={0.055} m={T.plate} inner={T.plateIn} rim={T.plateRim} t={0.005} />
+          <Part geo={cyl(innerR(0.045, 0.035, 0.055, 0.04, 0.005), innerR(0.045, 0.035, 0.055, 0.0, 0.005), 0.042, 16)} m={T.tea} p={[0, 0.0265, 0]} castShadow={false} />
+          <Part m={T.plate} p={[0.05, 0.035, 0]} castShadow={false}>
+            <torusGeometry args={[0.018, 0.005, 6, 12, Math.PI * 1.2]} />
+          </Part>
         </group>
       ))}
       <Part geo={cyl(0.12, 0.1, 0.015, 20)} m={T.sheet} p={[0.05, 0.27, 0]} castShadow={false} />
@@ -149,7 +166,7 @@ export function TeaTrolley() {
 export function Slippers() {
   return (
     <>
-      {[[-1.72, -0.95, 0.3], [-1.6, -0.75, 0.1]].map(([x, z, a], i) => (
+      {[[-1.72, -1.2, 0.3], [-1.58, -1.02, 0.1]].map(([x, z, a], i) => (
         <group key={i} position={[x, 0.03, z]} rotation-y={a}>
           <Part geo={SPH} m={T.velvet} scale={[0.07, 0.03, 0.14]} />
           <Part geo={SPH} m={T.wool} scale={[0.065, 0.035, 0.07]} p={[0, 0.02, 0.06]} castShadow={false} />

@@ -1,4 +1,4 @@
-import { Part, cyl, rbox } from '../parts'
+import { worldUV, Part, cyl, rbox } from '../parts'
 import { B } from './materials'
 
 /**
@@ -20,7 +20,7 @@ export function Daybed() {
       {/* le matelas et les coussins */}
       <Part geo={rbox(0.8, 0.16, 2.0, 0.07)} m={B.linen} p={[0.04, 0.45, 0]} />
       <Part geo={rbox(0.24, 0.5, 0.62, 0.12)} m={B.linen} p={[-0.27, 0.74, -0.62]} rotation-z={-0.18} />
-      <Part geo={rbox(0.24, 0.48, 0.6, 0.12)} m={B.stripeCoral} p={[-0.27, 0.73, 0.02]} rotation-z={-0.2} />
+      <Part geo={worldUV(rbox(0.24, 0.48, 0.6, 0.12), 0.6)} m={B.stripeCoral} p={[-0.27, 0.73, 0.02]} rotation-z={-0.2} />
       <Part geo={rbox(0.24, 0.46, 0.58, 0.12)} m={B.turquoise} p={[-0.27, 0.72, 0.64]} rotation-z={-0.18} />
       <Part geo={rbox(0.14, 0.3, 0.34, 0.08)} m={B.butter} p={[-0.1, 0.66, 0.38]} rotation={[0.2, 0.3, -0.25]} />
       {/* le plaid au pied, qui retombe sur le côté */}

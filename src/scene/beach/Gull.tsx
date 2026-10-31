@@ -78,7 +78,7 @@ const LEGS = blob(
  */
 export function Gull() {
   const g = useRef<Group>(null!), head = useRef<Group>(null!), jaw = useRef<Group>(null!), wings = useRef<Group[]>([])
-  const call = useRef(0)
+  const call = useRef(0), ruffle = useRef(0)
   useSquash('gull', g)
   useFrame(({ clock }, delta) => {
     const t = clock.elapsedTime, on = isActive(useStore.getState(), 'gull')
@@ -90,7 +90,10 @@ export function Gull() {
     head.current.rotation.z = k * 0.55
     jaw.current.rotation.z = -k * 0.4
     // l'ébrouement : les ailes s'écartent du corps (tour autour de y) et se soulèvent (autour de x), pas de saut d'une image à l'autre
-    const flap = on && !reduceMotion && (t % 9) < 0.6 ? Math.sin(t * 30) * 0.5 + 0.6 : 0
+    // l'ébrouement monte et retombe en cloche (sin sur la fenêtre de 0,6 s), et son poids `ruffle` suit l'allumage en douceur
+    ruffle.current = approach(ruffle.current, on && !reduceMotion ? 1 : 0, Math.min(delta, 0.05) * 3)
+    const w = t % 9, bell = w < 0.6 ? Math.sin((w / 0.6) * Math.PI) : 0
+    const flap = ruffle.current * bell * (Math.sin(t * 30) * 0.4 + 0.6)
     wings.current.forEach((w, i) => {
       const s = i ? -1 : 1
       // au repos les bouts des ailes se rejoignent un peu sur la queue ; l'ébrouement les écarte

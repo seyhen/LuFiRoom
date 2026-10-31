@@ -8,7 +8,7 @@ import { reduceMotion, useSquash } from '../anim'
 import { B } from './materials'
 
 // Cinq tubes et un coquillage au bout de chaque fil : [x, longueur].
-const TUBES = [[-0.16, 0.42], [-0.08, 0.52], [0, 0.6], [0.08, 0.5], [0.16, 0.4]] as const
+const TUBES = [[-0.18, 0.42], [-0.09, 0.52], [0, 0.6], [0.09, 0.5], [0.18, 0.4]] as const
 
 /** Carillon de bois flotté et de tubes, pendu au linteau de la grande porte : il se balance dans la brise et tinte. */
 export function WindChimes() {
@@ -18,9 +18,12 @@ export function WindChimes() {
     gust.current = approach(gust.current, isActive(useStore.getState(), 'chimes') ? 1 : 0.15, Math.min(delta, 0.05) * 1.5)
     if (reduceMotion) return
     const t = clock.elapsedTime, k = gust.current
+    // Les tubes se balancent ensemble (même phase) et chacun s'écarte à peine du mouvement commun : écart entre voisins
+    // < 0,05 rad, moins que le jeu entre deux tubes, ils se frôlent sans se traverser.
+    const common = Math.sin(t * 2.1) * 0.14 * k
     tubes.current.forEach((tube, i) => {
-      tube.rotation.z = Math.sin(t * (2.1 + i * 0.37) + i) * 0.16 * k
-      tube.rotation.x = Math.sin(t * (1.7 + i * 0.29) + i * 2) * 0.12 * k
+      tube.rotation.z = common + Math.sin(t * 3.3 + i * 1.9) * 0.022 * k
+      tube.rotation.x = Math.sin(t * 1.7 + i * 2) * 0.12 * k
     })
     g.current.rotation.z = Math.sin(t * 0.8) * 0.04 * k
   })

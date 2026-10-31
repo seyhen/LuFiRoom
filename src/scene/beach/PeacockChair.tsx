@@ -1,5 +1,5 @@
 import { CircleGeometry, CylinderGeometry, DoubleSide } from 'three'
-import { Part, cyl, rbox } from '../parts'
+import { worldUV, Part, cyl, rbox } from '../parts'
 import { B } from './materials'
 
 // Le dossier en éventail : un disque de rotin dont le bas est coupé à hauteur d'assise, et sa bordure roulée.
@@ -32,7 +32,7 @@ export function PeacockChair() {
         </Part>
       </group>
       {/* le coussin, posé sur l'assise et incliné vers le dossier */}
-      <Part geo={rbox(0.36, 0.3, 0.12, 0.06)} m={B.stripeCoral} p={[0.04, 0.85, -0.2]} rotation={[-0.32, 0, 0.08]} />
+      <Part geo={worldUV(rbox(0.36, 0.3, 0.12, 0.06), 0.6)} m={B.stripeCoral} p={[0.04, 0.85, -0.2]} rotation={[-0.32, 0, 0.08]} />
     </group>
   )
 }

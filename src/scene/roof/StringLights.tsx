@@ -7,9 +7,10 @@ import { mood, useSquash, useWorldPointSize } from '../anim'
 import { bulbGlowTex } from '../textures'
 import { R } from './materials'
 
-// La guirlande guinguette part du coin de la cage d'escalier vers trois poteaux, et pend entre eux.
+// La guirlande guinguette part du coin de la cage d'escalier vers trois poteaux, et pend entre eux. Le poteau de devant est au
+// coin de la terrasse, loin du fil à linge (il était planté au milieu des draps) et devant rien.
 const HUB = new Vector3(-1.5, 2.45, -1.65)
-const POLES = [new Vector3(3.0, 2.75, -2.95), new Vector3(3.0, 2.75, 0.4), new Vector3(-2.95, 2.75, 2.95)]
+const POLES = [new Vector3(3.0, 2.75, -2.95), new Vector3(3.0, 2.75, 2.95), new Vector3(-2.95, 2.75, 2.95)]
 const SAG = 0.38, PER = 11
 const strand = (a: Vector3, b: Vector3) => Array.from({ length: 25 }, (_, i) => { const k = i / 24; return a.clone().lerp(b, k).setY(a.y + (b.y - a.y) * k - SAG * Math.sin(Math.PI * k)) })
 const STRANDS = POLES.map((p) => strand(HUB, p))

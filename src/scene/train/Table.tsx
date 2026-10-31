@@ -10,6 +10,7 @@ import { Steam } from '../objects/Steam'
 import { LIVE } from '../Static'
 import { T } from './materials'
 import { Leaf } from '../nature/Leaf'
+import { Vessel, innerR } from '../igloo/Vessel'
 
 const TOP = 1.0, Z = -2.68
 
@@ -62,9 +63,13 @@ function TeaGlass() {
       {/* plus gros que nature, pour qu'on le reconnaisse : soucoupe, porte-verre de laiton, verre en tulipe plein de thé, cuillère courte */}
       <group scale={1.4}>
         <Part geo={cyl(0.1, 0.1, 0.012, 22)} m={T.brass} p={[0, 0.006, 0]} castShadow={false} />
-        <Part geo={cyl(0.058, 0.048, 0.1, 18)} m={T.brass} p={[0, 0.062, 0]} />
-        <Part geo={cyl(0.064, 0.052, 0.15, 18)} m={T.glass} p={[0, 0.145, 0]} castShadow={false} />
-        <Part geo={cyl(0.056, 0.047, 0.1, 18)} m={T.tea} p={[0, 0.125, 0]} castShadow={false} />
+        <Part geo={cyl(0.056, 0.048, 0.06, 18)} m={T.brass} p={[0, 0.042, 0]} />
+        <Part m={T.brass} p={[0, 0.072, 0]} rotation-x={Math.PI / 2} castShadow={false}>
+          <torusGeometry args={[0.058, 0.006, 6, 20]} />
+        </Part>
+        {/* le verre est ouvert : le thé s'arrête sous le bord, la cuillère plonge dedans et dépasse */}
+        <Vessel p={[0, 0.07, 0]} rt={0.064} rb={0.052} h={0.15} m={T.glass} inner={T.glassIn} t={0.004} />
+        <Part geo={cyl(innerR(0.064, 0.052, 0.15, 0.12, 0.004), innerR(0.064, 0.052, 0.15, 0, 0.004), 0.12, 18)} m={T.tea} p={[0, 0.136, 0]} castShadow={false} />
         <Part m={T.brass} p={[0.07, 0.07, 0]} castShadow={false}>
           <torusGeometry args={[0.035, 0.008, 6, 14, Math.PI * 1.2]} />
         </Part>
@@ -99,14 +104,33 @@ export function Table() {
       <TableLamp />
       <TeaGlass />
       {/* le croissant sur son assiette */}
-      <Part geo={cyl(0.13, 0.11, 0.015, 24)} m={T.sheet} p={[1.3, TOP + 0.015, Z + 0.06]} castShadow={false} />
-      <Part m={T.croissant} p={[1.3, TOP + 0.05, Z + 0.06]} rotation-x={Math.PI / 2} scale={[1, 1, 0.7]}>
-        <torusGeometry args={[0.055, 0.035, 10, 18, Math.PI * 1.15]} />
+      {/* l'assiette de porcelaine à liseré bleu (sur la nappe de lin elle se confondait) */}
+      <Part geo={cyl(0.13, 0.1, 0.014, 26)} m={T.plate} p={[1.3, TOP + 0.012, Z + 0.06]} castShadow={false} />
+      <Part m={T.plateRim} p={[1.3, TOP + 0.02, Z + 0.06]} rotation-x={Math.PI / 2} castShadow={false}>
+        <torusGeometry args={[0.122, 0.005, 6, 28]} />
       </Part>
+      {/* le croissant : sept pains en arc, plus gros au milieu, pointes recourbées, deux sillons dorés */}
+      <group position={[1.3, TOP + 0.046, Z + 0.06]} rotation-y={0.5}>
+        {Array.from({ length: 7 }, (_, k) => {
+          const t = (k - 3) / 3, ang = t * 1.15, f = 1 - t * t * 0.65
+          return (
+            <Part key={k} geo={SPH} m={k % 2 ? T.croissantDark : T.croissant} scale={[0.03 * f, 0.026 * f, 0.034 * f]} p={[Math.sin(ang) * 0.068, 0, -Math.cos(ang) * 0.068 + 0.05]} rotation-y={-ang} castShadow={false} />
+          )
+        })}
+      </group>
       {/* une rose dans un soliflore d'argent */}
       <Part geo={cyl(0.025, 0.035, 0.16, 12)} m={T.brass} p={[1.85, TOP + 0.08, Z - 0.08]} />
       <Part geo={cyl(0.004, 0.004, 0.16, 4)} m={T.leaf} p={[1.85, TOP + 0.22, Z - 0.08]} castShadow={false} />
-      <Part geo={SPH} m={T.rose} scale={[0.04, 0.035, 0.04]} p={[1.85, TOP + 0.31, Z - 0.08]} />
+      {/* la rose : un bouton au cœur, deux couronnes de pétales qui s'ouvrent, des sépales verts dessous */}
+      <Part geo={SPH} m={T.roseDark} scale={[0.017, 0.022, 0.017]} p={[1.85, TOP + 0.315, Z - 0.08]} castShadow={false} />
+      {Array.from({ length: 10 }, (_, k) => {
+        const outer = k >= 4, a = outer ? ((k - 4) / 6) * Math.PI * 2 : (k / 4) * Math.PI * 2 + 0.4
+        const r = outer ? 0.03 : 0.018
+        return <Part key={k} geo={SPH} m={T.rose} scale={outer ? [0.026, 0.02, 0.012] : [0.02, 0.022, 0.01]} p={[1.85 + Math.cos(a) * r, TOP + (outer ? 0.3 : 0.315), Z - 0.08 + Math.sin(a) * r]} rotation={[0, -a + Math.PI / 2, outer ? 0.55 : 0.2]} castShadow={false} />
+      })}
+      {[0, 1, 2, 3, 4].map((k) => (
+        <Part key={k} geo={SPH} m={T.leaf} scale={[0.007, 0.004, 0.018]} p={[1.85 + Math.cos((k / 5) * Math.PI * 2) * 0.016, TOP + 0.283, Z - 0.08 + Math.sin((k / 5) * Math.PI * 2) * 0.016]} rotation-y={-(k / 5) * Math.PI * 2} castShadow={false} />
+      ))}
       {[[0, 0.21, 0.5], [2.6, 0.26, 0.7]].map(([ry, y, tilt], i) => (
         <group key={i} position={[1.85, TOP + y, Z - 0.08]} rotation-y={ry}>
           <Leaf kind="ovate" r={[-tilt, 0, 0]} w={0.02} l={0.055} m={T.leafV} />
@@ -114,7 +138,20 @@ export function Table() {
       ))}
       {/* le billet et la montre de gousset */}
       <Part geo={rbox(0.2, 0.004, 0.09, 0.002)} m={T.cream} p={[1.55, TOP + 0.012, Z + 0.15]} rotation-y={0.3} castShadow={false} />
-      <Part geo={cyl(0.04, 0.04, 0.015, 18)} m={T.gold} p={[1.0, TOP + 0.015, Z + 0.17]} castShadow={false} />
+      {/* la montre de gousset : boîtier d'or, cadran crème et ses deux aiguilles, couronne, anneau et chaîne */}
+      <group position={[1.0, TOP + 0.012, Z + 0.17]} rotation-y={0.4}>
+        <Part geo={cyl(0.04, 0.04, 0.015, 24)} m={T.gold} p={[0, 0.0075, 0]} castShadow={false} />
+        <Part geo={cyl(0.033, 0.033, 0.004, 24)} m={T.cream} p={[0, 0.0165, 0]} castShadow={false} />
+        <Part geo={rbox(0.003, 0.002, 0.024, 0.001)} m={T.ink} p={[0, 0.0195, -0.01]} castShadow={false} />
+        <Part geo={rbox(0.018, 0.002, 0.003, 0.001)} m={T.ink} p={[0.008, 0.0195, 0]} rotation-y={0.5} castShadow={false} />
+        <Part geo={cyl(0.008, 0.008, 0.014, 10)} m={T.gold} p={[0, 0.0075, -0.047]} rotation-x={Math.PI / 2} castShadow={false} />
+        <Part m={T.gold} p={[0, 0.01, -0.062]} rotation-x={Math.PI / 2} castShadow={false}>
+          <torusGeometry args={[0.012, 0.003, 6, 12]} />
+        </Part>
+        <Part m={T.gold} p={[0.04, 0.004, -0.04]} rotation-x={Math.PI / 2} castShadow={false}>
+          <torusGeometry args={[0.04, 0.0025, 5, 24, Math.PI]} />
+        </Part>
+      </group>
     </>
   )
 }

@@ -8,6 +8,7 @@ import { Part, SPH, cyl, rbox } from '../parts'
 import { reduceMotion, useSquash } from '../anim'
 import { Static } from '../Static'
 import { R } from './materials'
+import { Vessel } from '../igloo/Vessel'
 
 /** L'arrosoir sur sa caisse, devant la jardinière de lavande : son pied au sol. */
 export const CAN = { x: -0.5, z: -2.11, crate: 0.4, face: 0.9 }
@@ -53,11 +54,13 @@ export function WateringCan() {
       <group position={[0, CAN.crate, 0]} rotation-y={CAN.face - 0.4}>
         <group ref={tilt} position={[0, 0.13, 0]}>
           <group position={[0, -0.13, 0]}>
-            <Part geo={cyl(0.12, 0.13, 0.26, 20)} m={R.zinc} p={[0, 0.13, 0]} />
+            {/* le corps ouvert : on voit le zinc du dedans et l'eau qui reste au fond */}
+            <Vessel p={[0, 0, 0]} rt={0.12} rb={0.13} h={0.26} m={R.zinc} inner={R.zincIn} t={0.01} />
+            <Part geo={cyl(0.105, 0.105, 0.012, 20)} m={water} p={[0, 0.17, 0]} castShadow={false} />
             {[0.05, 0.2].map((y) => (
               <Part key={y} geo={cyl(0.133, 0.133, 0.014, 20)} m={R.steel} p={[0, y, 0]} castShadow={false} />
             ))}
-            <Part geo={cyl(0.11, 0.11, 0.012, 20)} m={R.steel} p={[0, 0.262, 0]} castShadow={false} />
+
             {/* l'anse : un arc au-dessus, du bord au dos */}
             <Part m={R.zinc} p={[-0.02, 0.28, 0]} castShadow={false}>
               <torusGeometry args={[0.11, 0.012, 6, 16, Math.PI]} />

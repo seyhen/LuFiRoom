@@ -34,9 +34,12 @@ export function TrainShell() {
         </group>
       ))}
       {/* un bout de voie sous les roues : le rail et ses traverses */}
-      <Part geo={rbox(6.7, 0.07, 0.09, 0.02)} m={T.iron} p={[-0.07, -1.14, 3.22]} castShadow={false} />
+      {/* deux rails (l'écartement standard, 1,435 à l'échelle) sur leurs traverses, qui dépassent des deux côtés */}
+      {[3.22, 3.22 - 1.1].map((z) => (
+        <Part key={z} geo={rbox(6.7, 0.07, 0.09, 0.02)} m={T.iron} p={[-0.07, -1.14, z]} castShadow={false} />
+      ))}
       {Array.from({ length: 11 }, (_, i) => (
-        <Part key={i} geo={rbox(0.22, 0.07, 0.55, 0.03)} m={T.mahoganyDark} p={[-3.1 + i * 0.6, -1.21, 3.22]} castShadow={false} />
+        <Part key={i} geo={rbox(0.22, 0.07, 1.7, 0.03)} m={T.mahoganyDark} p={[-3.1 + i * 0.6, -1.21, 2.67]} castShadow={false} />
       ))}
       {/* les tampons, au bout de la voiture */}
       {[-1.6, 1.6].map((z) => (
