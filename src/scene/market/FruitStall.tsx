@@ -17,15 +17,24 @@ const RODS = 5, BEADS = 5
 const ROD_Y = (r: number) => (r - 2) * 0.042
 const LEFT = -0.135, RIGHT = 0.135, STEP = 0.024 // les butées de la tige et l'écart entre deux perles
 
-// les fruits : mandarines, pommes rouges, poires, dans deux cagettes
+// les fruits : mandarines (aplaties, une feuille), pommes rouges (une fossette et une queue), poires (un ventre, un col, une queue),
+// dans deux cagettes. Chaque sorte a sa silhouette : on les reconnaît sans lire la couleur.
 const CRATES = [0.06, 0.3]
-const FRUITS: Item[] = CRATES.flatMap((x0, crate) =>
-  Array.from({ length: 8 }, (_, i) => ({
-    p: [x0 + ((i % 2) - 0.5) * 0.09, STALL.top + 0.105 + (i % 3) * 0.004, -0.105 + (i >> 1) * 0.07] as [number, number, number],
-    s: 0.036,
-    c: [0xf2902f, 0xd6334f, 0xf2902f, 0xa7c850][(i + crate * 2) % 4],
-  })),
+const KINDS = ['mandarin', 'apple', 'mandarin', 'pear'] as const
+const SLOTS = CRATES.flatMap((x0, crate) =>
+  Array.from({ length: 8 }, (_, i) => ({ x: x0 + ((i % 2) - 0.5) * 0.09, y: STALL.top + 0.1 + (i % 3) * 0.004, z: -0.105 + (i >> 1) * 0.07, kind: KINDS[(i + crate * 2) % 4], i })),
 )
+const FRUITS: Item[] = SLOTS.flatMap(({ x, y, z, kind }) =>
+  kind === 'mandarin'
+    ? [{ p: [x, y, z], s: [0.038, 0.03, 0.038], c: 0xf2902f }]
+    : kind === 'apple'
+      ? [{ p: [x, y + 0.002, z], s: [0.037, 0.033, 0.037], c: 0xd6334f }]
+      : [{ p: [x, y - 0.004, z], s: [0.034, 0.03, 0.034], c: 0xa7c850 }, { p: [x + 0.004, y + 0.028, z], s: [0.021, 0.026, 0.021], c: 0xb2cf5a }],
+) as Item[]
+// les queues (bois) et les feuilles des mandarines
+const STEMS: Item[] = SLOTS.filter((f) => f.kind !== 'mandarin').map(({ x, y, z, kind, i }) => ({ p: [x + (kind === 'pear' ? 0.006 : 0), y + (kind === 'pear' ? 0.06 : 0.036), z], s: [0.006, 0.02, 0.006], r: [0.2 * ((i % 3) - 1), 0, 0.3], c: 0x6a4024 })) as Item[]
+const LEAVES: Item[] = SLOTS.filter((f) => f.kind === 'mandarin').map(({ x, y, z, i }) => ({ p: [x + 0.008, y + 0.031, z + 0.004], s: [0.018, 0.005, 0.009], r: [0, i, 0.25], c: 0x4f9a46 })) as Item[]
+const DETAILS = [...STEMS, ...LEAVES]
 
 /**
  * L'étal de fruits : un petit comptoir de bois, deux cagettes de mandarines, de pommes et de poires, et le boulier du marchand,
@@ -94,6 +103,7 @@ export function FruitStall() {
       </Static>
       {/* les fruits des cagettes, en un seul tracé */}
       <Batch geo={SPH} m={fruit} items={FRUITS} />
+      <Batch geo={SPH} m={fruit} items={DETAILS} />
       {/* les perles du boulier : un seul tracé, repositionnées à chaque image */}
       <group position={[-0.27, STALL.top + 0.015, 0]} scale={1.2}>
         <group position={[0, 0.14, -0.04]} rotation-x={-0.22}>

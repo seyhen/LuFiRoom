@@ -70,18 +70,18 @@ type Build = (kit: Kit, out: GainNode, room: Room) => Channel | void
 
 // Gain final d'un canal = volume utilisateur × gain de base.
 const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
-  radio: { build: (k, out, room) => (room.playlist.length ? tracks(k, out, room) : radio(k, out)), base: 0.9 }, // pistes enregistrées, sinon musique générative
+  radio: { build: (k, out, room) => (room.playlist.length ? tracks(k, out, room) : radio(k, out)), base: 1.05 }, // pistes enregistrées, sinon musique générative
   rain: { build: rain, base: 1.0 },
   fan: { build: fan, base: 0.75 },
   purr: { build: purr, base: 0.95 },
   outside: { build: outside, base: 1.0 },
   fire: { build: fire, base: 0.9 },
-  wind: { build: wind, base: 0.9 },
+  wind: { build: wind, base: 0.75 },
   street: { build: street, base: 0.9 },
   murmur: { build: murmur, base: 0.9 },
   espresso: { build: espresso, base: 0.9 },
   pages: { build: pages, base: 1.3 },
-  waves: { build: waves, base: 0.9 },
+  waves: { build: waves, base: 0.78 },
   gulls: { build: gulls, base: 0.65 },
   chimes: { build: chimes, base: 1.2 },
   rails: { build: rails, base: 0.45 },
@@ -96,7 +96,7 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   foghorn: { build: foghorn, base: 1.75 },
   bell: { build: bell, base: 2.2 },
   sonar: { build: sonar, base: 1.5 },
-  bubbles: { build: bubbles, base: 1.3 },
+  bubbles: { build: bubbles, base: 0.9 },
   hull: { build: hull, base: 0.8 },
   engine: { build: engineSound, base: 0.7 },
   whale: { build: whale, base: 0.7 },

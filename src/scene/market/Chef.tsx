@@ -114,8 +114,9 @@ export function LuckyCat({ position }: { position: V3 }) {
           <Part m={figMouth} p={[s * 0.0105, 0.2225, 0.1095]} rotation-z={Math.PI} castShadow={false}>
             <torusGeometry args={[0.0105, 0.003, 4, 8, Math.PI]} />
           </Part>
-          {[-1, 0, 1].map((i) => (
-            <Part key={i} geo={cyl(0.0013, 0.0013, 0.06, 4)} m={figWhisker} p={[s * 0.1, 0.222 + i * 0.011, 0.07]} rotation={orient([s, i * 0.28, 0.35])} castShadow={false} />
+          {/* deux moustaches par joue, assez épaisses pour se lire de loin */}
+          {[-0.5, 0.5].map((i) => (
+            <Part key={i} geo={cyl(0.005, 0.004, 0.06, 6)} m={figWhisker} p={[s * 0.1, 0.222 + i * 0.016, 0.07]} rotation={orient([s, i * 0.4, 0.35])} castShadow={false} />
           ))}
         </group>
       ))}

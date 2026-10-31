@@ -63,12 +63,12 @@ export function CrankRadio({ position, ry = 0 }: { position: V3; ry?: number }) 
             {[-0.06, 0, 0.06].map((x) => (
               <Part key={x} geo={rbox(0.003, 0.009, 0.088, 0.001)} m={I.steel} p={[x, 0.285, 0.03]} castShadow={false} />
             ))}
-            {/* l'antenne télescopique, déployée et penchée en arrière, sa petite boule au bout */}
-            <group position={[-0.17, 0.28, -0.05]} rotation={[-0.35, 0, 0.3]}>
+            {/* l'antenne télescopique, à demi sortie et à peine penchée : elle reste loin de la paroi et de la niche à bougie */}
+            <group position={[-0.17, 0.28, -0.05]} rotation={[-0.1, 0, 0.3]}>
               <Part geo={cyl(0.012, 0.012, 0.04, 8)} m={I.rubber} p={[0, 0.01, 0]} castShadow={false} />
-              <Part geo={cyl(0.009, 0.009, 0.3, 8)} m={I.steel} p={[0, 0.17, 0]} castShadow={false} />
-              <Part geo={cyl(0.006, 0.006, 0.3, 8)} m={I.steel} p={[0, 0.45, 0]} castShadow={false} />
-              <Part geo={SPH} m={I.steel} scale={0.016} p={[0, 0.605, 0]} castShadow={false} />
+              <Part geo={cyl(0.009, 0.009, 0.24, 8)} m={I.steel} p={[0, 0.14, 0]} castShadow={false} />
+              <Part geo={cyl(0.007, 0.007, 0.16, 8)} m={I.steel} p={[0, 0.33, 0]} castShadow={false} />
+              <Part geo={SPH} m={I.steel} scale={0.016} p={[0, 0.415, 0]} castShadow={false} />
             </group>
             {/* le moyeu de la manivelle, sur le flanc droit */}
             <Part geo={cyl(0.045, 0.045, 0.03, 16)} m={I.rubber} p={[0.235, 0.15, 0]} rotation-z={Math.PI / 2} castShadow={false} />

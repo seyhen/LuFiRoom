@@ -80,7 +80,8 @@ export function MarketShell() {
           <Part key={x} geo={rbox(0.04, 0.04, 0.6, 0.012)} m={K.iron} p={[x, -0.02, 0.28]} castShadow={false} />
         ))}
       </group>
-      <AirCon position={[-1.95, 3.7, -2.78]} />
+      {/* décalée vers la gauche : 16 cm d'air entre elle et l'enseigne au néon */}
+      <AirCon position={[-2.27, 3.72, -2.78]} />
       <AirCon position={[-0.55, 3.85, -2.78]} />
       {/* une descente d'eau et son collier, un tuyau de gaz rouillé qui monte le long du mur de gauche, entre le distributeur et le vélo */}
       <Part geo={cyl(0.06, 0.06, 4.2, 12)} m={K.steelDark} p={[2.88, 2.15, -2.88]} />
@@ -96,7 +97,7 @@ export function MarketShell() {
       <Part geo={rbox(0.34, 0.34, 0.03, 0.012)} m={K.cream} p={[-2.55, 2.06, -2.81]} castShadow={false} />
       <Part geo={cyl(0.1, 0.1, 0.02, 16)} m={K.glass} p={[-2.55, 2.06, -2.78]} rotation-x={Math.PI / 2} castShadow={false} />
       <Cable pts={[[-2.55, 1.68, -2.88], [-2.55, 1.2, -2.86], [-2.3, 0.9, -2.84], [-1.9, 0.7, -2.86]]} r={0.016} />
-      <Cable pts={[[-2.7, 2.3, -2.88], [-2.5, 2.8, -2.86], [-2.2, 3.15, -2.82], [-1.95, 3.2, -2.78]]} />
+      <Cable pts={[[-2.7, 2.3, -2.88], [-2.5, 2.8, -2.86], [-2.4, 3.2, -2.82], [-2.27, 3.3, -2.78]]} />
       <Cable pts={[[-1.55, 3.4, -2.8], [-1.2, 3.1, -2.88], [-0.9, 2.9, -2.9], [-0.6, 3.2, -2.9], [-0.2, 3.5, -2.9]]} r={0.01} />
       <Cable pts={[[-0.2, 3.95, -2.88], [0.6, 4.15, -2.86], [1.8, 4.2, -2.86], [2.6, 3.9, -2.86], [2.9, 3.5, -2.88]]} r={0.009} />
       {/* les affiches de cinéma collées sur la brique, une qui se décolle */}

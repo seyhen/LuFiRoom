@@ -1,18 +1,37 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Quaternion, Vector3, type Group, type Mesh } from 'three'
+import { Color, Quaternion, Vector3, type Group, type Mesh } from 'three'
 import { isActive, useStore } from '../../state/store'
 import { clamp, lerp, smooth } from '../../math'
 import { Part, SPH, cyl, rbox, type V3 } from '../parts'
 import { reduceMotion, useSquash } from '../anim'
 import { Static } from '../Static'
 import { I } from './materials'
+import { blob, cone, ell } from '../blob'
+import { skin } from '../materials'
 
 const SEAT = 0.4 // le dessus de la peau de mouton, sur la bûche
 // La moufle est posée là, couchée et tournée, à 1,5 fois sa taille (repère partagé par la moufle, l'aiguille et le fil).
 const GLOVE = { p: [0, SEAT + 0.005, -0.02] as V3, ry: 0.35, s: 1.5 }
 // Les points de couture, le long du bord de la paume (repère de la moufle) : l'aiguille avance d'un point à chaque geste.
-const STITCHES: V3[] = [-0.04, 0.0, 0.04, 0.08, 0.12, 0.16].map((x) => [x, 0.05, 0.095 - Math.abs(x - 0.04) * 0.35] as V3)
+// Elles font le tour du bout de la moufle, du côté du pouce jusqu'à la pointe (sur le bord bombé de la paume, voir PALM).
+const PALM = { x: 0.05, y: 0.03, rx: 0.15, ry: 0.042, rz: 0.095 }
+const STITCHES: V3[] = [1.0, 0.75, 0.5, 0.25, 0, -0.25].map((th) => [PALM.x + PALM.rx * 0.9 * Math.cos(th), PALM.y + PALM.ry * 0.44 + 0.001, PALM.rz * 0.9 * Math.sin(th)] as V3)
+const LEATHER = 0xa8683c, SEAM = 0x6e4228, seamCol = new Color(SEAM)
+/**
+ * La moufle d'une seule peau (`blob`) : la paume longue et bombée, le pouce qui sort côté pièce (+z) et pointe vers le bout, le
+ * poignet qui s'étrangle avant la manchette. Une couture plus sombre fait le tour, sur la tranche.
+ */
+const GLOVE_GEO = blob(
+  [
+    ell([PALM.x, PALM.y, 0], [PALM.rx, PALM.ry, PALM.rz], { color: LEATHER, k: 0.03 }),
+    cone([-0.03, 0.03, 0.055], [0.035, 0.028, 0.135], 0.036, 0.03, { color: LEATHER, k: 0.03 }),
+    ell([0.04, 0.028, 0.14], [0.034, 0.03, 0.03], { color: LEATHER, k: 0.02 }),
+    cone([-0.05, 0.035, 0], [-0.1, 0.037, 0], 0.062, 0.066, { color: LEATHER, k: 0.03 }),
+  ],
+  { h: 0.008, k: 0.03, paint: (p, c) => (Math.abs(p.y - PALM.y) < 0.005 && p.x > -0.06 ? c.lerp(seamCol, 0.85) : c) },
+)
+const GLOVE_MAT = skin({ roughness: 0.55, clearcoat: 0.3 })
 const UP = new Vector3(0, 1, 0), q = new Quaternion(), a = new Vector3(), b = new Vector3()
 
 /**
@@ -65,11 +84,10 @@ export function Mitten({ position }: { position: V3 }) {
         <Part geo={SPH} m={I.fleece} scale={[0.33, 0.07, 0.31]} p={[0, SEAT - 0.04, 0]} />
         {/* la moufle, couchée : la paume, le pouce, la manchette de fourrure (grande, pour qu'on la lise de loin) */}
         <group position={GLOVE.p} rotation-y={GLOVE.ry} scale={GLOVE.s}>
-          <Part geo={SPH} m={I.leather} scale={[0.14, 0.045, 0.1]} p={[0.04, 0.03, 0]} />
-          <Part geo={SPH} m={I.leather} scale={[0.06, 0.035, 0.04]} p={[-0.02, 0.025, -0.1]} rotation-y={0.6} />
-          <Part geo={cyl(0.075, 0.08, 0.1, 18)} m={I.greyFur} p={[-0.14, 0.04, 0]} rotation-z={Math.PI / 2} />
+          <mesh geometry={GLOVE_GEO} material={GLOVE_MAT} castShadow />
+          <Part geo={cyl(0.075, 0.08, 0.1, 18)} m={I.greyFur} p={[-0.15, 0.04, 0]} rotation-z={Math.PI / 2} />
           {/* la bande de laine rouge entre la manchette et la paume */}
-          <Part geo={cyl(0.07, 0.07, 0.025, 18)} m={I.woolRed} p={[-0.085, 0.035, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+          <Part geo={cyl(0.071, 0.071, 0.025, 18)} m={I.woolRed} p={[-0.092, 0.037, 0]} rotation-z={Math.PI / 2} castShadow={false} />
           {/* la broderie sur le dos : une fleur à cinq pétales, son cœur jaune */}
           {Array.from({ length: 5 }, (_, k) => {
             const a = (k / 5) * Math.PI * 2
@@ -77,8 +95,8 @@ export function Mitten({ position }: { position: V3 }) {
           })}
           <Part geo={SPH} m={I.marsh} scale={[0.009, 0.006, 0.009]} p={[0.06, 0.076, 0]} castShadow={false} />
           {/* la couture déjà faite, en points de fil bleu sur le bord */}
-          {[-0.06, -0.01, 0.04, 0.09, 0.14].map((x) => (
-            <Part key={x} geo={SPH} m={I.enamelRim} scale={[0.012, 0.007, 0.006]} p={[x, 0.05, 0.095 - Math.abs(x - 0.04) * 0.35]} castShadow={false} />
+          {STITCHES.slice(0, 4).map((p, k) => (
+            <Part key={k} geo={SPH} m={I.enamelRim} scale={[0.008, 0.006, 0.012]} p={p} rotation-y={[1.0, 0.75, 0.5, 0.25][k]} castShadow={false} />
           ))}
         </group>
         {/* la paire de ciseaux posée sur la peau, devant la moufle (sur la toison, pas dedans : la peau est bombée, elle
@@ -94,7 +112,7 @@ export function Mitten({ position }: { position: V3 }) {
           ))}
         </group>
         {/* la bobine de fil bleu, debout sur la peau, à droite de la moufle (côté caméra) */}
-        <group position={[0.22, 0.392, 0.17]}>
+        <group position={[0.25, 0.394, 0.12]}>
           <Part geo={cyl(0.028, 0.028, 0.07, 14)} m={I.enamelRim} p={[0, 0.035, 0]} castShadow={false} />
           {[0.004, 0.066].map((y) => (
             <Part key={y} geo={cyl(0.038, 0.038, 0.01, 14)} m={I.wood} p={[0, y, 0]} castShadow={false} />

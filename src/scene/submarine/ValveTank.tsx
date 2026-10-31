@@ -5,11 +5,16 @@ import { isActive, useStore } from '../../state/store'
 import { TAU, approach, rand } from '../../math'
 import { Part, SPH, cyl, noRay, rbox } from '../parts'
 import { reduceMotion, useSquash } from '../anim'
-import { S } from './materials'
+import { DOT, S } from './materials'
+import { LIVE, Static } from '../Static'
+import { gummy } from '../materials'
 
 /** Le tube de ballast : son pied au sol, contre le mur du fond, à droite du hublot. */
 export const TANK = { x: 2.45, z: -2.5, h: 2.55 }
 const N = 16
+/** Hauteur d'eau dans le tube, depuis le chapeau du bas : on voit la surface et la bulle d'air au-dessus. */
+const WATER = 1.62
+const surfaceMat = gummy(0xb8f4ff, { roughness: 0.05, clearcoat: 1, transparent: true, opacity: 0.85, emissive: 0x4fc8e8, emissiveIntensity: 0.35, depthWrite: false })
 const dot = new SphereGeometry(1, 10, 8)
 const dummy = new Object3D()
 const bubbleMat = new MeshBasicMaterial({ color: 0xeaffff, transparent: true, opacity: 0.75, depthWrite: false })
@@ -32,7 +37,7 @@ export function ValveTank() {
     const vis = k.current
     items.forEach((b, i) => {
       if (!reduceMotion) b.y = (b.y + b.v * dt * (0.4 + vis)) % 1
-      const y = 0.55 + b.y * (TANK.h - 0.8)
+      const y = 0.5 + b.y * (WATER - 0.2) // les bulles restent sous la surface
       dummy.position.set(Math.cos(b.a + t * b.w * 0.3) * b.r * (0.4 + b.y * 0.6), y, Math.sin(b.a + t * b.w * 0.3) * b.r * (0.4 + b.y * 0.6))
       // un chapelet à la fois : seules les premières bulles montent au calme
       const show = i < 3 ? 0.35 + vis * 0.65 : vis
@@ -45,13 +50,19 @@ export function ValveTank() {
   const wh = TANK.h
   return (
     <group ref={g} userData={{ id: 'valve' }} position={[TANK.x, 0, TANK.z]}>
+      <Static>
       {/* le socle de fonte et le chapeau du bas */}
       <Part geo={cyl(0.46, 0.5, 0.12, 32)} m={S.hullDark} p={[0, 0.06, 0]} />
       <Part geo={cyl(0.4, 0.4, 0.07, 32)} m={S.band} p={[0, 0.155, 0]} castShadow={false} />
       <Part geo={cyl(0.34, 0.36, 0.2, 32)} m={S.brass} p={[0, 0.27, 0]} />
-      {/* l'eau et la vitre : l'eau est dessous, la vitre un peu plus large */}
-      <group ref={water} position={[0, 0.37, 0]}>
-        <Part geo={cyl(0.265, 0.265, wh - 0.55, 28)} m={S.ballast} p={[0, (wh - 0.55) / 2, 0]} castShadow={false} />
+      {/* l'eau et la vitre : l'eau est dessous, la vitre un peu plus large ; l'eau ne monte pas jusqu'en haut, sa surface claire
+          (un ménisque et un liseré) se voit sous la bulle d'air, ce qui la distingue d'un verre vide */}
+      <group ref={water} position={[0, 0.37, 0]} userData={LIVE}>
+        <Part geo={cyl(0.265, 0.265, WATER, 28)} m={S.ballast} p={[0, WATER / 2, 0]} castShadow={false} />
+        <Part geo={cyl(0.262, 0.262, 0.012, 28)} m={surfaceMat} p={[0, WATER + 0.008, 0]} castShadow={false} />
+        <Part m={surfaceMat} p={[0, WATER + 0.004, 0]} rotation-x={Math.PI / 2} castShadow={false}>
+          <torusGeometry args={[0.262, 0.012, 6, 32]} />
+        </Part>
       </group>
       <Part geo={cyl(0.29, 0.29, wh - 0.5, 28)} m={S.tube} p={[0, 0.37 + (wh - 0.5) / 2, 0]} castShadow={false} />
       {/* le chapeau du haut, avec sa soupape et son anneau */}
@@ -72,7 +83,7 @@ export function ValveTank() {
       <Part geo={cyl(0.05, 0.05, 0.3, 14)} m={S.copper} p={[0, 0.45, 0.74]} />
       <Part geo={cyl(0.085, 0.085, 0.1, 18)} m={S.brass} p={[0, 0.66, 0.74]} />
       <Part geo={cyl(0.012, 0.012, 0.16, 6)} m={S.steel} p={[0, 0.76, 0.74]} castShadow={false} />
-      <group ref={wheel} position={[0, 0.82, 0.74]}>
+      <group ref={wheel} position={[0, 0.82, 0.74]} userData={LIVE}>
         <Part m={S.red} rotation-x={Math.PI / 2}>
           <torusGeometry args={[0.2, 0.025, 10, 32]} />
         </Part>
@@ -82,8 +93,9 @@ export function ValveTank() {
         <Part geo={cyl(0.04, 0.04, 0.05, 12)} m={S.brass} p={[0, 0.02, 0]} castShadow={false} />
         {/* la poignée du volant */}
         <Part geo={cyl(0.012, 0.012, 0.09, 6)} m={S.brassDull} p={[0.19, 0.05, 0]} castShadow={false} />
-        <Part geo={SPH} m={S.brass} scale={0.028} p={[0.19, 0.1, 0]} castShadow={false} />
+        <Part geo={DOT} m={S.brass} scale={0.028} p={[0.19, 0.1, 0]} castShadow={false} />
       </group>
+      </Static>
     </group>
   )
 }

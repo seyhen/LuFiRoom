@@ -5,8 +5,8 @@ import { TAU, smooth } from '../../math'
 import { Part, SPH, cyl, noRay, rbox } from '../parts'
 import { mood, reduceMotion, useSquash } from '../anim'
 import { glowTex } from '../textures'
-import { LIVE } from '../Static'
-import { S } from './materials'
+import { LIVE, Static } from '../Static'
+import { DOT, S } from './materials'
 import { FISH_BODY, FISH_MAT, FISH_TAIL, FishEyes } from './Creatures'
 
 /** La table ronde : son centre au sol et la hauteur du plateau. */
@@ -28,10 +28,11 @@ function BankerLamp() {
   })
   return (
     <group ref={g} userData={{ id: 'lamp' }} position={[TABLE.x - 0.2, TABLE.top, TABLE.z - 0.05]} rotation-y={0.55}>
+      <Static>
       <Part geo={cyl(0.13, 0.15, 0.04, 22)} m={S.brass} p={[0, 0.02, 0]} />
       <Part geo={cyl(0.1, 0.12, 0.05, 22)} m={S.brassDull} p={[0, 0.065, 0]} castShadow={false} />
       <Part geo={cyl(0.017, 0.022, 0.3, 10)} m={S.brass} p={[0, 0.22, 0]} />
-      <Part geo={SPH} m={S.brass} scale={0.04} p={[0, 0.38, 0]} castShadow={false} />
+      <Part geo={DOT} m={S.brass} scale={0.04} p={[0, 0.38, 0]} castShadow={false} />
       {/* le bras et l'abat-jour, couché le long de x, qui penche vers l'avant */}
       <group position={[0, 0.42, 0]} rotation-z={0.04}>
         <Part geo={cyl(0.012, 0.012, 0.1, 6)} m={S.brass} p={[0, -0.02, 0]} castShadow={false} />
@@ -42,7 +43,8 @@ function BankerLamp() {
       </group>
       {/* la chaînette d'interrupteur */}
       <Part geo={cyl(0.004, 0.004, 0.12, 4)} m={S.brassDull} p={[0.1, 0.33, 0.08]} castShadow={false} />
-      <Part geo={SPH} m={S.brass} scale={0.014} p={[0.1, 0.27, 0.08]} castShadow={false} />
+      <Part geo={DOT} m={S.brass} scale={0.014} p={[0.1, 0.27, 0.08]} castShadow={false} />
+      </Static>
       <pointLight ref={light} color={0xffd9a0} intensity={0} distance={6} decay={1.5} position={[0, 0.45, 0.14]} />
       <sprite ref={glow} scale={1.5} position={[0, 0.45, 0.1]} raycast={noRay}>
         <spriteMaterial map={glowTex} color={0xbfffd0} blending={AdditiveBlending} transparent depthWrite={false} opacity={0} />
@@ -51,22 +53,26 @@ function BankerLamp() {
   )
 }
 
-/** Deux poissons rouges qui tournent dans le bocal, en sens contraire ; l'eau est dans `Part`s, eux seuls bougent. */
+/**
+ * Deux poissons rouges qui tournent dans le bocal, dans le même sens et toujours face à face sur le cercle (ils ne se croisent
+ * jamais) ; petits (échelle 0,7), au milieu de l'eau, loin de la paroi et au-dessus de l'algue. L'eau est dans `Part`s, eux seuls bougent.
+ */
 function Goldfish() {
-  const fish = useRef<Group[]>([])
-  useFrame(({ clock }) => {
+  const fish = useRef<Group[]>([]), ph = useRef(0)
+  useFrame(({ clock }, delta) => {
     const t = reduceMotion ? 0 : clock.elapsedTime
+    if (!reduceMotion) ph.current += Math.min(delta, 0.05) * 0.6
     fish.current.forEach((f, i) => {
-      const a = t * (0.55 + i * 0.12) * (i ? -1 : 1) + i * 2.4, r = 0.085 + i * 0.015
-      f.position.set(Math.cos(a) * r, 0.19 + Math.sin(t * 0.8 + i * 3) * 0.025 + i * 0.03, Math.sin(a) * r)
-      f.rotation.y = -a + (i ? -Math.PI / 2 : Math.PI / 2)
+      const a = ph.current + i * Math.PI, r = 0.05 + i * 0.01
+      f.position.set(Math.cos(a) * r, 0.155 + i * 0.03 + Math.sin(t * 0.8 + i * 3) * 0.01, Math.sin(a) * r)
+      f.rotation.y = -a - Math.PI / 2
       f.children[1].rotation.y = Math.sin(t * 8 + i) * 0.4
     })
   })
   return (
     <group userData={LIVE}>
       {[0, 1].map((i) => (
-        <group key={i} ref={(el) => void (el && (fish.current[i] = el))} scale={0.85}>
+        <group key={i} ref={(el) => void (el && (fish.current[i] = el))} scale={0.7}>
           <mesh geometry={FISH_BODY} material={FISH_MAT} />
           <group position={[-0.055, 0, 0]}>
             <mesh geometry={FISH_TAIL} material={FISH_MAT} />
@@ -106,9 +112,11 @@ export function Table() {
         <Part geo={SPH} m={S.bowl} scale={[0.155, 0.135, 0.155]} p={[0, 0.17, 0]} castShadow={false} />
         <Part geo={SPH} m={S.glass} scale={[0.17, 0.15, 0.17]} p={[0, 0.17, 0]} castShadow={false} />
         <Part geo={cyl(0.11, 0.11, 0.026, 20)} m={S.cream} p={[0, 0.045, 0]} castShadow={false} />
-        <Part geo={SPH} m={S.steel} scale={[0.035, 0.025, 0.03]} p={[0.04, 0.06, 0.03]} castShadow={false} />
-        <Part geo={cyl(0.003, 0.004, 0.12, 4)} m={S.verdigris} p={[-0.05, 0.11, -0.03]} rotation-z={0.15} castShadow={false} />
-        <Part geo={cyl(0.003, 0.004, 0.09, 4)} m={S.verdigris} p={[-0.03, 0.1, -0.05]} rotation-z={-0.2} castShadow={false} />
+        <Part geo={DOT} m={S.steel} scale={[0.035, 0.025, 0.03]} p={[0.04, 0.06, 0.03]} castShadow={false} />
+        {/* l'algue : trois rubans courts plantés contre la paroi du fond, sous la nage des poissons */}
+        {[[-0.1, -0.05, 0.04, 0.25], [-0.075, -0.085, 0.034, -0.2], [-0.112, -0.012, 0.03, 0.5]].map(([px, pz, h, tilt], i) => (
+          <Part key={i} geo={DOT} m={S.verdigris} scale={[0.009, h, 0.018]} p={[px, 0.058 + h * 0.9, pz]} rotation={[tilt * 0.4, 0.6 + i, tilt]} castShadow={false} />
+        ))}
         <Part geo={cyl(0.075, 0.07, 0.014, 18)} m={S.glass} p={[0, 0.3, 0]} castShadow={false} />
         <Goldfish />
       </group>

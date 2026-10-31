@@ -1,4 +1,4 @@
-import { AdditiveBlending, MeshBasicMaterial } from 'three'
+import { AdditiveBlending, MeshBasicMaterial, SphereGeometry } from 'three'
 import { gummy, M } from '../materials'
 import { deckTex, gaugeTex, platesTex, rugTex, sonarTex, sweepTex, telegraphTex } from './textures'
 
@@ -33,9 +33,10 @@ export const S = {
   bowl: gummy(0x8fe6ee, { roughness: 0.1, clearcoat: 1, transparent: true, opacity: 0.3, depthWrite: false }),
   tube: gummy(0xcdeff0, { roughness: 0.05, clearcoat: 1, transparent: true, opacity: 0.2, depthWrite: false }),
   // l'eau du tube de ballast : plus profonde que le mur vert-de-gris pour se lire, sans écriture de profondeur (les bulles restent visibles)
-  ballast: gummy(0x1f9fd0, { roughness: 0.1, clearcoat: 1, transparent: true, opacity: 0.7, depthWrite: false }),
+  ballast: gummy(0x1690c8, { roughness: 0.1, clearcoat: 1, transparent: true, opacity: 0.84, emissive: 0x0e6a96, emissiveIntensity: 0.4, depthWrite: false }),
   gauge: gummy(0xffffff, { map: gaugeTex, roughness: 0.4, clearcoat: 0.7 }),
-  telegraph: gummy(0xffffff, { map: telegraphTex, roughness: 0.4, clearcoat: 0.7 }),
+  // le cadran du télégraphe : émaillé, rétroéclairé la nuit (voir Telegraph) pour ne pas se fondre en silhouette noire
+  telegraph: gummy(0xffffff, { map: telegraphTex, emissive: 0xffffff, emissiveMap: telegraphTex, emissiveIntensity: 0.08, roughness: 0.4, clearcoat: 0.7 }),
   gold: gummy(0xf0c24e, { roughness: 0.3, clearcoat: 0.9 }),
   fish: gummy(0xf08a3c, { roughness: 0.35, clearcoat: 0.8 }),
   /** La conque : nacre rose, lèvre corail, et l'intérieur qui rougeoit quand elle chante (voir Conch). */
@@ -50,3 +51,6 @@ export const S = {
   /** Le verre de la lampe de bureau, vert bouteille. */
   lampGlass: gummy(0x3f9a6e, { roughness: 0.2, clearcoat: 0.9, emissive: 0x5ee0a0, emissiveIntensity: 0.1, transparent: true, opacity: 0.9 }),
 }
+
+/** Une sphère légère (12 × 8) pour les petits détails (rivets, boutons, vis) : `SPH` (32 × 22) y dépense des milliers de triangles pour rien. */
+export const DOT = new SphereGeometry(1, 12, 8)

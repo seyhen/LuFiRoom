@@ -3,9 +3,10 @@ import { useFrame } from '@react-three/fiber'
 import { Color, type Group, type Mesh, type MeshBasicMaterial, type PointLight } from 'three'
 import { isActive, useStore } from '../../state/store'
 import { TAU, approach } from '../../math'
-import { Part, SPH, cyl, rbox } from '../parts'
+import { Part, cyl, rbox } from '../parts'
 import { reduceMotion, useSquash } from '../anim'
-import { S } from './materials'
+import { DOT, S } from './materials'
+import { LIVE, Static } from '../Static'
 
 /** La console du sonar : son pied au sol, contre le mur du fond, dans l'angle gauche. */
 export const SONAR = { x: -1.75, z: -2.45 }
@@ -44,13 +45,14 @@ export function Sonar() {
   })
   return (
     <group ref={g} userData={{ id: 'sonar' }} position={[SONAR.x, 0, SONAR.z]}>
+      <Static>
       {/* le coffre, sa plinthe, son bandeau de laiton */}
       <Part geo={rbox(1.8, 0.85, 0.85, 0.08)} m={S.hullDark} p={[0, 0.5, 0]} />
       <Part geo={rbox(1.86, 0.1, 0.9, 0.04)} m={S.woodDark} p={[0, 0.07, 0]} castShadow={false} />
       <Part geo={rbox(1.84, 0.05, 0.88, 0.02)} m={S.band} p={[0, 0.93, 0]} castShadow={false} />
       <Part geo={rbox(0.8, 0.5, 0.03, 0.02)} m={S.woodLight} p={[0, 0.5, 0.435]} castShadow={false} />
       {[-0.28, 0.28].map((x) => (
-        <Part key={x} geo={SPH} m={S.brass} scale={0.025} p={[x, 0.5, 0.46]} castShadow={false} />
+        <Part key={x} geo={DOT} m={S.brass} scale={0.025} p={[x, 0.5, 0.46]} castShadow={false} />
       ))}
       {/* le pupitre incliné */}
       <group position={[0, 1.3, 0.04]} rotation-x={-TILT}>
@@ -84,11 +86,11 @@ export function Sonar() {
         {[-0.12, 0.04, 0.2].map((x, i) => (
           <group key={x} position={[x, -0.36, 0.05]}>
             <Part geo={cyl(0.012, 0.012, 0.1, 6)} m={S.steel} p={[0, 0.03, 0.03]} rotation-x={0.35 + i * 0.2} castShadow={false} />
-            <Part geo={SPH} m={S.red} scale={0.022} p={[0, 0.065, 0.06]} castShadow={false} />
+            <Part geo={DOT} m={S.red} scale={0.022} p={[0, 0.065, 0.06]} castShadow={false} />
           </group>
         ))}
         {[-0.7, -0.62, -0.54].map((x, i) => (
-          <mesh key={x} ref={(el) => void (el && (lamps.current[i] = el))} position={[x, 0.38, 0.056]}>
+          <mesh key={x} ref={(el) => void (el && (lamps.current[i] = el))} position={[x, 0.38, 0.056]} userData={LIVE}>
             <circleGeometry args={[0.025, 12]} />
             <meshBasicMaterial color={0x3cff9a} />
           </mesh>
@@ -102,6 +104,7 @@ export function Sonar() {
           </group>
         ))}
       </group>
+      </Static>
       <pointLight ref={light} color={0x6cffb0} intensity={0} distance={3.2} decay={1.6} position={[0.1, 1.5, 0.9]} />
     </group>
   )

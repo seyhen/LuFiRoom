@@ -1,5 +1,4 @@
 import { Static } from '../Static'
-import { Motes } from '../Floaters'
 import { SubShell } from './SubShell'
 import { DeepView, Porthole } from './DeepView'
 import { Sonar } from './Sonar'
@@ -11,6 +10,7 @@ import { Table } from './BankerLamp'
 import { Seating } from './Seating'
 import { Conch } from './Conch'
 import { Decor } from './Decor'
+import { Plankton } from './Plankton'
 
 /**
  * Le carré d'un sous-marin de légende, posé sur l'abîme : un hublot de laiton sur l'eau turquoise, une console de sonar qui
@@ -32,7 +32,7 @@ export function SubScene() {
       <Seating />
       <Conch />
       <Decor />
-      <Motes colors={[0xc8f4ee, 0x8ff0e0]} opacity={[0.3, 0.5]} n={22} />
+      <Plankton />
     </Static>
   )
 }

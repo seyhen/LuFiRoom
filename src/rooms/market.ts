@@ -45,9 +45,9 @@ export const market: Room = {
   objects: [
     { id: 'tram', target: 'tram', label: 'Baie · le tram', anchor: [1.4, 2.95, -2.9] },
     { id: 'neon', target: 'neon', label: 'Enseigne · néon', anchor: [-1.45, 2.5, -2.55] },
-    { id: 'wok', target: 'sizzle', label: 'Wok · ça saute', anchor: [0.28, 1.45, -0.87] },
-    { id: 'pot', target: 'simmer', label: 'Marmite · bouillon', anchor: [1.4, 1.6, -0.87] },
-    { id: 'lamp', target: 'night', label: 'Lanterne · jour / nuit', anchor: [1.4, 2.2, -0.73] },
+    { id: 'wok', target: 'sizzle', label: 'Wok · ça saute', anchor: [0.24, 1.28, -0.87] },
+    { id: 'pot', target: 'simmer', label: 'Marmite · bouillon', anchor: [1.42, 1.28, -0.85] },
+    { id: 'lamp', target: 'night', label: 'Lanterne · jour / nuit', anchor: [1.4, 2.36, -0.73] },
     { id: 'radio', target: 'radio', label: 'Télé · lofi', anchor: [-2.35, 1.0, 2.7] },
     { id: 'abacus', target: 'abacus', label: 'Boulier · les comptes', anchor: [0.93, 0.95, 2.0] },
   ],

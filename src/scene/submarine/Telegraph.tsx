@@ -3,8 +3,10 @@ import { useFrame } from '@react-three/fiber'
 import type { Group } from 'three'
 import { isActive, useStore } from '../../state/store'
 import { Part, SPH, cyl, rbox } from '../parts'
-import { reduceMotion, useSquash } from '../anim'
-import { S } from './materials'
+import { mood, reduceMotion, useSquash } from '../anim'
+import { smooth } from '../../math'
+import { DOT, S } from './materials'
+import { LIVE, Static } from '../Static'
 
 /** Le télégraphe de machines : son pied au sol, devant la droite de la pièce. */
 export const TELEGRAPH = { x: 2.5, z: 1.8, head: 1.38 }
@@ -29,16 +31,20 @@ export function Telegraph() {
     order.current.rotation.z = s.a
     answer.current.rotation.z = r.current
     head.current.position.x = reduceMotion ? 0 : on ? Math.sin(t * 43) * 0.0035 : 0
+    // la nuit, la lampe du cadran s'allume : le cadran reste lisible
+    S.telegraph.emissiveIntensity = 0.08 + smooth(mood.night) * 0.5
   })
   return (
     <group ref={g} userData={{ id: 'telegraph' }} position={[TELEGRAPH.x, 0, TELEGRAPH.z]} rotation-y={0.8}>
+      <Static>
       <Part geo={cyl(0.3, 0.34, 0.1, 28)} m={S.hullDark} p={[0, 0.05, 0]} />
       <Part geo={cyl(0.22, 0.28, 0.14, 28)} m={S.brass} p={[0, 0.17, 0]} />
       <Part geo={cyl(0.075, 0.095, 1.0, 20)} m={S.brass} p={[0, 0.7, 0]} />
       {[0.45, 0.95].map((y) => (
         <Part key={y} geo={cyl(0.1, 0.1, 0.05, 20)} m={S.brassDull} p={[0, y, 0]} castShadow={false} />
       ))}
-      <group ref={head} position={[0, TELEGRAPH.head, 0]}>
+      <group ref={head} position={[0, TELEGRAPH.head, 0]} userData={LIVE}>
+        <Static>
         {/* le boîtier du cadran : une lentille de laiton, la face émaillée et la vitre */}
         <Part geo={cyl(0.41, 0.41, 0.2, 40)} m={S.brass} rotation-x={Math.PI / 2} />
         <Part m={S.brassDull} p={[0, 0, 0.1]}>
@@ -49,19 +55,22 @@ export function Telegraph() {
         </mesh>
         <Part geo={cyl(0.37, 0.37, 0.008, 40)} m={S.glass} p={[0, 0, 0.16]} rotation-x={Math.PI / 2} castShadow={false} />
         {/* l'aiguille de réponse (laiton, fine) sous la poignée d'ordre (rouge, large) */}
-        <group ref={answer} position={[0, 0, 0.115]}>
+        <group ref={answer} position={[0, 0, 0.115]} userData={LIVE}>
           <Part geo={rbox(0.026, 0.3, 0.01, 0.006)} m={S.brass} p={[0, 0.15, 0]} castShadow={false} />
-          <Part geo={SPH} m={S.brass} scale={[0.026, 0.04, 0.012]} p={[0, 0.32, 0]} castShadow={false} />
+          <Part geo={DOT} m={S.brass} scale={[0.026, 0.04, 0.012]} p={[0, 0.32, 0]} castShadow={false} />
         </group>
-        <group ref={order} position={[0, 0, 0.135]}>
-          <Part geo={rbox(0.05, 0.3, 0.014, 0.01)} m={S.red} p={[0, 0.15, 0]} castShadow={false} />
-          <Part geo={SPH} m={S.red} scale={[0.045, 0.06, 0.02]} p={[0, 0.33, 0]} castShadow={false} />
+        <group ref={order} position={[0, 0, 0.135]} userData={LIVE}>
+          {/* la poignée d'ordre : une barre fine qui laisse lire le cran, et sa prise au-delà du cadran, sur la lunette */}
+          <Part geo={rbox(0.026, 0.4, 0.014, 0.008)} m={S.red} p={[0, 0.2, 0]} castShadow={false} />
+          <Part geo={SPH} m={S.red} scale={[0.045, 0.055, 0.03]} p={[0, 0.43, 0.035]} castShadow={false} />
         </group>
-        <Part geo={SPH} m={S.brass} scale={0.04} p={[0, 0, 0.15]} castShadow={false} />
+        <Part geo={DOT} m={S.brass} scale={0.04} p={[0, 0, 0.15]} castShadow={false} />
         {/* le petit timbre sur le dessus */}
         <Part geo={cyl(0.012, 0.012, 0.1, 6)} m={S.brassDull} p={[0, 0.45, 0]} castShadow={false} />
         <Part geo={SPH} m={S.brass} scale={[0.08, 0.04, 0.08]} p={[0, 0.51, 0]} />
+        </Static>
       </group>
+      </Static>
     </group>
   )
 }

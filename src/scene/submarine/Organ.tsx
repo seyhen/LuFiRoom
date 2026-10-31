@@ -1,16 +1,17 @@
 import { useMemo, useRef } from 'react'
 import type { Group } from 'three'
-import { Part, SPH, cyl, rbox, type V3 } from '../parts'
+import { Part, cyl, rbox, type V3 } from '../parts'
 import { reduceMotion } from '../anim'
 import { useBeat } from '../objects/useBeat'
 import { LIVE, Static } from '../Static'
-import { S } from './materials'
+import { DOT, S } from './materials'
 
 /** L'orgue : le centre de son coffre au sol, contre le mur de gauche. */
 export const ORGAN = { x: -2.62, z: 0.5 }
 const PIPES = 13
 const KEYS = 14
-const KEY_Y = 0.95 // hauteur de repos d'une touche : le rebond (useBeat) la réécrit à chaque image, il part de là
+const KEY_Y = 0.937 // le dessous d'une touche au repos : posée sur la barre de feutre (dessus à 0,936), à 2,7 cm au-dessus du pupitre
+const KEY_PIVOT = 0.31 // les touches basculent autour de leur talon (x du pupitre), seul le nez descend : jamais dans le bois
 
 /**
  * L'orgue du capitaine : un coffre d'acajou contre la paroi, treize tuyaux de laiton en éventail qui montent vers la corniche,
@@ -26,7 +27,7 @@ export function Organ({ position }: { position: V3 }) {
     })
     keys.current.forEach((k, i) => {
       const dip = on && !reduceMotion ? Math.max(0, Math.sin(t * 3.1 + i * 2.4)) ** 7 * 0.022 + (i % 5 === 0 ? pulse * 0.016 : 0) : 0
-      k.position.y = KEY_Y - dip
+      k.rotation.z = -dip * 1.4 // nez enfoncé de 2 cm au plus
     })
   }, 0.03)
   return (
@@ -41,7 +42,7 @@ export function Organ({ position }: { position: V3 }) {
         {[-1.0, 0, 1.0].map((z) => (
           <group key={z}>
             <Part geo={rbox(0.03, 0.62, 0.78, 0.02)} m={S.woodDark} p={[0.31, 0.5, z]} castShadow={false} />
-            <Part geo={SPH} m={S.brass} scale={0.034} p={[0.335, 0.5, z]} castShadow={false} />
+            <Part geo={DOT} m={S.brass} scale={0.034} p={[0.335, 0.5, z]} castShadow={false} />
           </group>
         ))}
         {/* les tuyaux : une ligne qui monte vers le milieu puis redescend */}
@@ -58,23 +59,26 @@ export function Organ({ position }: { position: V3 }) {
           )
         })}
         {/* le pupitre, les registres et le clavier d'ivoire qui avance au-dessus du coffre */}
-        <Part geo={rbox(0.5, 0.1, 1.7, 0.04)} m={S.woodLight} p={[0.5, 0.88, 0]} />
+        <Part geo={rbox(0.5, 0.1, 1.7, 0.04)} m={S.woodLight} p={[0.5, 0.86, 0]} />
+        {/* la barre de feutre rouge où reposent les talons des touches */}
+        <Part geo={rbox(0.08, 0.026, 1.6, 0.008)} m={S.leatherDark} p={[KEY_PIVOT + 0.03, 0.923, 0]} castShadow={false} />
         <Part geo={rbox(0.1, 0.7, 1.7, 0.03)} m={S.woodDark} p={[0.2, 0.8, 0]} castShadow={false} />
         {[-0.6, -0.3, 0, 0.3, 0.6].map((z) => (
           <group key={z} position={[0.3, 1.2, z]}>
             <Part geo={cyl(0.035, 0.035, 0.1, 10)} m={S.cream} rotation-z={Math.PI / 2} p={[0.04, 0, 0]} castShadow={false} />
-            <Part geo={SPH} m={S.brass} scale={0.032} p={[0.1, 0, 0]} castShadow={false} />
+            <Part geo={DOT} m={S.brass} scale={0.032} p={[0.1, 0, 0]} castShadow={false} />
           </group>
         ))}
         {Array.from({ length: KEYS }, (_, i) => (
-          <group key={i} ref={(el) => void (el && (keys.current[i] = el))} userData={LIVE} position={[0.5, KEY_Y, (i - (KEYS - 1) / 2) * 0.11]}>
-            <Part geo={rbox(0.38, 0.045, 0.1, 0.012)} m={S.cream} castShadow={false} />
-            {[1, 3, 4, 6, 8, 9, 11].includes(i) && <Part geo={rbox(0.2, 0.05, 0.062, 0.01)} m={S.iron} p={[-0.08, 0.04, 0.055]} castShadow={false} />}
+          <group key={i} ref={(el) => void (el && (keys.current[i] = el))} userData={LIVE} position={[KEY_PIVOT, KEY_Y, (i - (KEYS - 1) / 2) * 0.11]}>
+            <Part geo={rbox(0.38, 0.045, 0.1, 0.012)} m={S.cream} p={[0.19, 0.0225, 0]} castShadow={false} />
+            {[1, 3, 4, 6, 8, 9, 11].includes(i) && <Part geo={rbox(0.2, 0.05, 0.062, 0.01)} m={S.iron} p={[0.11, 0.0625, 0.055]} castShadow={false} />}
           </group>
         ))}
         {/* un chandelier de laiton et une partition sur le coffre */}
         <Part geo={rbox(0.014, 0.3, 0.42, 0.006)} m={S.paper} p={[0.22, 1.35, -0.3]} rotation-z={0.25} castShadow={false} />
-        <Part geo={cyl(0.04, 0.05, 0.18, 12)} m={S.brass} p={[0.42, 1.04, 0.8]} castShadow={false} />
+        <Part geo={cyl(0.026, 0.038, 0.12, 12)} m={S.brass} p={[0.42, 0.97, 0.808]} castShadow={false} />
+        <Part geo={cyl(0.018, 0.018, 0.1, 10)} m={S.cream} p={[0.42, 1.08, 0.808]} castShadow={false} />
         </Static>
       </group>
       <group ref={notes.group} />

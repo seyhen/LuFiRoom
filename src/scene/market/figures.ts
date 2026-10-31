@@ -191,6 +191,8 @@ export const catBody = once(() =>
         blot(0.08, 0.15, -0.065, 0.06, CAT.black)
         blot(-0.085, 0.09, -0.03, 0.05, CAT.orange)
         blot(0.062, 0.222, -0.105, 0.03, CAT.black)
+        // le rouge du collier ne remonte pas sur le museau ni les joues (le fondu des couleurs du blob le faisait déborder)
+        if (p.y > 0.184 && p.y < 0.215 && p.z > 0.04) tint(c, CAT.white, Math.min(1, Math.max(0, (c.r - c.g) * 8)) * sstep(0.184, 0.192, p.y))
         // le creux rose des oreilles : devant, le long de leur axe
         if (p.z > 0.012) for (const s of [-1, 1]) {
           const ax = s * 0.064, bx = s * 0.086, dx = bx - ax, dy = 0.045, t = Math.min(1, Math.max(0, ((p.x - ax) * dx + (p.y - 0.295) * dy) / (dx * dx + dy * dy)))

@@ -1,5 +1,5 @@
-import { Part, SPH, cyl, rbox } from '../parts'
-import { S } from './materials'
+import { Part, cyl, rbox } from '../parts'
+import { DOT, S } from './materials'
 import { PORT } from './SubShell'
 import { Octopus } from './Creatures'
 
@@ -8,7 +8,7 @@ function Studs({ n, from, to, y, z }: { n: number; from: number; to: number; y: 
   return (
     <>
       {Array.from({ length: n }, (_, i) => (
-        <Part key={i} geo={SPH} m={S.brass} scale={0.018} p={[from + ((to - from) * i) / (n - 1), y, z]} castShadow={false} />
+        <Part key={i} geo={DOT} m={S.brass} scale={0.018} p={[from + ((to - from) * i) / (n - 1), y, z]} castShadow={false} />
       ))}
     </>
   )

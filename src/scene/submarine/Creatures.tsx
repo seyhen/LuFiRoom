@@ -1,7 +1,7 @@
-import { Part, SPH, type V3 } from '../parts'
+import { Part, type V3 } from '../parts'
 import { blob, cone, ell, pair } from '../blob'
 import { skin } from '../materials'
-import { S } from './materials'
+import { DOT, S } from './materials'
 
 // Les créatures du sous-marin, d'une seule peau (voir blob.ts) : le poulpe en peluche de la banquette et les poissons rouges du bocal.
 
@@ -46,9 +46,9 @@ export function Octopus() {
       <mesh geometry={OCTO} material={OCTO_MAT} castShadow receiveShadow />
       {[-1, 1].map((x) => (
         <group key={x} position={[x * 0.062, 0.2, 0.115]}>
-          <Part geo={SPH} m={S.cream} scale={[0.036, 0.04, 0.02]} castShadow={false} />
-          <Part geo={SPH} m={S.iron} scale={[0.024, 0.028, 0.016]} p={[0, -0.002, 0.012]} castShadow={false} />
-          <Part geo={SPH} m={S.cream} scale={0.007} p={[0.008, 0.01, 0.026]} castShadow={false} />
+          <Part geo={DOT} m={S.cream} scale={[0.036, 0.04, 0.02]} castShadow={false} />
+          <Part geo={DOT} m={S.iron} scale={[0.024, 0.028, 0.016]} p={[0, -0.002, 0.012]} castShadow={false} />
+          <Part geo={DOT} m={S.cream} scale={0.007} p={[0.008, 0.01, 0.026]} castShadow={false} />
         </group>
       ))}
       {/* un petit sourire */}
@@ -92,9 +92,9 @@ export function FishEyes() {
     <>
       {[-1, 1].map((z) => (
         <group key={z} position={[0.04, 0.012, z * 0.03]}>
-          <Part geo={SPH} m={S.cream} scale={0.017} castShadow={false} />
-          <Part geo={SPH} m={S.iron} scale={0.012} p={[0.005, 0, z * 0.007]} castShadow={false} />
-          <Part geo={SPH} m={S.cream} scale={0.004} p={[0.008, 0.005, z * 0.012]} castShadow={false} />
+          <Part geo={DOT} m={S.cream} scale={0.017} castShadow={false} />
+          <Part geo={DOT} m={S.iron} scale={0.012} p={[0.005, 0, z * 0.007]} castShadow={false} />
+          <Part geo={DOT} m={S.cream} scale={0.004} p={[0.008, 0.005, z * 0.012]} castShadow={false} />
         </group>
       ))}
     </>

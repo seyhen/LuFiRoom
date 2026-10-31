@@ -108,11 +108,13 @@ export function IceWindow() {
         <planeGeometry args={[0.56, 0.4]} />
       </mesh>
       {/* les joints de glace (le bloc est fait de quatre morceaux) */}
-      <Part geo={rbox(0.018, 0.46, 0.13, 0.008)} m={I.iceRim} p={[0, 0, 0.022]} castShadow={false} />
-      <Part geo={rbox(0.6, 0.018, 0.13, 0.008)} m={I.iceRim} p={[0, 0.02, 0.022]} castShadow={false} />
+      {/* limités à la face plate du bloc : ils ne descendent plus jusqu'à l'appui */}
+      <Part geo={rbox(0.018, 0.4, 0.13, 0.008)} m={I.iceRim} p={[0, 0, 0.022]} castShadow={false} />
+      <Part geo={rbox(0.56, 0.018, 0.13, 0.008)} m={I.iceRim} p={[0, 0.02, 0.022]} castShadow={false} />
       {/* pas d'encadrement en relief (il faisait meuble, deux colonnes) : le bloc est serti dans un creux bleuté de la paroi,
           et seul l'appui avance, de la teinte de la paroi. Le givre est peint dans la glace (iceTex). */}
-      <Part geo={rbox(0.92, 0.08, 0.22, 0.035)} m={I.frame} p={[0, -0.3, 0.08]} />
+      {/* l'appui : de la neige tassée unie (une texture de blocs sur une boîte arrondie n'en montrait que le centre, étiré) */}
+      <Part geo={rbox(0.92, 0.08, 0.22, 0.035)} m={I.snow} p={[0, -0.3, 0.08]} />
       {/* sur le rebord : une boussole de laiton et une petite pile de trois boules de neige qu'on a roulées */}
       <group position={[-0.22, -0.27, 0.15]}>
         <Part geo={cyl(0.05, 0.05, 0.02, 20)} m={I.brass} p={[0, 0.01, 0]} castShadow={false} />

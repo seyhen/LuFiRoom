@@ -77,7 +77,7 @@ function Grill() {
         ))}
         {Array.from({ length: 6 }, (_, i) => (
           <group key={i} position={[-0.3 + i * 0.12, 0.485, 0]}>
-            <Part geo={cyl(0.005, 0.005, 0.38, 4)} m={K.woodPale} rotation-x={Math.PI / 2} castShadow={false} />
+            <Part geo={cyl(0.008, 0.008, 0.38, 6)} m={K.woodPale} rotation-x={Math.PI / 2} castShadow={false} />
             {[0, 1, 2].map((j) => (
               <Part key={j} geo={SPH} m={j === 1 ? K.scallion : K.woodDark} scale={[0.026, 0.02, 0.022]} p={[0, 0.002, -0.07 + j * 0.07]} castShadow={false} />
             ))}
@@ -130,7 +130,8 @@ function Greenery() {
         <Part geo={cyl(0.24, 0.21, 0.7, 20)} m={K.steel} p={[0, 0.35, 0]} />
         <Part geo={cyl(0.26, 0.26, 0.05, 20)} m={K.steelDark} p={[0, 0.72, 0]} castShadow={false} />
         <Part geo={cyl(0.03, 0.03, 0.03, 8)} m={K.steelDark} p={[0, 0.76, 0]} castShadow={false} />
-        {[[-0.35, 0.18, 0.1], [-0.3, 0.14, -0.2]].map(([x, y, z], i) => (
+        {/* les sacs, du côté libre de la poubelle (à droite et devant) : plus contre le distributeur */}
+        {[[0.4, 0.18, -0.02], [0.12, 0.14, 0.34]].map(([x, y, z], i) => (
           <group key={i} position={[x, y, z]}>
             <Part geo={SPH} m={K.iron} scale={[0.2, 0.17, 0.18]} />
             <Part geo={SPH} m={K.iron} scale={[0.04, 0.05, 0.04]} p={[0.02, 0.19, 0]} castShadow={false} />

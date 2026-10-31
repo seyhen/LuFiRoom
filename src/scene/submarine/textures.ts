@@ -100,20 +100,40 @@ export const gaugeTex = canvasTex(256, 256, (x) => {
   x.font = 'bold 13px Georgia, serif'; x.fillText('PRESSION', 128, 186); x.font = '11px Georgia, serif'; x.fillText('bars', 128, 202)
 })
 
-/** Cadran d'un télégraphe de machines : STOP en haut, AVANT à droite, ARRIÈRE à gauche, chacun en trois vitesses. */
-export const telegraphTex = canvasTex(256, 256, (x) => {
-  x.fillStyle = '#f4efdf'; x.beginPath(); x.arc(128, 128, 124, 0, TAU); x.fill()
-  x.fillStyle = '#16202a'; x.beginPath(); x.arc(128, 128, 96, 0, TAU); x.fill()
-  x.strokeStyle = '#d6b062'; x.lineWidth = 2; x.beginPath(); x.arc(128, 128, 96, 0, TAU); x.stroke()
-  x.fillStyle = '#f4efdf'; x.textAlign = 'center'; x.font = 'bold 15px Georgia, serif'
-  x.fillText('STOP', 128, 50)
-  const ahead = ['DOUCE', 'DEMI', 'TOUTE'], astern = ['DOUCE', 'DEMI', 'TOUTE']
-  x.font = 'bold 11px Georgia, serif'
-  ahead.forEach((w, i) => { const a = -Math.PI / 2 + (i + 1) * 0.5; x.save(); x.translate(128 + Math.cos(a) * 66, 128 + Math.sin(a) * 66); x.rotate(a + Math.PI / 2); x.fillText(w, 0, 4); x.restore() })
-  astern.forEach((w, i) => { const a = -Math.PI / 2 - (i + 1) * 0.5; x.save(); x.translate(128 + Math.cos(a) * 66, 128 + Math.sin(a) * 66); x.rotate(a + Math.PI / 2); x.fillText(w, 0, 4); x.restore() })
-  x.fillStyle = '#d8404a'; x.font = 'bold 10px Georgia, serif'; x.fillText('AVANT', 202, 140); x.fillText('ARRIÈRE', 54, 140)
-  x.strokeStyle = '#f4efdf'; x.lineWidth = 1.4
-  for (let i = -3; i <= 3; i++) { const a = -Math.PI / 2 + i * 0.5; x.beginPath(); x.moveTo(128 + Math.cos(a) * 84, 128 + Math.sin(a) * 84); x.lineTo(128 + Math.cos(a) * 94, 128 + Math.sin(a) * 94); x.stroke() }
+/**
+ * Cadran d'un télégraphe de machines, lisible de loin : la toile couvre tout le disque (bord de laiton peint compris). En haut,
+ * sept secteurs de 0,5 rad : STOP au sommet sur fond rouge, AVANT à droite et ARRIÈRE à gauche en trois crans (LENT, DEMI,
+ * TOUTE), écrits gros le long du rayon ; dessous, AVANT et ARRIÈRE en grandes lettres de part et d'autre du moyeu.
+ */
+export const telegraphTex = canvasTex(512, 512, (x) => {
+  const c = 256, sector = 0.5
+  x.fillStyle = '#d6b062'; x.fillRect(0, 0, 512, 512)
+  x.fillStyle = '#f4efdf'; x.beginPath(); x.arc(c, c, 246, 0, TAU); x.fill()
+  x.fillStyle = '#182632'; x.beginPath(); x.arc(c, c, 232, 0, TAU); x.fill()
+  // les secteurs : rouge pour STOP, crème et bleu nuit en alternance
+  for (let i = -3; i <= 3; i++) {
+    const a0 = -Math.PI / 2 + (i - 0.5) * sector, a1 = a0 + sector
+    x.fillStyle = i === 0 ? '#c8343e' : i % 2 ? '#f4efdf' : '#29404f'
+    x.beginPath(); x.moveTo(c, c); x.arc(c, c, 226, a0, a1); x.closePath(); x.fill()
+  }
+  x.fillStyle = '#182632'; x.beginPath(); x.arc(c, c, 92, 0, TAU); x.fill()
+  x.strokeStyle = '#d6b062'; x.lineWidth = 5
+  for (let i = -3; i <= 4; i++) { const a = -Math.PI / 2 + (i - 0.5) * sector; x.beginPath(); x.moveTo(c + Math.cos(a) * 92, c + Math.sin(a) * 92); x.lineTo(c + Math.cos(a) * 226, c + Math.sin(a) * 226); x.stroke() }
+  x.beginPath(); x.arc(c, c, 226, -Math.PI / 2 - 3.5 * sector, -Math.PI / 2 + 3.5 * sector); x.stroke()
+  x.beginPath(); x.arc(c, c, 92, 0, TAU); x.stroke()
+  // les mots des crans : STOP couché en haut, les autres le long du rayon (lus du bord vers le moyeu à gauche, du moyeu vers le bord à droite)
+  const words = ['TOUTE', 'DEMI', 'LENT', 'STOP', 'LENT', 'DEMI', 'TOUTE']
+  x.textAlign = 'center'; x.textBaseline = 'middle'
+  words.forEach((w, k) => {
+    const i = k - 3, a = -Math.PI / 2 + i * sector, r = i === 0 ? 192 : 160
+    x.save(); x.translate(c + Math.cos(a) * r, c + Math.sin(a) * r); x.rotate(i === 0 ? 0 : i > 0 ? a : a + Math.PI)
+    x.fillStyle = i === 0 ? '#fff6e0' : i % 2 ? '#182632' : '#f4efdf'
+    x.font = `bold ${i === 0 ? 32 : 30}px Georgia, serif`; x.fillText(w, 0, 0); x.restore()
+  })
+  // dessous : le sens de marche en grandes lettres, et une flèche
+  x.fillStyle = '#f4efdf'; x.font = 'bold 30px Georgia, serif'
+  x.fillText('ARRIÈRE', c - 100, c + 124); x.fillText('AVANT', c + 108, c + 124)
+  x.fillStyle = '#e8c070'; x.font = 'bold 26px Georgia, serif'; x.fillText('MACHINES', c, c + 190)
 })
 
 /** Une méduse : une ombrelle lumineuse aux bords frangés et des tentacules qui flottent. Blanche : on la teinte. */

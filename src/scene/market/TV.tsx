@@ -72,8 +72,10 @@ export function TVSet() {
             ))}
             {/* l'antenne : un socle, deux brins en V */}
             <Part geo={SPH} m={K.iron} scale={[0.07, 0.03, 0.06]} p={[0, 0.62, 0]} castShadow={false} />
-            <Part geo={cyl(0.005, 0.005, 0.5, 4)} m={K.steel} p={[-0.12, 0.84, 0]} rotation-z={0.5} castShadow={false} />
-            <Part geo={cyl(0.005, 0.005, 0.46, 4)} m={K.steel} p={[0.12, 0.83, 0.02]} rotation-z={-0.5} castShadow={false} />
+            <Part geo={cyl(0.009, 0.009, 0.5, 6)} m={K.steel} p={[-0.12, 0.84, 0]} rotation-z={0.5} castShadow={false} />
+            <Part geo={cyl(0.009, 0.009, 0.46, 6)} m={K.steel} p={[0.12, 0.83, 0.02]} rotation-z={-0.5} castShadow={false} />
+            <Part geo={SPH} m={K.steel} scale={0.016} p={[-0.24, 1.06, 0]} castShadow={false} />
+            <Part geo={SPH} m={K.steel} scale={0.016} p={[0.23, 1.032, 0.02]} castShadow={false} />
           </group>
         </group>
         </Static>

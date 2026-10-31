@@ -16,7 +16,8 @@ const catenary = (a: V3, b: V3, sag: number, n: number): V3[] =>
 
 const POLE_L = YATAI.x - 1.12, POLE_R = YATAI.x + 1.12, BEAM = 2.55
 const STRINGS: [V3, V3, number, number][] = [
-  [[-2.93, 4.05, -0.9], [POLE_L, BEAM, YATAI.z - 0.52], 0.3, 7],
+  // part du mur de gauche au-dessus de l'izakaya (et plus devant le distributeur, dont elle barrait la vitrine)
+  [[-2.93, 4.1, 0.9], [POLE_L, BEAM, YATAI.z - 0.52], 0.3, 7],
   [[-2.93, 3.85, 1.9], [POLE_L, BEAM, YATAI.z - 0.52], 0.5, 9],
   [[POLE_R, BEAM, YATAI.z - 0.52], [2.93, 3.6, -2.9], 0.3, 5],
 ]
@@ -77,8 +78,9 @@ export function Overhead() {
   return (
     <>
       <Lanterns />
-      <Nobori position={[2.85, 0, 0.55]} ph={0} />
-      <Nobori position={[2.85, 0, 0.05]} ph={2.2} />
+      {/* plantés assez loin devant pour que la bannière, même quand elle ondule, ne cache pas la maneki-neko du comptoir */}
+      <Nobori position={[2.85, 0, 0.78]} ph={0} />
+      <Nobori position={[2.85, 0, 0.38]} ph={2.2} />
     </>
   )
 }
