@@ -12,6 +12,10 @@ export type SoundId =
   | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'abacus' | 'drip'
   // l'igloo : l'aurore, le trou de pêche, la couture, le cacao
   | 'aurora' | 'icehole' | 'sew' | 'cocoa'
+  // la cabane perchée : les oiseaux de la forêt, le ruisseau, les feuilles, le hamac, la citronnade
+  | 'forest' | 'brook' | 'leaves' | 'hammock' | 'lemonade'
+  // la laverie de nuit : le lave-linge, le sèche-linge, le monnayeur, le linge qu'on plie
+  | 'wash' | 'tumble' | 'coins' | 'fold'
 /** Un objet interactif de la scène. */
 export type ObjectId =
   | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
@@ -20,6 +24,8 @@ export type ObjectId =
   | 'foghorn' | 'bell' | 'stove' | 'barometer' | 'sonar' | 'valve' | 'gauge' | 'telegraph' | 'wok' | 'pot' | 'neon' | 'tram'
   | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'abacus' | 'drip'
   | 'icewindow' | 'icehole' | 'mitten' | 'thermos'
+  | 'birdhouse' | 'hammock' | 'oak' | 'brook' | 'lemonade'
+  | 'washer' | 'dryer' | 'changer' | 'folding'
 /** Ce qu'un objet pilote : un son, ou le passage jour / nuit. */
 export type Target = SoundId | 'night'
 

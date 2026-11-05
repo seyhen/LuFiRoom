@@ -11,6 +11,8 @@ import { LighthouseScene } from './lighthouse/LighthouseScene'
 import { SubScene } from './submarine/SubScene'
 import { MarketScene } from './market/MarketScene'
 import { IglooScene } from './igloo/IglooScene'
+import { TreehouseScene } from './treehouse/TreehouseScene'
+import { LaundromatScene } from './laundromat/LaundromatScene'
 
 /** La scène 3D de chaque pièce, par identifiant (celui de src/rooms/*.ts). */
 export const scenes: Record<string, ComponentType> = {
@@ -26,4 +28,6 @@ export const scenes: Record<string, ComponentType> = {
   submarine: SubScene,
   market: MarketScene,
   igloo: IglooScene,
+  treehouse: TreehouseScene,
+  laundromat: LaundromatScene,
 }

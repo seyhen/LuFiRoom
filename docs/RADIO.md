@@ -48,3 +48,8 @@ Ce qui peut varier d'une station à l'autre : tempo et swing ; accords (quatre n
 voix des accords (`ep` piano électrique, `pad` nappe, `pluck` corde pincée) et leurs coups dans la mesure ; ligne de basse ;
 batterie (kick, `snare` / `rim` / `brush`, charley `closed`, `shaker` ou `sleigh`, les grelots de traîneau) ; mélodie (`bell` clochette ou `mbox` boîte à
 musique, et les mesures où elle joue) ; couleur du bus (passe-bas, saturation, vinyle, désaccord de cassette, écho).
+
+## Les stations des pièces récentes
+
+- **Cabane perchée** (banjo sur la malle) : rosée, petit-matin, soleil-bas, veillée.
+- **Laverie de nuit** (radiocassette sur un lave-linge) : veillée, minuit, pluie fine, nuit douce.

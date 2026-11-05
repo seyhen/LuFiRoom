@@ -104,6 +104,15 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite, 
 | Igloo | trou de pêche dans la glace (clapotis, bulles) | `icehole` |
 | Igloo | moufle qu'on coud sur un billot | `sew` |
 | Igloo | thermos de cacao qu'on verse dans un quart émaillé | `cocoa` |
+| Cabane perchée | nichoir au rouge-gorge (et hulotte la nuit) | `forest` |
+| Cabane perchée | hamac qui se balance | `hammock` |
+| Cabane perchée | feuillage du chêne | `leaves` |
+| Cabane perchée | ruisseau en contrebas | `brook` |
+| Cabane perchée | pichet de citronnade aux glaçons | `lemonade` |
+| Laverie de nuit | lave-linge au tambour qui tourne | `wash` |
+| Laverie de nuit | sèche-linge (ronron chaud, boutons de jean) | `tumble` |
+| Laverie de nuit | distributeur de lessive et monnayeur | `coins` |
+| Laverie de nuit | table à plier le linge | `fold` |
 
 Mets ce tableau à jour à chaque objet ajouté.
 

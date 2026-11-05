@@ -1,6 +1,6 @@
 # LufiRoom
 
-Webapp d'ambiance sonore : des pièces en 3D isométrique, style « gummy » (douze aujourd'hui : chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit, igloo), où chaque objet est un interrupteur de son. On touche la radio pour lancer la musique lofi, le ventilo pour le bruit blanc, etc., et on choisit la météo (pluie, orage, neige…) dans le sélecteur du haut. On compose son ambiance pour travailler, lire ou dormir.
+Webapp d'ambiance sonore : des pièces en 3D isométrique, style « gummy » (quatorze aujourd'hui : chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit, igloo, cabane perchée, laverie de nuit), où chaque objet est un interrupteur de son. On touche la radio pour lancer la musique lofi, le ventilo pour le bruit blanc, etc., et on choisit la météo (pluie, orage, neige…) dans le sélecteur du haut. On compose son ambiance pour travailler, lire ou dormir.
 
 Nom : « LufiRoom » (le dossier et les clés de stockage gardent « chambre-lofi »).
 
@@ -36,11 +36,11 @@ src/
   state/mixes.ts            # ambiances : modèle, stockage, lien de partage (voir docs/MIXES.md)
   state/weather.ts          # la météo : les choix, ce qu'on voit et entend (voir docs/WEATHER.md)
   state/daylight.ts         # le jour et la nuit qui suivent l'heure, et la règle de la main (voir docs/ROOMS.md)
-  rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen, lighthouse, submarine, market, igloo), index.ts, weather.ts (enregistrements de la météo partagés)
+  rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen, lighthouse, submarine, market, igloo, treehouse, laundromat), index.ts, weather.ts (enregistrements de la météo partagés)
   scene/
     Stage.tsx               # <Canvas>, caméra iso, lumières, cadrage, rotation au drag
     scenes.ts               # associe chaque pièce à sa scène 3D ; ajouter une pièce : docs/ROOMS.md
-    bedroom/, cabin/, cafe/, beach/, train/, roof/, atelier/, onsen/, lighthouse/, submarine/, market/, igloo/   # la scène de chaque pièce, un fichier par objet, ses matériaux et ses textures
+    bedroom/, cabin/, cafe/, beach/, train/, roof/, atelier/, onsen/, lighthouse/, submarine/, market/, igloo/, treehouse/, laundromat/   # la scène de chaque pièce, un fichier par objet, ses matériaux et ses textures
     objects/                # objets partagés entre pièces : Window, Radio, Lamp, Cat, FairyLights, Candles, Candle, Steam, Flames, ScrollLayer, Garment, ViewFlakes, FlashVeil
     nature/                 # pierres, feuillages, feuilles, fougères, plantes retombantes, rosettes : formes et matériaux partagés
     parts.tsx, Static.tsx   # briques (Part, Batch, rbox, cyl, worldUV, orient) ; <Static> regroupe le décor immobile en peu de tracés
@@ -115,6 +115,7 @@ Les défauts qui reviennent le plus, à traquer avant de dire « fini » (explic
 - **Un objet à l'envers ou de dos** : regarde de quel côté il fait face (la table à dessin montrait son dos). La caméra voit les faces +x et +z.
 - **Quelque chose qui tombe dans un lieu couvert** : une pièce qui a un toit ou des murs n'a pas de gouttes, de ronds dans l'eau ni de flocons à l'intérieur. La pluie se voit dehors (par la baie, dans le ciel autour du diorama) ; à l'intérieur on montre l'humidité par des reflets et des flaques calmes.
 - **Un visage qui fait casque** : sur un animal, le masque clair couvre tout le devant de la tête, yeux et bec posés dessus ; sinon la couleur du pelage entoure le visage comme un casque (les manchots de l'igloo).
+- **Un texte vu à travers une vitre** se lit à l'endroit depuis la caméra, jamais en miroir (la caméra voit les faces +x et +z) ; une étiquette de bidon ou un lettrage se pose sur un plan, pas sur une `rbox`.
 - **Un récipient fermé** : `cyl` est un cylindre plein, son dessus couvre ce qu'on pose dedans (le cacao d'un quart, l'eau d'un seau, la neige d'une casserole). Un récipient qu'on regarde dedans est ouvert : paroi, paroi intérieure, fond, bord (`Vessel` dans `scene/igloo/Vessel.tsx`), et son contenu assez haut pour que le bord de devant ne le cache pas.
 - **Un objet pas assez abouti** : lisible mais pauvre. Chaque objet a 5 formes au moins, deux matières, une trace d'usage et un accessoire voisin ; l'extérieur visible de la pièce est habillé (voir le skill `audit-room`, « Pas assez abouti »).
 - **Une radio qui ne va pas avec la pièce** : l'objet qui joue la musique est propre à la pièce (tourne-disque, shamisen, boombox, gramophone, ukulélé, jukebox…), pas une radio partout. Il a son id `radio`, le hook `useBeat` (`src/scene/objects/useBeat.ts`) et son libellé.

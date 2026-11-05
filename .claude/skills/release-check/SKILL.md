@@ -31,7 +31,7 @@ Méthode et pont de test : skill `audit-room`, étape 0.
 ```js
 async () => {
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
-  const st = window.__lofi.store, ids = ['bedroom','cabin','cafe','beach','train','roof','atelier','onsen','lighthouse','submarine','market','igloo']
+  const st = window.__lofi.store, ids = ['bedroom','cabin','cafe','beach','train','roof','atelier','onsen','lighthouse','submarine','market','igloo','treehouse','laundromat']
   const out = {}
   for (const pass of [1, 2]) {
     for (const r of ids) { st.getState().goto(r); while (st.getState().room !== r || st.getState().leaving) await sleep(100); await sleep(1200) }
