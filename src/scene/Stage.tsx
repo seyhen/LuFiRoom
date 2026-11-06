@@ -37,7 +37,7 @@ export function Stage({ hotspotLayer }: { hotspotLayer: Layer }) {
       linear
       flat
     >
-      <Framing />
+      <Framing zoom={room.zoom} />
       <Ready />
       <Lights room={room} />
       {/* ombre douce sous le diorama, pour l'effet « flotte » */}
@@ -66,21 +66,21 @@ function Ready() {
 }
 
 /** Cadrage : la pièce tient dans la zone libre entre le titre et le mixeur. */
-function Framing() {
+function Framing({ zoom = 1 }: { zoom?: number }) {
   const camera = useThree((s) => s.camera) as OrthographicCamera
   const { width, height } = useThree((s) => s.size)
   const { top, bottom } = useStore((s) => s.insets)
   useLayoutEffect(() => {
     camera.position.copy(CAM_POS)
     camera.lookAt(LOOK)
-    const unit = Math.min(width / 10.4, Math.max(180, height - top - bottom) / 9.6) // pixels par unité
+    const unit = Math.min(width / 10.4, Math.max(180, height - top - bottom) / 9.6) * zoom // pixels par unité
     const vw = width / unit, vh = height / unit, shift = (bottom - top) / 2 / unit
     camera.left = -vw / 2
     camera.right = vw / 2
     camera.top = vh / 2 - shift
     camera.bottom = -vh / 2 - shift
     camera.updateProjectionMatrix()
-  }, [camera, width, height, top, bottom])
+  }, [camera, width, height, top, bottom, zoom])
   return null
 }
 

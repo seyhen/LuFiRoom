@@ -21,6 +21,7 @@ import { EggChair } from './EggChair'
 import { B } from './materials'
 import { RainStick } from './RainStick'
 import { Hearthside } from './Hearthside'
+import { SurroundStatic, Surroundings } from './Surroundings'
 
 const ginger = { fur: B.butter, light: B.linen, dark: B.coral }
 
@@ -30,6 +31,7 @@ const ginger = { fur: B.butter, light: B.linen, dark: B.coral }
  */
 export function BeachScene() {
   return (
+    <>
     <Static>
       <BeachShell />
       <SeaView />
@@ -62,7 +64,10 @@ export function BeachScene() {
       <FishingNet />
       <DeckChair />
       <SunRays />
+      <SurroundStatic />
       <Motes colors={[0xffe2a8, 0xd8e4ff]} opacity={[0.45, 0.6]} />
     </Static>
+    <Surroundings />
+    </>
   )
 }

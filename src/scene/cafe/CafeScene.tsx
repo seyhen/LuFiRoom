@@ -22,6 +22,7 @@ import { Umbrellas } from './Umbrellas'
 import { DripCoat } from './DripCoat'
 import { Sill } from './Sill'
 import { Static } from '../Static'
+import { Surroundings } from './Surroundings'
 import { Motes } from '../Floaters'
 
 /**
@@ -31,6 +32,8 @@ import { Motes } from '../Floaters'
 export function CafeScene() {
   // Tout ce qui ne bouge pas est fusionné par matériau (<Static>) : le café compte des centaines de petites pièces.
   return (
+    <>
+    <Surroundings />
     <Static>
       <CafeShell />
       {/* dehors */}
@@ -61,5 +64,6 @@ export function CafeScene() {
       <DripCoat />
       <Motes colors={[0xfff2d8, 0xffcf8a]} opacity={[0.3, 0.5]} n={22} />
     </Static>
+    </>
   )
 }

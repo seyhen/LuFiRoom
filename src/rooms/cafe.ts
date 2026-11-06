@@ -23,6 +23,8 @@ export const cafe: Room = {
     line: ['rgba(40, 70, 55, .16)', 'rgba(242, 196, 107, .18)'],
     bg: ['#e6e9e4', '#151c1a'],
   },
+  // le bout de rue autour du café déborde de la salle : on recule la caméra
+  zoom: 0.84,
   sky: { day: ['#e3e7ec', '#c6ced8', '#a3afbd'], night: ['#232a47', '#151a31', '#0b0f21'] },
   light: {
     hemi: { sky: [0xe8ebf0, 0x4d548f], ground: [0xa89a8e, 0x2a2340], intensity: [0.6, 0.36] },

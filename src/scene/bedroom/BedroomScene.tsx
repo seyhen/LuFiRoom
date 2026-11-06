@@ -25,6 +25,7 @@ import { MoonGarland } from './MoonGarland'
 import { Slippers } from './Slippers'
 import { ReadingNook } from './ReadingNook'
 import { Diffuser } from './Diffuser'
+import { Surroundings } from './sky/Surroundings'
 import { B } from './materials'
 
 export function BedroomScene() {
@@ -58,6 +59,7 @@ export function BedroomScene() {
       <Diffuser />
       <Radio position={[2.36, 1.35, -2.6]} />
       <Fan position={[0.62, 1.35, -2.6]} />
+      <Surroundings />
       <Cat position={[-1.25, 0.9, -0.6]} rotation={-0.25} />
     </>
   )

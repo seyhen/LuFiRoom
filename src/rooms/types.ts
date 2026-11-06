@@ -141,4 +141,9 @@ export interface Room {
    * n'est pas un ciel (sous la mer), rien n'y passe.
    */
   skyLife?: { star?: boolean; bird?: boolean } | false
+  /**
+   * Cadrage : multiplie l'échelle de la vue (1 par défaut). Moins de 1 recule la caméra, pour une pièce dont le décor déborde
+   * (la chambre sur son banc de nuages).
+   */
+  zoom?: number
 }

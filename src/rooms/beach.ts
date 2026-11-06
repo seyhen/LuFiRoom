@@ -21,6 +21,8 @@ export const beach: Room = {
     line: ['rgba(160, 90, 80, .16)', 'rgba(255, 190, 160, .18)'],
     bg: ['#fbe9dc', '#1b1d42'],
   },
+  // la plage s'étend autour du bungalow (sable, mer, ponton) : on recule pour la voir
+  zoom: 0.82,
   skyLife: { bird: false },
   sky: { day: ['#ffe7d2', '#fbd2c3', '#eab8c3'], night: ['#232857', '#171b40', '#0d1028'] },
   light: {
