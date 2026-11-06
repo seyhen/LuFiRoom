@@ -10,6 +10,7 @@ import { ClubChair, LuggageRack, OpenSuitcase, Slippers, TeaTrolley } from './Lu
 import { Sideboard, Washstand } from './Corner'
 import { CardTable } from './CardTable'
 import { PassingLights } from './PassingLights'
+import { Surroundings } from './out/Surroundings'
 import { CatBasket, ChessTable, Flowers, PersianRug, SteamerTrunk } from './Lounge'
 
 /**
@@ -18,6 +19,8 @@ import { CatBasket, ChessTable, Flowers, PersianRug, SteamerTrunk } from './Loun
  */
 export function TrainScene() {
   return (
+    <>
+    <Surroundings />
     <Static>
       <TrainShell />
       <PersianRug />
@@ -41,5 +44,6 @@ export function TrainScene() {
       <Flowers />
       <Motes colors={[0xffe8c8, 0xffc98a]} opacity={[0.35, 0.5]} n={24} />
     </Static>
+    </>
   )
 }

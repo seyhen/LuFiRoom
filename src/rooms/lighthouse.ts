@@ -23,6 +23,8 @@ export const lighthouse: Room = {
     bg: ['#dfe8f0', '#0e1624'],
   },
   storm: 'wind',
+  // l'aiguille de roche est en pleine mer, le phare sur son îlot : on recule pour les voir
+  zoom: 0.82,
   sky: { day: ['#e6eef4', '#c8d8e4', '#9db4c6'], night: ['#18284c', '#0e1830', '#070d1c'] },
   light: {
     hemi: { sky: [0xfff1de, 0x4a6aa8], ground: [0xa88c6c, 0x2a3040], intensity: [0.7, 0.34] },

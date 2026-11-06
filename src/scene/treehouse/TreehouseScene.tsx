@@ -11,6 +11,7 @@ import { Lemonade } from './Lemonade'
 import { Owl, Squirrel } from './Creatures'
 import { BookCrate, Boots, ConeBasket, FallenLeaves, Telescope, DryingHerbs, FernPot, HerbJars, LimbCollar, Lounge, NaturalistKit } from './Props'
 import { LIMB } from './layout'
+import { Surroundings } from './out/Surroundings'
 
 /**
  * Une cabane perchée dans un grand chêne, un soir d'été : la plateforme de planches que traverse le tronc, le toit de bardeaux sur
@@ -20,6 +21,8 @@ import { LIMB } from './layout'
  */
 export function TreehouseScene() {
   return (
+    <>
+    <Surroundings />
     <Static>
       <Forest />
       <LowerCrown />
@@ -57,6 +60,7 @@ export function TreehouseScene() {
       {/* le jour, du pollen doré dans la lumière ; le soir, des lucioles vert jaune */}
       <Motes colors={[0xffeab0, 0xdcf27a]} opacity={[0.35, 0.95]} n={40} />
     </Static>
+    </>
   )
 }
 const DECK_RAIL_X = 2.9

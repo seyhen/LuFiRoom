@@ -11,6 +11,7 @@ import { Backpack, Bedding, IceNiche, Pegs, Rugs, Snowshoes, Stove, SupplyCrate,
 import { BlockWall, Fir, Footprints, Skis, Sled, SnowLantern } from './Outside'
 import { DryingRack, FishBucket, FishingStool } from './Camp'
 import { Penguin } from './Penguin'
+import { Surroundings } from './out/Surroundings'
 
 /** L'échelle de toute la scène. */
 export const IGLOO_SCALE = 1.15
@@ -24,6 +25,8 @@ export const IGLOO_SCALE = 1.15
  */
 export function IglooScene() {
   return (
+    <>
+    <Surroundings />
     <Static>
      {/* le dôme est rond : un peu plus grand que les pièces carrées, pour remplir le même cadre (les ancres de rooms/igloo.ts en tiennent compte) */}
      <group scale={IGLOO_SCALE}>
@@ -61,5 +64,6 @@ export function IglooScene() {
       <Footprints a0={112} a1={156} r0={3.88} r1={3.74} />
      </group>
     </Static>
+    </>
   )
 }

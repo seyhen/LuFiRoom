@@ -9,6 +9,7 @@ import { FoldingTable } from './FoldingTable'
 import { Boombox } from './Boombox'
 import { Counter } from './Counter'
 import { Bench, Bin, Cart, CatBasket, FloorSheen, Plant, Shelf, WallDecor, WetFloor } from './Props'
+import { Surroundings } from './out/Surroundings'
 
 /** Le pied des lave-linge : le dessus de l'estrade carrelée, au ras du mur de gauche. */
 const STEP = 0.1, MX = -2.62
@@ -23,6 +24,8 @@ const STEP = 0.1, MX = -2.62
  */
 export function LaundromatScene() {
   return (
+    <>
+    <Surroundings />
     <Static>
       <Shell />
       <StreetView />
@@ -47,5 +50,6 @@ export function LaundromatScene() {
       <Counter position={[2.55, 0, 1.85]} />
       <Motes colors={[0xe8f6ff, 0xbfe6ff]} opacity={[0.25, 0.45]} n={20} />
     </Static>
+    </>
   )
 }

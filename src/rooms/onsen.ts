@@ -22,6 +22,8 @@ export const onsen: Room = {
     line: ['rgba(120, 70, 50, .16)', 'rgba(255, 179, 94, .18)'],
     bg: ['#f3e6dc', '#17141e'],
   },
+  // l'onsen est sur un versant (cèdres, bambous, ruisseau et pont rouge, torii) : on recule pour le voir
+  zoom: 0.84,
   sky: { day: ['#fbe9dc', '#f2d2c6', '#d9bcc6'], night: ['#20264a', '#151a36', '#0b0e22'] },
   light: {
     hemi: { sky: [0xfff0e2, 0x5a62a8], ground: [0x9a8a70, 0x3e3036], intensity: [0.62, 0.36] },

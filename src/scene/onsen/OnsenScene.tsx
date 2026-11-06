@@ -11,6 +11,7 @@ import { POOL } from './Pool'
 import { MatchaTable } from './MatchaTable'
 import { Shrubs } from './Shrubs'
 import { Chochin, Fireflies, Noren } from './Signs'
+import { Surroundings } from './out/Surroundings'
 
 /**
  * Un bain en plein air (rotenburo) au bord d'un ryokan, en automne : le bassin qui fume entre ses rochers, l'eau de la source
@@ -19,6 +20,8 @@ import { Chochin, Fireflies, Noren } from './Signs'
  */
 export function OnsenScene() {
   return (
+    <>
+    <Surroundings />
     <Static>
       <OnsenShell />
       <Mountains />
@@ -42,5 +45,6 @@ export function OnsenScene() {
       <Chochin />
       <Fireflies />
     </Static>
+    </>
   )
 }

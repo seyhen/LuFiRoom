@@ -65,6 +65,9 @@ export default defineConfig({
       workbox: {
         // L'app (HTML, JS, CSS, icônes) est dans le cache dès la première visite.
         globPatterns: ['**/*.{js,css,html,svg,png,webmanifest}'],
+        // Le JS de l'app (toutes les pièces et leurs décors) dépasse les 2 Mio par défaut : sans cette limite, il ne serait plus
+        // mis en cache et l'app ne marcherait plus hors ligne.
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
         cleanupOutdatedCaches: true,
         runtimeCaching: [
           // Les sons : chacun est gardé au premier téléchargement. Les lecteurs <audio> demandent des morceaux (Range) :

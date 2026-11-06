@@ -12,6 +12,7 @@ import { Pigeons } from './Pigeons'
 import { FlyBy } from '../objects/FlyBy'
 import { Herbs, OliveTree, Planter } from './Planters'
 import { FireEscape, NeonSign, Vent } from './Neon'
+import { Surroundings } from './out/Surroundings'
 
 /**
  * Un toit-terrasse de Brooklyn, un soir d'été : la ville tout autour qui s'allume, le château d'eau, un braséro, le linge
@@ -19,6 +20,8 @@ import { FireEscape, NeonSign, Vent } from './Neon'
  */
 export function RoofScene() {
   return (
+    <>
+    <Surroundings />
     <Static>
       <RoofShell />
       <Skyline />
@@ -43,5 +46,6 @@ export function RoofScene() {
       <FireEscape />
       <Vent />
     </Static>
+    </>
   )
 }

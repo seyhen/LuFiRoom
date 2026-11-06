@@ -21,6 +21,8 @@ export const train: Room = {
     line: ['rgba(120, 50, 50, .16)', 'rgba(233, 196, 143, .2)'],
     bg: ['#efe2d8', '#1c1218'],
   },
+  // la voie file dans un pré des Alpes, la voiture suivante derrière : on recule pour voir le dehors
+  zoom: 0.82,
   sky: { day: ['#f4e6d8', '#e2cfc4', '#c9b3b8'], night: ['#1e2247', '#141836', '#0b0d22'] },
   light: {
     hemi: { sky: [0xf6ead8, 0x565c9c], ground: [0x9a6a5a, 0x4a2a2a], intensity: [0.6, 0.36] },

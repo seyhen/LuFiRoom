@@ -11,6 +11,7 @@ import { Seating } from './Seating'
 import { Conch } from './Conch'
 import { Decor } from './Decor'
 import { Plankton } from './Plankton'
+import { Surroundings } from './out/Surroundings'
 
 /**
  * Le carré d'un sous-marin de légende, posé sur l'abîme : un hublot de laiton sur l'eau turquoise, une console de sonar qui
@@ -19,6 +20,8 @@ import { Plankton } from './Plankton'
  */
 export function SubScene() {
   return (
+    <>
+    <Surroundings />
     <Static>
       <SubShell />
       <DeepView />
@@ -34,5 +37,6 @@ export function SubScene() {
       <Decor />
       <Plankton />
     </Static>
+    </>
   )
 }

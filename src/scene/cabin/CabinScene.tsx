@@ -28,6 +28,7 @@ import { Poinsettia } from './Poinsettia'
 import { CoatPegs } from './CoatPegs'
 import { Candles, type Candle } from '../objects/Candles'
 import { warmFairy } from './materials'
+import { Surroundings } from './out/Surroundings'
 
 // Sur l'appui de la fenêtre, de part et d'autre.
 const SILL = WIN.y0 + 0.02
@@ -66,6 +67,7 @@ export function CabinScene() {
         <Gifts />
         <RecordCrate />
       </Static>
+      <Surroundings />
       <SnowView />
       <Snowfall />
       <Window />

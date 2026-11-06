@@ -21,6 +21,8 @@ export const atelier: Room = {
     line: ['rgba(44, 74, 110, .15)', 'rgba(240, 181, 74, .18)'],
     bg: ['#eceef1', '#16182a'],
   },
+  // l'atelier est sous les toits de Paris (zinc, lucarnes, cheminées) : on recule pour les voir
+  zoom: 0.84,
   sky: { day: ['#eef0f2', '#d9dee6', '#bcc6d4'], night: ['#222949', '#161b36', '#0c0f24'] },
   light: {
     hemi: { sky: [0xf4f2ee, 0x5a62a8], ground: [0xc0a888, 0x4a3a3a], intensity: [0.66, 0.38] },

@@ -24,6 +24,8 @@ export const treehouse: Room = {
     line: ['rgba(90, 120, 50, .18)', 'rgba(230, 212, 106, .18)'],
     bg: ['#f1ead0', '#0c1c1a'],
   },
+  // un pont de corde mène à la vigie du chêne voisin : on recule un peu pour la voir
+  zoom: 0.9,
   sky: { day: ['#fff3cf', '#f1dfa6', '#bcd3a0'], night: ['#1f3b3c', '#14292c', '#0a1618'] },
   light: {
     hemi: { sky: [0xfff2d4, 0x4e6e78], ground: [0x8f9c5a, 0x3e3626], intensity: [0.62, 0.38] },

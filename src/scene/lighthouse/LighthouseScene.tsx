@@ -15,6 +15,7 @@ import { Reading } from './Reading'
 import { SeaChest, CHEST } from './SeaChest'
 import { LogDesk } from './LogDesk'
 import { WallDecor } from './WallDecor'
+import { Surroundings } from './out/Surroundings'
 
 /**
  * Le quartier du gardien, au sommet d'un phare battu par la tempête : un hublot de laiton sur la houle, un escalier de fonte qui
@@ -23,6 +24,8 @@ import { WallDecor } from './WallDecor'
  */
 export function LighthouseScene() {
   return (
+    <>
+    <Surroundings />
     <Static>
       <LighthouseShell />
       <SeaView />
@@ -41,5 +44,6 @@ export function LighthouseScene() {
       <Concertina position={[CHEST.x, CHEST.lid, CHEST.z - 0.05]} />
       <Motes colors={[0xfff0d0, 0xffc98a]} opacity={[0.3, 0.5]} n={20} />
     </Static>
+    </>
   )
 }

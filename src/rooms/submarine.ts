@@ -23,6 +23,8 @@ export const submarine: Room = {
     bg: ['#d6ece8', '#06161c'],
   },
   skyLife: false,
+  // le sous-marin flotte au-dessus d'un récif (coraux, kelp, poissons, baleine) : on recule pour le voir
+  zoom: 0.82,
   sky: { day: ['#cfece8', '#a6d6d4', '#6fb0b6'], night: ['#0b2a38', '#07202c', '#031219'] },
   light: {
     hemi: { sky: [0xdff8f2, 0x2a6a88], ground: [0x7a6a50, 0x1a2a30], intensity: [0.58, 0.3] },

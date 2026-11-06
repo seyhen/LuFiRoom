@@ -20,6 +20,8 @@ export const cabin: Room = {
     line: ['rgba(120, 70, 60, .16)', 'rgba(255, 210, 170, .17)'],
     bg: ['#f5eae0', '#26181d'],
   },
+  // la cabane est dans une clairière enneigée (sapins, abri à bois, bonhomme de neige) : on recule pour la voir
+  zoom: 0.82,
   sky: { day: ['#f3f7fc', '#dce7f3', '#bdd0e4'], night: ['#27315f', '#181e44', '#0d1129'] },
   // Dedans, une lumière chaude (miel le jour, prune la nuit) ; la lune reste froide, pour que le feu et les bougies réchauffent.
   light: {

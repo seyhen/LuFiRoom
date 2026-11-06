@@ -12,6 +12,7 @@ import { Izakaya } from './Izakaya'
 import { Overhead } from './Overhead'
 import { FruitStall } from './FruitStall'
 import { Details } from './Details'
+import { Surroundings } from './out/Surroundings'
 
 /**
  * Une ruelle de marché de nuit sous la pluie : une carriole de ramen sous ses lanternes rouges, un wok qui saute, une marmite qui
@@ -20,6 +21,8 @@ import { Details } from './Details'
  */
 export function MarketScene() {
   return (
+    <>
+    <Surroundings />
     <Static>
       <MarketShell />
       <BoulevardView />
@@ -35,5 +38,6 @@ export function MarketScene() {
       <Details />
       <Motes colors={[0xffd8c0, 0xff9ac8]} opacity={[0.3, 0.55]} n={26} />
     </Static>
+    </>
   )
 }

@@ -22,6 +22,8 @@ export const igloo: Room = {
     line: ['rgba(60, 90, 120, .16)', 'rgba(127, 232, 192, .18)'],
     bg: ['#e4edf5', '#0a1322'],
   },
+  // la banquise de l'igloo flotte sur une mer arctique (glaces, icebergs, kayak) : on recule pour la voir
+  zoom: 0.84,
   sky: { day: ['#eef4fa', '#d3e3f0', '#aec7de'], night: ['#163045', '#0d1d33', '#060c1c'] },
   light: {
     hemi: { sky: [0xeef6ff, 0x4f6fa0], ground: [0xa8a2a0, 0x5e4644], intensity: [0.66, 0.42] },
