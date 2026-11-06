@@ -7,6 +7,8 @@ export const PANE = { x0: -0.6, x1: 2.4, y0: 1.35, y1: 3.25 }
 
 // Les bogies sous la caisse : centre en x, et les deux essieux de chacun.
 const BOGIES = [-2.1, 2.1]
+/** Les deux files de rails, centrées sous la voiture (écartement à l'échelle de la caisse : deux fois moins large qu'elle). */
+export const RAILS = [1.63, -1.77]
 
 /**
  * La caisse de la voiture-lits : le socle prend la livrée bleu nuit et son filet doré, avec des roues et des tampons qui
@@ -21,9 +23,9 @@ export function TrainShell() {
       <mesh material={T.carpet} position={[-0.07, 0.002, -0.07]} rotation-x={-Math.PI / 2} receiveShadow>
         <planeGeometry args={[6.4, 6.4]} />
       </mesh>
-      {/* les bogies : un châssis noir, deux essieux, des roues qui dépassent sous la caisse (côté devant) */}
-      {BOGIES.map((bx) => (
-        <group key={bx} position={[bx, -0.8, 2.9]}>
+      {/* les bogies : sous la caisse, un châssis noir et deux roues sur chaque rail */}
+      {BOGIES.flatMap((bx) => RAILS.map((rz) => (
+        <group key={`${bx}${rz}`} position={[bx, -0.8, rz - 0.32]}>
           <Part geo={rbox(1.5, 0.2, 0.3, 0.06)} m={T.iron} p={[0, 0, 0.12]} castShadow={false} />
           {[-0.5, 0.5].map((dx) => (
             <group key={dx} position={[dx, -0.06, 0.32]} rotation-x={Math.PI / 2}>
@@ -32,7 +34,7 @@ export function TrainShell() {
             </group>
           ))}
         </group>
-      ))}
+      )))}
       {/* les tampons, au bout de la voiture */}
       {[-1.6, 1.6].map((z) => (
         <group key={z} position={[3.42, -0.45, z]} rotation-z={Math.PI / 2}>

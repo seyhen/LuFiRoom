@@ -9,6 +9,7 @@ import { Firs, type Fir } from '../../nature/firs'
 import { Foliage } from '../../nature/Foliage'
 import { Rock } from '../../nature/Rock'
 import { R, gravel, meadow } from './materials'
+import { RAILS } from '../TrainShell'
 import { GlowPoints } from '../../objects/GlowPoints'
 
 // La voie et ses abords, qui défilent : le train roule vers +x (comme le paysage de la fenêtre), donc le monde glisse vers -x.
@@ -17,7 +18,9 @@ import { GlowPoints } from '../../objects/GlowPoints'
 /** Le sol, le haut du ballast, le dessus des rails. */
 export const GROUND = -1.75
 const BALLAST = -1.27
-const RAIL_Z = [3.22, 2.12]
+const RAIL_Z = RAILS
+/** Le milieu de la voie, sous le milieu de la voiture. */
+const MID = (RAILS[0] + RAILS[1]) / 2
 /** La longueur du motif qui se répète, la vitesse du train (m/s). */
 const P = 24
 export const SPEED = 1.6
@@ -26,7 +29,7 @@ const tube = (pts: V3[], r: number, seg = 24) => new TubeGeometry(new CatmullRom
 
 /** Le ballast : un talus de cailloux sous les traverses, en long (coupe constante le long de x). */
 function ballastGeo() {
-  const sec: [number, number][] = [[0.9, GROUND - 0.02], [1.6, BALLAST], [3.75, BALLAST], [4.45, GROUND - 0.02]]
+  const sec: [number, number][] = [[MID - 3.0, GROUND - 0.02], [MID - 2.35, BALLAST], [MID + 2.35, BALLAST], [MID + 3.0, GROUND - 0.02]]
   const pos: number[] = [], uv: number[] = [], idx: number[] = []
   const X0 = -24, X1 = 24
   sec.forEach(([z, y], i) => {
@@ -178,7 +181,7 @@ function lists() {
 /** Les traverses de tous les motifs : une tous les 60 cm. */
 function sleepers(): Item[] {
   const out: Item[] = []
-  for (let x = -P; x < 2 * P; x += 0.6) out.push({ p: [x, BALLAST + 0.035, 2.67], s: 1 })
+  for (let x = -P; x < 2 * P; x += 0.6) out.push({ p: [x, BALLAST + 0.035, MID], s: 1 })
   return out
 }
 
@@ -202,7 +205,7 @@ export function Line() {
   const l = useMemo(lists, [])
   const sl = useMemo(sleepers, [])
   const stemGeo = useMemo(() => cyl(0.008, 0.01, 1, 4), [])
-  const sleeperGeo = useMemo(() => rbox(0.22, 0.07, 1.7, 0.03), [])
+  const sleeperGeo = useMemo(() => rbox(0.24, 0.07, 4.3, 0.03), [])
   useFrame((_, delta) => {
     if (!reduceMotion) s.current = (s.current + Math.min(delta, 0.05) * SPEED) % (P * 100)
     roll.current.position.x = -(s.current % P)

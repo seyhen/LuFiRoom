@@ -1,5 +1,6 @@
 import { Part, SPH, cyl, noRay, rbox } from '../../parts'
 import { R } from './materials'
+import { RAILS } from '../TrainShell'
 
 /** Le toit bombé : un cylindre couché le long de la voiture, aplati (son dessous est dans la caisse). */
 const ROOF = cyl(1, 1, 1, 32)
@@ -35,9 +36,9 @@ export function NextCar() {
       {Array.from({ length: 5 }, (_, i) => (
         <Part key={i} geo={rbox(0.07, 3.3, 2.5, 0.03)} m={R.bellows} p={[x + len / 2 + 0.03 + i * 0.07, 1.75, -0.4]} castShadow={false} />
       ))}
-      {/* les bogies sur la voie */}
-      {BOGIES.map((bx) => (
-        <group key={bx} position={[x + bx, -0.8, 2.9]}>
+      {/* les bogies sur les deux rails */}
+      {BOGIES.flatMap((bx) => RAILS.map((rz) => (
+        <group key={`${bx}${rz}`} position={[x + bx, -0.8, rz - 0.32]}>
           <Part geo={rbox(1.5, 0.2, 0.3, 0.06)} m={R.carIron} p={[0, 0, 0.12]} castShadow={false} />
           {[-0.5, 0.5].map((dx) => (
             <group key={dx} position={[dx, -0.06, 0.32]} rotation-x={Math.PI / 2}>
@@ -46,7 +47,7 @@ export function NextCar() {
             </group>
           ))}
         </group>
-      ))}
+      )))}
       {/* le marchepied doré sous la porte */}
       <Part geo={rbox(0.8, 0.06, 0.3, 0.02)} m={R.carGold} p={[x + 2.7, -0.55, 3.5]} castShadow={false} />
     </group>
