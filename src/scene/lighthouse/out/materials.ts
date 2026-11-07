@@ -68,5 +68,9 @@ export const S = {
   buoyWhite: out(gummy(0xfbf6ee, { roughness: 0.4, clearcoat: 0.6 })),
   /** Le faisceau du phare : deux cônes de lumière additifs, visibles la nuit et par temps sombre. */
   beam: new MeshBasicMaterial({ color: 0xfff0b8, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, side: DoubleSide }),
+  /** La lanterne du ponton : elle s'allume le soir pour qu'on voie encore le ponton et la barque dans l'ombre du socle. */
+  dockLamp: out(gummy(0xfff0cc, { roughness: 0.1, clearcoat: 1, emissive: 0xffc46a, emissiveIntensity: 0 })),
+  dockPool: new MeshBasicMaterial({ map: glowTex, color: 0xffc77a, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }),
+  dockGlow: new SpriteMaterial({ map: glowTex, color: 0xffcf86, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }),
   glow: new SpriteMaterial({ map: glowTex, color: 0xffe2a0, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }),
 }

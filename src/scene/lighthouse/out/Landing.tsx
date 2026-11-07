@@ -31,6 +31,11 @@ export function Landing() {
     const p = ph.current, k = 1 + st * 2.2
     boat.current.position.y = SEA + 0.02 + Math.sin(p) * 0.035 * k
     boat.current.rotation.set(Math.sin(p * 0.8 + 1) * 0.05 * k, -0.5, Math.sin(p * 1.1) * 0.06 * k)
+    // la lanterne du ponton : allumée le soir, un peu dès que le temps s'assombrit
+    const lit = Math.min(1, smooth(mood.night) + smooth(mood.rain) * 0.3 + st * 0.3)
+    S.dockLamp.emissiveIntensity = lit * 3
+    S.dockGlow.opacity = lit * 0.85
+    S.dockPool.opacity = lit * 0.6
   })
   return (
     <group position={[DOCK.x, 0, DOCK.z]} rotation-y={DOCK.ry}>
@@ -46,12 +51,22 @@ export function Landing() {
         {Array.from({ length: 6 }, (_, i) => <Part key={i} geo={rbox(0.02, 0.075, 0.95, 0.008)} m={S.woodDark} p={[-0.62 + i * 0.25, SEA + 0.285, 0]} castShadow={false} />)}
         <Part geo={cyl(0.06, 0.06, 0.2, 8)} m={S.iron} p={[0.45, SEA + 0.4, 0.3]} castShadow={false} />
         <Part geo={rope} m={S.rope} castShadow={false} />
+        {/* la lanterne du ponton, sur un poteau au coin côté large : elle éclaire le plancher et la barque la nuit */}
+        <Part geo={cyl(0.03, 0.035, 0.95, 8)} m={S.woodDark} p={[0.62, SEA + 0.75, -0.38]} castShadow={false} />
+        <Part geo={rbox(0.2, 0.03, 0.04, 0.01)} m={S.iron} p={[0.7, SEA + 1.18, -0.38]} castShadow={false} />
+        <Part geo={cyl(0.008, 0.008, 0.08, 4)} m={S.iron} p={[0.78, SEA + 1.13, -0.38]} castShadow={false} />
+        <Part geo={cyl(0.07, 0.05, 0.05, 10)} m={S.iron} p={[0.78, SEA + 1.07, -0.38]} castShadow={false} />
+        <Part geo={cyl(0.055, 0.055, 0.14, 10)} m={S.dockLamp} p={[0.78, SEA + 0.97, -0.38]} castShadow={false} />
+        <Part geo={cyl(0.06, 0.06, 0.025, 10)} m={S.iron} p={[0.78, SEA + 0.89, -0.38]} castShadow={false} />
         {/* un casier à homards sur le ponton */}
         <group position={[-0.3, SEA + 0.43, 0.15]} rotation-y={0.3}>
           <Part geo={rbox(0.42, 0.22, 0.3, 0.05)} m={S.woodDark} />
           {[-0.12, 0, 0.12].map((dx) => <Part key={dx} geo={rbox(0.02, 0.23, 0.31, 0.008)} m={S.rope} p={[dx, 0, 0]} castShadow={false} />)}
         </group>
       </Static>
+      <sprite material={S.dockGlow} position={[0.78, SEA + 0.97, -0.38]} scale={1.6} renderOrder={4} raycast={() => null} />
+      {/* la flaque de lumière de la lanterne sur le plancher et l'eau autour */}
+      <mesh material={S.dockPool} position={[0.5, SEA + 0.33, 0.2]} rotation-x={-Math.PI / 2} renderOrder={3} raycast={() => null}><planeGeometry args={[2.6, 2.6]} /></mesh>
       <group ref={boat} position={[1.15, SEA, 0.95]} userData={LIVE}>
         <Static>
           <Part geo={HULL} m={S.hull} scale={[0.95, 0.55, 0.42]} />

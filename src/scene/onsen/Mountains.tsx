@@ -1,5 +1,6 @@
+import { useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { AdditiveBlending, Color, LatheGeometry, Vector2, type SpriteMaterial } from 'three'
+import { AdditiveBlending, Color, LatheGeometry, Vector2, type Sprite, type SpriteMaterial } from 'three'
 import { smooth } from '../../math'
 import { Part, SPH, noRay } from '../parts'
 import { LIVE } from '../Static'
@@ -74,6 +75,7 @@ const mountainGeo = (() => {
 /** Les montagnes dans la brume au-dessus de la palissade, et la lune qui se lève sur elles le soir. */
 export function Mountains() {
   const wide = useThree((st) => st.size.width > st.size.height)
+  const halo = useRef<Sprite>(null)
   useFrame(() => {
     const n = smooth(mood.night), w = { n, r: smooth(mood.rain), s: smooth(mood.snow), st: smooth(mood.storm) }
     // les rangs : jour → nuit, puis assombris par l'orage, effacés dans le blanc par la tempête de neige (le second plus loin)
@@ -82,6 +84,7 @@ export function Mountains() {
       m.color.setStyle(rgb(weathered(hex('#' + tmp.getHexString()), w, 0.5 + i * 0.4)))
     })
     O.moon.opacity = n * clearOf(w) ** 2
+    if (halo.current) (halo.current.material as SpriteMaterial).opacity = O.moon.opacity * 0.45
     // la brume entre les rangs s'épaissit dans la tempête de neige
     mists.forEach((m) => (m.opacity = 0.3 - n * 0.24 + whiteout(w) * 0.35))
   })
@@ -98,6 +101,10 @@ export function Mountains() {
         <Foliage key={i} v={i} p={[x, y, z]} s={[w, h, w * 0.85]} ry={i} m={k === 5 ? O.forestPine : O.forest[k]} style={k === 5 ? 'clipped' : 'wild'} shadow={false} />
       ))}
       <mesh geometry={SPH} material={O.moon} scale={0.42} position={moonAt(wide ? MOON_WIDE : MOON_TALL)} userData={LIVE} raycast={noRay} />
+      {/* le halo de la lune : un voile doux autour du disque, qui s'éteint avec elle */}
+      <sprite ref={halo} position={moonAt(wide ? MOON_WIDE : MOON_TALL)} scale={2.6} renderOrder={-1} raycast={noRay}>
+        <spriteMaterial map={glowTex} color={0xfff4dc} transparent opacity={0} depthWrite={false} blending={AdditiveBlending} />
+      </sprite>
       {/* des bancs de brume entre les rangs */}
       {MISTS.map(([x, y, z], i) => (
         <sprite key={i} position={[x, y, z]} scale={[6, 1.4, 1]} raycast={noRay}>
