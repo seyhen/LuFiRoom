@@ -133,7 +133,7 @@ function Sea() {
 /** Les icebergs tabulaires, au loin : de grandes tables de glace aux bords arrondis : [x, z, largeur, hauteur, profondeur, rotation]. */
 const TABLES: [number, number, number, number, number, number][] = [[-4.6, -8.4, 3.4, 1.3, 2.2, 0.3], [5.2, -8.8, 2.6, 1.0, 1.8, -0.4], [-9.0, -1.6, 2.2, 0.9, 1.6, 1.1]]
 /** Les pinacles : des blocs dressés, arrondis : [x, z, largeur, hauteur, forme]. */
-const BERGS: [number, number, number, number, number][] = [[-7.2, -5.4, 1.2, 2.2, 1], [8.4, -4.4, 1.0, 1.7, 6], [1.0, -9.8, 1.1, 1.9, 2]]
+const BERGS: [number, number, number, number, number][] = [[-7.2, -5.4, 1.2, 2.2, 1], [8.4, -4.4, 1.0, 1.7, 3], [1.0, -9.8, 1.1, 1.9, 2]]
 
 export function Surroundings() {
   return (
@@ -151,8 +151,6 @@ export function Surroundings() {
             {/* la grotte bleue creusée par la houle : une voûte sombre qui affleure sur les deux faces vues (une ellipse, pas une plaque) */}
             <Part geo={SPH} m={M.bergDeep} p={[-w * 0.18, h * 0.1, d / 2 - 0.02]} scale={[w * 0.12, h * 0.17, 0.07]} castShadow={false} />
             <Part geo={SPH} m={M.bergDeep} p={[w / 2 - 0.02, h * 0.08, d * 0.12]} scale={[0.07, h * 0.15, d * 0.1]} castShadow={false} />
-            {/* le pied bleu, sous la ligne d'eau, plus large */}
-            <Part geo={rbox(w + 0.3, 0.3, d + 0.3, 0.14)} m={M.bergDeep} p={[0, -0.1, 0]} castShadow={false} />
           </group>
         ))}
         {BERGS.map(([x, z, w, h, v], i) => (

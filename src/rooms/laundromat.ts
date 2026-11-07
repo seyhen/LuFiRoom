@@ -24,7 +24,7 @@ export const laundromat: Room = {
     bg: ['#dcefe8', '#08151d'],
   },
   // la laverie est au coin d'une rue (trottoir, réverbère, immeubles voisins) : on recule pour la voir
-  zoom: 0.86,
+  zoom: 0.82,
   sky: { day: ['#eef6f3', '#cfe5df', '#a8c8c4'], night: ['#1c3644', '#10222e', '#060f17'] },
   light: {
     hemi: { sky: [0xf2fbff, 0x6a88b8], ground: [0xc4d8d0, 0x4a4450], intensity: [0.68, 0.4] },
