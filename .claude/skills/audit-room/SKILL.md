@@ -184,7 +184,7 @@ Note la pièce. Une ligne à 0 est à refaire avant de conclure ; viser un total
 | Cadre | murs habillés (affiches, enseignes, tuyaux), pas de grand pan nu, rien d'entassé |
 | Dehors et fond | rien de vide derrière la pièce, un dehors du même lieu et de la même culture que l'intérieur (étape 3 bis), qui s'allume le soir et montre l'activité autour |
 | Objet de musique | propre à la pièce, avec `useBeat`, son libellé et son id `radio` |
-| Sons | chaque objet interactif pilote un **son de base** continu, doux et familier, cohérent avec la pièce et agréable en fond une heure (jamais un bruitage de détail : glaçons, pièces, linge plié) ; enregistrement réutilisé quand il existe, sinon un son synthétisé continu provisoire (le propriétaire trouvera un enregistrement) ; dosé (étape 1) |
+| Sons | chaque objet interactif pilote un **son qu'on a envie d'écouter** (pas un bourdonnement, une chaudière ou un grésillement : « une personne le lance-t-elle exprès pour se détendre ? »), un **son de base** continu, doux et familier, cohérent avec la pièce et agréable en fond une heure (jamais un bruitage de détail : glaçons, pièces, linge plié) ; enregistrement réutilisé quand il existe, sinon un son synthétisé continu provisoire (le propriétaire trouvera un enregistrement) ; dosé (étape 1) |
 | Interface | `ui`, `light` et `sky` de la fiche propres à la pièce, jour **et** nuit |
 
 Les objets du quotidien se refont au niveau de la plage : une théière a un ventre rond, un couvercle à bouton, un bec, une anse et un pied (pas deux cylindres) ; un gril a des pieds, une auge à rebords, des braises au fond, une grille ; un tiroir a sa poignée. Si on hésite à reconnaître l'objet sans étiquette, il est à 0.
