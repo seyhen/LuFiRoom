@@ -14,7 +14,15 @@ import { AirCon, Billboard, Bulkhead, Chimney, Dish, PigeonCoop, RoofGarden, Sky
 const RIGHT: BlockProps = { x0: 3.62, x1: 9.8, z0: -4.4, z1: 0.95, top: -1.75, b: 1, shift: 0.2 }
 const FRONT: BlockProps = { x0: 3.62, x1: 9.2, z0: 1.25, z1: 7.8, top: -3.3, b: 2, shift: 0.55 }
 const LEFT: BlockProps = { x0: -9.0, x1: -3.78, z0: 0.3, z1: 7.2, top: -2.55, b: 1, shift: 0.8 }
-const BLOCKS = [RIGHT, FRONT, LEFT]
+/** Derrière la terrasse : la ville continue, des toits plus hauts qui se fondent dans le ciel (le fond n'est plus vide). */
+const BACK = [
+  { x0: -9.0, x1: -3.78, z0: -8.2, z1: 0.05, top: 0.3, b: 2, shift: 0.3 },
+  { x0: 3.62, x1: 9.8, z0: -11, z1: -4.65, top: 1.2, b: 0, shift: 0.7 },
+  { x0: -3.4, x1: 3.4, z0: -12.5, z1: -4.4, top: 3.4, b: 1, shift: 0.1 },
+  { x0: -9.5, x1: -4.0, z0: -14, z1: -8.6, top: 2.6, b: 0, shift: 0.5 },
+  { x0: 3.6, x1: 10.2, z0: -17, z1: -11.4, top: 4.2, b: 2, shift: 0.9 },
+]
+const BLOCKS = [RIGHT, FRONT, LEFT, ...BACK]
 
 /** Où s'arrête la pluie : sur le toit d'un voisin, sinon tout en bas (elle se perd dans le ciel avant). */
 const rainGround = (x: number, z: number) => {

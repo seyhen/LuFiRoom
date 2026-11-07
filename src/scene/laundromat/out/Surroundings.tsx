@@ -147,6 +147,8 @@ export function Surroundings() {
         {/* l'immeuble voisin à gauche, sa boutique éclairée au rez-de-chaussée ; l'immeuble d'en face, de l'autre côté de la rue */}
         <Block x0={-9.6} x1={-3.8} z0={-3.6} z1={3.4} wall={3.2} top={4.9} s={1} shift={0.25} dormers={[3, 3]} lowBalcony={false} />
         {/* en face : plus bas, plus loin et moins large que le voisin, pour ne pas fermer le coin en haut à droite */}
+        <Block x0={2.8} x1={10.5} z0={-15.5} z1={-8.2} wall={3.0} top={4.6} s={2} shift={0.2} dormers={[3, 3]} lowBalcony={false} />
+        <Block x0={-9.6} x1={-3.9} z0={-10.6} z1={-3.9} wall={2.9} top={4.3} s={0} shift={0.8} dormers={[3, 3]} lowBalcony={false} />
         <Block x0={-8.4} x1={2.2} z0={-17} z1={-10.4} wall={2.8} top={4.5} s={1} shift={0.6} dormers={[4, 2]} lowBalcony={false} />
         <group position={[-6.7, SIDEWALK, 3.42]}>
           <Part geo={rbox(4.2, 2.5, 0.06, 0.03)} m={M.iron} p={[0, 1.25, 0.02]} castShadow={false} />

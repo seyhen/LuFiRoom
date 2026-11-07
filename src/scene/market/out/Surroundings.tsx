@@ -13,22 +13,25 @@ import { glowTex } from '../../textures'
 import { OutdoorPrecip } from '../../objects/OutdoorPrecip'
 import { GlowPoints } from '../../objects/GlowPoints'
 import { market } from '../../../rooms/market'
-import { Block } from '../../roof/out/Buildings'
+import { F as ZF, Z, Zakkyo } from './Zakkyo'
 import { O } from '../../roof/out/materials'
 
-// Le dehors du marché de nuit : la rue continue. Une chaussée mouillée et ses rails de tram devant, les immeubles de brique voisins
-// à gauche et derrière à droite, leurs enseignes verticales au néon (RAMEN, KARAOKE, GYOZA, BAR) qui s'allument le soir, des
+// Le dehors du marché de nuit : la rue continue. Une chaussée mouillée et ses rails de tram devant, les petits immeubles japonais de béton (zakkyo) voisins
+// à gauche et derrière, leurs enseignes verticales en kanji (ラーメン, カラオケ, 餃子, 居酒屋…) qui s'allument le soir, des
 // guirlandes de lanternes rouges tendues au-dessus de la rue, un scooter garé, l'étal voisin avec sa table et ses tabourets.
 
 const ROAD = -0.42, WALK = -0.3
 const DISC = new CircleGeometry(1, 24)
 /** Les flaques où se reflètent les néons (un seul tracé). */
 const PUDDLES: Item[] = [[1.5, 5.2, 1.2, 0.5], [-2.0, 7.0, 0.9, 0.4], [5.6, 2.4, 0.5, 1.0]].map(([x, z, a, b]) => ({ p: [x, ROAD + 0.01, z], s: [a, b, 1], r: [-Math.PI / 2, 0, 0] }))
-const F = { c: [0, 0] as [number, number], r0: 7.5, r1: 12.5 }
+const F = ZF
 const tube = (pts: V3[], r: number) => new TubeGeometry(new CatmullRomCurve3(pts.map((p) => new Vector3(...p))), 40, r, 6, false)
 
-/** Les enseignes verticales au néon : [mot, couleur, position, rotation]. */
-const SIGNS: [string, string, V3, number][] = [['RAMEN', '#ff5ab0', [-3.84, 3.2, 1.6], Math.PI / 2], ['KARAOKE', '#5ae0ff', [-3.84, 3.7, -1.4], Math.PI / 2], ['GYOZA', '#ffd25a', [6.3, 2.6, -4.42], 0], ['BAR', '#ff7a4a', [8.4, 2.2, -4.42], 0]]
+/** Les enseignes verticales en drapeau (tategaki), plantées perpendiculairement aux façades : [mot, couleur, position, rotation]. */
+const SIGNS: [string, string, V3, number][] = [
+  ['ラーメン', '#ff5ab0', [-3.55, 3.5, 1.6], 0], ['カラオケ', '#5ae0ff', [-3.55, 4.4, -1.4], 0], ['おでん', '#ffd25a', [-3.55, 3.3, -2.9], 0],
+  ['餃子', '#ffd25a', [-3.55, 2.6, 2.9], 0], ['居酒屋', '#ff7a4a', [6.3, 3.6, -4.85], Math.PI / 2], ['焼肉', '#ff4a5a', [8.6, 3.0, -4.85], Math.PI / 2], ['スナック', '#c58aff', [4.6, 4.3, -4.85], Math.PI / 2],
+]
 /** L'atlas des enseignes : une colonne de 96 px par enseigne, lettres empilées (un seul matériau, un seul tracé pour les quatre). */
 const ATLAS_W = 96 * SIGNS.length, ATLAS_H = 64 * Math.max(...SIGNS.map(([w]) => w.length)) + 32
 const signH = (w: string) => 64 * w.length + 32
@@ -40,8 +43,11 @@ function signAtlas(glow: boolean) {
       const X = k * 96, H = signH(word)
       x.fillStyle = glow ? '#000' : '#2a1838'; x.fillRect(X, 0, 96, H)
       x.strokeStyle = glow ? color : 'rgba(255,255,255,.25)'; x.lineWidth = 4; x.strokeRect(X + 6, 6, 84, H - 12)
-      x.fillStyle = glow ? color : '#c8b8d8'; x.font = 'bold 50px "Arial Rounded MT Bold", Arial, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'
-      for (let i = 0; i < word.length; i++) x.fillText(word[i], X + 48, 44 + i * 64)
+      x.fillStyle = glow ? color : '#c8b8d8'; x.font = 'bold 50px "Yu Gothic","Hiragino Sans","Meiryo","Noto Sans JP","Noto Sans CJK JP",sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'
+      for (let i = 0; i < word.length; i++) {
+        // la barre de « ー » se couche à la verticale en écriture verticale
+        x.save(); x.translate(X + 48, 44 + i * 64); if (word[i] === 'ー') x.rotate(Math.PI / 2); x.fillText(word[i], 0, 0); x.restore()
+      }
     })
   })
 }
@@ -134,7 +140,8 @@ function Evening() {
     M.lantern.emissiveIntensity = 0.15 + k * 1.3
     M.glow.opacity = k * 0.7
     M.puddle.opacity = (0.1 + k * 0.25) * Math.max(0.4, mood.rain)
-    for (const m of O.facade) m.emissiveIntensity = 0.04 + n * 0.6
+    for (const m of Z.facade) m.emissiveIntensity = 0.04 + n * 0.9
+    for (const m of Z.shop) m.emissiveIntensity = 0.3 + k * 0.9
   })
   return null
 }
@@ -160,14 +167,19 @@ export function Surroundings() {
         <Part geo={rbox(1.6, 0.12, 5.8, 0.04)} m={M.walk} p={[-3.05, WALK - 0.06, 6.65]} castShadow={false} />
         <Part geo={rbox(12, 0.12, 1.6, 0.04)} m={M.walk} p={[3.4, WALK - 0.06, -4.3]} castShadow={false} />
         {[5.4, 6.5].map((z) => <Part key={z} geo={rbox(34, 0.03, 0.08, 0.01)} m={M.steel} p={[0, ROAD + 0.01, z]} castShadow={false} />)}
-        {/* les immeubles de brique voisins */}
-        <Block x0={-10} x1={-3.85} z0={-3.6} z1={3.4} top={6.2} b={0} shift={0.3} />
-        <Block x0={3.62} x1={10.4} z0={-11} z1={-5.1} top={5.4} b={0} shift={0.65} />
-        <Block x0={-10} x1={-3.85} z0={3.8} z1={9.5} top={4.6} b={0} shift={0.5} />
+        {/* les petits immeubles de béton voisins : à gauche, au fond à droite, et derrière la ruelle (le fond n'est plus vide) */}
+        <Zakkyo x0={-10} x1={-3.85} z0={-3.6} z1={3.4} top={6.2} v={0} shop={0} shift={0.3} />
+        <Zakkyo x0={3.62} x1={10.4} z0={-11} z1={-5.1} top={5.4} v={1} shop={1} shift={0.65} />
+        <Zakkyo x0={-10} x1={-3.85} z0={3.8} z1={9.5} top={4.6} v={1} shop={0} shift={0.5} />
+        <Zakkyo x0={-3.8} x1={3.5} z0={-12.2} z1={-5.1} top={6.2} v={0} shop={1} shift={0.1} />
+        <Zakkyo x0={-10.4} x1={-4.0} z0={-12} z1={-4.0} top={6.8} v={1} shop={1} shift={0.8} />
+        <Zakkyo x0={4.0} x1={11} z0={-17} z1={-11.4} top={7.2} v={0} shop={0} shift={0.45} />
         {SIGNS.map(([w, , p, ry], i) => (
           <group key={w} position={p} rotation-y={ry}>
             <mesh geometry={SIGN_GEOS[i]} material={signMat} raycast={noRay} />
             <Part geo={rbox(0.54, (0.5 * signH(w)) / 96 + 0.04, 0.05, 0.02)} m={M.dark} p={[0, 0, -0.035]} castShadow={false} />
+            {/* le bras de fer qui la tient au mur */}
+            <Part geo={rbox(0.5, 0.04, 0.04, 0.012)} m={M.dark} p={[-0.0, (0.25 * signH(w)) / 96 + 0.04, -0.03]} castShadow={false} />
           </group>
         ))}
         {/* les guirlandes le long des façades */}
