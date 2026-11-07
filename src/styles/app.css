@@ -144,7 +144,9 @@ html.night .shared .go { color: #12102a }
 
 /* choix de la pièce : sous la phrase d'aide (pointer-events: auto, comme .tools) */
 /* une seule ligne qui défile au doigt quand les pièces ne tiennent pas en largeur */
-.rooms { display: flex; gap: 6px; margin-top: 10px; pointer-events: auto; overflow-x: auto; scrollbar-width: none; max-width: calc(100vw - 32px);
+.rooms { display: flex; gap: 6px; margin-top: 10px; pointer-events: auto; overflow-x: auto; scrollbar-width: none;
+  /* toute la largeur de l'écran (sous le titre et les outils), sans élargir le titre : `contain: inline-size` la sort du calcul de sa largeur */
+  width: calc(100vw - 32px); max-width: calc(100vw - 32px); contain: inline-size;
   -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); padding-right: 24px }
 .rooms::-webkit-scrollbar { display: none }
 .room { flex: none; height: 32px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--ink);
