@@ -8,19 +8,18 @@ import { roof } from '../../../rooms/roof'
 import { Part, rbox } from '../../parts'
 import { O } from './materials'
 import { Block, FireEscape, type BlockProps } from './Buildings'
+import { DistantTowers, T } from './Distant'
 import { AirCon, Billboard, Bulkhead, Chimney, Dish, PigeonCoop, RoofGarden, Skylight, Turbine } from './RoofGear'
 
 /** Les voisins : à droite (plus bas d'un étage), devant à droite (plus bas encore), à gauche devant. */
 const RIGHT: BlockProps = { x0: 3.62, x1: 9.8, z0: -4.4, z1: 0.95, top: -1.75, b: 1, shift: 0.2 }
 const FRONT: BlockProps = { x0: 3.62, x1: 9.2, z0: 1.25, z1: 7.8, top: -3.3, b: 2, shift: 0.55 }
 const LEFT: BlockProps = { x0: -9.0, x1: -3.78, z0: 0.3, z1: 7.2, top: -2.55, b: 1, shift: 0.8 }
-/** Derrière la terrasse : la ville continue, des toits plus hauts qui se fondent dans le ciel (le fond n'est plus vide). */
+/** Derrière la terrasse : des toits plus bas que nous, comme à gauche et à droite (la ville lointaine monte derrière, voir `Distant.tsx`). */
 const BACK = [
-  { x0: -9.0, x1: -3.78, z0: -8.2, z1: 0.05, top: 0.3, b: 2, shift: 0.3 },
-  { x0: 3.62, x1: 9.8, z0: -11, z1: -4.65, top: 1.2, b: 0, shift: 0.7 },
-  { x0: -3.4, x1: 3.4, z0: -12.5, z1: -4.4, top: 3.4, b: 1, shift: 0.1 },
-  { x0: -9.5, x1: -4.0, z0: -14, z1: -8.6, top: 2.6, b: 0, shift: 0.5 },
-  { x0: 3.6, x1: 10.2, z0: -17, z1: -11.4, top: 4.2, b: 2, shift: 0.9 },
+  { x0: -9.0, x1: -3.78, z0: -7.5, z1: 0.05, top: -2.3, b: 2, shift: 0.3 },
+  { x0: 3.62, x1: 9.8, z0: -8.2, z1: -4.65, top: -2.0, b: 0, shift: 0.7 },
+  { x0: -3.4, x1: 3.4, z0: -6.4, z1: -4.0, top: -1.5, b: 1, shift: 0.1 },
 ]
 const BLOCKS = [RIGHT, FRONT, LEFT, ...BACK]
 
@@ -35,6 +34,7 @@ function Evening() {
   useFrame(() => {
     const n = smooth(mood.night), k = Math.min(1, n + mood.rain * 0.25 + mood.storm * 0.3)
     for (const m of O.facade) m.emissiveIntensity = 0.04 + n * 1.05
+    for (const m of T.tone) m.emissiveIntensity = 0.06 + n * 1.0
     O.billboard.emissiveIntensity = k * 0.38
     O.bulb.emissiveIntensity = 0.2 + k * 1.6
     O.glow.opacity = k * 0.8
@@ -59,6 +59,11 @@ export function Surroundings() {
         <Part geo={rbox(7.04, 0.14, 7.04, 0.05)} m={O.coping} p={[-0.07, -0.76, -0.07]} castShadow={false} />
         <FireEscape x0={-3.2} x1={-0.9} z={3.37} top={-0.84} />
         {BLOCKS.map((b, i) => <Block key={i} {...b} />)}
+        <DistantTowers />
+        <AirCon p={[-6.0, BACK[0].top, -3.0]} ry={0.3} />
+        <Turbine p={[6.6, BACK[1].top, -6.2]} />
+        <Chimney p={[-1.4, BACK[2].top, -5.0]} b={1} pots={3} />
+        <AirCon p={[1.8, BACK[2].top, -4.8]} ry={-0.2} />
         {/* le toit de droite : verrière, climatiseur, cheminée, parabole */}
         <Skylight p={[6.3, RIGHT.top, -2.6]} />
         <Chimney p={[8.6, RIGHT.top, -3.4]} b={1} />

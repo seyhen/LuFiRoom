@@ -27,6 +27,16 @@ Les objets interactifs sont **répartis dans toute la pièce**, pas entassés da
 
 Toujours : 0,15 au moins entre deux objets posés au sol (CLAUDE.md, « Trop entassé »).
 
+## Étape 1 ter — Le dehors fait partie de la pièce
+
+Quand on crée une pièce (ou qu'on ajoute un objet qui change ce qu'on voit au-dessus et autour), pense au dehors **dès le départ** (`docs/ROOMS.md`, « Le dehors d'une pièce ») :
+
+- **Pas de vide derrière.** Le haut de l'écran, c'est l'arrière de la pièce (-x, -z) : il doit porter des volumes (immeubles, tours, toits, forêt, collines, mer, rochers) qui montent au-dessus du mur du fond. Une pièce dont l'arrière est un aplat de ciel est à refaire.
+- **Le dehors parle du même lieu.** Mêmes teintes et mêmes matières que l'intérieur, architecture et écriture du pays : un marché japonais donne dehors des immeubles sombres de béton, des enseignes en kana et kanji, des distributeurs, des étals de street food, des fils électriques ; jamais de lettrage latin ni de brique européenne.
+- **Du vivant autour.** Un lieu qui vit (marché, café, laverie) montre dehors ce qu'on y fait : étals, vitrines, véhicules, lanternes.
+- **Chaque objet qu'on pose doit se voir** : recadre où tu l'as mis. Un objet derrière un client ou un meuble (le panier de la laverie) ou un poteau devant la fenêtre sont des erreurs de placement.
+- **Un cône de lumière** (faisceau, halo) est étroit à la source et large au loin.
+
 ## Étape 2 — Choisir l'objet : la grille
 
 Propose 3 candidats par pièce, puis garde celui qui coche le plus de cases. **Un candidat qui rate une case « bloquante » est écarté.**
@@ -82,6 +92,7 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite, 
 - Objet en gros plan, jour et nuit (défauts de CLAUDE.md), son allumé : l'animation se voit, le bouton est sur l'objet.
 - Le son tourne 5 minutes sans lasser : pas de motif qui revient à l'identique, pas de clic aux raccords.
 - Inventaire relancé (étape 1) : l'identifiant est unique.
+- Fond et dehors (étape 1 ter) : capture plein écran, rien de vide derrière la pièce, dehors du même lieu.
 - Carte relancée (étape 1 bis) : les objets interactifs couvrent la pièce, aucune grappe sans raison écrite, les boutons ne se touchent pas.
 - Skill `audit-room` si la pièce est nouvelle ou beaucoup retouchée.
 

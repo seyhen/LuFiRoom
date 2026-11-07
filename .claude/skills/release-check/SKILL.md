@@ -46,6 +46,9 @@ async () => {
    Les deux tours doivent donner les mêmes chiffres (à quelques unités près). Une hausse à chaque tour = une géométrie ou une texture créée hors JSX et jamais libérée (voir `freeScene` dans `Stage.tsx`), ou un canal audio pas déchargé (`evict` dans `engine.ts`). Le script dépasse 60 s : coupe-le en deux appels si besoin.
 4. **Affichage mobile** : `emulate 390x844x2,mobile,touch`, captures de 2 ou 3 pièces (dont celles qui ont changé), jour et nuit : rien ne déborde, les puces et le mixeur tiennent, les boutons ne se chevauchent pas. Remets ensuite `1440x900x2`.
 
+- **Retour sur l'onglet** : perds puis rends le contexte WebGL (`WEBGL_lose_context`), la pièce doit revenir entière, sans texture noire.
+- **Le fond** : capture plein écran de chaque pièce retouchée, aucun aplat de ciel vide derrière la pièce (skill `audit-room`, étape 3 bis).
+
 ## 3. Le site construit (production locale)
 
 ```bash

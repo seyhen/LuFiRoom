@@ -14,7 +14,7 @@ import { OutdoorPrecip } from '../../objects/OutdoorPrecip'
 import { GlowPoints } from '../../objects/GlowPoints'
 import { market } from '../../../rooms/market'
 import { F as ZF, Z, Zakkyo } from './Zakkyo'
-import { O } from '../../roof/out/materials'
+import { S as SM, STALLS, Stall, stallLanterns } from './Stalls'
 
 // Le dehors du marché de nuit : la rue continue. Une chaussée mouillée et ses rails de tram devant, les petits immeubles japonais de béton (zakkyo) voisins
 // à gauche et derrière, leurs enseignes verticales en kanji (ラーメン, カラオケ, 餃子, 居酒屋…) qui s'allument le soir, des
@@ -115,29 +115,14 @@ function Scooter({ p, ry }: { p: V3; ry: number }) {
   )
 }
 
-/** L'étal voisin, fermé pour la nuit : sa table pliante, quatre tabourets de plastique, un parasol jaune replié en partie. */
-function Stall({ p }: { p: V3 }) {
-  return (
-    <group position={p}>
-      <Part geo={cyl(0.45, 0.45, 0.04, 20)} m={O.coping} p={[0, 0.72, 0]} castShadow={false} />
-      <Part geo={cyl(0.04, 0.04, 0.72, 8)} m={M.steel} p={[0, 0.36, 0]} castShadow={false} />
-      {[0, 1, 2, 3].map((i) => { const a = i * 1.57 + 0.4; return (
-        <group key={i} position={[Math.cos(a) * 0.75, 0, Math.sin(a) * 0.75]}>
-          <Part geo={cyl(0.17, 0.2, 0.06, 14)} m={i % 2 ? M.scooter : M.stool} p={[0, 0.45, 0]} castShadow={false} />
-          <Part geo={cyl(0.16, 0.2, 0.42, 14)} m={i % 2 ? M.scooter : M.stool} p={[0, 0.21, 0]} castShadow={false} />
-        </group>
-      ) })}
-      <Part geo={cyl(0.03, 0.03, 2.3, 8)} m={M.steel} p={[0, 1.15, 0]} castShadow={false} />
-      <Part geo={cyl(0.05, 1.0, 0.4, 16)} m={M.umbrella} p={[0, 2.2, 0]} castShadow={false} />
-    </group>
-  )
-}
-
 function Evening() {
   useFrame(() => {
     const n = smooth(mood.night), k = Math.min(1, n + mood.rain * 0.3)
     signMat.emissiveIntensity = 0.3 + k * 1.7
     M.lantern.emissiveIntensity = 0.15 + k * 1.3
+    SM.lantern.emissiveIntensity = 0.3 + k * 1.4
+    SM.sign.emissiveIntensity = 0.4 + k * 1.1
+    SM.coals.emissiveIntensity = 0.5 + k * 0.9
     M.glow.opacity = k * 0.7
     M.puddle.opacity = (0.1 + k * 0.25) * Math.max(0.4, mood.rain)
     for (const m of Z.facade) m.emissiveIntensity = 0.04 + n * 0.9
@@ -153,7 +138,7 @@ export function Surroundings() {
     STRINGS.forEach(([a, b]) => { for (let i = 1; i < 12; i++) { const p = sagAt(a, b, i / 12); lanterns.push({ p: [p[0], p[1] - 0.2, p[2]], s: [0.13, 0.17, 0.13] }) } })
     return { wires, lanterns }
   }, [])
-  const glowPts = useMemo(() => lanterns.map((l) => l.p), [lanterns])
+  const glowPts = useMemo(() => [...lanterns.map((l) => l.p), ...stallLanterns()], [lanterns])
   const caps = useMemo(() => lanterns.flatMap((l): Item[] => [{ p: [l.p[0], l.p[1] + 0.17, l.p[2]], s: [0.06, 0.03, 0.06] }, { p: [l.p[0], l.p[1] - 0.17, l.p[2]], s: [0.06, 0.03, 0.06] }]), [lanterns])
   return (
     <>
@@ -185,7 +170,7 @@ export function Surroundings() {
         {/* les guirlandes le long des façades */}
         {wires.map((g, i) => <Part key={i} geo={g} m={M.dark} castShadow={false} />)}
         <Scooter p={[4.6, WALK, -3.7]} ry={0.2} />
-        <Stall p={[-5.6, WALK, 6.2]} />
+        {STALLS.map((st, i) => <Stall key={i} {...st} />)}
       </Static>
       <Batch geo={SPH} m={M.lantern} items={lanterns} />
       <Batch geo={SPH} m={M.dark} items={caps} />

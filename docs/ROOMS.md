@@ -67,6 +67,9 @@ Garde aussi au plus trois lumières ponctuelles par pièce : les bougies et les 
 Les boîtes arrondies (`rbox`) n'affichent que le centre d'une texture : pour un tapis, un paillasson ou un parquet qu'on veut voir à sa taille (le chevron du café), pose la texture sur un plan.
 
 ### Les défauts qui reviennent (et leur cause)
+- **Le fond est vide / le dehors ne va pas avec la pièce** (2026-11-07) : le haut de l'écran est l'arrière de la pièce ; il porte des volumes qui dépassent le mur du fond, à 5 à 10 du centre (au-delà de `r1` du fondu ils disparaissent). Le dehors parle du même lieu : marché de nuit = immeubles japonais sombres (`market/out/Zakkyo.tsx`), enseignes en kana et kanji, étals de street food (`market/out/Stalls.tsx`) ; toit-terrasse = toits de brique plus bas que nous et tours lointaines de la même famille que celles de la pièce (`roof/out/Distant.tsx`).
+- **Un cône de lumière à l'envers** : `CylinderGeometry(haut, bas)`, le haut en +y ; étroit à la source, large au loin (le faisceau du phare).
+- **Textures noires au retour sur l'onglet** : le contexte WebGL peut être repris par le navigateur ; `ContextGuard` (`Stage.tsx`) reconstruit le canvas à `webglcontextrestored` ou au retour sur l'onglet.
 
 La liste courte est dans `CLAUDE.md` (« Le soin des ambiances ») ; voici le détail.
 

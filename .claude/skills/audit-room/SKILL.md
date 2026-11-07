@@ -124,6 +124,10 @@ Dans le dossier de la pièce, cherche et corrige :
 | une inclinaison de pieds (`rotation={[sin a, 0, -cos a]}`) | signe inversé = pieds qui convergent vers le bas, tabouret « pas droit ». Pour un évasement : `[-sin a·k, 0, cos a·k]` ; vérifie de face que le pied touche le sol plus loin du centre que son sommet. |
 | des boutons, manettes ou voyants placés à moins de 0,05 du bord d'une lunette, d'un écran ou d'un cadran | « boutons qui touchent l'écran » : mesure le bord bas de l'écran (`centre − rayon extérieur`) et garde 0,05 de jeu avant la rangée de commandes. Si le panneau est incliné et sort d'un coffre, vérifie aussi que la rangée du bas n'est pas enterrée dans le dessus du coffre. |
 | de l'eau ou du verre transparent (`transparent: true`) qui contient des bulles, poissons, particules | l'écriture de profondeur de l'eau ou du verre cache ce qui est dedans. Matériau du contenant en `depthWrite: false`, contenu en `renderOrder` plus grand ; teinte de l'eau assez différente du mur derrière, sinon elle se lit comme du verre vide. |
+| un cône de lumière (faisceau de phare, projecteur, halo en cône : `CylinderGeometry`) | `CylinderGeometry(rayonHaut, rayonBas, …)` : le **haut** est du côté +y. Après `rotateZ(-π/2)`, +y devient +x. Le bout **étroit** va à la source (la lanterne), le large au loin. Le phare avait le cône à l'envers. Vérifie en capture, de nuit, que la lumière s'élargit en s'éloignant. |
+| du texte ou une enseigne dans une autre langue que celle du lieu (RAMEN, KARAOKE, BAR sur un marché japonais) | le décor contredit la pièce : kana et kanji pour un lieu japonais, l'écriture locale partout (enseignes, distributeurs, banderoles). |
+| un décor posé dans un coin de la capture mais jamais visible (caché derrière un client, un meuble, une planche à repasser) | un objet qu'on ne voit pas coûte des tracés pour rien : recadre là où tu l'as posé, et déplace-le ou supprime-le s'il est masqué. Un décor haut (poteau, parasol) ne passe pas devant la fenêtre ou un objet interactif. |
+| un matériau ou une texture qui dépend d'un `CanvasTexture` créé une seule fois, un rendu qui touche au moteur (`Stage.tsx`) | le retour sur l'onglet (ou l'écran rallumé) peut vider le contexte WebGL : le canvas se reconstruit (`ContextGuard` dans `Stage.tsx`). Après tout changement du moteur de rendu ou des textures, rejoue la perte de contexte (étape 3 bis, point 7). |
 
 ## Étape 3 — Le protocole visuel (obligatoire, c'est le cœur)
 
@@ -147,6 +151,18 @@ Pour **chaque objet interactif** (liste dans `src/rooms/<id>.ts`) **et chaque am
 
 Passe-t-on en revue **toute** la liste ? Si un objet n'a pas son recadrage, le rapport dit « non vu » et la pièce n'est pas finie.
 
+## Étape 3 bis — Le dehors et le fond (remarque du propriétaire, 2026-11-07)
+
+La pièce n'est pas seule : ce qu'on voit autour doit **lui appartenir** et **ne jamais laisser de vide**. Le propriétaire a relevé « l'arrière est vide » (toit-terrasse, atelier, laverie) et « le dehors du marché ne match pas la room ». À faire sur la capture **plein écran**, pas sur un recadrage de la pièce :
+
+1. **Le fond n'est pas vide.** La caméra regarde depuis +x, +z : « derrière » la pièce, c'est le **haut de l'écran** (directions -x et -z). Cherche tout aplat de ciel plus grand qu'un quart de la pièce, au-dessus et sur les côtés. Si tu en trouves, pose des volumes derrière (immeubles, toits, tours, arbres, collines, vagues, rochers selon le lieu), de plus en plus hauts en s'éloignant pour qu'ils dépassent au-dessus du mur du fond. Rappel de projection : plus un objet est loin derrière, plus il monte à l'écran (à hauteur égale, un objet à 8 de distance derrière le mur du fond est caché par ce mur s'il est plus bas que lui).
+2. **Il reste visible.** `skyFade` efface un objet entre `r0` (≈ 7,5) et `r1` (≈ 12,5) de distance au centre : les volumes du fond se posent avec leur face proche à 5 à 10 du centre, sinon ils disparaissent et le fond redevient vide. Vérifie en capture, pas à la lecture du code.
+3. **Même lieu, même ambiance, même culture.** Le dehors reprend les matières, les teintes et l'architecture de l'intérieur : un marché japonais sombre et mouillé a dehors des immeubles de béton sombres aux fenêtres chaudes, des enseignes en kana et kanji, des distributeurs, des lanternes, des fils électriques, de la street food (étals de takoyaki, yakitori, taiyaki, oden), pas une rue de brique européenne ni du lettrage latin. Un toit-terrasse new-yorkais a dehors des toits de brique **plus bas que nous** et une ville de tours de la même famille que celles de la pièce, pas de gros blocs plus hauts qu'elle qui l'écrasent. Question à poser : « si je ne voyais que le dehors, saurais-je de quelle pièce il vient ? ».
+4. **Pas de grand pan plat.** Un toit voisin ou un mur lointain sans rien dessus (ni matériel, ni fenêtres, ni enseigne) fait vide : habille-le (citernes, climatiseurs, cheminées, antennes) comme l'intérieur.
+5. **L'activité autour.** Si la pièce est un lieu de vie (marché, café, laverie), le dehors montre ce qui s'y passe : étals éclairés, vitrines, passants, véhicules, lanternes. Un décor mort autour d'un lieu vivant se lit comme un fond d'écran.
+6. **Jour, nuit, pluie.** Les fenêtres et enseignes du dehors s'allument le soir (`emissiveMap`, animés avec `mood.night`), les volumes se fondent dans le ciel sans couture.
+7. **Retour sur l'onglet.** Après un changement du rendu ou des textures : dans le navigateur, `getContext('webgl2').getExtension('WEBGL_lose_context')` puis `loseContext()`, attends 1 s, `restoreContext()`, attends 8 s et recadre : la pièce doit réapparaître entière (jamais de textures noires). Le garde est dans `src/scene/Stage.tsx` (`ContextGuard`).
+
 ## Étape 4 — La grille de profondeur (0 / 1 / 2 par ligne)
 
 Note la pièce. Une ligne à 0 est à refaire avant de conclure ; viser un total d'au moins 80 %.
@@ -162,6 +178,7 @@ Note la pièce. Une ligne à 0 est à refaire avant de conclure ; viser un total
 | Vie | un animal, un personnage ou un reflet de présence humaine, **modelé** : un chat a des oreilles qui se voient, un plastron, des pattes, une queue continue ; un client a des épaules, des bras, des mains. Un cylindre surmonté d'une boule (quille) = 0. Un visage d'animal qui « fait casque » = 1 au plus |
 | Accessoires | chaque objet a sa trace d'usage et un accessoire voisin qui raconte quelqu'un (voir « Pas assez abouti » ci-dessous) ; l'extérieur visible de la pièce est habillé |
 | Cadre | murs habillés (affiches, enseignes, tuyaux), pas de grand pan nu, rien d'entassé |
+| Dehors et fond | rien de vide derrière la pièce, un dehors du même lieu et de la même culture que l'intérieur (étape 3 bis), qui s'allume le soir et montre l'activité autour |
 | Objet de musique | propre à la pièce, avec `useBeat`, son libellé et son id `radio` |
 | Sons | chaque objet interactif pilote un son propre à l'ambiance, dosé (étape 1) |
 | Interface | `ui`, `light` et `sky` de la fiche propres à la pièce, jour **et** nuit |
@@ -197,7 +214,8 @@ Mesures : tsc ✓ / build ✓ / console ✓ — tracés : repos N, tout allumé 
 Objets vus en gros plan : <liste, un « vu » par objet, sinon « non vu »>
 Défauts trouvés → corrigés : …
 Défauts trouvés → restants (et pourquoi) : …
-Grille : total X / 24 — lignes à 0 : …
+Dehors et fond (étape 3 bis) : fond sans aplat vide ✓ / dehors cohérent avec la pièce ✓ / perte de contexte rejouée ✓
+Grille : total X / 26 — lignes à 0 : …
 Références comparées : plage / toit — écart : …
 ```
 

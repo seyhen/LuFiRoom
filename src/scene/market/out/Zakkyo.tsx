@@ -22,7 +22,7 @@ function facadeTex(wall: string, trim: string, glow: boolean, seed: number) {
     for (let f = 0; f < FL; f++) {
       const y0 = f * fh
       if (!glow) {
-        x.fillStyle = 'rgba(0,0,0,.07)'
+        x.fillStyle = 'rgba(0,0,0,.12)'
         for (let k = 0; k < 8; k++) x.fillRect(0, y0 + 6 + k * 20, 384, 1)
         x.fillStyle = trim; x.fillRect(0, y0 + fh - 14, 384, 14)
         x.fillStyle = 'rgba(0,0,0,.3)'; x.fillRect(0, y0 + fh - 14, 384, 2)
@@ -31,13 +31,13 @@ function facadeTex(wall: string, trim: string, glow: boolean, seed: number) {
       }
       for (let b = 0; b < 3; b++) {
         const wx = b * 128 + 14, ww = 100, wy = y0 + 30, wh = 96
-        const lit = r() < 0.62, warm = r() < 0.5 ? '#ffdca0' : '#fff0c8', curtain = r() < 0.4, deco = r()
+        const lit = r() < 0.75, warm = r() < 0.5 ? '#ffdca0' : '#fff0c8', curtain = r() < 0.4, deco = r()
         if (glow) {
           if (lit) { x.fillStyle = warm; x.fillRect(wx + 5, wy + 5, ww / 2 - 7, wh - 10); x.fillRect(wx + ww / 2 + 2, wy + 5, ww / 2 - 7, wh - 10) }
           continue
         }
-        x.fillStyle = '#c9ced2'; rr(x, wx, wy, ww, wh, 3); x.fill()
-        x.fillStyle = '#4d6379'; x.fillRect(wx + 5, wy + 5, ww / 2 - 7, wh - 10); x.fillRect(wx + ww / 2 + 2, wy + 5, ww / 2 - 7, wh - 10)
+        x.fillStyle = '#8c9298'; rr(x, wx, wy, ww, wh, 3); x.fill()
+        x.fillStyle = '#2c3a4e'; x.fillRect(wx + 5, wy + 5, ww / 2 - 7, wh - 10); x.fillRect(wx + ww / 2 + 2, wy + 5, ww / 2 - 7, wh - 10)
         x.fillStyle = 'rgba(255,255,255,.2)'; x.fillRect(wx + 9, wy + 9, 9, wh - 22)
         if (curtain) { x.fillStyle = ['#e8c8c0', '#c8d8c0', '#f0e0b0'][(b + f) % 3]; x.fillRect(wx + 5, wy + 5, ww / 2 - 7, (wh - 10) * 0.6) }
         // le garde-corps du balcon
@@ -57,7 +57,7 @@ function facadeTex(wall: string, trim: string, glow: boolean, seed: number) {
 /** Le rez-de-chaussée sur 6 × 3 m : deux boutiques. Variante 0 : yakitori éclairé + rideau de fer ; 1 : ramen + distributeurs. */
 function shopTex(variant: number, glow: boolean) {
   return canvasTex(384, 192, (x) => {
-    x.fillStyle = glow ? '#000' : '#2a2630'; x.fillRect(0, 0, 384, 192)
+    x.fillStyle = glow ? '#000' : '#1e1a24'; x.fillRect(0, 0, 384, 192)
     x.textAlign = 'center'; x.textBaseline = 'middle'
     const band = (X: number, bg: string, fg: string, txt: string) => {
       x.fillStyle = glow ? bg : bg; x.fillRect(X, 0, 192, 44)
@@ -96,13 +96,14 @@ function shopTex(variant: number, glow: boolean) {
 
 const mat = <T extends ReturnType<typeof gummy>>(m: T, snow = false) => skyFade(snow ? snowTop(m, 1, 0.4, 0.8) : m, F)
 
-const FACADES = [['#d8ccb4', '#a89c88', 5], ['#bdc3be', '#8a928e', 9]] as const
+// Les teintes de la ruelle sous la pluie : bois brûlé et prune au crépuscule, vert de tôle ; les fenêtres chaudes y ressortent.
+const FACADES = [['#5c4a52', '#3a2e38', 5], ['#3e5656', '#26383a', 9]] as const
 export const Z = {
   facade: FACADES.map(([w, t, s]) => mat(gummy(0xffffff, { map: facadeTex(w, t, false, s), emissiveMap: facadeTex(w, t, true, s), emissive: 0xffffff, emissiveIntensity: 0, roughness: 0.75, clearcoat: 0.05 }))),
   shop: [0, 1].map((v) => mat(gummy(0xffffff, { map: shopTex(v, false), emissiveMap: shopTex(v, true), emissive: 0xffffff, emissiveIntensity: 0.3, roughness: 0.6, clearcoat: 0.1 }))),
-  body: [mat(gummy(0xcdbfa6, { roughness: 0.85 })), mat(gummy(0xaab0ac, { roughness: 0.85 }))],
-  roof: mat(gummy(0x6a6872, { roughness: 0.9, clearcoat: 0 }), true),
-  parapet: mat(gummy(0xb9b2a6, { roughness: 0.8 }), true),
+  body: [mat(gummy(0x5c4a52, { roughness: 0.85 })), mat(gummy(0x3e5656, { roughness: 0.85 }))],
+  roof: mat(gummy(0x3a3642, { roughness: 0.9, clearcoat: 0 }), true),
+  parapet: mat(gummy(0x6a5a60, { roughness: 0.8 }), true),
   steel: mat(gummy(0x8d96a2, { roughness: 0.4, clearcoat: 0.5 })),
   tank: mat(gummy(0xa7b4b8, { roughness: 0.4, clearcoat: 0.6 }), true),
   dark: mat(gummy(0x2c2a34, { roughness: 0.5 })),
