@@ -144,3 +144,8 @@ Pixabay Content License (accord du propriétaire du projet), téléchargés depu
 | `submarine/shell` | SeaShell_01 | freesound_community | 90046 |
 | `market/abacus` | Rosary Beads | DOBCommunications | 284813 |
 | `cafe/drip` | Water Dripping | DRAGON-STUDIO | 364450 |
+
+## Enregistrements réutilisés par d'autres pièces (2026-11-07)
+
+Aucun nouveau fichier : ces pièces déclarent dans `loops` des enregistrements déjà listés plus haut (mêmes sources, mêmes licences).
+`roof/wind` (brise) dans la cabane perchée ; `bedroom/fan` (ventilateur, l'extracteur) et `market/neon` (bourdonnement des tubes) dans la laverie de nuit.

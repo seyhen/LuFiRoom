@@ -32,28 +32,31 @@ export const laundromat: Room = {
   },
   loops: {
     ...WEATHER_LOOPS,
+    // des sons de base, déjà enregistrés : le souffle d'un ventilateur (l'extracteur) et le bourdonnement des tubes (voir public/audio/CREDITS.md)
+    fan: { src: 'audio/bedroom/fan', gain: 0.6 },
+    neon: { src: 'audio/market/neon', gain: 0.55 },
   },
   stations: ['veillee', 'minuit', 'pluie-fine', 'nuit-douce'],
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio', 0.5], ['tumble', 0.35], ['rain', 0.35]] },
-    read: { sounds: [['wash', 0.4], ['fold', 0.3], ['rain', 0.4], ['radio', 0.25]] },
-    sleep: { sounds: [['wash', 0.55], ['rain', 0.4]], night: true },
+    read: { sounds: [['wash', 0.4], ['fan', 0.25], ['rain', 0.4], ['radio', 0.25]] },
+    sleep: { sounds: [['wash', 0.5], ['fan', 0.2], ['rain', 0.4]], night: true },
   },
   objects: [
     { id: 'radio', target: 'radio', label: 'Radiocassette · lofi', anchor: [-2.56, 1.13, 1.22] },
     { id: 'washer', target: 'wash', label: 'Lave-linge · le tambour', anchor: [-2.2, 0.55, -0.55] },
     { id: 'dryer', target: 'tumble', label: 'Sèche-linge · le linge chaud', anchor: [-2.2, 1.35, -2.5] },
-    { id: 'changer', target: 'coins', label: 'Monnayeur · la monnaie', anchor: [2.72, 1.05, -2.5] },
-    { id: 'folding', target: 'fold', label: 'Table à plier · le linge', anchor: [0.15, 1.0, 0.35] },
+    { id: 'fan', target: 'fan', label: 'Extracteur · le souffle', anchor: [-2.85, 2.6, -2.5] },
+    { id: 'neon', target: 'neon', label: 'Néon · le bourdonnement', anchor: [-2.85, 3.5, -1.25] },
     { id: 'lamp', target: 'night', label: 'Lampe du comptoir · jour / nuit', anchor: [2.5, 1.25, 1.55] },
   ],
   sounds: [
     { id: 'radio', name: 'Radiocassette', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'wash', name: 'Lave-linge', chip: 'var(--c-wash)', volume: 0.55, sub: () => 'le tambour qui tourne' },
     { id: 'tumble', name: 'Sèche-linge', chip: 'var(--c-tumble)', volume: 0.5, sub: () => 'le linge chaud qui retombe' },
-    { id: 'coins', name: 'Monnayeur', chip: 'var(--c-coins)', volume: 0.45, sub: () => 'la monnaie qui tombe' },
-    { id: 'fold', name: 'Linge plié', chip: 'var(--c-fold)', volume: 0.5, sub: () => 'on secoue, on plie' },
+    { id: 'fan', name: 'Extracteur', chip: 'var(--c-fan)', volume: 0.5, sub: () => 'le souffle de l’air' },
+    { id: 'neon', name: 'Néon', chip: 'var(--c-neon)', volume: 0.45, sub: () => 'le bourdonnement des tubes' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'contre la vitrine' },
   ],
 }

@@ -11,7 +11,7 @@ Règles de la maison : `CLAUDE.md` (« Le soin des ambiances », « Sons », lic
 
 ## Étape 1 — Inventaire (5 minutes, obligatoire)
 
-1. Les sons qui existent déjà, toutes pièces confondues : `grep -n "build:" src/audio/engine.ts` (le registre `CHANNELS`) et `SoundId` dans `src/rooms/types.ts`. **Un nouvel objet a un identifiant de son qui n'est pas dans cette liste**, et un son qui ne ressemble pas à un existant (pas de « pluie 2 », pas de « feu 2 », pas d'un second bruit de pages). Une pièce peut reprendre un son *générique* (pluie, chat) seulement si l'utilisateur le demande.
+1. Les sons qui existent déjà, toutes pièces confondues (et leurs enregistrements dans `public/audio/`, à réutiliser, voir l'étape 1 quater) : `grep -n "build:" src/audio/engine.ts` (le registre `CHANNELS`) et `SoundId` dans `src/rooms/types.ts`. **Un nouvel objet a un identifiant de son qui n'est pas dans cette liste**, et un son qui ne ressemble pas à un existant (pas de « pluie 2 », pas de « feu 2 », pas d'un second bruit de pages). Une pièce peut reprendre un son *générique* (pluie, chat) seulement si l'utilisateur le demande.
 2. Les objets de la pièce (`objects` de `src/rooms/<id>.ts`) et ce que la pièce raconte (le commentaire en tête de sa scène, `src/scene/<id>/<Id>Scene.tsx`).
 3. Les zones vides de la pièce (capture de jour, vue d'ensemble) et **la carte des objets interactifs** : relève l'`anchor` de chacun dans `objects` et place-les sur un plan de la pièce en neuf cases (fond / milieu / devant × gauche / centre / droite).
 
@@ -37,6 +37,15 @@ Quand on crée une pièce (ou qu'on ajoute un objet qui change ce qu'on voit au-
 - **Du vivant autour.** Un lieu qui vit (marché, café, laverie) montre dehors ce qu'on y fait : étals, vitrines, véhicules, lanternes.
 - **Chaque objet qu'on pose doit se voir** : recadre où tu l'as mis. Un objet derrière un client ou un meuble (le panier de la laverie) ou un poteau devant la fenêtre sont des erreurs de placement.
 - **Un cône de lumière** (faisceau, halo) est étroit à la source et large au loin.
+
+## Étape 1 quater — Des sons de base, agréables, faits pour le fond (remarque du propriétaire, 2026-11-07)
+
+L'appli sert à lancer un son et à faire autre chose. Chaque objet pilote donc un **son de base** :
+- **continu, doux, familier** : pluie, vent, feu, vagues, ruisseau, oiseaux, grillons, ventilateur, bourdonnement, machine qui tourne, musique. Il tient une heure sans qu'on y pense ;
+- **cohérent avec la pièce** : on l'entendrait vraiment là ;
+- **jamais un bruitage de détail** : glaçons dans une carafe, pièces de monnaie, linge qu'on plie, froissement de feuilles synthétique. Ils fatiguent en boucle et ne font pas une ambiance (la cabane perchée et la laverie ont dû être refaites pour ça) ;
+- **de préférence un enregistrement déjà présent** (`public/audio/…`, déclaré dans `loops` : `fan: { src: 'audio/bedroom/fan', gain: 0.6 }`). Un son de base peut donc être repris d'une autre pièce quand il va avec l'objet : un extracteur d'air = le ventilateur, un tube fluorescent = le bourdonnement du néon. La règle « un identifiant de son qui n'existe pas encore » de l'étape 1 ne s'applique qu'aux **objets de détail** qui ont un vrai son propre et doux ; sinon, prends un son de base ;
+- si aucun son de base ne va avec l'objet, **l'objet n'est pas interactif** : c'est du décor. Demande avant d'inventer un son.
 
 ## Étape 2 — Choisir l'objet : la grille
 
