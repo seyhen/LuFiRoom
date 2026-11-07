@@ -50,9 +50,27 @@ const TOWERS: [number, number, number, number, number, number, Kind][] = (() => 
 })()
 const BOTTOM = -12
 
+/** Le gratte-ciel à gradins et à flèche qui fait le skyline de New York : trois retraits, un mât. Même échelle que les autres tours. */
+function Landmark({ x, z }: { x: number; z: number }) {
+  const m = T.tone[1], tiers: [number, number, number, number][] = [[1.3, 1.0, -12, 6.2], [0.95, 0.75, 6.2, 7.1], [0.65, 0.55, 7.1, 7.8], [0.4, 0.36, 7.8, 8.3]]
+  return (
+    <group position={[x, 0, z]}>
+      {tiers.map(([w, d, y0, y1], i) => (
+        <group key={i}>
+          <Part geo={worldUV(rbox(w, y1 - y0, d, 0.03), 3.3)} m={m} p={[0, (y0 + y1) / 2, 0]} castShadow={false} />
+          <Part geo={rbox(w + 0.07, 0.07, d + 0.07, 0.025)} m={T.trim} p={[0, y1, 0]} castShadow={false} />
+        </group>
+      ))}
+      <Part geo={cyl(0.02, 0.05, 1.2, 8)} m={T.trim} p={[0, 8.9, 0]} castShadow={false} />
+      <Part geo={SPH} m={T.trim} scale={0.05} p={[0, 9.55, 0]} castShadow={false} />
+    </group>
+  )
+}
+
 export function DistantTowers() {
   return (
     <>
+      <Landmark x={-1.9} z={-13.2} />
       {TOWERS.map(([x, z, w, d, top, t, kind], i) => {
         const h = top - BOTTOM, m = T.tone[t]
         return (

@@ -9,6 +9,7 @@ import { Part, rbox } from '../../parts'
 import { O } from './materials'
 import { Block, FireEscape, type BlockProps } from './Buildings'
 import { DistantTowers, T } from './Distant'
+import { SteamStack, WoodTank } from './NycGear'
 import { AirCon, Billboard, Bulkhead, Chimney, Dish, PigeonCoop, RoofGarden, Skylight, Turbine } from './RoofGear'
 
 /** Les voisins : à droite (plus bas d'un étage), devant à droite (plus bas encore), à gauche devant. */
@@ -60,6 +61,13 @@ export function Surroundings() {
         <FireEscape x0={-3.2} x1={-0.9} z={3.37} top={-0.84} />
         {BLOCKS.map((b, i) => <Block key={i} {...b} />)}
         <DistantTowers />
+        {/* New York : des châteaux d'eau sur presque chaque toit, la cheminée de vapeur, des escaliers de secours sur les façades voisines */}
+        <WoodTank p={[6.4, BACK[1].top, -6.5]} />
+        <SteamStack p={[8.7, BACK[1].top, -5.5]} />
+        <WoodTank p={[-6.8, BACK[0].top, -4.6]} s={0.9} />
+        <WoodTank p={[7.1, FRONT.top, 4.8]} s={0.9} />
+        <FireEscape x0={4.2} x1={6.6} z={FRONT.z1} top={FRONT.top} />
+        <FireEscape x0={-8.2} x1={-5.8} z={LEFT.z1} top={LEFT.top} />
         <AirCon p={[-6.0, BACK[0].top, -3.0]} ry={0.3} />
         <Turbine p={[6.6, BACK[1].top, -6.2]} />
         <Chimney p={[-1.4, BACK[2].top, -5.0]} b={1} pots={3} />
