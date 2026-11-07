@@ -40,6 +40,9 @@ export const treehouse: Room = {
     // les oiseaux le jour, les grillons la nuit : les enregistrements de la chambre (voir public/audio/CREDITS.md)
     birds: { src: 'audio/bedroom/birds', gain: 0.16 },
     crickets: { src: 'audio/bedroom/crickets', gain: 0.25 },
+    // le ruisseau et les cigales : enregistrements (voir public/audio/CREDITS.md)
+    brook: { src: 'audio/treehouse/brook', gain: 0.7 },
+    cicadas: { src: 'audio/treehouse/cicadas', gain: 0.6 },
   },
   stations: ['rosee', 'petit-matin', 'soleil-bas', 'veillee'],
   playlist: PLAYLIST,

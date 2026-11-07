@@ -33,6 +33,9 @@ export const laundromat: Room = {
   loops: {
     ...WEATHER_LOOPS,
     // des sons de base, déjà enregistrés : le souffle d'un ventilateur (l'extracteur) et le bourdonnement des tubes (voir public/audio/CREDITS.md)
+    // le lave-linge et le sèche-linge : deux enregistrements doux et étouffés, gardés bas (voir public/audio/CREDITS.md)
+    wash: { src: 'audio/laundromat/wash', gain: 0.5 },
+    tumble: { src: 'audio/laundromat/tumble', gain: 0.5 },
     fan: { src: 'audio/bedroom/fan', gain: 0.6 },
     neon: { src: 'audio/market/neon', gain: 0.55 },
   },
