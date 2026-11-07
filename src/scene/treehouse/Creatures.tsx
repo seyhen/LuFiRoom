@@ -183,14 +183,15 @@ const owlHead = () =>
 export function Owl({ position, ry = 0 }: { position: V3; ry?: number }) {
   const geo = useMemo(() => ({ body: owlBody(), head: owlHead() }), [])
   const g = useRef<Group>(null!), head = useRef<Group>(null!)
-  const st = useRef({ seen: useStore.getState().pulses.forest ?? 0, hoot: 0, turn: 0, turnT: 0, show: mood.night })
+  const st = useRef({ next: 6, hoot: 0, turn: 0, turnT: 0, show: mood.night })
   useEvery(10, 24, () => { st.current.turnT = rand(-0.9, 0.6) })
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05), s = st.current, store = useStore.getState()
-    const n = store.pulses.forest ?? 0
-    if (n !== s.seen) {
-      s.seen = n
-      if (store.night && store.on.forest && !reduceMotion) s.hoot = 1
+    // la nuit, elle hulule de loin en loin tant que le son du dehors (grillons) joue
+    s.next -= dt
+    if (s.next <= 0) {
+      s.next = 18 + Math.random() * 22
+      if (store.night && store.on.outside && !reduceMotion) s.hoot = 1
     }
     s.hoot = Math.max(0, s.hoot - dt * 1.2)
     s.turn = approach(s.turn, reduceMotion ? 0 : s.turnT, dt * 1.2)

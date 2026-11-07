@@ -165,13 +165,14 @@ export const OAK_ANCHOR: V3 = [UPPER[0][1][0], UPPER[0][1][1] + 0.7, UPPER[0][1]
  */
 export function UpperCrown() {
   const g = useRef<Group>(null!), masses = useRef<Group[]>([])
-  const st = useRef({ amp: 0, ph: UPPER.map((_, i) => i * 1.7), seen: useStore.getState().pulses.leaves ?? 0, gust: 0 })
+  const st = useRef({ amp: 0, ph: UPPER.map((_, i) => i * 1.7), next: 4, gust: 0 })
   useSquash('oak', g)
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05), s = st.current, store = useStore.getState(), on = isActive(store, 'oak')
-    const n = store.pulses.leaves ?? 0
-    if (n !== s.seen) {
-      s.seen = n
+    // une risée de loin en loin, tant que le vent se fait entendre
+    s.next -= dt
+    if (s.next <= 0) {
+      s.next = 9 + Math.random() * 9
       if (on) s.gust = 1
     }
     s.gust = Math.max(0, s.gust - dt * 0.35)

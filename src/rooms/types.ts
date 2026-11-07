@@ -12,10 +12,10 @@ export type SoundId =
   | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'abacus' | 'drip'
   // l'igloo : l'aurore, le trou de pêche, la couture, le cacao
   | 'aurora' | 'icehole' | 'sew' | 'cocoa'
-  // la cabane perchée : les oiseaux de la forêt, le ruisseau, les feuilles, le hamac, la citronnade
-  | 'forest' | 'brook' | 'leaves' | 'hammock' | 'lemonade'
-  // la laverie de nuit : le lave-linge, le sèche-linge, le monnayeur, le linge qu'on plie
-  | 'wash' | 'tumble' | 'coins' | 'fold'
+  // la cabane perchée : le ruisseau, les cigales (le vent et les oiseaux reprennent les sons de base)
+  | 'brook' | 'cicadas'
+  // la laverie de nuit : le lave-linge, le sèche-linge (l'extracteur et le néon reprennent les sons de base)
+  | 'wash' | 'tumble'
 /** Un objet interactif de la scène. */
 export type ObjectId =
   | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'

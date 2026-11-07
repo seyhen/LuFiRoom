@@ -33,10 +33,10 @@ function Folded({ p, m, band, w = 0.34, d = 0.26, ry = 0 }: { p: V3; m: typeof L
  */
 export function FoldingTable({ position }: { position: V3 }) {
   const g = useRef<Group>(null!), towel = useRef<Group>(null!), flap = useRef<Group>(null!)
-  const st = useRef({ seen: useStore.getState().pulses.fold ?? 0, t: 99 })
+  const st = useRef({ seen: 0, t: 99 })
   useSquash('folding', g)
   useFrame((_, delta) => {
-    const s = st.current, store = useStore.getState(), p = store.pulses.fold ?? 0
+    const s = st.current, store = useStore.getState(), p = 0
     if (p !== s.seen) {
       s.seen = p
       if (isActive(store, 'folding') && !reduceMotion) s.t = 0

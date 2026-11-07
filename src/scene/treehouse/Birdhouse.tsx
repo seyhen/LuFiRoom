@@ -26,13 +26,14 @@ const LIMB_D = 0.21
 export function Birdhouse({ position, ry = 0 }: { position: V3; ry?: number }) {
   const g = useRef<Group>(null!), bird = useRef<Group>(null!), head = useRef<Group>(null!)
   const robin = useMemo(robinGeo, [])
-  const st = useRef({ seen: useStore.getState().pulses.forest ?? 0, song: 0, show: 1 - mood.night })
+  const st = useRef({ next: 3, song: 0, show: 1 - mood.night })
   useSquash('birdhouse', g)
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05), s = st.current, store = useStore.getState(), on = isActive(store, 'birdhouse')
-    const n = store.pulses.forest ?? 0
-    if (n !== s.seen) {
-      s.seen = n
+    // il chante toutes les sept à quinze secondes tant que les oiseaux (le son « dehors ») se font entendre
+    s.next -= dt
+    if (s.next <= 0) {
+      s.next = 7 + Math.random() * 8
       if (on && !store.night && !reduceMotion) s.song = 1
     }
     s.song = Math.max(0, s.song - dt * 0.6)

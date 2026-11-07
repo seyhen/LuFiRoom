@@ -53,15 +53,10 @@ import aurora from './channels/aurora'
 import icehole from './channels/icehole'
 import sew from './channels/sew'
 import cocoa from './channels/cocoa'
-import forest from './channels/forest'
 import brook from './channels/brook'
-import leaves from './channels/leaves'
-import hammock from './channels/hammock'
-import lemonade from './channels/lemonade'
+import cicadas from './channels/cicadas'
 import wash from './channels/wash'
 import tumble from './channels/tumble'
-import coins from './channels/coins'
-import fold from './channels/fold'
 
 // canal (bus Gain) ─┬─> master Gain 0.9 ─> volume général ─> compresseur ─> sortie
 // canal (bus Gain) ─┘
@@ -128,15 +123,10 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   icehole: { build: icehole, base: 1.0 },
   sew: { build: sew, base: 1.4 },
   cocoa: { build: cocoa, base: 1.25 },
-  forest: { build: forest, base: 6.5 },
   brook: { build: brook, base: 4.2 },
-  leaves: { build: leaves, base: 2.2 },
-  hammock: { build: hammock, base: 14 },
-  lemonade: { build: lemonade, base: 5.5 },
+  cicadas: { build: cicadas, base: 3.0 },
   wash: { build: wash, base: 1.0 },
   tumble: { build: tumble, base: 1.0 },
-  coins: { build: coins, base: 3.0 },
-  fold: { build: fold, base: 4.0 },
 }
 const ids = Object.keys(CHANNELS) as SoundId[]
 

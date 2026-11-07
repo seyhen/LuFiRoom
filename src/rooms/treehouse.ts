@@ -37,28 +37,31 @@ export const treehouse: Room = {
     ...WEATHER_LOOPS,
     // le vent dans le chêne : la brise d'été du toit (enregistrement déjà là, voir public/audio/CREDITS.md)
     wind: { src: 'audio/roof/wind', gain: 0.8 },
+    // les oiseaux le jour, les grillons la nuit : les enregistrements de la chambre (voir public/audio/CREDITS.md)
+    birds: { src: 'audio/bedroom/birds', gain: 0.16 },
+    crickets: { src: 'audio/bedroom/crickets', gain: 0.25 },
   },
   stations: ['rosee', 'petit-matin', 'soleil-bas', 'veillee'],
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio', 0.55], ['wind', 0.3], ['brook', 0.3]] },
-    read: { sounds: [['forest', 0.35], ['wind', 0.25], ['brook', 0.3], ['hammock', 0.25]] },
-    sleep: { sounds: [['wind', 0.35], ['brook', 0.35], ['hammock', 0.3]], night: true },
+    read: { sounds: [['outside', 0.35], ['wind', 0.25], ['brook', 0.3], ['cicadas', 0.2]] },
+    sleep: { sounds: [['wind', 0.35], ['brook', 0.35], ['cicadas', 0.25]], night: true },
   },
   objects: [
     { id: 'radio', target: 'radio', label: 'Banjo · lofi', anchor: [-1.1, 0.5, -2.1] },
-    { id: 'birdhouse', target: 'forest', label: 'Nichoir · les oiseaux', anchor: [-2.34, 2.3, 1.9] },
-    { id: 'hammock', target: 'hammock', label: 'Hamac · le balancement', anchor: [-2.36, 0.69, -0.06] },
+    { id: 'birdhouse', target: 'outside', label: 'Nichoir · les oiseaux', anchor: [-2.34, 2.3, 1.9] },
+    { id: 'hammock', target: 'cicadas', label: 'Hamac · les cigales', anchor: [-2.36, 0.69, -0.06] },
     { id: 'lamp', target: 'night', label: 'Lanternes en bocal · jour / nuit', anchor: [1.15, 2.3, -1.42] },
     { id: 'oak', target: 'wind', label: 'Le chêne · le vent dans les feuilles', anchor: [2.0, 4.7, -2.9] },
     { id: 'brook', target: 'brook', label: 'Ruisseau · l’eau en contrebas', anchor: [-2.6, -2.4, -7.9] },
   ],
   sounds: [
     { id: 'radio', name: 'Banjo lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
-    { id: 'forest', name: 'Oiseaux', chip: 'var(--c-forest)', volume: 0.5, sub: (s) => (s.night ? 'la hulotte au loin' : 'le rouge-gorge et le pic') },
+    { id: 'outside', name: 'Forêt', chip: 'var(--c-win)', volume: 0.5, sub: (s) => (s.night ? 'grillons' : 'oiseaux') },
     { id: 'wind', name: 'Vent', chip: 'var(--c-leaves)', volume: 0.55, sub: () => 'dans les feuilles du chêne' },
     { id: 'brook', name: 'Ruisseau', chip: 'var(--c-brook)', volume: 0.5, sub: () => 'l’eau sur les galets' },
-    { id: 'hammock', name: 'Hamac', chip: 'var(--c-hammock)', volume: 0.45, sub: () => 'on se laisse bercer' },
+    { id: 'cicadas', name: 'Cigales', chip: 'var(--c-cicadas)', volume: 0.35, sub: () => 'l’été dans le chêne' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'dans les feuilles' },
   ],
 }

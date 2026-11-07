@@ -119,6 +119,7 @@ Dans le dossier de la pièce, cherche et corrige :
 | un panneau, un tiroir ou un volet dont la face est au même plan que celle du meuble (`z` du panneau + moitié de profondeur = `z` du caisson + moitié) | grésillement visible dès le premier gros plan (le tiroir de la télé) : fais-le dépasser de 0,02 à 0,03. |
 | un accessoire (porte-bagages, sac, anse, auvent) dont la boîte touche un voisin | « objet qui entre dans un autre » : lance le détecteur de l'étape 1.6 et garde 0,15 de jeu entre deux objets posés au sol. |
 | un objet de départ du décor passé sous un autre (tuyau, câble qui traverse un meuble) | un tuyau de gaz qui traversait le distributeur passait pour une pièce du vélo : fais courir tuyaux et câbles en dehors des meubles. |
+| un canal audio qui planifie des évènements ponctuels (`scheduled` avec des coups, des « tic », des éclaboussures) pour un son qui doit rester de fond | fatigue en boucle : un son de base est continu et doux. Retire les bruitages de détail, ou passe l'objet en décor (remarque du propriétaire, 2026-11-07). |
 | `new …Material` dans un composant rendu plusieurs fois | une matière par instance empêche la fusion et coûte des tracés. |
 | un `ref` animé (`useBeat`, `useFrame`) qui écrit `position.y = …` (ou `.x`, `.z`) sur un groupe qui a déjà une position dans le JSX | l'écriture **remplace** la position : les touches de l'orgue étaient retombées au sol. Écris `BASE + décalage`, avec une constante partagée. |
 | une inclinaison de pieds (`rotation={[sin a, 0, -cos a]}`) | signe inversé = pieds qui convergent vers le bas, tabouret « pas droit ». Pour un évasement : `[-sin a·k, 0, cos a·k]` ; vérifie de face que le pied touche le sol plus loin du centre que son sommet. |
@@ -183,7 +184,7 @@ Note la pièce. Une ligne à 0 est à refaire avant de conclure ; viser un total
 | Cadre | murs habillés (affiches, enseignes, tuyaux), pas de grand pan nu, rien d'entassé |
 | Dehors et fond | rien de vide derrière la pièce, un dehors du même lieu et de la même culture que l'intérieur (étape 3 bis), qui s'allume le soir et montre l'activité autour |
 | Objet de musique | propre à la pièce, avec `useBeat`, son libellé et son id `radio` |
-| Sons | chaque objet interactif pilote un **son de base** continu, doux et familier, cohérent avec la pièce et agréable en fond une heure (jamais un bruitage de détail : glaçons, pièces, linge plié) ; enregistrement réutilisé quand il existe ; dosé (étape 1) |
+| Sons | chaque objet interactif pilote un **son de base** continu, doux et familier, cohérent avec la pièce et agréable en fond une heure (jamais un bruitage de détail : glaçons, pièces, linge plié) ; enregistrement réutilisé quand il existe, sinon un son synthétisé continu provisoire (le propriétaire trouvera un enregistrement) ; dosé (étape 1) |
 | Interface | `ui`, `light` et `sky` de la fiche propres à la pièce, jour **et** nuit |
 
 Les objets du quotidien se refont au niveau de la plage : une théière a un ventre rond, un couvercle à bouton, un bec, une anse et un pied (pas deux cylindres) ; un gril a des pieds, une auge à rebords, des braises au fond, une grille ; un tiroir a sa poignée. Si on hésite à reconnaître l'objet sans étiquette, il est à 0.

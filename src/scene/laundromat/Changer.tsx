@@ -41,10 +41,10 @@ const note = new MeshStandardMaterial({
  */
 export function Changer({ position }: { position: V3 }) {
   const g = useRef<Group>(null!), coins = useRef<(Mesh | null)[]>([]), glow = useRef<Sprite>(null!)
-  const st = useRef({ seen: useStore.getState().pulses.coins ?? 0, t: 99, n: 0 })
+  const st = useRef({ seen: 0, t: 99, n: 0 })
   useSquash('changer', g)
   useFrame((_, delta) => {
-    const s = st.current, store = useStore.getState(), p = store.pulses.coins ?? 0, nt = smooth(mood.night)
+    const s = st.current, store = useStore.getState(), p = 0, nt = smooth(mood.night)
     glow.current.material.opacity = 0.05 + nt * 0.4
     L.dispenserGlow.emissiveIntensity = 0.55 + nt * 0.4
     if (p !== s.seen) {

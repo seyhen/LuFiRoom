@@ -148,4 +148,4 @@ Pixabay Content License (accord du propriétaire du projet), téléchargés depu
 ## Enregistrements réutilisés par d'autres pièces (2026-11-07)
 
 Aucun nouveau fichier : ces pièces déclarent dans `loops` des enregistrements déjà listés plus haut (mêmes sources, mêmes licences).
-`roof/wind` (brise) dans la cabane perchée ; `bedroom/fan` (ventilateur, l'extracteur) et `market/neon` (bourdonnement des tubes) dans la laverie de nuit.
+`roof/wind` (brise), `bedroom/birds` et `bedroom/crickets` (oiseaux le jour, grillons la nuit) dans la cabane perchée ; `bedroom/fan` (ventilateur, l'extracteur) et `market/neon` (bourdonnement des tubes) dans la laverie de nuit.

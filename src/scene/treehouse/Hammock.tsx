@@ -77,23 +77,14 @@ function End({ x, tie }: { x: number; tie: number }) {
  */
 export function Hammock() {
   const g = useRef<Group>(null!), swing = useRef<Group>(null!)
-  const st = useRef({ ph: 0, amp: 0, corr: 0, seen: useStore.getState().pulses.hammock ?? 0 })
+  const st = useRef({ ph: 0, amp: 0 })
   useSquash('hammock', g)
   const cloth = useMemo(clothGeo, [])
   const dir = new Vector3().subVectors(B, A)
   const ry = -Math.atan2(dir.z, dir.x)
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05), s = st.current, store = useStore.getState(), on = isActive(store, 'hammock')
-    const n = store.pulses.hammock ?? 0
-    if (n !== s.seen) {
-      s.seen = n
-      // un bout de course s'entend : la phase devrait être à π/2 près d'un multiple de π ; on rattrape l'écart en douceur
-      const e = ((s.ph - Math.PI / 2) % Math.PI + Math.PI * 1.5) % Math.PI - Math.PI / 2
-      s.corr = -e
-    }
-    const c = s.corr * Math.min(1, dt * 2)
-    s.corr -= c
-    s.ph = (s.ph + dt * (TAU / SWING) + c) % (TAU * 100)
+    s.ph = (s.ph + dt * (TAU / SWING)) % (TAU * 100)
     s.amp = approach(s.amp, reduceMotion ? 0 : on ? 0.16 : 0.02, dt * 0.06)
     swing.current.rotation.x = Math.sin(s.ph) * s.amp
   })

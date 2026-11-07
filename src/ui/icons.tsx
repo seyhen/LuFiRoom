@@ -57,15 +57,10 @@ export const soundIcons: Record<SoundId, ReactNode> = {
   icehole: svg(<><ellipse cx="12" cy="14" rx="8" ry="4" /><ellipse cx="12" cy="14" rx="4" ry="1.8" /><path d="M15.5 3.5v8.2" /><path d="M15.5 3.5 18 5" /></>),
   sew: svg(<><path d="M5 19 17.5 6.5" /><circle cx="18.6" cy="5.4" r="1.4" /><path d="M5 19c2-3.5 5.5-4 8-2.5s4.5 1.5 6-1" /></>),
   cocoa: svg(<><path d="M5 9.5h10v5.5a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z" /><path d="M15 11h1.5a2.2 2.2 0 0 1 0 4.4H15" /><path d="M8.5 3.5c-.8 1 .8 2 0 3M11.5 3.5c-.8 1 .8 2 0 3" /></>),
-  forest: svg(<><path d="M4 13.5c1.5-4 5-6 8.5-5.5L15 6l2.5 1-1.5 1.8c1.5 1.7 1.6 4.4-.2 6.3-2.2 2.3-6.2 2.6-9.3.9L4 17.5z" /><path d="M10 19.5v1.5M13 19v2" /><circle cx="15" cy="9.3" r=".5" /></>),
   brook: svg(<><path d="M3 9c2-1.5 4-1.5 6 0s4 1.5 6 0 4-1.5 6 0" /><path d="M3 14c2-1.5 4-1.5 6 0s4 1.5 6 0 4-1.5 6 0" /><ellipse cx="7" cy="19" rx="2" ry="1" /><ellipse cx="15.5" cy="19.5" rx="1.5" ry=".8" /></>),
-  leaves: svg(<><path d="M12 21V9" /><path d="M12 9c-1-2.5-1-4.5 0-6 1 1.5 1 3.5 0 6zM12 13c-2-1-4.5-.8-6 .5 1.8 1.3 4 1.4 6-.5zM12 13c2-1 4.5-.8 6 .5-1.8 1.3-4 1.4-6-.5zM12 17c-2-1-4-.8-5.5.5 1.6 1.2 3.7 1.3 5.5-.5zM12 17c2-1 4-.8 5.5.5-1.6 1.2-3.7 1.3-5.5-.5z" /></>),
-  hammock: svg(<><path d="M3.5 4v16.5M20.5 4v16.5" /><path d="M3.5 7.5 6 11c3.5 3.5 8.5 3.5 12 0l2.5-3.5" /><path d="M6 11h12" /></>),
-  lemonade: svg(<><path d="M6.5 7h11l-1.3 12.2a1.8 1.8 0 0 1-1.8 1.6H9.6a1.8 1.8 0 0 1-1.8-1.6z" /><path d="M7 11h10" /><circle cx="16.5" cy="5.5" r="2.5" /><path d="M14.5 3.5 11 1.8" /><rect x="9.5" y="13.5" width="2.5" height="2.5" rx=".6" /></>),
+  cicadas: svg(<><path d="M12 6c-3 0-5 2-5 5v3c0 1.5 1 2.5 2.5 2.5h5c1.5 0 2.5-1 2.5-2.5v-3c0-3-2-5-5-5z" /><path d="M12 6V4M9 6 7 4.5M15 6l2-1.5" /><path d="M7 11 3.5 9.5M17 11l3.5-1.5" /><path d="M9.5 17.5 8 20M14.5 17.5 16 20" /></>),
   wash: svg(<><rect x="4.5" y="3" width="15" height="18" rx="2.6" /><path d="M4.5 7h15" /><circle cx="12" cy="14" r="4.3" /><path d="M9.3 15c1.2-.9 2.4-.9 3.6 0s1.9.7 2.6.2" /></>),
   tumble: svg(<><rect x="4.5" y="3" width="15" height="18" rx="2.6" /><circle cx="12" cy="13" r="5" /><path d="M10 11.5c1.4 1.4 2.6 1.4 4 0M10 14.5c1.4 1.4 2.6 1.4 4 0" /><circle cx="8" cy="5.5" r=".6" /></>),
-  coins: svg(<><ellipse cx="9" cy="17" rx="5" ry="2.3" /><path d="M4 17v-2.4c0-1.3 2.2-2.3 5-2.3s5 1 5 2.3V17" /><circle cx="16.5" cy="7.5" r="3.8" /><path d="M16.5 6v3" /></>),
-  fold: svg(<><path d="M4 9.5h16v4H4z" /><path d="M4 13.5h16l-2 5H6z" /><path d="M8 9.5c0-3 3-4.5 6-4.5" /><path d="M14 5l-1.5-1.5M14 5l-1.5 1.5" /></>),
 }
 
 /** Disque noir, étiquette au centre : le tourne-disque de la cabane. */

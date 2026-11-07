@@ -50,13 +50,13 @@ function Slice({ p, r = [0, 0, 0], s = 1 }: { p: V3; r?: V3; s?: number }) {
  */
 export function Lemonade({ position, ry = 0 }: { position: V3; ry?: number }) {
   const g = useRef<Group>(null!), cubes = useRef<Group[]>([]), bubbles = useRef<Mesh[]>([])
-  const st = useRef({ seen: useStore.getState().pulses.lemonade ?? 0, knock: 0, who: 0, on: 0 })
+  const st = useRef({ seen: 0, knock: 0, who: 0, on: 0 })
   const bub = useMemo(() => Array.from({ length: 9 }, () => ({ x: rand(-0.06, 0.06), z: rand(-0.06, 0.06), y: rand(0, 1), sp: rand(0.15, 0.3) })), [])
   useSquash('lemonade', g)
   const ICE: V3[] = [[0.03, 0, 0.02], [-0.035, 0, 0.01], [0.0, 0, -0.04]]
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05), s = st.current, store = useStore.getState(), on = isActive(store, 'lemonade')
-    const n = store.pulses.lemonade ?? 0
+    const n = 0
     if (n !== s.seen) {
       s.seen = n
       if (on && !reduceMotion) { s.knock = 1; s.who = (s.who + 1) % ICE.length }

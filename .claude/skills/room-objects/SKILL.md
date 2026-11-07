@@ -45,7 +45,9 @@ L'appli sert à lancer un son et à faire autre chose. Chaque objet pilote donc 
 - **cohérent avec la pièce** : on l'entendrait vraiment là ;
 - **jamais un bruitage de détail** : glaçons dans une carafe, pièces de monnaie, linge qu'on plie, froissement de feuilles synthétique. Ils fatiguent en boucle et ne font pas une ambiance (la cabane perchée et la laverie ont dû être refaites pour ça) ;
 - **de préférence un enregistrement déjà présent** (`public/audio/…`, déclaré dans `loops` : `fan: { src: 'audio/bedroom/fan', gain: 0.6 }`). Un son de base peut donc être repris d'une autre pièce quand il va avec l'objet : un extracteur d'air = le ventilateur, un tube fluorescent = le bourdonnement du néon. La règle « un identifiant de son qui n'existe pas encore » de l'étape 1 ne s'applique qu'aux **objets de détail** qui ont un vrai son propre et doux ; sinon, prends un son de base ;
-- si aucun son de base ne va avec l'objet, **l'objet n'est pas interactif** : c'est du décor. Demande avant d'inventer un son.
+- **pas d'enregistrement qui convient ? génère-en un provisoire** (remarque du propriétaire, 2026-11-07) : le son n'a pas besoin d'exister déjà. Écris un canal synthétisé **continu et doux** (`src/audio/channels/`, voir `cicadas.ts`, `fan.ts`, `neon.ts`), branché de bout en bout ; le propriétaire trouvera ensuite un enregistrement à associer par `loops`. Le repli synthétisé reste une vraie ambiance (pas un bruitage), et son commentaire dit qu'il est provisoire ;
+- si aucun son de base ne va avec l'objet, même généré, **l'objet n'est pas interactif** : c'est du décor ;
+- **ne garde pas de code mort** : quand un son disparaît, retire son canal, son identifiant (`SoundId`), son icône, sa teinte et ses synchronisations de scène (`pulses`).
 
 ## Étape 2 — Choisir l'objet : la grille
 
