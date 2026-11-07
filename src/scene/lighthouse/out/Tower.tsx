@@ -27,7 +27,7 @@ export function Lighthouse() {
     return [0, 1, 2, 3].map((i) => ({ y0: (i / 4) * h, y1: ((i + 1) / 4) * h, r0: r(i / 4), r1: r((i + 1) / 4), m: i % 2 ? S.red : S.white }))
   }, [h])
   const beamGeo = useMemo(() => {
-    const g = new CylinderGeometry(0.14, 0.9, 4.6, 18, 1, true)
+    const g = new CylinderGeometry(0.9, 0.14, 4.6, 18, 1, true)
     g.translate(0, 2.3 + 0.3, 0)
     g.rotateZ(-Math.PI / 2)
     return g

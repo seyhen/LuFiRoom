@@ -1,11 +1,18 @@
-import { DoubleSide, MeshBasicMaterial } from 'three'
+import { BackSide, DoubleSide, MeshBasicMaterial } from 'three'
 import { gummy, M } from '../materials'
-import { brickTex, izakayaTex, lanternTex, latticeTex, manholeTex, menuTex, noboriTex, norenTex, pavingTex, posterTex, sakeSignTex, shutterTex, stripeTex, vendingTex, whiteLanternTex, yakisugiTex } from './textures'
+import { brickTex, izakayaTex, kingyoSignTex, tinTex, lanternTex, latticeTex, manholeTex, menuTex, noboriTex, norenTex, pavingTex, posterTex, sakeSignTex, shutterTex, stripeTex, vendingTex, whiteLanternTex, yakisugiTex } from './textures'
 
 /** Matériaux propres au marché de nuit : pavés mouillés, brique fumée, rideau de fer, bois de la carriole, indigo, laque rouge, néon. */
 export const K = {
   paving: gummy(0xffffff, { map: pavingTex, roughness: 0.4, clearcoat: 0.55 }),
   brick: gummy(0xffffff, { map: brickTex, roughness: 0.85, clearcoat: 0.08 }),
+  tin: gummy(0xffffff, { map: tinTex, roughness: 0.5, clearcoat: 0.3 }),
+  concrete: gummy(0x8e8c98, { roughness: 0.85, clearcoat: 0.04 }),
+  tub: gummy(0x2f86d6, { roughness: 0.35, clearcoat: 0.8 }),
+  tubIn: gummy(0x1f6ab4, { roughness: 0.35, clearcoat: 0.8, side: BackSide }),
+  pond: gummy(0x7fd0f0, { roughness: 0.05, clearcoat: 1 }),
+  goldfish: gummy(0xff8a2e, { roughness: 0.25, clearcoat: 0.9 }),
+  kingyoSign: gummy(0xffffff, { map: kingyoSignTex, roughness: 0.7, clearcoat: 0.1 }),
   shutter: gummy(0xffffff, { map: shutterTex, roughness: 0.5, clearcoat: 0.35 }),
   plaster: gummy(0x4b3a5c, { roughness: 0.9, clearcoat: 0.05 }),
   wood: gummy(0x8a5636, { roughness: 0.55, clearcoat: 0.35 }),

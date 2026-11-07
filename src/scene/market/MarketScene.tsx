@@ -12,6 +12,7 @@ import { Izakaya } from './Izakaya'
 import { Overhead } from './Overhead'
 import { FruitStall } from './FruitStall'
 import { Details } from './Details'
+import { Matsuri } from './Matsuri'
 import { Surroundings } from './out/Surroundings'
 
 /**
@@ -36,6 +37,7 @@ export function MarketScene() {
       <FruitStall />
       <Overhead />
       <Details />
+      <Matsuri />
       <Motes colors={[0xffd8c0, 0xff9ac8]} opacity={[0.3, 0.55]} n={26} />
     </Static>
     </>

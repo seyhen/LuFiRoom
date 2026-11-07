@@ -59,7 +59,7 @@ export function BeerCrate({ position, rotation = 0, color, empty = [] }: { posit
  */
 export function Crates() {
   return (
-    <group position={[2.5, 0, -2.45]} rotation-y={0.18}>
+    <group position={[2.4, 0, -2.55]} rotation-y={0.18}>
       <BeerCrate position={[0, 0, 0]} color={K.red} />
       <BeerCrate position={[0.02, 0.3, 0.01]} rotation={0.08} color={K.yellow} empty={[1, 4, 7, 10]} />
       <Bottle position={[-0.52, 0, 0.22]} glass={K.bottleBrown} cap={K.red} />

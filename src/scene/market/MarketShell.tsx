@@ -50,7 +50,7 @@ export function MarketShell() {
       {/* le pavé */}
       <Part geo={worldUV(rbox(6.44, 0.1, 6.44, 0.03), 1.4)} m={K.paving} p={[-0.07, -0.05, -0.07]} castShadow={false} />
       {/* façade du fond (brique, baie) et mur de gauche (rideau de fer) */}
-      <Part geo={worldUV(backWall, 1.2)} m={K.brick} p={[0, 0, -3.26]} />
+      <Part geo={worldUV(backWall, 2.4)} m={K.tin} p={[0, 0, -3.26]} />
       <Part geo={worldUV(holedWall([{ x0: -DOOR.z1, x1: -DOOR.z0, y0: 0, y1: DOOR.top, r: 0.1 }]), 1.6)} m={K.yakisugi} p={[-3.26, 0, 0]} rotation-y={Math.PI / 2} />
       {/* soubassement de pierre sombre sous la brique, plinthe */}
       <Part geo={worldUV(rbox(6.4, 0.5, 0.07, 0.025), 1)} m={K.iron} p={[-0.07, 0.25, -2.97]} castShadow={false} />

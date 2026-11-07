@@ -12,6 +12,7 @@ import { Pigeons } from './Pigeons'
 import { FlyBy } from '../objects/FlyBy'
 import { Herbs, OliveTree, Planter } from './Planters'
 import { FireEscape, NeonSign, Vent } from './Neon'
+import { BackNook } from './BackNook'
 import { Surroundings } from './out/Surroundings'
 
 /**
@@ -45,6 +46,7 @@ export function RoofScene() {
       <NeonSign />
       <FireEscape />
       <Vent />
+      <BackNook />
     </Static>
     </>
   )

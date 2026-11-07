@@ -58,6 +58,34 @@ export const shutterTex = canvasTex(256, 256, (x) => {
   for (let i = 0; i < 4; i++) x.fillRect(0, 60 + i * 56, 256, 3)
 }, [1, 1])
 
+/** Tôle ondulée d'un vieux mur de ruelle (トタン) : ondes vert sombre, coulures de rouille qui descendent des joints. Tuile 2,4 × 2,4 m (seize ondes). */
+export const tinTex = canvasTex(256, 256, (x) => {
+  const r = seeded(31)
+  for (let i = 0; i < 16; i++) {
+    const g = x.createLinearGradient(i * 16, 0, i * 16 + 16, 0)
+    g.addColorStop(0, '#2c4a48'); g.addColorStop(0.4, '#4f7a72'); g.addColorStop(0.6, '#3e6560'); g.addColorStop(1, '#27403f')
+    x.fillStyle = g; x.fillRect(i * 16, 0, 16, 256)
+  }
+  // les coulures : de la rouille qui part d'un clou et descend
+  for (let k = 0; k < 16; k++) {
+    const px = r() * 256, y0 = r() * 200, g = x.createLinearGradient(0, y0, 0, y0 + 90)
+    g.addColorStop(0, `rgba(150,78,40,${0.25 + r() * 0.3})`); g.addColorStop(1, 'rgba(150,78,40,0)')
+    x.fillStyle = g; x.fillRect(px, y0, 2 + r() * 5, 90)
+  }
+  x.fillStyle = 'rgba(12,16,20,.35)'
+  x.fillRect(0, 0, 256, 3); x.fillRect(0, 126, 256, 3)
+  for (let i = 0; i < 16; i++) for (const y of [8, 134]) { x.fillStyle = 'rgba(30,24,22,.55)'; x.beginPath(); x.arc(i * 16 + 6, y, 2.2, 0, TAU); x.fill() }
+}, [1, 1])
+
+/** La pancarte de l'échoppe aux poissons rouges : « 金魚すくい » à la peinture blanche sur planche rouge. */
+export const kingyoSignTex = canvasTex(256, 96, (x) => {
+  x.fillStyle = '#b02a3c'; x.fillRect(0, 0, 256, 96)
+  x.fillStyle = 'rgba(0,0,0,.12)'; for (let i = 0; i < 6; i++) x.fillRect(0, 8 + i * 16, 256, 2)
+  x.fillStyle = '#fff6e0'; x.textAlign = 'center'; x.textBaseline = 'middle'
+  x.font = `bold 58px ${JP}`; x.fillText('金魚すくい', 128, 50)
+  x.strokeStyle = '#fff6e0'; x.lineWidth = 3; rr(x, 6, 6, 244, 84, 8); x.stroke()
+})
+
 /** L'enseigne au néon : « ラーメン » à la verticale en tubes roses, avec leur halo, et un cadre ; fond transparent. */
 export const neonTex = canvasTex(256, 512, (x) => {
   x.textAlign = 'center'; x.textBaseline = 'middle'

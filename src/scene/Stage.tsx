@@ -1,5 +1,5 @@
 import { useT } from '../i18n'
-import { useEffect, useLayoutEffect, useRef, type MutableRefObject } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type MutableRefObject } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Raycaster, Vector2, Vector3, type Group, type Object3D, type OrthographicCamera } from 'three'
 import { useStore } from '../state/store'
@@ -22,8 +22,11 @@ const CAM_POS = LOOK.clone().addScaledVector(new Vector3(1, 0.8, 1).normalize(),
 export function Stage({ hotspotLayer }: { hotspotLayer: Layer }) {
   const room = useStore((s) => roomById(s.room))
   const t = useT()
+  // Quand le navigateur rend le contexte WebGL (retour sur l'onglet, écran rallumé), on reconstruit le canvas : plus de textures noires.
+  const [epoch, setEpoch] = useState(0)
   return (
     <Canvas
+      key={epoch}
       className="scene"
       style={{ position: 'fixed', inset: 0 }}
       role="img"
@@ -39,6 +42,7 @@ export function Stage({ hotspotLayer }: { hotspotLayer: Layer }) {
     >
       <Framing zoom={room.zoom} />
       <Ready />
+      <ContextGuard onRestored={() => setEpoch((n) => n + 1)} />
       <Lights room={room} />
       {/* ombre douce sous le diorama, pour l'effet « flotte » */}
       <mesh rotation-x={-Math.PI / 2} position={[-0.2, -1.8, -0.2]}>
@@ -48,6 +52,31 @@ export function Stage({ hotspotLayer }: { hotspotLayer: Layer }) {
       <Room key={room.id} room={room} hotspotLayer={hotspotLayer} />
     </Canvas>
   )
+}
+
+/**
+ * Le navigateur peut reprendre le contexte WebGL quand l'onglet reste caché (surtout sur téléphone). À son retour, les textures et les
+ * tampons de la carte graphique sont vides : on remonte tout le canvas, la pièce se redessine avec des ressources neuves.
+ */
+function ContextGuard({ onRestored }: { onRestored: () => void }) {
+  const gl = useThree((s) => s.gl)
+  useEffect(() => {
+    const el = gl.domElement
+    const lost = (e: Event) => e.preventDefault() // sans cela, le navigateur ne rend jamais le contexte
+    const back = () => onRestored()
+    const visible = () => {
+      if (document.visibilityState === 'visible' && gl.getContext().isContextLost()) onRestored()
+    }
+    el.addEventListener('webglcontextlost', lost)
+    el.addEventListener('webglcontextrestored', back)
+    document.addEventListener('visibilitychange', visible)
+    return () => {
+      el.removeEventListener('webglcontextlost', lost)
+      el.removeEventListener('webglcontextrestored', back)
+      document.removeEventListener('visibilitychange', visible)
+    }
+  }, [gl, onRestored])
+  return null
 }
 
 /** Prévient l'écran de chargement quand la scène a été dessinée (la première image compile les shaders). */

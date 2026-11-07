@@ -175,6 +175,8 @@ export function Details() {
     <>
       <Manhole position={[-0.55, 0, 0.55]} />
       <Blade position={[-2.72, 3.1, -1.55]} lines={['B', 'A', 'R']} color="#a8f6ff" glow="#22d3ee" ph={1} />
+      <Blade position={[-2.72, 3.0, -0.95]} lines={['焼', '鳥']} color="#ffd0b0" glow="#ff5a2a" ph={2.5} w={0.3} h={0.62} />
+      <Blade position={[-2.4, 3.45, -2.72]} lines={['お', 'で', 'ん']} color="#d4ffc0" glow="#3fe05a" ph={5.5} w={0.3} h={0.62} />
       <Blade position={[-0.3, 2.75, -2.72]} lines={['営', '業', '中']} color="#ffe9a8" glow="#ffb020" ph={4} w={0.3} h={0.62} />
       <RoofCat position={[-2.93, 4.31, 0.2]} />
     </>

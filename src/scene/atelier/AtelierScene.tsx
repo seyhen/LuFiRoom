@@ -9,6 +9,7 @@ import { Gallery, Rafters } from './Rafters'
 import { PaintEasel } from './PaintEasel'
 import { FloorNook } from './FloorNook'
 import { Bookcase, CanvasCorner, HangingPlants, ReadingCorner, RugAndLadder } from './Corner'
+import { BackWall } from './BackWall'
 import { Surroundings } from './out/Surroundings'
 
 /**
@@ -36,6 +37,7 @@ export function AtelierScene() {
       <FloorNook />
       <Rafters />
       <Gallery />
+      <BackWall />
       <Motes colors={[0xfff0d0, 0xffd28a]} opacity={[0.4, 0.55]} />
     </Static>
     </>
