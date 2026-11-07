@@ -135,7 +135,8 @@ async function testRoom(page, vp, room, problems) {
         )
       },
       { name: room.name, nObjects: room.objects.length, nSounds: room.sounds.length },
-      { timeout: 60_000 },
+      // Le toit met de 35 à 70 s à se compiler quand 4 navigateurs se partagent le WebGL logiciel (CI) : 60 s était trop juste.
+      { timeout: 120_000 },
     )
     mark('pièce')
 
