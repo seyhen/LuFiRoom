@@ -3,11 +3,15 @@ import { TAU } from '../math'
 
 // Textures partagées dessinées en canvas : petits sprites (notes, cœurs, vapeur, halos), tricot. Celles d'une pièce sont dans son dossier.
 
+/**
+ * `willReadFrequently` garde le canvas en mémoire normale (pas sur la carte graphique). Sans cela, un canvas accéléré peut être
+ * vidé par le navigateur quand l'onglet dort, et la texture revient noire (sol et murs noirs au retour sur l'onglet).
+ */
 export function makeCanvas(w: number, h: number) {
   const c = document.createElement('canvas')
   c.width = w
   c.height = h
-  return [c, c.getContext('2d')!] as const
+  return [c, c.getContext('2d', { willReadFrequently: true })!] as const
 }
 
 function spriteTex(size: number, draw: (x: CanvasRenderingContext2D) => void) {

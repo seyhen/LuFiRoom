@@ -59,13 +59,24 @@ export function Stage({ hotspotLayer }: { hotspotLayer: Layer }) {
  * tampons de la carte graphique sont vides : on remonte tout le canvas, la pièce se redessine avec des ressources neuves.
  */
 function ContextGuard({ onRestored }: { onRestored: () => void }) {
-  const gl = useThree((s) => s.gl)
+  const gl = useThree((s) => s.gl), scene = useThree((s) => s.scene)
   useEffect(() => {
     const el = gl.domElement
     const lost = (e: Event) => e.preventDefault() // sans cela, le navigateur ne rend jamais le contexte
     const back = () => onRestored()
     const visible = () => {
-      if (document.visibilityState === 'visible' && gl.getContext().isContextLost()) onRestored()
+      if (document.visibilityState !== 'visible') return
+      if (gl.getContext().isContextLost()) return onRestored()
+      // le contexte est intact mais le navigateur a pu vider la mémoire des textures : on les renvoie à la carte graphique
+      scene.traverse((o) => {
+        const m = (o as Object3D & { material?: unknown }).material
+        for (const mat of ([] as Record<string, unknown>[]).concat((m as Record<string, unknown>[]) ?? [])) {
+          for (const k in mat) {
+            const v = mat[k] as { isTexture?: boolean; image?: unknown; needsUpdate?: boolean } | null
+            if (v?.isTexture && v.image) v.needsUpdate = true
+          }
+        }
+      })
     }
     el.addEventListener('webglcontextlost', lost)
     el.addEventListener('webglcontextrestored', back)
@@ -75,7 +86,7 @@ function ContextGuard({ onRestored }: { onRestored: () => void }) {
       el.removeEventListener('webglcontextrestored', back)
       document.removeEventListener('visibilitychange', visible)
     }
-  }, [gl, onRestored])
+  }, [gl, scene, onRestored])
   return null
 }
 

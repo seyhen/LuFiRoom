@@ -71,7 +71,7 @@ Les boîtes arrondies (`rbox`) n'affichent que le centre d'une texture : pour un
 - **Un dehors à une autre échelle** : le dehors continue ce que la pièce montre déjà, à la même taille (`roof/out/Distant.tsx` : rangées de petites tours comme celles de `roof/Skyline.tsx`, jamais de grandes).
 - **Un dehors qui ne dit pas où l'on est / un coin du fond vide** : le skyline du toit (`roof/out/Distant.tsx`) est new-yorkais (brique et pierre, citernes de bois, gradins, flèche et couronne d'acier, vides entre les tours), pas une grille de tours bleutées ; il court aussi le long du côté gauche (haut gauche de l'écran). Vérifie les quatre coins du haut.
 - **Un cône de lumière à l'envers** : `CylinderGeometry(haut, bas)`, le haut en +y ; étroit à la source, large au loin (le faisceau du phare).
-- **Textures noires au retour sur l'onglet** : le contexte WebGL peut être repris par le navigateur ; `ContextGuard` (`Stage.tsx`) reconstruit le canvas à `webglcontextrestored` ou au retour sur l'onglet.
+- **Textures noires au retour sur l'onglet** : le contexte WebGL peut être repris par le navigateur ; `ContextGuard` (`Stage.tsx`) reconstruit le canvas à `webglcontextrestored` ou au retour sur l'onglet, et renvoie les textures à la carte graphique. Les canvas des textures sont créés par `makeCanvas` avec `willReadFrequently` : sinon le navigateur peut les vider pendant que l'onglet dort (sol et murs noirs sur téléphone).
 
 La liste courte est dans `CLAUDE.md` (« Le soin des ambiances ») ; voici le détail.
 
