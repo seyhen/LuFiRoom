@@ -47,6 +47,7 @@ async () => {
 4. **Affichage mobile** : `emulate 390x844x2,mobile,touch`, captures de 2 ou 3 pièces (dont celles qui ont changé), jour et nuit : rien ne déborde, les puces et le mixeur tiennent, les boutons ne se chevauchent pas. Remets ensuite `1440x900x2`.
 
 - **Retour sur l'onglet** : perds puis rends le contexte WebGL (`WEBGL_lose_context`), la pièce doit revenir entière, sans texture noire.
+- **Le dehors** : chaque pièce retouchée dit où elle est (matières et repères du lieu) et garde l'échelle de la pièce ; les quatre coins du haut de l'écran sont remplis.
 - **Le fond** : capture plein écran de chaque pièce retouchée, aucun aplat de ciel vide derrière la pièce (skill `audit-room`, étape 3 bis).
 
 ## 3. Le site construit (production locale)

@@ -33,6 +33,7 @@ Quand on crée une pièce (ou qu'on ajoute un objet qui change ce qu'on voit au-
 
 - **Pas de vide derrière.** Le haut de l'écran, c'est l'arrière de la pièce (-x, -z) : il doit porter des volumes (immeubles, tours, toits, forêt, collines, mer, rochers) qui montent au-dessus du mur du fond. Une pièce dont l'arrière est un aplat de ciel est à refaire.
 - **Le dehors parle du même lieu.** Mêmes teintes et mêmes matières que l'intérieur, architecture et écriture du pays : un marché japonais donne dehors des immeubles sombres de béton, des enseignes en kana et kanji, des distributeurs, des étals de street food, des fils électriques ; jamais de lettrage latin ni de brique européenne.
+- **Reconnaissable et à l'échelle.** Le dehors dit *où* on est (New York : brique, châteaux d'eau de bois, vapeur, escaliers de secours, repères Art déco ; pas une grille de tours identiques) et garde la taille de ce que la pièce montre déjà (petites tours dedans = petites tours dehors). Remplis les quatre coins du haut de l'écran, pas seulement le centre.
 - **Du vivant autour.** Un lieu qui vit (marché, café, laverie) montre dehors ce qu'on y fait : étals, vitrines, véhicules, lanternes.
 - **Chaque objet qu'on pose doit se voir** : recadre où tu l'as mis. Un objet derrière un client ou un meuble (le panier de la laverie) ou un poteau devant la fenêtre sont des erreurs de placement.
 - **Un cône de lumière** (faisceau, halo) est étroit à la source et large au loin.
