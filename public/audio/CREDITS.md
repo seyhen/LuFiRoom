@@ -149,3 +149,14 @@ Pixabay Content License (accord du propriétaire du projet), téléchargés depu
 
 Aucun nouveau fichier : ces pièces déclarent dans `loops` des enregistrements déjà listés plus haut (mêmes sources, mêmes licences).
 `roof/wind` (brise), `bedroom/birds` et `bedroom/crickets` (oiseaux le jour, grillons la nuit) dans la cabane perchée ; `bedroom/fan` (ventilateur, l'extracteur) et `market/neon` (bourdonnement des tubes) dans la laverie de nuit.
+
+## Sons de la laverie et de la cabane perchée (2026-11-07)
+
+Pixabay Content License (accord du propriétaire du projet), téléchargés depuis son navigateur via l'extension Claude. Sources d'origine : `Téléchargements/pixabay-sources/`. Sons « freesound_community » : Freesound, redistribués par Pixabay. Découpés à 60 s, mono, −20 LUFS par `npm run audio`.
+
+| Fichier | Titre | Auteur | Id Pixabay |
+|---|---|---|---|
+| `laundromat/wash` | Washing Machine Soft | freesound_community | 60397 |
+| `laundromat/tumble` | Dryer Hum | freesound_community | 63149 |
+| `treehouse/brook` | Location Stream 1 | freesound_community | 23371 |
+| `treehouse/cicadas` | Cicadas chirping at night | freesound_community | 54307 |
