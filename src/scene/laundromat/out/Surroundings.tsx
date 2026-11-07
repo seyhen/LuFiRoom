@@ -145,7 +145,7 @@ export function Surroundings() {
         <Part geo={rbox(0.18, 0.18, 9.9, 0.05)} m={M.curb} p={[6.2, SIDEWALK - 0.08, -0.6]} castShadow={false} />
         <Crosswalk />
         {/* l'immeuble voisin à gauche, sa boutique éclairée au rez-de-chaussée ; l'immeuble d'en face, de l'autre côté de la rue */}
-        <Block x0={-9.6} x1={-3.8} z0={-3.6} z1={3.4} wall={6.4} top={8.1} s={1} shift={0.25} dormers={[3, 3]} lowBalcony={false} />
+        <Block x0={-9.6} x1={-3.8} z0={-3.6} z1={3.4} wall={3.2} top={4.9} s={1} shift={0.25} dormers={[3, 3]} lowBalcony={false} />
         {/* en face : plus bas, plus loin et moins large que le voisin, pour ne pas fermer le coin en haut à droite */}
         <Block x0={-8.4} x1={2.2} z0={-17} z1={-10.4} wall={2.8} top={4.5} s={1} shift={0.6} dormers={[4, 2]} lowBalcony={false} />
         <group position={[-6.7, SIDEWALK, 3.42]}>

@@ -154,7 +154,7 @@ function Bookbinder() {
 
 /** Une maison plus basse qui prolonge la rue, à demi cachée : façade, deux étages de fenêtres, toit pentu et cheminée. */
 function Neighbour({ x0, x1, zF, floors = 2, mat, lit, roofZ = 0 }: { x0: number; x1: number; zF: number; floors?: number; mat: Material; lit: number[]; roofZ?: number }) {
-  const w = x1 - x0, cx = (x0 + x1) / 2, h = 2.9 + floors * 1.8, n = Math.max(2, Math.round(w / 2.3))
+  const w = x1 - x0, cx = (x0 + x1) / 2, h = 2.9 + floors * 1.8, n = Math.max(2, Math.round(w / 2.3)), bars = Math.max(3, Math.round((w - 0.8) / 0.95))
   return (
     <group>
       <B s={[w, h, 0.36]} p={[cx, SW + h / 2, zF - 0.18]} m={mat} uv={2} r={0.05} />
@@ -163,6 +163,15 @@ function Neighbour({ x0, x1, zF, floors = 2, mat, lit, roofZ = 0 }: { x0: number
       <B s={[w - 0.4, 0.7, 0.12]} p={[cx, SW + 0.35, zF + 0.06]} m={K.green} r={0.04} />
       <Box s={[w - 0.8, 1.2, 0.04]} p={[cx, SW + 1.3, zF + 0.03]} m={lit[0] < 0 ? K.navy : S.lit[lit[0]].m} />
       <B s={[w - 0.2, 0.7, 0.1]} p={[cx, SW + 2.35, zF + 0.05]} m={K.green} r={0.04} />
+      {/* la devanture : petits bois verticaux, traverse d'imposte, porte vitrée au milieu, appui de pierre (pas un aplat de 6 m) */}
+      {Array.from({ length: bars + 1 }, (_, i) => (
+        <Box key={`m${i}`} s={[0.07, 1.22, 0.06]} p={[cx - (w - 0.8) / 2 + ((w - 0.8) * i) / bars, SW + 1.3, zF + 0.06]} m={K.green} />
+      ))}
+      <Box s={[w - 0.78, 0.07, 0.06]} p={[cx, SW + 1.62, zF + 0.06]} m={K.green} />
+      <B s={[w - 0.6, 0.08, 0.2]} p={[cx, SW + 0.72, zF + 0.1]} m={K.stone} r={0.03} />
+      <Box s={[0.82, 1.5, 0.05]} p={[cx, SW + 1.15, zF + 0.07]} m={K.green} />
+      <Box s={[0.56, 0.75, 0.03]} p={[cx, SW + 1.4, zF + 0.1]} m={lit[0] < 0 ? K.navy : S.lit[lit[0]].m} />
+      <Box s={[0.05, 0.05, 0.05]} p={[cx + 0.3, SW + 1.05, zF + 0.12]} m={K.mustard} />
       {Array.from({ length: floors }, (_, f) =>
         Array.from({ length: n }, (_, i) => <SimpleWin key={`${f}${i}`} at={[x0 + (w * (i + 0.5)) / n, SW + 3.8 + f * 1.8, zF]} lit={lit[(f * n + i + 1) % lit.length]} />),
       )}
