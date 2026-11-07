@@ -12,8 +12,11 @@ const tube = (pts: V3[], r: number) => new TubeGeometry(new CatmullRomCurve3(pts
 /** La coque de la barque : un bol allongé, ouvert (on voit le dedans), bord épais. */
 const HULL = new LatheGeometry([[0, 0], [0.45, 0.04], [0.82, 0.18], [0.98, 0.38], [1, 0.46], [0.95, 0.47], [0.78, 0.22], [0.42, 0.1], [0, 0.07]].map(([r, y]) => new Vector2(r, y)), 28)
 
-/** L'échelle de fer du gardien, scellée dans l'aiguille, et le petit ponton au ras de l'eau où la barque est amarrée. */
-export const DOCK = { x: 1.9, z: 3.95 }
+/**
+ * Le ponton du gardien, contre la face +x du socle (côté caméra, entre la pièce et le phare) : son centre et son orientation. Le
+ * ponton est dessiné l'échelle vers -z ; tourné d'un quart de tour, l'échelle se plaque contre la roche sous la pièce.
+ */
+export const DOCK = { x: 3.98, z: -0.5, ry: Math.PI / 2 }
 
 /**
  * Le ponton du gardien : une échelle de fer qui descend le long de la roche, un plancher sur pilotis au ras de l'eau, un anneau
@@ -21,8 +24,7 @@ export const DOCK = { x: 1.9, z: 3.95 }
  */
 export function Landing() {
   const boat = useRef<Group>(null!), ph = useRef(0)
-  const { x, z } = DOCK
-  const rope = useMemo(() => tube([[x + 0.45, SEA + 0.4, z + 0.3], [x + 0.75, SEA + 0.12, z + 0.55], [x + 1.05, SEA + 0.25, z + 0.85]], 0.014), [x, z])
+  const rope = useMemo(() => tube([[0.45, SEA + 0.4, 0.3], [0.75, SEA + 0.12, 0.55], [1.05, SEA + 0.25, 0.85]], 0.014), [])
   useFrame((_, dt) => {
     const st = smooth(mood.storm)
     if (!reduceMotion) ph.current += Math.min(dt, 0.05) * (1.1 + st * 1.4)
@@ -31,26 +33,26 @@ export function Landing() {
     boat.current.rotation.set(Math.sin(p * 0.8 + 1) * 0.05 * k, -0.5, Math.sin(p * 1.1) * 0.06 * k)
   })
   return (
-    <group>
+    <group position={[DOCK.x, 0, DOCK.z]} rotation-y={DOCK.ry}>
       <Static>
         {/* l'échelle, de la pièce jusqu'au ponton */}
-        {[-0.2, 0.2].map((dx) => <Part key={dx} geo={cyl(0.025, 0.025, 2.2, 6)} m={S.iron} p={[x - 0.6 + dx, SEA + 1.05, z - 0.62]} rotation-x={0.18} castShadow={false} />)}
-        {Array.from({ length: 8 }, (_, i) => <Part key={i} geo={cyl(0.016, 0.016, 0.4, 5)} m={S.iron} p={[x - 0.6, SEA + 0.15 + i * 0.27, z - 0.78 + i * 0.048]} rotation-z={Math.PI / 2} castShadow={false} />)}
+        {[-0.2, 0.2].map((dx) => <Part key={dx} geo={cyl(0.025, 0.025, 2.2, 6)} m={S.iron} p={[-0.6 + dx, SEA + 1.05, -0.62]} rotation-x={0.18} castShadow={false} />)}
+        {Array.from({ length: 8 }, (_, i) => <Part key={i} geo={cyl(0.016, 0.016, 0.4, 5)} m={S.iron} p={[-0.6, SEA + 0.15 + i * 0.27, -0.78 + i * 0.048]} rotation-z={Math.PI / 2} castShadow={false} />)}
         {/* le ponton sur ses pieux */}
-        <Part geo={rbox(1.5, 0.07, 0.95, 0.02)} m={S.wood} p={[x, SEA + 0.28, z]} />
+        <Part geo={rbox(1.5, 0.07, 0.95, 0.02)} m={S.wood} p={[0, SEA + 0.28, 0]} />
         {[-0.62, 0.62].flatMap((dx) => [-0.38, 0.38].map((dz) => (
-          <Part key={`${dx}${dz}`} geo={cyl(0.06, 0.06, 0.85, 8)} m={S.woodDark} p={[x + dx, SEA + 0.0, z + dz]} castShadow={false} />
+          <Part key={`${dx}${dz}`} geo={cyl(0.06, 0.06, 0.85, 8)} m={S.woodDark} p={[dx, SEA + 0.0, dz]} castShadow={false} />
         )))}
-        {Array.from({ length: 6 }, (_, i) => <Part key={i} geo={rbox(0.02, 0.075, 0.95, 0.008)} m={S.woodDark} p={[x - 0.62 + i * 0.25, SEA + 0.285, z]} castShadow={false} />)}
-        <Part geo={cyl(0.06, 0.06, 0.2, 8)} m={S.iron} p={[x + 0.45, SEA + 0.4, z + 0.3]} castShadow={false} />
+        {Array.from({ length: 6 }, (_, i) => <Part key={i} geo={rbox(0.02, 0.075, 0.95, 0.008)} m={S.woodDark} p={[-0.62 + i * 0.25, SEA + 0.285, 0]} castShadow={false} />)}
+        <Part geo={cyl(0.06, 0.06, 0.2, 8)} m={S.iron} p={[0.45, SEA + 0.4, 0.3]} castShadow={false} />
         <Part geo={rope} m={S.rope} castShadow={false} />
         {/* un casier à homards sur le ponton */}
-        <group position={[x - 0.3, SEA + 0.43, z + 0.15]} rotation-y={0.3}>
+        <group position={[-0.3, SEA + 0.43, 0.15]} rotation-y={0.3}>
           <Part geo={rbox(0.42, 0.22, 0.3, 0.05)} m={S.woodDark} />
           {[-0.12, 0, 0.12].map((dx) => <Part key={dx} geo={rbox(0.02, 0.23, 0.31, 0.008)} m={S.rope} p={[dx, 0, 0]} castShadow={false} />)}
         </group>
       </Static>
-      <group ref={boat} position={[x + 1.15, SEA, z + 0.95]} userData={LIVE}>
+      <group ref={boat} position={[1.15, SEA, 0.95]} userData={LIVE}>
         <Static>
           <Part geo={HULL} m={S.hull} scale={[0.95, 0.55, 0.42]} />
           <Part geo={HULL} m={S.hullIn} scale={[0.93, 0.54, 0.4]} p={[0, 0.012, 0]} castShadow={false} />

@@ -152,3 +152,55 @@ export function LampPost({ x, z }: { x: number; z: number }) {
     </group>
   )
 }
+
+/**
+ * Le banc de la clairière, tourné vers la caméra : pieds de rondins, assise et dossier de planches sous un coussin de neige, une
+ * moufle oubliée sur l'accoudoir et une tasse émaillée posée à côté (quelqu'un vient y regarder la neige tomber).
+ */
+export function Bench({ x, z, ry = Math.PI / 4 }: { x: number; z: number; ry?: number }) {
+  const g = snowY(x, z) - 0.02
+  return (
+    <group position={[x, g, z]} rotation-y={ry}>
+      {/* les pieds : deux rondins de chaque côté, enfoncés dans la neige */}
+      {[-0.62, 0.62].flatMap((dx) => [-0.14, 0.14].map((dz) => (
+        <Part key={`${dx}${dz}`} geo={cyl(0.055, 0.065, 0.46, 9)} m={O.plankDark} p={[dx, 0.2, dz]} />
+      )))}
+      {/* l'assise : trois planches, et le coussin de neige dessus */}
+      {[-0.13, 0, 0.13].map((dz) => <Part key={dz} geo={rbox(1.5, 0.05, 0.12, 0.02)} m={O.plank} p={[0, 0.45, dz]} />)}
+      <Part geo={rbox(1.36, 0.07, 0.36, 0.035)} m={O.snowCap} p={[-0.06, 0.505, 0]} castShadow={false} />
+      {/* le dossier : deux montants, deux planches, un bourrelet de neige sur le haut */}
+      {[-0.62, 0.62].map((dx) => <Part key={dx} geo={rbox(0.08, 0.5, 0.06, 0.02)} m={O.plankDark} p={[dx, 0.7, -0.2]} rotation-x={-0.12} />)}
+      {[0.66, 0.86].map((y) => <Part key={y} geo={rbox(1.5, 0.11, 0.045, 0.02)} m={O.plank} p={[0, y, -0.2 - (y - 0.45) * 0.12]} rotation-x={-0.12} />)}
+      <Part geo={rbox(1.46, 0.04, 0.08, 0.02)} m={O.snowCap} p={[0, 0.935, -0.255]} castShadow={false} />
+      {/* la moufle oubliée et la tasse */}
+      <group position={[0.6, 0.555, 0.04]} rotation-y={0.4}>
+        <Part geo={rbox(0.15, 0.05, 0.2, 0.024)} m={O.scarf} />
+        <Part geo={rbox(0.06, 0.045, 0.08, 0.02)} m={O.scarf} p={[0.09, 0, 0.03]} rotation-y={-0.5} castShadow={false} />
+        <Part geo={rbox(0.16, 0.055, 0.05, 0.02)} m={O.scarfCream} p={[0, 0.003, -0.11]} castShadow={false} />
+      </group>
+      <group position={[-0.5, 0.54, 0.06]}>
+        <Part geo={cyl(0.055, 0.05, 0.11, 14)} m={O.runner} p={[0, 0.055, 0]} castShadow={false} />
+        <Part geo={cyl(0.057, 0.057, 0.012, 14)} m={O.scarfCream} p={[0, 0.113, 0]} castShadow={false} />
+        <Part geo={RING} m={O.runner} p={[0.065, 0.055, 0]} scale={[0.035, 0.035, 0.08]} castShadow={false} />
+      </group>
+    </group>
+  )
+}
+
+/** La pelle à neige plantée dans un tas de neige au bord du sentier : manche à poignée en D, pelle de tôle rouge. */
+export function Shovel({ x, z, ry = 0 }: { x: number; z: number; ry?: number }) {
+  const g = snowY(x, z)
+  return (
+    <group position={[x, g, z]} rotation-y={ry}>
+      {/* le petit tas de neige derrière la pelle, et la pelle plantée devant, sa tôle tournée vers nous */}
+      <Part geo={SPH} m={O.snowCap} p={[-0.1, 0, -0.16]} scale={[0.32, 0.15, 0.26]} castShadow={false} />
+      <group rotation-z={-0.18}>
+        <Part geo={rbox(0.32, 0.36, 0.035, 0.03)} m={O.runner} p={[0, 0.16, 0]} />
+        <Part geo={rbox(0.34, 0.04, 0.05, 0.015)} m={O.steel} p={[0, 0.34, 0]} castShadow={false} />
+        <Part geo={rbox(0.33, 0.03, 0.045, 0.012)} m={O.steel} p={[0, -0.01, 0]} castShadow={false} />
+        <Part geo={cyl(0.025, 0.03, 0.8, 8)} m={O.slat} p={[0, 0.74, 0]} />
+        <Part geo={RING} m={O.iron} p={[0, 1.2, 0]} scale={[0.07, 0.07, 0.09]} castShadow={false} />
+      </group>
+    </group>
+  )
+}

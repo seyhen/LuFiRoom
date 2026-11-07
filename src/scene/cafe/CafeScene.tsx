@@ -22,7 +22,7 @@ import { Umbrellas } from './Umbrellas'
 import { DripCoat } from './DripCoat'
 import { Sill } from './Sill'
 import { Static } from '../Static'
-import { Surroundings } from './Surroundings'
+import { SurroundStatic, Surroundings } from './Surroundings'
 import { Motes } from '../Floaters'
 
 /**
@@ -63,6 +63,8 @@ export function CafeScene() {
       <Umbrellas />
       <DripCoat />
       <Motes colors={[0xfff2d8, 0xffcf8a]} opacity={[0.3, 0.5]} n={22} />
+      {/* la rue immobile : dans le même <Static> que la salle, ses fontes, pierres et peintures fusionnent avec celles du dedans */}
+      <SurroundStatic />
     </Static>
     </>
   )

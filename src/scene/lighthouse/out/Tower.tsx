@@ -54,7 +54,14 @@ export function Lighthouse() {
         <group position={[x, y, z]} rotation-y={Math.PI / 4}>
           <Part geo={rbox(0.5, 0.95, 0.08, 0.04)} m={S.iron} p={[0, 0.48, 0.93]} />
           <Part geo={rbox(0.62, 0.08, 0.14, 0.03)} m={S.white} p={[0, 1.0, 0.94]} castShadow={false} />
-          {[2.1, 3.9].map((wy, i) => <Part key={wy} geo={rbox(0.22, 0.36, 0.06, 0.03)} m={S.window} p={[0, wy, 0.92 - (wy / h) * 0.33 - i * 0.02]} castShadow={false} />)}
+          {/* posées sur le fût qui s'affine (rayon 0,95 → 0,62) : un peu en avant de la paroi, sinon elles s'y enfoncent */}
+          {[2.1, 3.9].map((wy) => (
+            <group key={wy} position={[0, wy, 0.95 - (wy / h) * 0.33]}>
+              <Part geo={rbox(0.3, 0.44, 0.06, 0.03)} m={S.white} p={[0, 0, 0.0]} castShadow={false} />
+              <Part geo={rbox(0.22, 0.36, 0.06, 0.03)} m={S.window} p={[0, 0, 0.02]} castShadow={false} />
+              <Part geo={rbox(0.34, 0.05, 0.1, 0.02)} m={S.white} p={[0, -0.23, 0.03]} castShadow={false} />
+            </group>
+          ))}
         </group>
         {/* la galerie, son garde-corps */}
         <Part geo={cyl(1.0, 0.8, 0.18, 28)} m={S.iron} p={[x, top + 0.09, z]} />

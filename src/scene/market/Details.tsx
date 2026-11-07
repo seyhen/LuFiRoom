@@ -143,16 +143,20 @@ function RoofCat({ position }: { position: V3 }) {
       </Static>
       <group ref={head} userData={LIVE} position={[0, 0.47, 0.045]}>
         <mesh geometry={cat.head} material={roofSkin} />
-        {cat.whiskers.map((w, i) => (
-          <mesh key={i} geometry={WHISKER} material={whiskerMat} position={w.p} quaternion={w.q} />
-        ))}
-        <group ref={eyes} userData={LIVE}>
-          {[-1, 1].map((s) => (
-            <group key={s} position={[s * 0.05, 0.014, 0.092]}>
-              <Part geo={SPH} m={eyeGlow} scale={[0.026, 0.031, 0.014]} castShadow={false} />
-              <Part geo={SPH} m={pupil} scale={[0.006, 0.026, 0.015]} p={[0, 0, 0.006]} castShadow={false} />
-            </group>
+        <Static>
+          {cat.whiskers.map((w, i) => (
+            <mesh key={i} geometry={WHISKER} material={whiskerMat} position={w.p} quaternion={w.q} />
           ))}
+        </Static>
+        <group ref={eyes} userData={LIVE}>
+          <Static>
+            {[-1, 1].map((s) => (
+              <group key={s} position={[s * 0.05, 0.014, 0.092]}>
+                <Part geo={SPH} m={eyeGlow} scale={[0.026, 0.031, 0.014]} castShadow={false} />
+                <Part geo={SPH} m={pupil} scale={[0.006, 0.026, 0.015]} p={[0, 0, 0.006]} castShadow={false} />
+              </group>
+            ))}
+          </Static>
         </group>
       </group>
       <group ref={tail} userData={LIVE} position={ROOF_TAIL}>

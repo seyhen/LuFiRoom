@@ -4,6 +4,7 @@ import { canvasTex, rr, seeded } from '../../paint'
 import { skyFade } from '../../outdoor'
 import { snowTop } from '../../snowTop'
 import { glowTex } from '../../textures'
+import { foliage } from '../../nature/materials'
 
 // Les matériaux des immeubles autour du toit : façades de brique à fenêtres à guillotine (et leurs vitres qui s'allument le soir),
 // toits de bitume, climatiseurs, verrière, panneau publicitaire. Tout descend dans le ciel : les façades se fondent vers le bas.
@@ -84,7 +85,10 @@ export const O = {
   rust: out(gummy(0xb4573a, { roughness: 0.7 })),
   wood: out(gummy(0x8a6448, { roughness: 0.8 }), [0.8, 0.5, 0.85]),
   terracotta: out(gummy(0xc8704e, { roughness: 0.7 }), [0.9, 0.45, 0.85]),
-  leaf: out(gummy(0x5a8f5a, { roughness: 0.6 }), [0.7, 0.45, 0.85]),
+  /** Les plants du potager d'en face : du vrai feuillage (`Foliage`), pas des boules. */
+  leaf: out(foliage(0x6aa060), [0.7, 0.45, 0.85]),
+  soil: out(gummy(0x5a4034, { roughness: 0.95, clearcoat: 0 }), [1, 0.4, 0.8]),
+  tomato: out(gummy(0xd9483a, { roughness: 0.3, clearcoat: 0.8 })),
   billboard: out(gummy(0xffffff, { map: billboardTex, roughness: 0.6, clearcoat: 0.1, emissive: 0xffffff, emissiveMap: billboardTex, emissiveIntensity: 0 })),
   lampHead: out(gummy(0x2e2c34, { roughness: 0.4, clearcoat: 0.5 })),
   bulb: out(gummy(0xfff1c8, { roughness: 0.2, emissive: 0xffd080, emissiveIntensity: 0.2 })),

@@ -60,7 +60,7 @@ const FISH = fishGeo()
 
 /** Les bancs : [centre x, y, z, rayon, vitesse (rad/s), nombre, teinte]. */
 const SCHOOLS: [number, number, number, number, number, number, number][] = [
-  [-5.0, 0.8, 2.0, 2.4, 0.32, 14, 0xffb44a], [5.2, 2.6, -3.6, 2.0, -0.26, 12, 0x7ad8f0], [3.0, -1.8, 5.6, 1.6, 0.4, 10, 0xf47a9a], [-3.0, 4.6, -5.4, 2.6, -0.2, 16, 0xf4f0a0],
+  [-5.9, 0.8, 2.0, 1.8, 0.32, 14, 0xffb44a], [6.3, 2.6, -4.2, 1.9, -0.26, 12, 0x7ad8f0], [3.0, -1.8, 5.9, 1.6, 0.4, 10, 0xf47a9a], [-3.0, 4.6, -6.5, 2.6, -0.2, 16, 0xf4f0a0],
 ]
 
 /** Les bancs de poissons qui tournent autour du sous-marin, chacun à sa couleur ; un seul tracé pour tous. */
@@ -106,17 +106,32 @@ const WHALE = blob([
   cone([0.5, 0.48, 0], [0.2, 0.62, 0], 0.08, 0.02, { color: 0x4a6e8a, k: 0.1 }),
 ], { h: 0.06, k: 0.2 })
 
+/**
+ * La course de la baleine, dans le repère de l'écran : elle glisse de gauche à droite (u, en mètres à l'écran) un peu derrière la
+ * pièce (recul D), en arc : basse sur les côtés, où l'eau est libre, elle passe juste au-dessus du coin du fond au milieu, plus haut
+ * que le banc jaune. Aux bouts, loin de la pièce, elle se fond dans l'eau (le fondu des matériaux du dehors).
+ */
+const WHALE_D = 2.1, WHALE_U = 15
+const SX = Math.SQRT1_2
+/** Hauteur à l'écran au-dessus du centre visé (y = 1,85), le long de la course. */
+const whaleSy = (u: number) => 5.25 - 2.4 * (u / 12) ** 2
+
 export function Whale() {
-  const g = useRef<Group>(null!), t = useRef(0.3)
+  const g = useRef<Group>(null!), t = useRef(0.42)
   useFrame((_, dt) => {
-    if (!reduceMotion) t.current = (t.current + Math.min(dt, 0.05) * 0.012) % 1
-    const x = -16 + t.current * 32
-    g.current.position.set(x, 1.8 + Math.sin(t.current * 12) * 0.25, -9.2)
-    g.current.rotation.set(0, 0, Math.sin(t.current * 12 + 1) * 0.04)
+    if (!reduceMotion) t.current = (t.current + Math.min(dt, 0.05) * 0.011) % 1
+    const u = -WHALE_U + t.current * WHALE_U * 2, sw = Math.sin(t.current * 14)
+    // de l'écran au monde (caméra dans l'axe (1, 0,8, 1)) : u le long de (1, 0, -1), recul D vers (-1, 0, -1) ; la hauteur à l'écran
+    // donne y (l'axe vertical de l'écran monte de 0,871 par mètre de y et de 0,492 par mètre de recul)
+    const y = (whaleSy(u) - 0.492 * WHALE_D) / 0.871 + 1.85 + sw * 0.15
+    g.current.position.set((u - WHALE_D) * SX, y, (-u - WHALE_D) * SX)
+    // la tête vers la droite de l'écran, le nez qui suit la pente de l'arc, un lent roulis
+    const slope = -2.4 * 2 * u / 144 / 0.871
+    g.current.rotation.set(0, Math.PI / 4, Math.atan(slope) * 0.8 + Math.cos(t.current * 14) * 0.03)
   })
   return (
     <group ref={g} userData={LIVE}>
-      <mesh geometry={WHALE} material={D.whale} scale={1.25} raycast={noRay} />
+      <mesh geometry={WHALE} material={D.whale} scale={1.05} raycast={noRay} />
     </group>
   )
 }

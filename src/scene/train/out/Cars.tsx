@@ -1,13 +1,14 @@
 import { Part, SPH, cyl, noRay, rbox } from '../../parts'
 import { R } from './materials'
-import { RAILS } from '../TrainShell'
+import { BOGIES, RAILS } from '../TrainShell'
+import { Bogie } from '../Bogie'
 
 /** Le toit bombé : un cylindre couché le long de la voiture, aplati (son dessous est dans la caisse). */
 const ROOF = cyl(1, 1, 1, 32)
 
 /** La voiture suivante, accrochée derrière le compartiment (vers -x) : son centre en x, sa longueur. */
 const CAR = { x: -7.25, len: 6.86 }
-const BOGIES = [-2.1, 2.1]
+const WHEELS = { iron: R.carIron, steel: R.rail, gold: R.carGold }
 
 /**
  * La voiture-lits suivante, derrière le mur de gauche : même livrée bleu nuit et même filet doré que la nôtre, un flanc à cinq
@@ -36,18 +37,8 @@ export function NextCar() {
       {Array.from({ length: 5 }, (_, i) => (
         <Part key={i} geo={rbox(0.07, 3.3, 2.5, 0.03)} m={R.bellows} p={[x + len / 2 + 0.03 + i * 0.07, 1.75, -0.4]} castShadow={false} />
       ))}
-      {/* les bogies sur les deux rails */}
-      {BOGIES.flatMap((bx) => RAILS.map((rz) => (
-        <group key={`${bx}${rz}`} position={[x + bx, -0.8, rz - 0.32]}>
-          <Part geo={rbox(1.5, 0.2, 0.3, 0.06)} m={R.carIron} p={[0, 0, 0.12]} castShadow={false} />
-          {[-0.5, 0.5].map((dx) => (
-            <group key={dx} position={[dx, -0.06, 0.32]} rotation-x={Math.PI / 2}>
-              <Part geo={cyl(0.26, 0.26, 0.08, 28)} m={R.carIron} castShadow={false} />
-              <Part geo={cyl(0.12, 0.12, 0.1, 20)} m={R.carGold} castShadow={false} />
-            </group>
-          ))}
-        </group>
-      )))}
+      {/* les bogies sur les deux rails, comme ceux du compartiment (immobiles : on ne les voit pas tourner d'ici) */}
+      {BOGIES.map((bx) => <Bogie key={bx} x={x + bx} rails={RAILS} m={WHEELS} />)}
       {/* le marchepied doré sous la porte */}
       <Part geo={rbox(0.8, 0.06, 0.3, 0.02)} m={R.carGold} p={[x + 2.7, -0.55, 3.5]} castShadow={false} />
     </group>

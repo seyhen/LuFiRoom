@@ -14,6 +14,17 @@ import { S } from './surroundMaterials'
 
 const hullClear = (x: number, z: number, m = 1.2) => Math.max(-3.5 - x, x - 3.36, -3.5 - z, z - 3.36) > m
 
+/** Les objets posés sur le sable (x, z, rayon) : l'oyat n'y pousse pas (il traversait la serviette du parasol). */
+const KEEP_OUT: [number, number, number][] = [
+  [-2.5, 6.9, 1.5], // le parasol, sa serviette, ses tongs et sa noix de coco
+  [1.4, 7.0, 0.95], // le château de sable
+  [-5.2, 1.0, 1.3], [2.4, 6.1, 1.1], // le bois flotté
+  [4.4, 5.3, 1.3], // la barque échouée
+  [-7.2, 2.4, 0.45], [-5.6, 5.9, 0.45], [-7.6, -2.0, 0.45], [7.6, -4.7, 0.45], // les pieds des palmiers
+  [-8.4, 3.8, 1.0], // le rocher moussu
+]
+const clearOfProps = (x: number, z: number) => KEEP_OUT.every(([cx, cz, r]) => Math.hypot(x - cx, z - cz) > r)
+
 /** Les rochers du rivage : à gauche en tas moussu, à droite des chicots dans l'eau (avec leur écume, voir `FoamRings`). */
 export const ROCKS: { p: [number, number]; s: V3; v: number; ry: number; dark?: boolean; moss?: boolean }[] = [
   { p: [-8.4, 3.8], s: [0.7, 0.55, 0.6], v: 1, ry: 0.4, moss: true },
@@ -97,6 +108,7 @@ export function DuneGrass() {
       // sur la dune ou en lisière du sable sec, jamais sur la plage mouillée ni contre la coque
       if (d < 2.4 || !hullClear(x, z, 1.4) || (y < LAND + 0.1 && r() < 0.85)) continue
       if (Math.abs(x - 5.1) < 1.6 && z < 0.4 || (x > 3.2 && x < 5 && Math.abs(z + 0.6) < 1.2)) continue
+      if (!clearOfProps(x, z)) continue
       const k = 0.5 + r() * 0.7
       out.push({ p: [x, y - 0.02, z], s: [k * 0.9, k * (0.8 + y * 0.8), k * 0.9], r: [0, r() * 6, 0], c: r() < 0.3 ? 0xf0e6b8 : 0xffffff })
     }

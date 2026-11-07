@@ -4,6 +4,7 @@ import { gummy } from '../materials'
 import { mood } from '../anim'
 import { snowTop } from '../snowTop'
 import { foliage } from '../nature/materials'
+import { K } from './materials'
 import { aboardTex, awningTex, bookbinderTex, brickTex, cobbleTex, flagTex, ghostTex, pubSignTex, sandTex, slateTex, streetFade } from './streetTex'
 
 // Les matériaux du dehors : tout ce qui est autour du café (rue, façades voisines, toits). Chacun se fond dans la brume au loin
@@ -50,6 +51,9 @@ export function outside<T extends Material>(m: T, snow?: [k?: number, from?: num
 
 const stone = (o: MeshPhysicalMaterialParameters) => gummy(0xffffff, { roughness: 0.82, clearcoat: 0.06, clearcoatRoughness: 0.6, ...o })
 
+// Toutes les matières du dehors prennent la neige entre les mêmes seuils (0,5 et 0,85) : `snowTop` met ces seuils dans la clé du programme
+// shader, donc des seuils différents compilaient un programme par matière ; seule la quantité (le premier nombre) varie, par uniforme.
+
 /** Les pierres qui foncent et luisent sous la pluie : [matériau, couleur sèche, couleur mouillée, vernis sec, vernis mouillé]. */
 export const WET: [MeshPhysicalMaterial, number, number, number, number][] = []
 const wet = <T extends MeshPhysicalMaterial>(m: T, dry: number, soaked: number, coat = 0.06, coatWet = 0.7): T => {
@@ -63,11 +67,11 @@ const wet = <T extends MeshPhysicalMaterial>(m: T, dry: number, soaked: number, 
  */
 export const S = {
   cobble: outside(wet(stone({ map: cobbleTex, alphaMap: streetFade, transparent: true }), 0xffffff, 0x8e96a4, 0.1, 0.9), [0.8, 0.5, 0.85]),
-  flag: outside(wet(stone({ map: flagTex }), 0xffffff, 0x929aa8, 0.1, 0.9), [0.9, 0.45, 0.8]),
-  granite: outside(wet(gummy(0xa3a8b0, { roughness: 0.7, clearcoat: 0.12 }), 0xa3a8b0, 0x6f7886, 0.12, 0.9), [0.9, 0.45, 0.8]),
-  sand: outside(wet(stone({ map: sandTex }), 0xffffff, 0xb5b8c0, 0.04, 0.5), [0.5, 0.55, 0.85]),
-  brick: outside(wet(stone({ map: brickTex }), 0xffffff, 0xa8a8b4, 0.04, 0.5), [0.5, 0.55, 0.85]),
-  slate: outside(wet(stone({ map: slateTex, roughness: 0.5, clearcoat: 0.3 }), 0xffffff, 0xaab0bc, 0.3, 0.9), [1, 0.35, 0.7]),
+  flag: outside(wet(stone({ map: flagTex }), 0xffffff, 0x929aa8, 0.1, 0.9), [0.9, 0.5, 0.85]),
+  granite: outside(wet(gummy(0xa3a8b0, { roughness: 0.7, clearcoat: 0.12 }), 0xa3a8b0, 0x6f7886, 0.12, 0.9), [0.9, 0.5, 0.85]),
+  sand: outside(wet(stone({ map: sandTex }), 0xffffff, 0xb5b8c0, 0.04, 0.5), [0.5, 0.5, 0.85]),
+  brick: outside(wet(stone({ map: brickTex }), 0xffffff, 0xa8a8b4, 0.04, 0.5), [0.5, 0.5, 0.85]),
+  slate: outside(wet(stone({ map: slateTex, roughness: 0.5, clearcoat: 0.3 }), 0xffffff, 0xaab0bc, 0.3, 0.9), [1, 0.5, 0.85]),
   /** Les corniches, appuis et chaînages de pierre claire. */
   trim: outside(wet(gummy(0xe4d6b8, { roughness: 0.8, clearcoat: 0.06 }), 0xe4d6b8, 0xb5b4b6, 0.06, 0.5), [0.8, 0.5, 0.85]),
   paint: outside(gummy(0xf0ebe0, { roughness: 0.55 })),
@@ -106,6 +110,20 @@ export const S = {
   })(),
   /** Le verre d'une lanterne, d'un lampadaire : éteint le jour, plein feu la nuit (réglé par chaque lampadaire). */
   glass: new MeshBasicMaterial({ color: 0xc9d4de }),
+}
+
+/**
+ * Les couleurs du café (pierre claire, bordeaux, vert bouteille, moutarde, vitre sombre, fonte) reprises sur les façades voisines :
+ * des copies qui se fondent dans la brume comme le grès et la brique (sinon, au loin, les bandeaux verts, les vitres sombres et
+ * les mitres rouges restaient nets au milieu des murs effacés). La pierre claire reçoit la neige sur les appuis et les corniches.
+ */
+export const T = {
+  stone: outside(K.stone.clone(), [0.8, 0.5, 0.85]),
+  burgundy: outside(K.burgundy.clone()),
+  green: outside(K.green.clone()),
+  mustard: outside(K.mustard.clone()),
+  navy: outside(K.navy.clone()),
+  iron: outside(K.iron.clone()),
 }
 
 const A = new Color(), B = new Color(), OFF = new Color(0x4a5870), ON = new Color(0xffc77a)

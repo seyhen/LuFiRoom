@@ -144,6 +144,13 @@ export function Surroundings() {
         {TABLES.map(([x, z, w, h, d, ry], i) => (
           <group key={`t${i}`} position={[x, SEA, z]} rotation-y={ry}>
             <Part geo={rbox(w, h, d, 0.28)} m={M.berg} p={[0, h / 2 - 0.15, 0]} castShadow={false} />
+            {/* un second gradin, plus petit, décalé : la table a fondu par le bord */}
+            <Part geo={rbox(w * 0.58, h * 0.42, d * 0.62, 0.22)} m={M.berg} p={[-w * 0.14, h - 0.15 + h * 0.13, -d * 0.1]} castShadow={false} />
+            {/* un bloc écroulé au pied, sur le flanc vu */}
+            <Part geo={rbox(w * 0.22, h * 0.3, d * 0.24, 0.12)} m={M.berg} p={[w * 0.42, h * 0.08, d * 0.5]} rotation={[0.15, 0.4, -0.2]} castShadow={false} />
+            {/* la grotte bleue creusée par la houle : une voûte sombre qui affleure sur les deux faces vues (une ellipse, pas une plaque) */}
+            <Part geo={SPH} m={M.bergDeep} p={[-w * 0.18, h * 0.1, d / 2 - 0.02]} scale={[w * 0.12, h * 0.17, 0.07]} castShadow={false} />
+            <Part geo={SPH} m={M.bergDeep} p={[w / 2 - 0.02, h * 0.08, d * 0.12]} scale={[0.07, h * 0.15, d * 0.1]} castShadow={false} />
             {/* le pied bleu, sous la ligne d'eau, plus large */}
             <Part geo={rbox(w + 0.3, 0.3, d + 0.3, 0.14)} m={M.bergDeep} p={[0, -0.1, 0]} castShadow={false} />
           </group>

@@ -1,5 +1,6 @@
 import { Color, MeshBasicMaterial, MeshStandardMaterial } from 'three'
 import { gummy, skin } from '../../materials'
+import { foliage } from '../../nature/materials'
 
 /** Les matériaux du décor du dehors (nuages, arc-en-ciel, jouets de ciel, îlot du village). Les couleurs qui suivent le jour sont réglées dans Surroundings.tsx. */
 export const K = {
@@ -18,14 +19,13 @@ export const K = {
   thread: gummy(0xfff3e6, { roughness: 0.7, clearcoat: 0.1 }),
   // l'îlot du village : colline lilas, dessous crème, murs, toits ronds rose et menthe, fenêtres qui s'allument la nuit
   hill: gummy(0xcdb9ec, { roughness: 0.7, clearcoat: 0.25 }),
-  hillGrass: gummy(0xb9d9c4, { roughness: 0.7, clearcoat: 0.25 }),
   under: gummy(0xe6dcf2, { roughness: 0.75, clearcoat: 0.15 }),
   wall: gummy(0xf6eaf1, { roughness: 0.6 }),
   roofRose: gummy(0xe59bb3),
   roofMint: gummy(0x8fc9c0),
   door: gummy(0xd48aa2),
   win: new MeshStandardMaterial({ color: 0xd8cfe8, emissive: 0xffd596, emissiveIntensity: 0, roughness: 0.5 }),
-  leaf: gummy(0x9fcfae),
+  leaf: foliage(0xa6d8b5),
   trunk: gummy(0xb38c8c),
   rain: new MeshBasicMaterial({ color: 0xdfe6ff, transparent: true, opacity: 0, depthWrite: false }),
 }

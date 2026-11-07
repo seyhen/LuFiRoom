@@ -12,7 +12,7 @@ import { Foliage } from '../../nature/Foliage'
 import { treehouse } from '../../../rooms/treehouse'
 import { GlowPoints } from '../../objects/GlowPoints'
 import { T } from '../materials'
-import { DECK } from '../layout'
+import { BRIDGE, DECK } from '../layout'
 
 // Le dehors de la cabane perchée : un pont de corde file au-dessus des cimes jusqu'à une vigie dans le chêne voisin (un petit
 // plancher rond, un garde-corps, un toit pointu de bardeaux, une longue-vue, un fanion), des bocaux-lanternes pendus aux cordes
@@ -23,9 +23,11 @@ const TIRE = new TorusGeometry(1, 0.38, 12, 28)
 
 /** La vigie : le pied du chêne voisin, le plancher. */
 const NEST = { x: 7.0, z: -1.9, y: 0.35, r: 1.05 }
-/** Les deux bouts du pont : sur le bord droit de notre plancher (derrière l'échelle), sur le plancher de la vigie. */
-const A: V3 = [DECK.x1 + 0.05, -0.02, -1.55], B: V3 = [NEST.x - NEST.r + 0.05, NEST.y, NEST.z + 0.1]
+/** Les deux bouts du pont : au bord droit de notre plancher, au milieu de l'ouverture du garde-corps (derrière l'échelle), et sur le plancher de la vigie. */
+const A: V3 = [DECK.x1 + 0.05, -0.02, (BRIDGE.z0 + BRIDGE.z1) / 2], B: V3 = [NEST.x - NEST.r + 0.05, NEST.y, NEST.z + 0.1]
 const SAG = 0.55
+/** Les poteaux de l'ouverture du garde-corps (Deck.tsx). */
+const POST_X = DECK.x1 - 0.1
 
 const at = (t: number, dy = 0, dz = 0): V3 => [A[0] + (B[0] - A[0]) * t, A[1] + (B[1] - A[1]) * t - SAG * Math.sin(Math.PI * t) + dy, A[2] + (B[2] - A[2]) * t + dz]
 
@@ -37,7 +39,9 @@ const pennant = gummy(0xd8794e, { roughness: 0.6, side: 2 })
 function RopeBridge() {
   const geo = useMemo(() => {
     const line = (dy: number, dz: number) => tube(Array.from({ length: 13 }, (_, i) => at(i / 12, dy, dz)), dy > 0 ? 0.02 : 0.025)
-    return { feet: [line(-0.02, -0.32), line(-0.02, 0.32)], hands: [line(0.75, -0.36), line(0.75, 0.36)] }
+    // les mains courantes partent du poteau de l'ouverture, côté plancher, puis suivent le pont
+    const hand = (z: number, dz: number) => tube([[POST_X, 0.8, z] as V3, ...Array.from({ length: 12 }, (_, i) => at((i + 1) / 12, 0.75, dz))], 0.02)
+    return { feet: [line(-0.02, -0.32), line(-0.02, 0.32)], hands: [hand(BRIDGE.z0, -0.36), hand(BRIDGE.z1, 0.36)] }
   }, [])
   const planks = 16
   return (
@@ -56,8 +60,8 @@ function RopeBridge() {
           return <Part key={`${i}${dz}`} geo={cyl(0.012, 0.012, Math.hypot(...d), 5)} m={T.twine} p={[(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2]} rotation={orient(d)} castShadow={false} />
         })
       })}
-      {/* les poteaux d'ancrage côté cabane */}
-      {[-0.4, 0.4].map((dz) => <Part key={dz} geo={cyl(0.06, 0.07, 1.1, 10)} m={T.beam} p={[A[0] - 0.02, 0.45, A[2] + dz]} />)}
+      {/* les cordes nouées aux poteaux de l'ouverture */}
+      {[BRIDGE.z0, BRIDGE.z1].map((z) => <Part key={z} geo={SPH} m={T.rope} scale={[0.08, 0.06, 0.08]} p={[POST_X, 0.8, z]} castShadow={false} />)}
     </group>
   )
 }

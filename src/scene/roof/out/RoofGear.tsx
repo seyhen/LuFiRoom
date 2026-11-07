@@ -6,6 +6,7 @@ import { LIVE, Static } from '../../Static'
 import { Part, SPH, cyl, noRay, orient, rbox, type V3 } from '../../parts'
 import { O } from './materials'
 import { GlowPoints } from '../../objects/GlowPoints'
+import { Foliage } from '../../nature/Foliage'
 
 const RING = new TorusGeometry(1, 0.06, 6, 24)
 const DISH = new LatheGeometry([[0, 0], [0.25, 0.02], [0.5, 0.08], [0.72, 0.18], [0.76, 0.2], [0.74, 0.215], [0.5, 0.1], [0.25, 0.04], [0, 0.02]].map(([r, y]) => new Vector2(r, y)), 24)
@@ -106,22 +107,40 @@ export function Chimney({ p, b = 0, pots = 3 }: { p: V3; b?: number; pots?: numb
   )
 }
 
-/** Des bacs de jardin potager, leurs plants et deux chaises pliantes : le toit d'en face cultive aussi. */
+/**
+ * Des bacs de jardin potager (planches, terre, plants de vrai feuillage, tuteurs de tomates), un arrosoir et deux chaises
+ * pliantes : le toit d'en face cultive aussi.
+ */
 export function RoofGarden({ p }: { p: V3 }) {
-  const plants = useMemo(() => [[-0.9, 0], [-0.3, 0.05], [0.3, -0.04], [0.9, 0.02]] as const, [])
+  const plants = useMemo(() => [[-0.85, 0, 0], [-0.3, 0.04, 2], [0.28, -0.03, 4], [0.85, 0.02, 1]] as const, [])
   return (
     <group position={p}>
       {[0, 1].map((row) => (
         <group key={row} position={[0, 0, row * 1.1]}>
+          {/* le bac : des planches, la terre juste sous le bord */}
           <Part geo={rbox(2.4, 0.38, 0.55, 0.04)} m={O.wood} p={[0, 0.19, 0]} />
-          {plants.map(([x, z], i) => (
-            <group key={i} position={[x, 0.38, z]}>
-              <Part geo={SPH} m={O.leaf} p={[0, 0.12, 0]} scale={[0.2, 0.16, 0.18]} />
-              <Part geo={SPH} m={O.leaf} p={[0.08, 0.2, 0.04]} scale={[0.12, 0.1, 0.11]} castShadow={false} />
+          {[0.1, 0.22].map((y) => <Part key={y} geo={rbox(2.42, 0.015, 0.565, 0.006)} m={O.soil} p={[0, y, 0]} castShadow={false} />)}
+          <Part geo={rbox(2.3, 0.04, 0.45, 0.015)} m={O.soil} p={[0, 0.38, 0]} castShadow={false} />
+          {plants.map(([x, z, v], i) => (
+            <Foliage key={i} v={v + row} p={[x, 0.38, z]} s={[0.24, 0.22 + ((i + row) % 2) * 0.06, 0.2]} ry={i + row} m={O.leaf} style="clipped" shadow={false} />
+          ))}
+          {/* au second rang, les tomates sur leurs tuteurs */}
+          {row === 1 && [-0.55, 0.0, 0.55].map((x) => (
+            <group key={x} position={[x, 0.38, 0]}>
+              <Part geo={cyl(0.015, 0.015, 0.7, 5)} m={O.wood} p={[0, 0.35, -0.08]} castShadow={false} />
+              {[[0.06, 0.32, 0.02], [-0.05, 0.44, 0.05], [0.04, 0.55, -0.02]].map(([dx, y, dz], k) => (
+                <Part key={k} geo={SPH} m={O.tomato} p={[dx, y, dz]} scale={0.055} castShadow={false} />
+              ))}
             </group>
           ))}
         </group>
       ))}
+      {/* l'arrosoir de zinc, posé entre les bacs */}
+      <group position={[-1.05, 0, 0.55]} rotation-y={0.5}>
+        <Part geo={cyl(0.14, 0.15, 0.3, 16)} m={O.metal} p={[0, 0.15, 0]} castShadow={false} />
+        <Part geo={cyl(0.02, 0.03, 0.34, 6)} m={O.metal} p={[0.2, 0.22, 0]} rotation-z={-0.9} castShadow={false} />
+        <Part geo={RING} m={O.metalDark} p={[-0.02, 0.32, 0]} scale={[0.12, 0.12, 0.3]} castShadow={false} />
+      </group>
       {/* deux chaises pliantes rouille */}
       {[[1.8, 0.4, -0.6], [1.9, 1.3, -1.1]].map(([x, z, ry], i) => (
         <group key={i} position={[x, 0, z]} rotation-y={ry}>
@@ -145,6 +164,46 @@ export function Bulkhead({ p }: { p: V3 }) {
       <Part geo={SPH} m={O.steel} p={[0.3, 0.75, 0.65]} scale={0.03} castShadow={false} />
       <Part geo={cyl(0.06, 0.09, 0.08, 10)} m={O.lampHead} p={[0.05, 1.62, 0.68]} rotation-x={0.4} castShadow={false} />
       <Part geo={SPH} m={O.bulb} p={[0.05, 1.58, 0.7]} scale={0.035} castShadow={false} />
+    </group>
+  )
+}
+
+/**
+ * Le pigeonnier du toit voisin, comme à Brooklyn : une cabane de planches sur pilotis, façade grillagée à trois cases, toit à un
+ * pan de tôle, la planche d'envol devant les trappes, un seau de grain et l'échelle de l'éleveur. Tourné vers la caméra.
+ */
+export function PigeonCoop({ p, ry = Math.PI / 4 }: { p: V3; ry?: number }) {
+  const W = 1.5, H = 0.95, D = 0.8, L = 0.35
+  return (
+    <group position={p} rotation-y={ry}>
+      {/* les pilotis et le plancher */}
+      {[-1, 1].flatMap((sx) => [-1, 1].map((sz) => <Part key={`${sx}${sz}`} geo={rbox(0.08, L, 0.08, 0.02)} m={O.steel} p={[sx * (W / 2 - 0.08), L / 2, sz * (D / 2 - 0.08)]} />))}
+      <Part geo={rbox(W + 0.1, 0.06, D + 0.1, 0.02)} m={O.wood} p={[0, L + 0.03, 0]} />
+      {/* la cabane : le fond et les flancs de planches, la façade en trois cases grillagées */}
+      <Part geo={rbox(W, H, D - 0.06, 0.03)} m={O.wood} p={[0, L + 0.06 + H / 2, -0.03]} />
+      {[-1, 0, 1].map((k) => (
+        <group key={k} position={[k * (W / 3), L + 0.06 + H / 2, D / 2 - 0.05]}>
+          <Part geo={rbox(W / 3 - 0.1, H - 0.16, 0.02, 0.008)} m={O.tar} p={[0, 0, -0.012]} castShadow={false} />
+          {Array.from({ length: 4 }, (_, i) => <Part key={i} geo={rbox(0.012, H - 0.16, 0.012, 0.004)} m={O.steel} p={[-0.15 + i * 0.1, 0, 0.004]} castShadow={false} />)}
+          {Array.from({ length: 6 }, (_, i) => <Part key={i + 9} geo={rbox(W / 3 - 0.1, 0.012, 0.012, 0.004)} m={O.steel} p={[0, -0.32 + i * 0.128, 0.006]} castShadow={false} />)}
+        </group>
+      ))}
+      {/* les montants entre les cases */}
+      {[-1.5, -0.5, 0.5, 1.5].map((k) => <Part key={k} geo={rbox(0.07, H, 0.06, 0.02)} m={O.coping} p={[k * (W / 3), L + 0.06 + H / 2, D / 2 - 0.03]} castShadow={false} />)}
+      {/* la planche d'envol et ses trappes, sous les cases */}
+      <Part geo={rbox(W + 0.06, 0.04, 0.22, 0.015)} m={O.coping} p={[0, L + 0.2, D / 2 + 0.1]} castShadow={false} />
+      {/* le toit de tôle, un pan qui descend vers l'avant */}
+      <Part geo={rbox(W + 0.3, 0.05, D + 0.36, 0.02)} m={O.metalDark} p={[0, L + 0.06 + H + 0.08, 0.04]} rotation-x={0.16} />
+      {/* le seau de grain et l'échelle de l'éleveur */}
+      <group position={[W / 2 + 0.35, 0, D / 2 + 0.05]}>
+        <Part geo={cyl(0.14, 0.12, 0.3, 14)} m={O.metal} p={[0, 0.15, 0]} castShadow={false} />
+        <Part geo={cyl(0.125, 0.125, 0.02, 14)} m={O.wood} p={[0, 0.27, 0]} castShadow={false} />
+        <Part geo={RING} m={O.steel} p={[0, 0.33, 0]} scale={[0.13, 0.13, 0.2]} castShadow={false} />
+      </group>
+      <group position={[-W / 2 - 0.3, 0, 0.12]} rotation-z={-0.12}>
+        {[-0.16, 0.16].map((dz) => <Part key={dz} geo={rbox(0.04, 1.3, 0.04, 0.01)} m={O.wood} p={[0, 0.65, dz]} castShadow={false} />)}
+        {Array.from({ length: 4 }, (_, i) => <Part key={i} geo={cyl(0.015, 0.015, 0.34, 5)} m={O.wood} p={[0, 0.25 + i * 0.28, 0]} rotation-x={Math.PI / 2} castShadow={false} />)}
+      </group>
     </group>
   )
 }

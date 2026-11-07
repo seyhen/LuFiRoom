@@ -88,7 +88,7 @@ export function Precip() {
   )
 }
 
-/** La nuit, des éclats de lumière qui scintillent autour du banc de nuages. */
+/** La nuit claire, des éclats de lumière qui scintillent autour du banc de nuages (éteints sous la pluie, la neige et l'orage : le ciel est couvert). */
 function Twinkles() {
   const pm = useRef<PointsMaterial>(null!), pts = useRef<Points>(null!)
   const data = useMemo(() => {
@@ -114,7 +114,7 @@ function Twinkles() {
   }, [])
   useWorldPointSize(pm, 0.3)
   useFrame((_, delta) => {
-    const night = smooth(mood.night) * (1 - Math.min(1, mood.rain * 0.7 + mood.storm))
+    const night = smooth(mood.night) * (1 - Math.min(1, mood.rain + mood.storm + mood.snow * 0.8))
     pts.current.visible = night > 0.04
     if (!pts.current.visible) return
     const col = data.g.attributes.color

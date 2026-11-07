@@ -18,7 +18,8 @@ const SHAKE = 0.5, LAND = 0.65, PATS = [0.95, 1.25], FOLD0 = 1.55, FOLD1 = 2.15
 function Folded({ p, m, band, w = 0.34, d = 0.26, ry = 0 }: { p: V3; m: typeof L.coral; band: typeof L.coral; w?: number; d?: number; ry?: number }) {
   return (
     <group position={p} rotation-y={ry}>
-      <Part geo={rbox(w, 0.045, d, 0.018)} m={m} p={[0, 0.0225, 0]} />
+      {/* sans ombre : 4 cm d'épaisseur n'en font pas une qui se voie, et chaque couleur garde un seul tracé */}
+      <Part geo={rbox(w, 0.045, d, 0.018)} m={m} p={[0, 0.0225, 0]} castShadow={false} />
       <Part geo={rbox(0.05, 0.053, d + 0.008, 0.02)} m={band} p={[w * 0.28, 0.0225, 0]} castShadow={false} />
     </group>
   )

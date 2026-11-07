@@ -48,7 +48,7 @@ export function MarketShell() {
       <Part geo={cyl(0.13, 0.13, 0.06, 14)} m={K.rust} p={[3.28, -0.5, 1.4]} rotation-z={Math.PI / 2} castShadow={false} />
       <Part geo={cyl(0.08, 0.08, 0.4, 14)} m={K.steelDark} p={[-1.2, -0.52, 3.6]} rotation-x={Math.PI / 2} />
       {/* le pavé */}
-      <Part geo={worldUV(rbox(6.44, 0.1, 6.44, 0.03), 1.4)} m={K.paving} p={[-0.07, -0.05, -0.07]} />
+      <Part geo={worldUV(rbox(6.44, 0.1, 6.44, 0.03), 1.4)} m={K.paving} p={[-0.07, -0.05, -0.07]} castShadow={false} />
       {/* façade du fond (brique, baie) et mur de gauche (rideau de fer) */}
       <Part geo={worldUV(backWall, 1.2)} m={K.brick} p={[0, 0, -3.26]} />
       <Part geo={worldUV(holedWall([{ x0: -DOOR.z1, x1: -DOOR.z0, y0: 0, y1: DOOR.top, r: 0.1 }]), 1.6)} m={K.yakisugi} p={[-3.26, 0, 0]} rotation-y={Math.PI / 2} />

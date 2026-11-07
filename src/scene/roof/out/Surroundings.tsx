@@ -8,7 +8,7 @@ import { roof } from '../../../rooms/roof'
 import { Part, rbox } from '../../parts'
 import { O } from './materials'
 import { Block, FireEscape, type BlockProps } from './Buildings'
-import { AirCon, Billboard, Bulkhead, Chimney, Dish, RoofGarden, Skylight, Turbine } from './RoofGear'
+import { AirCon, Billboard, Bulkhead, Chimney, Dish, PigeonCoop, RoofGarden, Skylight, Turbine } from './RoofGear'
 
 /** Les voisins : à droite (plus bas d'un étage), devant à droite (plus bas encore), à gauche devant. */
 const RIGHT: BlockProps = { x0: 3.62, x1: 9.8, z0: -4.4, z1: 0.95, top: -1.75, b: 1, shift: 0.2 }
@@ -65,6 +65,8 @@ export function Surroundings() {
         <AirCon p={[6.4, RIGHT.top, -0.2]} ry={-0.05} />
         <Turbine p={[8.6, RIGHT.top, -1.6]} />
         <Turbine p={[-5.0, LEFT.top, 6.3]} />
+        {/* le toit de gauche, devant : le pigeonnier (ses pigeons sont sur notre parapet) */}
+        <PigeonCoop p={[-7.5, LEFT.top, 5.8]} />
       </Static>
       <Billboard p={[-6.2, LEFT.top, 3.8]} />
       <OutdoorPrecip ground={rainGround} area={[-13, 13, -10, 12]} />

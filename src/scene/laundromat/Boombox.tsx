@@ -9,16 +9,22 @@ import { L } from './materials'
 const W = 0.56, H = 0.28, D = 0.15 // largeur (z), hauteur, profondeur (x : la façade regarde vers +x)
 const FX = D / 2 // la façade
 
-/** Un haut-parleur : la bague chromée, la grille, le cône qui bat sur le kick (sa ref). */
+/** La bague chromée et la grille d'un haut-parleur : immobiles, fusionnées avec le boîtier. */
+function SpeakerRing({ z }: { z: number }) {
+  return (
+    <group position={[FX, 0.13, z]}>
+      <Part m={L.chrome} p={[0.012, 0, 0]} rotation-y={Math.PI / 2} castShadow={false}>
+        <torusGeometry args={[0.072, 0.011, 10, 32]} />
+      </Part>
+      <Part geo={cyl(0.07, 0.07, 0.012, 28)} m={L.grille} p={[0.004, 0, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+    </group>
+  )
+}
+
+/** Le cône d'un haut-parleur, qui bat sur le kick (sa ref). */
 function Speaker({ z, cone }: { z: number; cone: RefObject<Group> }) {
   return (
     <group position={[FX, 0.13, z]}>
-      <Static>
-        <Part m={L.chrome} p={[0.012, 0, 0]} rotation-y={Math.PI / 2} castShadow={false}>
-          <torusGeometry args={[0.072, 0.011, 10, 32]} />
-        </Part>
-        <Part geo={cyl(0.07, 0.07, 0.012, 28)} m={L.grille} p={[0.004, 0, 0]} rotation-z={Math.PI / 2} castShadow={false} />
-      </Static>
       <group ref={cone} position={[0.012, 0, 0]}>
         <Part geo={SPH} m={L.boomboxDark} scale={[0.012, 0.045, 0.045]} castShadow={false} />
         <Part geo={SPH} m={L.chrome} scale={[0.01, 0.018, 0.018]} p={[0.008, 0, 0]} castShadow={false} />
@@ -81,16 +87,20 @@ export function Boombox({ position, ry = 0 }: { position: V3; ry?: number }) {
             <Part geo={rbox(0.07, 0.012, 0.11, 0.004)} m={L.glass} castShadow={false} />
             <Part geo={rbox(0.06, 0.008, 0.1, 0.003)} m={L.coral} p={[0, -0.001, 0]} castShadow={false} />
           </group>
+          <SpeakerRing z={-0.17} />
+          <SpeakerRing z={0.17} />
         </Static>
         <Speaker z={-0.17} cone={cones[0]} />
         <Speaker z={0.17} cone={cones[1]} />
         {/* les deux bobines de la cassette, qui tournent */}
         {[-0.035, 0.035].map((z, i) => (
           <group key={z} ref={reels[i]} position={[FX + 0.016, 0.124, z]}>
-            <Part geo={cyl(0.017, 0.017, 0.006, 14)} m={L.reel} rotation-z={Math.PI / 2} castShadow={false} />
-            {[0, 1, 2].map((k) => (
-              <Part key={k} geo={rbox(0.004, 0.022, 0.005, 0.002)} m={L.boomboxDark} p={[0.004, 0, 0]} rotation-x={(k * Math.PI) / 3} castShadow={false} />
-            ))}
+            <Static>
+              <Part geo={cyl(0.017, 0.017, 0.006, 14)} m={L.reel} rotation-z={Math.PI / 2} castShadow={false} />
+              {[0, 1, 2].map((k) => (
+                <Part key={k} geo={rbox(0.004, 0.022, 0.005, 0.002)} m={L.boomboxDark} p={[0.004, 0, 0]} rotation-x={(k * Math.PI) / 3} castShadow={false} />
+              ))}
+            </Static>
           </group>
         ))}
       </group>

@@ -1,12 +1,12 @@
 import type { Material } from 'three'
 import { Part, cyl, noRay, type V3 } from '../parts'
-import { K } from './materials'
 import { B, Box, LOW, Link, SW } from './streetKit'
-import { S } from './streetMaterials'
+import { S, T as K } from './streetMaterials'
 
 // Les maisons voisines, à moitié visibles : à gauche le relieur (boutique bordeaux, trois étages de grès, pignon à redents et
 // cheminées), au fond à droite le pub qui ferme l'impasse (mansarde d'ardoise, lucarnes, fûts devant la porte), puis de chaque côté
-// une maison plus basse qui s'efface dans la brume. Tout est modelé en boîtes arrondies, fenêtre par fenêtre.
+// une maison plus basse qui s'efface dans la brume. Tout est modelé en boîtes arrondies, fenêtre par fenêtre. Les couleurs du café
+// (`K` ici) sont leurs copies brumeuses (`T` de streetMaterials.ts) : tout s'efface au loin d'un même pas.
 
 const rel = (h: number) => SW + h
 

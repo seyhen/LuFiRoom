@@ -4,6 +4,7 @@ import { gummy, M } from '../materials'
 import { Part, SPH, cyl, rbox, type V3 } from '../parts'
 import { reduceMotion } from '../anim'
 import { useBeat } from '../objects/useBeat'
+import { Static } from '../Static'
 import { K } from './materials'
 
 /** La vitre lumineuse : ambre pâle, qui s'allume quand la musique joue. */
@@ -22,29 +23,34 @@ export function Jukebox({ position }: { position: V3 }) {
   return (
     <>
       <group ref={g} userData={{ id: 'radio' }} position={position}>
-        <Part geo={rbox(0.54, 0.05, 0.32, 0.02)} m={K.walnut} p={[0, 0.025, 0]} />
-        <Part geo={rbox(0.48, 0.42, 0.28, 0.05)} m={K.walnut} p={[0, 0.26, 0]} />
-        {/* l'arche : demi-cylindre de noyer, vitre lumineuse devant, le disque qui tourne dedans */}
-        <Part geo={cyl(0.24, 0.24, 0.28, 28)} m={K.walnut} p={[0, 0.47, 0]} rotation-x={Math.PI / 2} />
-        <Part geo={cyl(0.2, 0.2, 0.02, 28)} m={glass} p={[0, 0.47, 0.143]} rotation-x={Math.PI / 2} castShadow={false} />
-        {/* la vitre basse, un peu moins haute : 4 cm d'air entre son bord et les touches */}
-        <Part geo={rbox(0.4, 0.17, 0.02, 0.008)} m={glass} p={[0, 0.375, 0.143]} castShadow={false} />
+        {/* le coffre, l'arche et la quincaillerie ne bougent pas : un seul tracé par matière (le disque tourne, lui, reste dehors) */}
+        <Static>
+          <Part geo={rbox(0.54, 0.05, 0.32, 0.02)} m={K.walnut} p={[0, 0.025, 0]} />
+          <Part geo={rbox(0.48, 0.42, 0.28, 0.05)} m={K.walnut} p={[0, 0.26, 0]} />
+          {/* l'arche : demi-cylindre de noyer, vitre lumineuse devant, le disque qui tourne dedans */}
+          <Part geo={cyl(0.24, 0.24, 0.28, 28)} m={K.walnut} p={[0, 0.47, 0]} rotation-x={Math.PI / 2} />
+          <Part geo={cyl(0.2, 0.2, 0.02, 28)} m={glass} p={[0, 0.47, 0.143]} rotation-x={Math.PI / 2} castShadow={false} />
+          {/* la vitre basse, un peu moins haute : 4 cm d'air entre son bord et les touches */}
+          <Part geo={rbox(0.4, 0.17, 0.02, 0.008)} m={glass} p={[0, 0.375, 0.143]} castShadow={false} />
+        </Static>
         <group ref={disc} position={[0, 0.45, 0.16]}>
           <Part geo={cyl(0.12, 0.12, 0.01, 28)} m={M.ink} rotation-x={Math.PI / 2} castShadow={false} />
           <Part geo={cyl(0.04, 0.04, 0.014, 16)} m={M.red} rotation-x={Math.PI / 2} castShadow={false} />
           <Part geo={rbox(0.012, 0.07, 0.014, 0.004)} m={M.cream} p={[0.07, 0, 0]} castShadow={false} />
         </group>
-        <Part m={K.brass} p={[0, 0.47, 0.155]} castShadow={false}>
-          <torusGeometry args={[0.21, 0.014, 8, 28, Math.PI]} />
-        </Part>
-        {/* la grille du haut-parleur en laiton, les touches, la fente à pièces */}
-        {[0.08, 0.12, 0.16].map((y) => (
-          <Part key={y} geo={rbox(0.36, 0.012, 0.014, 0.005)} m={K.brass} p={[0, y, 0.145]} castShadow={false} />
-        ))}
-        {[-0.14, -0.08, -0.02].map((x, i) => (
-          <Part key={x} geo={SPH} m={[M.red, M.butter, M.mint][i]} scale={0.018} p={[x, 0.228, 0.146]} castShadow={false} />
-        ))}
-        <Part geo={rbox(0.05, 0.035, 0.012, 0.005)} m={K.brass} p={[0.16, 0.228, 0.146]} castShadow={false} />
+        <Static>
+          <Part m={K.brass} p={[0, 0.47, 0.155]} castShadow={false}>
+            <torusGeometry args={[0.21, 0.014, 8, 28, Math.PI]} />
+          </Part>
+          {/* la grille du haut-parleur en laiton, les touches, la fente à pièces */}
+          {[0.08, 0.12, 0.16].map((y) => (
+            <Part key={y} geo={rbox(0.36, 0.012, 0.014, 0.005)} m={K.brass} p={[0, y, 0.145]} castShadow={false} />
+          ))}
+          {[-0.14, -0.08, -0.02].map((x, i) => (
+            <Part key={x} geo={SPH} m={[M.red, M.butter, M.mint][i]} scale={0.018} p={[x, 0.228, 0.146]} castShadow={false} />
+          ))}
+          <Part geo={rbox(0.05, 0.035, 0.012, 0.005)} m={K.brass} p={[0.16, 0.228, 0.146]} castShadow={false} />
+        </Static>
       </group>
       <group ref={notes.group} />
     </>

@@ -18,6 +18,8 @@ export const POSTS: [number, number][] = [[1.4, -3.0], [1.4, -1.42], [-0.8, -3.0
 export const HAMMOCK: { a: V3; b: V3 } = { a: [-2.11, 1.42, -1.81], b: [-2.6, 1.42, 1.69] }
 /** L'ouverture de l'échelle de corde dans le garde-corps de droite. */
 export const LADDER = { z0: 0.55, z1: 1.55 }
+/** L'ouverture du pont de corde dans le garde-corps de droite (entre ses deux poteaux, centrés en z0 et z1) : le pont part de son milieu. */
+export const BRIDGE = { z0: -1.95, z1: -1.15 }
 
 /** Le sol de la forêt, loin en contrebas : un plan carré (centre, côté), à y = GROUND.y. */
 export const GROUND = { x: -1, z: -3, size: 20, y: -2.6 }

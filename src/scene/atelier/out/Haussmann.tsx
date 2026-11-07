@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { DoubleSide, MeshStandardMaterial, PlaneGeometry } from 'three'
+import { BufferGeometry, CylinderGeometry, DoubleSide, Float32BufferAttribute, MeshStandardMaterial, PlaneGeometry, Vector3 } from 'three'
 import { Part, SPH, cyl, noRay, rbox } from '../../parts'
 import { canvasTex } from '../../paint'
 import { skyFade } from '../../outdoor'
@@ -10,7 +10,6 @@ const TILE_W = 6.9, TILE_H = 6.4
 const BOTTOM = -12
 /** La pente du brisis (la partie raide du toit mansardé) : son retrait, sa hauteur. */
 const INSET = 0.55, BRISIS = 1.7
-const SLOPE = Math.atan2(INSET, BRISIS), SLOPE_L = Math.hypot(INSET, BRISIS)
 
 /** Le garde-corps filant en fer forgé : un plan découpé (volutes et barreaux), un seul tracé pour toute la ville. */
 const railTex = canvasTex(256, 64, (x) => {
@@ -40,6 +39,41 @@ function railGeo(len: number) {
   return g
 }
 
+/**
+ * Le brisis d'un toit mansardé : quatre pans trapézoïdaux qui se rejoignent en arêtiers aux coins (quatre plaques droites se
+ * croisaient et dépassaient l'une de l'autre en ailerons). Pied à y = 0 sur le rectangle w × d, haut rentré de INSET.
+ * Les joints debout du zinc tous les 45 cm (une répétition de la texture = 8 bandes = 3,6 m).
+ */
+function mansardGeo(w: number, d: number) {
+  const x = w / 2, z = d / 2, i = INSET
+  const lo: [number, number][] = [[-x, z], [x, z], [x, -z], [-x, -z]]
+  const hi: [number, number][] = [[-x + i, z - i], [x - i, z - i], [x - i, -z + i], [-x + i, -z + i]]
+  const pos: number[] = [], uv: number[] = []
+  const a = new Vector3(), b = new Vector3(), c = new Vector3(), n = new Vector3(), o = new Vector3()
+  for (let k = 0; k < 4; k++) {
+    const k2 = (k + 1) % 4, len = Math.hypot(lo[k2][0] - lo[k][0], lo[k2][1] - lo[k][1]) / 3.6
+    const quad: [number, number, number, number, number][] = [
+      [lo[k][0], 0, lo[k][1], 0, 0], [lo[k2][0], 0, lo[k2][1], len, 0], [hi[k2][0], BRISIS, hi[k2][1], len - INSET / 3.6, 1], [hi[k][0], BRISIS, hi[k][1], INSET / 3.6, 1],
+    ]
+    for (let [p, q, r] of [[0, 1, 2], [0, 2, 3]]) {
+      // chaque triangle tourné vers l'extérieur
+      a.set(quad[p][0], quad[p][1], quad[p][2]); b.set(quad[q][0], quad[q][1], quad[q][2]); c.set(quad[r][0], quad[r][1], quad[r][2])
+      n.subVectors(b, a).cross(o.subVectors(c, a))
+      o.set((a.x + b.x + c.x) / 3, 0, (a.z + b.z + c.z) / 3)
+      if (n.dot(o) < 0) [q, r] = [r, q]
+      for (const t of [p, q, r]) { pos.push(quad[t][0], quad[t][1], quad[t][2]); uv.push(quad[t][3], quad[t][4]) }
+    }
+  }
+  const g = new BufferGeometry()
+  g.setAttribute('position', new Float32BufferAttribute(pos, 3))
+  g.setAttribute('uv', new Float32BufferAttribute(uv, 2))
+  g.computeVertexNormals()
+  return g
+}
+
+/** Le toit bombé d'une lucarne : un demi-cylindre couché, l'arrondi en haut (ouvert dessous, caché par le corps). */
+const DORMER_ROOF = new CylinderGeometry(1, 1, 1, 18, 1, false, Math.PI / 2, Math.PI)
+
 /** Un garde-corps filant le long des deux façades vues, à la hauteur `y`, posé sur une dalle de pierre (sauf `onCornice`). */
 function Balcony({ x0, x1, z0, z1, y, s, slab = true }: { x0: number; x1: number; z0: number; z1: number; y: number; s: number; slab?: boolean }) {
   const w = x1 - x0, d = z1 - z0, o = slab ? 0.36 : 0.11
@@ -58,15 +92,27 @@ function Balcony({ x0, x1, z0, z1, y, s, slab = true }: { x0: number; x1: number
   )
 }
 
-/** Une lucarne (chien-assis) posée sur le brisis : jambages de pierre, fenêtre (elle s'allume le soir), petit toit de zinc bombé. */
+/**
+ * Une lucarne (chien-assis) posée sur le brisis : joues de zinc, encadrement de pierre (jambages, appui, linteau à clé), fenêtre à
+ * petits bois en retrait (elle s'allume le soir), petit toit de zinc bombé qui déborde devant.
+ */
 function Dormer({ p, ry }: { p: [number, number, number]; ry: number }) {
   return (
     <group position={p} rotation-y={ry}>
-      <Part geo={rbox(0.62, 0.8, 0.6, 0.05)} m={P.trim} castShadow={false} />
-      <Part geo={rbox(0.4, 0.54, 0.02, 0.01)} m={P.dormerGlass} p={[0, -0.04, 0.305]} castShadow={false} />
-      <Part geo={rbox(0.03, 0.54, 0.03, 0.01)} m={P.trim} p={[0, -0.04, 0.32]} castShadow={false} />
-      <Part geo={rbox(0.4, 0.03, 0.03, 0.01)} m={P.trim} p={[0, 0.06, 0.32]} castShadow={false} />
-      <Part geo={cyl(0.38, 0.38, 0.66, 18)} m={P.zincFlat} p={[0, 0.4, 0]} rotation-x={Math.PI / 2} scale={[1, 1, 0.42]} castShadow={false} />
+      {/* les joues de zinc : le corps, en retrait derrière l'encadrement */}
+      <Part geo={rbox(0.56, 0.74, 0.52, 0.04)} m={P.zincFlat} p={[0, 0, -0.02]} castShadow={false} />
+      {/* l'encadrement de pierre : deux jambages, l'appui saillant, le linteau et sa clé */}
+      {[-1, 1].map((s) => <Part key={s} geo={rbox(0.13, 0.78, 0.08, 0.03)} m={P.trim} p={[s * 0.255, -0.01, 0.29]} castShadow={false} />)}
+      <Part geo={rbox(0.6, 0.07, 0.14, 0.025)} m={P.trim} p={[0, -0.36, 0.3]} castShadow={false} />
+      <Part geo={rbox(0.64, 0.12, 0.09, 0.03)} m={P.trim} p={[0, 0.3, 0.29]} castShadow={false} />
+      <Part geo={rbox(0.09, 0.15, 0.04, 0.015)} m={P.trim} p={[0, 0.275, 0.34]} castShadow={false} />
+      {/* la fenêtre en retrait, ses petits bois blancs */}
+      <Part geo={rbox(0.38, 0.58, 0.02, 0.008)} m={P.dormerGlass} p={[0, -0.04, 0.255]} castShadow={false} />
+      <Part geo={rbox(0.026, 0.58, 0.03, 0.008)} m={P.trim} p={[0, -0.04, 0.275]} castShadow={false} />
+      <Part geo={rbox(0.38, 0.026, 0.03, 0.008)} m={P.trim} p={[0, 0.07, 0.275]} castShadow={false} />
+      {/* le toit bombé de zinc qui déborde devant, bordé d'un arc de pierre */}
+      <Part geo={DORMER_ROOF} m={P.zincFlat} p={[0, 0.36, -0.01]} rotation-x={Math.PI / 2} scale={[0.37, 0.7, 0.4 * 0.42]} castShadow={false} />
+      <Part geo={DORMER_ROOF} m={P.trim} p={[0, 0.355, 0.355]} rotation-x={Math.PI / 2} scale={[0.4, 0.04, 0.43 * 0.42]} castShadow={false} />
     </group>
   )
 }
@@ -141,8 +187,8 @@ export function Block({ x0, x1, z0, z1, wall, top, s, shift = 0, dormers = [2, 2
   const w = x1 - x0, d = z1 - z0, h = wall - BOTTOM
   const front = useMemo(() => facadeGeo(w, h, shift), [w, h, shift])
   const side = useMemo(() => facadeGeo(d, h, shift + 0.37), [d, h, shift])
+  const roof = useMemo(() => mansardGeo(w, d), [w, d])
   const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, fy = BOTTOM + h / 2
-  const midY = wall + BRISIS / 2
   return (
     <group>
       <Part geo={rbox(w, h, d, 0.05)} m={P.stone[s]} p={[cx, fy, cz]} castShadow={false} />
@@ -153,11 +199,8 @@ export function Block({ x0, x1, z0, z1, wall, top, s, shift = 0, dormers = [2, 2
       {lowBalcony && <Balcony x0={x0} x1={x1} z0={z0} z1={z1} y={wall - 3.2 * 2 + 0.3} s={s} />}
       {top !== undefined && (
         <>
-          {/* le brisis sur les quatre côtés, le terrasson presque plat dessus */}
-          <Part geo={rbox(w, SLOPE_L, 0.08, 0.03)} m={P.zinc} p={[cx, midY, z1 - INSET / 2]} rotation-x={-SLOPE} castShadow={false} />
-          <Part geo={rbox(w, SLOPE_L, 0.08, 0.03)} m={P.zinc} p={[cx, midY, z0 + INSET / 2]} rotation-x={SLOPE} castShadow={false} />
-          <Part geo={rbox(0.08, SLOPE_L, d, 0.03)} m={P.zinc} p={[x1 - INSET / 2, midY, cz]} rotation-z={SLOPE} castShadow={false} />
-          <Part geo={rbox(0.08, SLOPE_L, d, 0.03)} m={P.zinc} p={[x0 + INSET / 2, midY, cz]} rotation-z={-SLOPE} castShadow={false} />
+          {/* le brisis sur les quatre côtés (pans qui se rejoignent aux arêtiers), le terrasson presque plat dessus */}
+          <Part geo={roof} m={P.zinc} p={[cx, wall, cz]} castShadow={false} />
           <Part geo={rbox(w - INSET * 2 + 0.1, top - wall - BRISIS + 0.12, d - INSET * 2 + 0.1, 0.04)} m={P.zincFlat} p={[cx, (wall + BRISIS + top) / 2, cz]} castShadow={false} />
           {Array.from({ length: dormers[0] }, (_, i) => (
             <Dormer key={`z${i}`} p={[x0 + (w * (i + 0.5)) / dormers[0], wall + 1.0, z1 - INSET * 0.6]} ry={0} />

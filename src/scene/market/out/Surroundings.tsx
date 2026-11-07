@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { AdditiveBlending, CatmullRomCurve3, CircleGeometry, MeshBasicMaterial, SpriteMaterial, TorusGeometry, TubeGeometry, Vector3 } from 'three'
+import { AdditiveBlending, CatmullRomCurve3, CircleGeometry, MeshBasicMaterial, PlaneGeometry, SpriteMaterial, TorusGeometry, TubeGeometry, Vector3 } from 'three'
 import { smooth } from '../../../math'
 import { mood } from '../../anim'
 import { Static } from '../../Static'
@@ -27,33 +27,44 @@ const PUDDLES: Item[] = [[1.5, 5.2, 1.2, 0.5], [-2.0, 7.0, 0.9, 0.4], [5.6, 2.4,
 const F = { c: [0, 0] as [number, number], r0: 7.5, r1: 12.5 }
 const tube = (pts: V3[], r: number) => new TubeGeometry(new CatmullRomCurve3(pts.map((p) => new Vector3(...p))), 40, r, 6, false)
 
-/** Une enseigne verticale : fond sombre, lettres empilées au néon ; `glow` : les lettres seules (elles s'allument). */
-function signTex(word: string, color: string, glow: boolean) {
-  return canvasTex(96, 64 * word.length + 32, (x) => {
-    const H = 64 * word.length + 32
-    x.fillStyle = glow ? '#000' : '#2a1838'; x.fillRect(0, 0, 96, H)
-    x.strokeStyle = glow ? color : 'rgba(255,255,255,.25)'; x.lineWidth = 4; x.strokeRect(6, 6, 84, H - 12)
-    x.fillStyle = glow ? color : '#c8b8d8'; x.font = 'bold 50px "Arial Rounded MT Bold", Arial, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'
-    for (let i = 0; i < word.length; i++) x.fillText(word[i], 48, 44 + i * 64)
+/** Les enseignes verticales au néon : [mot, couleur, position, rotation]. */
+const SIGNS: [string, string, V3, number][] = [['RAMEN', '#ff5ab0', [-3.84, 3.2, 1.6], Math.PI / 2], ['KARAOKE', '#5ae0ff', [-3.84, 3.7, -1.4], Math.PI / 2], ['GYOZA', '#ffd25a', [6.3, 2.6, -4.42], 0], ['BAR', '#ff7a4a', [8.4, 2.2, -4.42], 0]]
+/** L'atlas des enseignes : une colonne de 96 px par enseigne, lettres empilées (un seul matériau, un seul tracé pour les quatre). */
+const ATLAS_W = 96 * SIGNS.length, ATLAS_H = 64 * Math.max(...SIGNS.map(([w]) => w.length)) + 32
+const signH = (w: string) => 64 * w.length + 32
+/** `glow` : les lettres seules, sur noir (elles s'allument). */
+function signAtlas(glow: boolean) {
+  return canvasTex(ATLAS_W, ATLAS_H, (x) => {
+    x.fillStyle = '#000'; x.fillRect(0, 0, ATLAS_W, ATLAS_H)
+    SIGNS.forEach(([word, color], k) => {
+      const X = k * 96, H = signH(word)
+      x.fillStyle = glow ? '#000' : '#2a1838'; x.fillRect(X, 0, 96, H)
+      x.strokeStyle = glow ? color : 'rgba(255,255,255,.25)'; x.lineWidth = 4; x.strokeRect(X + 6, 6, 84, H - 12)
+      x.fillStyle = glow ? color : '#c8b8d8'; x.font = 'bold 50px "Arial Rounded MT Bold", Arial, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'
+      for (let i = 0; i < word.length; i++) x.fillText(word[i], X + 48, 44 + i * 64)
+    })
   })
 }
-const SIGNS: [string, string, V3, number][] = [['RAMEN', '#ff5ab0', [-3.84, 3.2, 1.6], Math.PI / 2], ['KARAOKE', '#5ae0ff', [-3.84, 3.7, -1.4], Math.PI / 2], ['GYOZA', '#ffd25a', [5.2, 2.6, -4.42], 0], ['BAR', '#ff7a4a', [8.4, 2.2, -4.42], 0]]
-const signMats = SIGNS.map(([w, c]) => skyFade(gummy(0xffffff, { map: signTex(w, c, false), emissiveMap: signTex(w, c, true), emissive: 0xffffff, emissiveIntensity: 0.3, roughness: 0.4 }), F))
+/** Le plan d'une enseigne, ses UV calés sur sa colonne de l'atlas. */
+function signGeo(k: number) {
+  const word = SIGNS[k][0], h = signH(word), g = new PlaneGeometry(0.5, (0.5 * h) / 96), uv = g.attributes.uv
+  for (let i = 0; i < uv.count; i++) uv.setXY(i, (k + uv.getX(i)) / SIGNS.length, 1 - (1 - uv.getY(i)) * (h / ATLAS_H))
+  return g
+}
+const signMat = skyFade(gummy(0xffffff, { map: signAtlas(false), emissiveMap: signAtlas(true), emissive: 0xffffff, emissiveIntensity: 0.3, roughness: 0.4 }), F)
+const SIGN_GEOS = SIGNS.map((_, k) => signGeo(k))
 
+// Peu de matériaux, partagés : chaque matériau du dehors coûte un tracé (le pneu, la selle, les fils, les caissons des enseignes
+// et les culots des lanternes sont du même noir ; les rails, le chrome et le pied de l'étal du même acier).
 const M = {
-  road: skyFade(snowTop(gummy(0x3a3446, { roughness: 0.3, clearcoat: 0.8, clearcoatRoughness: 0.2 }), 1, 0.4, 0.8), F),
+  // la chaussée mouillée : un vernis, mais assez mat pour que la lanterne de la carriole n'y fasse pas une traînée de lumière
+  road: skyFade(snowTop(gummy(0x3a3446, { roughness: 0.6, clearcoat: 0.35, clearcoatRoughness: 0.55 }), 1, 0.4, 0.8), F),
   walk: skyFade(snowTop(gummy(0x8a8290, { roughness: 0.7 }), 1, 0.4, 0.8), F),
-  rail: skyFade(gummy(0xb8bcc6, { roughness: 0.25, clearcoat: 0.8, metalness: 0.3 }), F),
-  wire: skyFade(gummy(0x2a2430, { roughness: 0.5 }), F),
+  steel: skyFade(gummy(0xc8ccd6, { roughness: 0.22, clearcoat: 0.9, metalness: 0.2 }), F),
+  dark: skyFade(gummy(0x28222c, { roughness: 0.5 }), F),
   lantern: skyFade(gummy(0xe0402e, { roughness: 0.6, emissive: 0xff5a2a, emissiveIntensity: 0.15 }), F),
-  cap: skyFade(gummy(0x2a2024, { roughness: 0.5 }), F),
   scooter: skyFade(gummy(0x8ad8c0, { roughness: 0.3, clearcoat: 0.8 }), F),
-  tire: skyFade(gummy(0x24202a, { roughness: 0.6 }), F),
-  chrome: skyFade(gummy(0xd8dce4, { roughness: 0.2, clearcoat: 1 }), F),
-  seat: skyFade(gummy(0x5a3a2a, { roughness: 0.5, clearcoat: 0.4 }), F),
   stool: skyFade(gummy(0xe04a5a, { roughness: 0.4, clearcoat: 0.6 }), F),
-  stoolBlue: skyFade(gummy(0x4a7ae0, { roughness: 0.4, clearcoat: 0.6 }), F),
-  table: skyFade(gummy(0xf0eadc, { roughness: 0.4, clearcoat: 0.5 }), F),
   umbrella: skyFade(snowTop(gummy(0xf4c040, { roughness: 0.6, side: 2 }), 1, 0.4, 0.8), F),
   glow: new SpriteMaterial({ map: glowTex, color: 0xff7a50, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }),
   puddle: new MeshBasicMaterial({ color: 0xff7ac8, transparent: true, opacity: 0.18, depthWrite: false, blending: AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -2 }),
@@ -63,17 +74,37 @@ const M = {
 const STRINGS: [V3, V3][] = [[[-3.55, 3.0, 3.9], [-3.55, 2.8, 9.4]], [[3.9, 3.0, -4.82], [10.2, 2.8, -4.82]]]
 const sagAt = (a: V3, b: V3, t: number): V3 => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t - 0.45 * Math.sin(Math.PI * t), a[2] + (b[2] - a[2]) * t]
 
-/** Le scooter garé : carénage menthe, selle, guidon chromé, phare, deux petites roues. */
+/** Le scooter garé, sur sa béquille : carénage menthe, tablier, plancher, selle, coffre arrière, guidon chromé et rétroviseurs,
+ *  phare, garde-boue, deux petites roues. Le dehors ne projette pas d'ombre (deux tracés de moins par matériau). */
+const WHEEL = new TorusGeometry(0.16, 0.07, 10, 20)
 function Scooter({ p, ry }: { p: V3; ry: number }) {
   return (
     <group position={p} rotation-y={ry}>
-      {[-0.42, 0.42].map((x) => <Part key={x} geo={new TorusGeometry(0.16, 0.07, 10, 20)} m={M.tire} p={[x, 0.22, 0]} />)}
-      <Part geo={SPH} m={M.scooter} p={[-0.18, 0.45, 0]} scale={[0.42, 0.2, 0.2]} />
-      <Part geo={SPH} m={M.scooter} p={[0.38, 0.6, 0]} scale={[0.1, 0.38, 0.18]} rotation-z={-0.25} />
-      <Part geo={rbox(0.36, 0.08, 0.2, 0.04)} m={M.seat} p={[-0.25, 0.68, 0]} />
-      <Part geo={cyl(0.02, 0.02, 0.5, 6)} m={M.chrome} p={[0.48, 0.98, 0]} rotation-x={Math.PI / 2} castShadow={false} />
-      <Part geo={SPH} m={M.chrome} p={[0.53, 0.88, 0]} scale={[0.04, 0.06, 0.06]} castShadow={false} />
-      <Part geo={rbox(0.24, 0.03, 0.28, 0.01)} m={M.chrome} p={[-0.45, 0.62, 0]} castShadow={false} />
+      {[-0.42, 0.42].map((x) => <Part key={x} geo={WHEEL} m={M.dark} p={[x, 0.22, 0]} castShadow={false} />)}
+      {[-0.42, 0.42].map((x) => <Part key={`j${x}`} geo={cyl(0.07, 0.07, 0.15, 12)} m={M.steel} p={[x, 0.22, 0]} rotation-x={Math.PI / 2} castShadow={false} />)}
+      {/* la coque arrière, le tablier, le plancher entre les deux */}
+      <Part geo={SPH} m={M.scooter} p={[-0.22, 0.47, 0]} scale={[0.38, 0.2, 0.2]} castShadow={false} />
+      <Part geo={SPH} m={M.scooter} p={[0.36, 0.58, 0]} scale={[0.1, 0.36, 0.18]} rotation-z={-0.25} castShadow={false} />
+      <Part geo={rbox(0.5, 0.06, 0.26, 0.03)} m={M.dark} p={[0.06, 0.3, 0]} castShadow={false} />
+      {/* le garde-boue avant sur la roue */}
+      <Part geo={new TorusGeometry(0.2, 0.05, 8, 16, Math.PI * 0.8)} m={M.scooter} p={[0.42, 0.24, 0]} rotation-z={Math.PI * 0.1} castShadow={false} />
+      {/* la selle, le coffre arrière */}
+      <Part geo={rbox(0.4, 0.08, 0.2, 0.04)} m={M.dark} p={[-0.24, 0.69, 0]} castShadow={false} />
+      <Part geo={rbox(0.24, 0.18, 0.26, 0.06)} m={M.scooter} p={[-0.56, 0.78, 0]} castShadow={false} />
+      <Part geo={rbox(0.2, 0.02, 0.22, 0.01)} m={M.steel} p={[-0.56, 0.68, 0]} castShadow={false} />
+      {/* la colonne de direction, le guidon et ses poignées, les deux rétroviseurs, le phare */}
+      <Part geo={cyl(0.025, 0.025, 0.3, 8)} m={M.steel} p={[0.46, 0.84, 0]} rotation-z={-0.25} castShadow={false} />
+      <Part geo={cyl(0.02, 0.02, 0.5, 6)} m={M.steel} p={[0.5, 0.98, 0]} rotation-x={Math.PI / 2} castShadow={false} />
+      {[-1, 1].map((s) => <Part key={s} geo={cyl(0.03, 0.03, 0.1, 8)} m={M.dark} p={[0.5, 0.98, s * 0.26]} rotation-x={Math.PI / 2} castShadow={false} />)}
+      {[-1, 1].map((s) => (
+        <group key={`m${s}`} position={[0.48, 1.0, s * 0.17]}>
+          <Part geo={cyl(0.008, 0.008, 0.14, 5)} m={M.steel} p={[0, 0.07, 0]} castShadow={false} />
+          <Part geo={SPH} m={M.steel} p={[0, 0.15, 0]} scale={[0.02, 0.04, 0.04]} castShadow={false} />
+        </group>
+      ))}
+      <Part geo={SPH} m={M.steel} p={[0.55, 0.9, 0]} scale={[0.04, 0.06, 0.06]} castShadow={false} />
+      {/* la béquille */}
+      <Part geo={cyl(0.012, 0.012, 0.22, 5)} m={M.steel} p={[-0.05, 0.13, 0.1]} rotation-x={0.4} castShadow={false} />
     </group>
   )
 }
@@ -82,16 +113,16 @@ function Scooter({ p, ry }: { p: V3; ry: number }) {
 function Stall({ p }: { p: V3 }) {
   return (
     <group position={p}>
-      <Part geo={cyl(0.45, 0.45, 0.04, 20)} m={M.table} p={[0, 0.72, 0]} />
-      <Part geo={cyl(0.04, 0.04, 0.72, 8)} m={M.chrome} p={[0, 0.36, 0]} castShadow={false} />
+      <Part geo={cyl(0.45, 0.45, 0.04, 20)} m={O.coping} p={[0, 0.72, 0]} castShadow={false} />
+      <Part geo={cyl(0.04, 0.04, 0.72, 8)} m={M.steel} p={[0, 0.36, 0]} castShadow={false} />
       {[0, 1, 2, 3].map((i) => { const a = i * 1.57 + 0.4; return (
         <group key={i} position={[Math.cos(a) * 0.75, 0, Math.sin(a) * 0.75]}>
-          <Part geo={cyl(0.17, 0.2, 0.06, 14)} m={i % 2 ? M.stoolBlue : M.stool} p={[0, 0.45, 0]} />
-          <Part geo={cyl(0.16, 0.2, 0.42, 14)} m={i % 2 ? M.stoolBlue : M.stool} p={[0, 0.21, 0]} />
+          <Part geo={cyl(0.17, 0.2, 0.06, 14)} m={i % 2 ? M.scooter : M.stool} p={[0, 0.45, 0]} castShadow={false} />
+          <Part geo={cyl(0.16, 0.2, 0.42, 14)} m={i % 2 ? M.scooter : M.stool} p={[0, 0.21, 0]} castShadow={false} />
         </group>
       ) })}
-      <Part geo={cyl(0.03, 0.03, 2.3, 8)} m={M.chrome} p={[0, 1.15, 0]} castShadow={false} />
-      <Part geo={cyl(0.05, 1.0, 0.4, 16)} m={M.umbrella} p={[0, 2.2, 0]} />
+      <Part geo={cyl(0.03, 0.03, 2.3, 8)} m={M.steel} p={[0, 1.15, 0]} castShadow={false} />
+      <Part geo={cyl(0.05, 1.0, 0.4, 16)} m={M.umbrella} p={[0, 2.2, 0]} castShadow={false} />
     </group>
   )
 }
@@ -99,11 +130,11 @@ function Stall({ p }: { p: V3 }) {
 function Evening() {
   useFrame(() => {
     const n = smooth(mood.night), k = Math.min(1, n + mood.rain * 0.3)
-    signMats.forEach((m) => (m.emissiveIntensity = 0.3 + k * 1.7))
+    signMat.emissiveIntensity = 0.3 + k * 1.7
     M.lantern.emissiveIntensity = 0.15 + k * 1.3
     M.glow.opacity = k * 0.7
     M.puddle.opacity = (0.1 + k * 0.25) * Math.max(0.4, mood.rain)
-    for (const m of O.facade) m.emissiveIntensity = 0.04 + n * 1.05
+    for (const m of O.facade) m.emissiveIntensity = 0.04 + n * 0.6
   })
   return null
 }
@@ -128,24 +159,24 @@ export function Surroundings() {
         {/* le trottoir le long des immeubles, les rails du tram dans la chaussée */}
         <Part geo={rbox(1.6, 0.12, 5.8, 0.04)} m={M.walk} p={[-3.05, WALK - 0.06, 6.65]} castShadow={false} />
         <Part geo={rbox(12, 0.12, 1.6, 0.04)} m={M.walk} p={[3.4, WALK - 0.06, -4.3]} castShadow={false} />
-        {[5.4, 6.5].map((z) => <Part key={z} geo={rbox(34, 0.03, 0.08, 0.01)} m={M.rail} p={[0, ROAD + 0.01, z]} castShadow={false} />)}
+        {[5.4, 6.5].map((z) => <Part key={z} geo={rbox(34, 0.03, 0.08, 0.01)} m={M.steel} p={[0, ROAD + 0.01, z]} castShadow={false} />)}
         {/* les immeubles de brique voisins */}
         <Block x0={-10} x1={-3.85} z0={-3.6} z1={3.4} top={6.2} b={0} shift={0.3} />
         <Block x0={3.62} x1={10.4} z0={-11} z1={-5.1} top={5.4} b={0} shift={0.65} />
         <Block x0={-10} x1={-3.85} z0={3.8} z1={9.5} top={4.6} b={0} shift={0.5} />
         {SIGNS.map(([w, , p, ry], i) => (
           <group key={w} position={p} rotation-y={ry}>
-            <mesh material={signMats[i]} raycast={noRay}><planeGeometry args={[0.5, (0.5 * (64 * w.length + 32)) / 96]} /></mesh>
-            <Part geo={rbox(0.54, (0.5 * (64 * w.length + 32)) / 96 + 0.04, 0.05, 0.02)} m={M.cap} p={[0, 0, -0.035]} castShadow={false} />
+            <mesh geometry={SIGN_GEOS[i]} material={signMat} raycast={noRay} />
+            <Part geo={rbox(0.54, (0.5 * signH(w)) / 96 + 0.04, 0.05, 0.02)} m={M.dark} p={[0, 0, -0.035]} castShadow={false} />
           </group>
         ))}
         {/* les guirlandes le long des façades */}
-        {wires.map((g, i) => <Part key={i} geo={g} m={M.wire} castShadow={false} />)}
+        {wires.map((g, i) => <Part key={i} geo={g} m={M.dark} castShadow={false} />)}
         <Scooter p={[4.6, WALK, -3.7]} ry={0.2} />
         <Stall p={[-5.6, WALK, 6.2]} />
       </Static>
       <Batch geo={SPH} m={M.lantern} items={lanterns} />
-      <Batch geo={SPH} m={M.cap} items={caps} />
+      <Batch geo={SPH} m={M.dark} items={caps} />
       <GlowPoints points={glowPts} color={0xff7a50} size={0.7} level={() => M.glow.opacity} />
       <OutdoorPrecip ground={ROAD} area={[-13, 13, -12, 12]} />
     </>

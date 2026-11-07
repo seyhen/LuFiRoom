@@ -15,7 +15,8 @@ export const WIND = { uTime: { value: 0 }, uWind: { value: 1 } }
 /**
  * Fait osciller un matériau de feuillage dans le vent, sans rien recalculer côté CPU : le sommet se déplace d'autant plus que sa
  * coordonnée v (le long de la palme, de la tige vers la pointe) est grande. La phase vient de la position, donc deux palmes
- * ne battent pas ensemble. Se combine avec `snowTop` (le matériau garde son premier `onBeforeCompile`).
+ * ne battent pas ensemble. S'applique APRÈS `snowTop` (`sway(snowTop(m))`) : `snowTop` remplace le `onBeforeCompile` qu'il trouve,
+ * alors que `sway` garde le précédent.
  */
 export function sway<T extends Material>(m: T, amp = 0.1): T {
   const prev = m.onBeforeCompile
@@ -44,7 +45,8 @@ export function sway<T extends Material>(m: T, amp = 0.1): T {
 
 /**
  * Le sol de l'île : le sable vient des couleurs de sommets, son grain d'une texture ; sous la neige il blanchit là où `land` vaut 1
- * (pas sur la mer, qui garde ses couleurs). `alphaMap` : le fondu des bords dans le ciel.
+ * (pas sur la mer, qui garde ses couleurs). `alphaMap` : le fondu des bords dans le ciel. On garde ce fondu transparent plutôt que
+ * `skyFade` : le voile de pluie et la pluie peints derrière le canvas (`WeatherSky`) restent visibles à travers le bord de l'île.
  */
 function ground() {
   const m = new MeshStandardMaterial({ map: sandTex, alphaMap: isleFade, vertexColors: true, transparent: true, roughness: 0.92, metalness: 0 })
@@ -90,10 +92,10 @@ export const S = {
   lantern: gummy(0xffe9c0, { roughness: 0.3, clearcoat: 0.6, emissive: 0xffb050, emissiveIntensity: 0 }),
   // les palmiers
   trunk: gummy(0xffffff, { map: palmBark, roughness: 0.85, clearcoat: 0.04 }),
-  palmA: snowTop(sway(leafy(0x58b078, { side: DoubleSide }), 0.16), 0.8),
-  palmB: snowTop(sway(leafy(0x3f9b6c, { side: DoubleSide }), 0.16), 0.8),
-    coconut: gummy(0x6a5238, { roughness: 0.6, clearcoat: 0.3 }),
-  grass: snowTop(sway(gummy(0xffffff, { vertexColors: true, roughness: 0.7, clearcoat: 0.1, side: DoubleSide }), 0.12), 0.9),
+  palmA: sway(snowTop(leafy(0x58b078, { side: DoubleSide }), 0.8), 0.16),
+  palmB: sway(snowTop(leafy(0x3f9b6c, { side: DoubleSide }), 0.8), 0.16),
+  coconut: gummy(0x6a5238, { roughness: 0.6, clearcoat: 0.3 }),
+  grass: sway(snowTop(gummy(0xffffff, { vertexColors: true, roughness: 0.7, clearcoat: 0.1, side: DoubleSide }), 0.9), 0.12),
   // les rochers du rivage : gris chaud, un peu de rose du couchant
   rock: snowTop(stone(0xb9aca0), 0.9),
   rockDark: snowTop(stone(0x8f857f), 0.9),

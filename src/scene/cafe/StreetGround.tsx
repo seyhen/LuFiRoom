@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { BoxGeometry, BufferGeometry, CylinderGeometry, Float32BufferAttribute, RepeatWrapping } from 'three'
 import { Batch, Part, cyl, noRay, type Item, type V3 } from '../parts'
-import { Static } from '../Static'
 import { K } from './materials'
 import { B, CURB, RD, SW } from './streetKit'
 import { S } from './streetMaterials'
@@ -57,6 +56,7 @@ const rbs = new BoxGeometry(0.64, 0.19, 0.2)
 /** Le quart de cylindre de l'angle du trottoir. */
 const cornerGeo = new CylinderGeometry(r, r, SLAB_H, 20, 1, false, 0, Math.PI / 2)
 
+/** Le caniveau : de l'eau qui court (son courant et sa quantité suivent la pluie). Transparent, il reste hors du `<Static>`. */
 export function StreetGround() {
   const gutters = useMemo(() => {
     const gr = r + 0.19 // le caniveau suit la bordure, 0,19 en dehors
@@ -67,7 +67,17 @@ export function StreetGround() {
     // les bouts s'amincissent : on les termine par un point confondu
     return [mergeGeometries([ribbon(a, 0.2, RD + 0.012), ribbon(b, 0.2, RD + 0.012)])]
   }, [])
+  return (
+    <>
+      {gutters.map((g, i) => (
+        <mesh key={i} geometry={g} material={gutter} renderOrder={1} raycast={noRay} />
+      ))}
+    </>
+  )
+}
 
+/** Le sol immobile (chaussée, trottoirs, bordure, lignes, bouche d'égout, tampon) : à poser dans le `<Static>` de la salle. */
+export function StreetGroundStatic() {
   // la bordure : des pierres de granit, sur le bord du trottoir
   const kerb = useMemo(() => {
     const out: Item[] = []
@@ -90,43 +100,37 @@ export function StreetGround() {
   ]
   return (
     <>
-      <Static>
-        {/* la chaussée de pavés, qui s'efface sur ses bords */}
-        <mesh material={S.cobble} position={[GROUND.x, RD, GROUND.z]} rotation-x={-Math.PI / 2} receiveShadow raycast={noRay}>
-          <planeGeometry args={[GROUND.size, GROUND.size]} />
-        </mesh>
-        {/* le trottoir de devant, celui de droite, et l'angle arrondi qui les joint */}
-        <B s={[cx - CURB.x0, SLAB_H, front - 3.3]} p={[(CURB.x0 + cx) / 2, slabY, (3.3 + front) / 2]} m={S.flag} r={0.04} uv={2.4} />
-        <B s={[right - 3.3, SLAB_H, 3.3 - CURB.zBack]} p={[(3.3 + right) / 2, slabY, (CURB.zBack + 3.3) / 2]} m={S.flag} r={0.04} uv={2.4} />
-        <B s={[right - cx, SLAB_H, cz - 3.3]} p={[(cx + right) / 2, slabY, (3.3 + cz) / 2]} m={S.flag} r={0.04} uv={2.4} />
-        <Part geo={cornerGeo} m={S.flag} p={[cx, slabY, cz]} castShadow={false} raycast={noRay} />
-        {/* la bordure */}
-        <Batch geo={rbs} m={K.base} items={kerb} />
-        {/* les doubles lignes jaunes */}
-        {lines.map((l, i) => (
-          <B key={i} s={l.s} p={l.p} m={K.mustard} r={0.005} seg={1} />
-        ))}
-        {/* la bouche d'égout, à la jonction des deux caniveaux : cadre de fonte et fentes */}
-        <group position={[DRAIN[0], RD, DRAIN[1]]} rotation-y={-Math.PI / 4}>
-          <B s={[0.56, 0.05, 0.34]} p={[0, 0.02, 0]} m={K.iron} r={0.02} />
-          {[-0.18, -0.09, 0, 0.09, 0.18].map((x) => (
-            <B key={x} s={[0.035, 0.012, 0.24]} p={[x, 0.05, 0]} m={K.soot} r={0.005} />
-          ))}
-        </group>
-        {/* un tampon d'égout sur la chaussée : disque de fonte, anneau et motif */}
-        <group position={[1.8, RD, 6.9]}>
-          <Part geo={cyl(0.46, 0.46, 0.03, 28)} m={K.iron} p={[0, 0.012, 0]} castShadow={false} raycast={noRay} />
-          <Part geo={cyl(0.4, 0.4, 0.012, 28)} m={K.soot} p={[0, 0.032, 0]} castShadow={false} raycast={noRay} />
-          <Part geo={cyl(0.36, 0.36, 0.012, 28)} m={K.iron} p={[0, 0.036, 0]} castShadow={false} raycast={noRay} />
-          {[0, 1, 2].map((i) => (
-            <B key={i} s={[0.64, 0.012, 0.035]} p={[0, 0.045, 0]} m={K.soot} r={0.005} ry={(i * Math.PI) / 3} />
-          ))}
-        </group>
-      </Static>
-      {/* le caniveau : de l'eau qui court (son courant et sa quantité suivent la pluie) */}
-      {gutters.map((g, i) => (
-        <mesh key={i} geometry={g} material={gutter} renderOrder={1} raycast={noRay} />
+      {/* la chaussée de pavés, qui s'efface sur ses bords */}
+      <mesh material={S.cobble} position={[GROUND.x, RD, GROUND.z]} rotation-x={-Math.PI / 2} receiveShadow raycast={noRay}>
+        <planeGeometry args={[GROUND.size, GROUND.size]} />
+      </mesh>
+      {/* le trottoir de devant, celui de droite, et l'angle arrondi qui les joint */}
+      <B s={[cx - CURB.x0, SLAB_H, front - 3.3]} p={[(CURB.x0 + cx) / 2, slabY, (3.3 + front) / 2]} m={S.flag} r={0.04} uv={2.4} />
+      <B s={[right - 3.3, SLAB_H, 3.3 - CURB.zBack]} p={[(3.3 + right) / 2, slabY, (CURB.zBack + 3.3) / 2]} m={S.flag} r={0.04} uv={2.4} />
+      <B s={[right - cx, SLAB_H, cz - 3.3]} p={[(cx + right) / 2, slabY, (3.3 + cz) / 2]} m={S.flag} r={0.04} uv={2.4} />
+      <Part geo={cornerGeo} m={S.flag} p={[cx, slabY, cz]} castShadow={false} raycast={noRay} />
+      {/* la bordure */}
+      <Batch geo={rbs} m={K.base} items={kerb} />
+      {/* les doubles lignes jaunes */}
+      {lines.map((l, i) => (
+        <B key={i} s={l.s} p={l.p} m={K.mustard} r={0.005} seg={1} />
       ))}
+      {/* la bouche d'égout, à la jonction des deux caniveaux : cadre de fonte et fentes */}
+      <group position={[DRAIN[0], RD, DRAIN[1]]} rotation-y={-Math.PI / 4}>
+        <B s={[0.56, 0.05, 0.34]} p={[0, 0.02, 0]} m={K.iron} r={0.02} />
+        {[-0.18, -0.09, 0, 0.09, 0.18].map((x) => (
+          <B key={x} s={[0.035, 0.012, 0.24]} p={[x, 0.05, 0]} m={K.soot} r={0.005} />
+        ))}
+      </group>
+      {/* un tampon d'égout sur la chaussée : disque de fonte, anneau et motif */}
+      <group position={[1.8, RD, 6.9]}>
+        <Part geo={cyl(0.46, 0.46, 0.03, 28)} m={K.iron} p={[0, 0.012, 0]} castShadow={false} raycast={noRay} />
+        <Part geo={cyl(0.4, 0.4, 0.012, 28)} m={K.soot} p={[0, 0.032, 0]} castShadow={false} raycast={noRay} />
+        <Part geo={cyl(0.36, 0.36, 0.012, 28)} m={K.iron} p={[0, 0.036, 0]} castShadow={false} raycast={noRay} />
+        {[0, 1, 2].map((i) => (
+          <B key={i} s={[0.64, 0.012, 0.035]} p={[0, 0.045, 0]} m={K.soot} r={0.005} ry={(i * Math.PI) / 3} />
+        ))}
+      </group>
     </>
   )
 }

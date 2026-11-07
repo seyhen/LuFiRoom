@@ -31,8 +31,8 @@ export function RoofScene() {
       <OliveTree />
       <Herbs />
       <Pigeons />
-      {/* un pigeon qui passe le jour (la nuit, les tours cacheraient un avion : rien) */}
-      <FlyBy color={0x6a6680} wing={0x585470} height={2.4} />
+      {/* un pigeon qui passe le jour, au-dessus des tours du fond : à 2,4 il filait derrière elles et seul un bout d’aile violet dépassait, comme un arc à droite de la flèche (la nuit, les tours cacheraient un avion : rien) */}
+      <FlyBy color={0x6a6680} wing={0x585470} height={5.0} />
       <Sofa />
       <FireCorner />
       <Brazier />

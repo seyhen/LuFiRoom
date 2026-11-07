@@ -13,7 +13,7 @@ import { O } from './materials'
 import { snowY } from './ground'
 import { Snowfield } from './Snowfield'
 import { Woodshed } from './Woodshed'
-import { Fence, LampPost, Sled, Snowman } from './Yard'
+import { Bench, Fence, LampPost, Shovel, Sled, Snowman } from './Yard'
 
 const fir = (x: number, z: number, h: number, w = 1, tiers = 4): Fir => ({ p: [x, snowY(x, z) - 0.05, z], h, w, tiers })
 
@@ -23,10 +23,10 @@ const FOREST: Fir[] = [
   fir(-2.6, -5.0, 4.6), fir(-0.4, -5.6, 5.4, 0.95, 5), fir(1.8, -5.0, 4.2), fir(3.6, -5.9, 4.8, 1, 5), fir(0.9, -7.4, 4.0), fir(-2.0, -7.6, 4.4),
   // derrière le mur de gauche
   fir(-5.0, -2.2, 5.0, 1, 5), fir(-5.7, 0.4, 4.3), fir(-5.1, 2.6, 3.6), fir(-7.2, -0.9, 4.6), fir(-6.8, -3.8, 5.2, 0.9, 5), fir(-4.7, -4.9, 3.4),
-  // à droite, derrière l'abri et autour de la mare
-  fir(5.2, -4.4, 3.6), fir(9.0, -2.4, 3.2), fir(9.6, -6.6, 4.0), fir(6.0, -7.8, 3.4),
+  // à droite, derrière l'abri et autour de la mare (aucun ne déborde sur la glace : la mare reste visible)
+  fir(9.0, -2.4, 3.2), fir(9.6, -6.6, 4.0), fir(6.0, -7.8, 3.4),
   // devant à gauche, petits sapins près de la barrière
-  fir(-6.6, 5.6, 2.2, 1.05, 3), fir(-3.8, 8.0, 1.6, 1.1, 3), fir(-8.2, 3.4, 2.8),
+  fir(-6.6, 5.6, 2.2, 1.05, 3), fir(-2.5, 8.9, 1.6, 1.1, 3), fir(-8.2, 3.4, 2.8),
   // devant à droite, au bout du sentier
   fir(8.6, 4.2, 2.4, 1, 3), fir(4.0, 8.8, 1.8, 1.05, 3),
 ]
@@ -70,6 +70,9 @@ export function Surroundings() {
         <Sled x={-0.9} z={6.2} ry={0.55} />
         <Fence posts={[[-7.4, 1.4], [-6.7, 3.3], [-5.8, 5.0], [-4.7, 6.6], [-3.3, 7.9]]} />
         <LampPost x={5.45} z={1.7} />
+        {/* devant, au milieu de la clairière : le banc tourné vers nous, la pelle plantée près du sentier */}
+        <Bench x={2.3} z={5.4} />
+        <Shovel x={3.95} z={2.9} ry={Math.PI / 4} />
       </Static>
       <LanternLight x={5.45} z={1.7} />
     </>

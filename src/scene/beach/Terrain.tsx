@@ -116,6 +116,9 @@ export function Terrain() {
     // couleur de l'écume : crème le jour, bleutée la nuit, grise sous l'orage, nette sous la neige
     c.copy(FOAM_DAY).lerp(FOAM_NIGHT, night).lerp(FOAM_STORM, storm * 0.7 * (1 - night * 0.5))
     mats.wave.color.copy(c); mats.swell.color.copy(c); mats.lace.color.copy(c)
+    // les ronds d'écume autour des rochers et des poteaux : la même écume (sinon, la nuit, un disque gris clair sous le rocher)
+    S.foamRing.color.copy(c)
+    S.foamRing.opacity = 0.8 - night * 0.3 + storm * 0.15
     mats.wave.opacity = 0.8 + storm * 0.2 + snow * 0.1
     mats.swell.opacity = 0.7 + storm * 0.3
     mats.lace.opacity = breath * (0.9 + storm * 0.1)

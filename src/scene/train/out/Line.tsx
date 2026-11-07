@@ -9,7 +9,7 @@ import { Firs, type Fir } from '../../nature/firs'
 import { Foliage } from '../../nature/Foliage'
 import { Rock } from '../../nature/Rock'
 import { R, gravel, meadow } from './materials'
-import { RAILS } from '../TrainShell'
+import { RAILS, SPEED } from '../TrainShell'
 import { GlowPoints } from '../../objects/GlowPoints'
 
 // La voie et ses abords, qui défilent : le train roule vers +x (comme le paysage de la fenêtre), donc le monde glisse vers -x.
@@ -21,9 +21,9 @@ const BALLAST = -1.27
 const RAIL_Z = RAILS
 /** Le milieu de la voie, sous le milieu de la voiture. */
 const MID = (RAILS[0] + RAILS[1]) / 2
-/** La longueur du motif qui se répète, la vitesse du train (m/s). */
+/** La longueur du motif qui se répète ; la vitesse du train (m/s) est celle des roues (`TrainShell`). */
 const P = 24
-export const SPEED = 1.6
+export { SPEED }
 
 const tube = (pts: V3[], r: number, seg = 24) => new TubeGeometry(new CatmullRomCurve3(pts.map((p) => new Vector3(...p))), seg, r, 6, false)
 
@@ -44,9 +44,13 @@ function ballastGeo() {
   return g
 }
 
-/** Les poteaux télégraphiques d'un motif (x), au bord de la voie, côté caméra. */
+/**
+ * Les poteaux télégraphiques d'un motif (x), au bord de la voie, de l'autre côté de la voiture : côté caméra, leurs fils
+ * passeraient devant la pièce (ils coupaient le compartiment en deux) ; derrière, le mur du fond les cache et on les voit filer
+ * à droite de la voiture.
+ */
 const POLES = [3, 11, 19]
-const POLE_Z = 4.75
+const POLE_Z = -4.7
 const POLE_TOP = GROUND + 3.5
 const INS = [-0.36, 0.36]
 
@@ -79,8 +83,8 @@ function Pole({ x }: { x: number }) {
   )
 }
 
-/** Le signal du canton : un mât, une cible noire à deux feux sous leurs visières ; le vert s'allume le soir. */
-export const SIGNAL = { x: 15.5, z: 4.05 }
+/** Le signal du canton : un mât, une cible noire à deux feux sous leurs visières ; le vert s'allume le soir. Derrière la voie : devant, il passait devant la pièce. */
+export const SIGNAL = { x: 15.5, z: -3.95 }
 function Signal() {
   return (
     <group position={[SIGNAL.x, GROUND, SIGNAL.z]}>
@@ -150,7 +154,7 @@ function Tile() {
       <Chalet />
       <Foliage v={1} p={[9.0, GROUND, 6.0]} s={[0.55, 0.42, 0.5]} m={R.bush} shadow={false} />
       <Foliage v={3} p={[20.5, GROUND, 5.6]} s={[0.4, 0.32, 0.38]} m={R.bush} shadow={false} />
-      <Foliage v={4} p={[3.5, GROUND, -5.0]} s={[0.7, 0.5, 0.6]} m={R.bush} shadow={false} />
+      <Foliage v={4} p={[5.4, GROUND, -5.1]} s={[0.7, 0.5, 0.6]} m={R.bush} shadow={false} />
       <Rock v={2} p={[13.2, GROUND - 0.05, 8.6]} s={[0.4, 0.3, 0.35]} m={R.rock} shadow={false} />
       <Rock v={5} p={[1.0, GROUND - 0.05, 9.4]} s={[0.3, 0.22, 0.28]} m={R.rock} shadow={false} />
       <Rock v={0} p={[17.5, GROUND - 0.05, -5.6]} s={[0.5, 0.36, 0.45]} m={R.rock} shadow={false} />
@@ -199,7 +203,7 @@ function SignalGlows() {
  * chalet, sapins et fleurs qui défilent ; le pré et le ballast font défiler leur texture à la même vitesse.
  */
 export function Line() {
-  const roll = useRef<Group>(null!)
+  const roll = useRef<Group>(null!), flowers = useRef<Group>(null!)
   const s = useRef(0)
   const ballast = useMemo(ballastGeo, [])
   const l = useMemo(lists, [])
@@ -214,6 +218,8 @@ export function Line() {
     const k = Math.min(1, smooth(mood.night) + mood.rain * 0.3)
     R.lens.emissiveIntensity = 0.3 + k * 1.5
     R.glow.opacity = k * 0.9
+    // sous la neige, les fleurs du talus sont couvertes (leurs tiges sombres piquaient le blanc comme des brindilles)
+    flowers.current.visible = mood.snow < 0.35
   })
   return (
     <>
@@ -240,8 +246,10 @@ export function Line() {
         </Static>
         <Batch geo={sleeperGeo} m={R.sleeper} items={sl} />
         <Firs list={l.firs} m={R.fir} snowM={R.snowCap} trunkM={R.trunk} seed={7} />
-        <Batch geo={stemGeo} m={R.stem} items={l.stems} />
-        <Batch geo={SPH} m={R.petal} items={l.petals} />
+        <group ref={flowers}>
+          <Batch geo={stemGeo} m={R.stem} items={l.stems} />
+          <Batch geo={SPH} m={R.petal} items={l.petals} />
+        </group>
         <SignalGlows />
       </group>
     </>

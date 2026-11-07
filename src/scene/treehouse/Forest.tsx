@@ -9,6 +9,7 @@ import { mood, reduceMotion, useSquash, useWorldPointSize } from '../anim'
 import { Foliage } from '../nature/Foliage'
 import { Rock } from '../nature/Rock'
 import { seeded } from '../paint'
+import { glowTex } from '../textures'
 import { T } from './materials'
 import { GROUND, brookPts } from './layout'
 
@@ -144,7 +145,7 @@ function Brook() {
       <group position={[-BROOK_ANCHOR[0], -BROOK_ANCHOR[1], -BROOK_ANCHOR[2]]}>
         <mesh geometry={geo} material={T.water} raycast={noRay} renderOrder={1} />
         <points geometry={sparks.pg} raycast={noRay} renderOrder={2}>
-          <pointsMaterial ref={pm} vertexColors sizeAttenuation={false} transparent depthWrite={false} blending={2} opacity={0.3} />
+          <pointsMaterial ref={pm} map={glowTex} vertexColors sizeAttenuation={false} transparent depthWrite={false} blending={2} opacity={0.3} />
         </points>
         {/* une zone de toucher, invisible, sur le méandre */}
         <mesh position={[BROOK_ANCHOR[0], WATER_Y + 0.05, BROOK_ANCHOR[2]]} rotation-x={-Math.PI / 2} visible={false}>

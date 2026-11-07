@@ -11,6 +11,8 @@ import { NextCar } from './Cars'
 import { Hills } from './Hills'
 
 const AREA: [number, number, number, number] = [-15, 15, -12, 11]
+/** Où s'arrête la pluie : sur le toit de la voiture suivante (et son soufflet), sinon sur le pré. */
+const rainGround = (x: number, z: number) => (x > -10.75 && x < -3.4 && z > -3.55 && z < 3.4 ? 4.3 : GROUND)
 
 /** Le soir, les fenêtres de la voiture suivante et du chalet s'allument (un peu dès qu'il fait sombre). */
 function Windows() {
@@ -37,7 +39,7 @@ export function Surroundings() {
       </Static>
       <Line />
       <Hills />
-      <OutdoorPrecip ground={GROUND} area={AREA} />
+      <OutdoorPrecip ground={rainGround} area={AREA} />
     </>
   )
 }

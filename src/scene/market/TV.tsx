@@ -59,6 +59,8 @@ export function TVSet() {
         {[-0.36, 0.36].flatMap((x) => [-0.24, 0.24].map((z) => <Part key={`${x}${z}`} geo={cyl(0.03, 0.022, 0.1, 8)} m={K.woodDark} p={[x, 0.05, z]} />))}
         <group position={[0, 0.6, 0]}>
           <group ref={g} userData={{ id: 'radio' }}>
+            {/* le poste se fusionne dans son groupe (l'écran, seul de son matériau, reste à part) : une dizaine de tracés de moins */}
+            <Static>
             {/* le coffre du poste, son cadre biseauté, l'écran bombé, les deux boutons, la grille du haut-parleur */}
             <Part geo={rbox(0.78, 0.6, 0.56, 0.07)} m={K.woodDark} p={[0, 0.3, 0]} />
             <Part geo={rbox(0.54, 0.44, 0.04, 0.03)} m={K.iron} p={[-0.07, 0.3, 0.28]} />
@@ -76,6 +78,7 @@ export function TVSet() {
             <Part geo={cyl(0.009, 0.009, 0.46, 6)} m={K.steel} p={[0.12, 0.83, 0.02]} rotation-z={-0.5} castShadow={false} />
             <Part geo={SPH} m={K.steel} scale={0.016} p={[-0.24, 1.06, 0]} castShadow={false} />
             <Part geo={SPH} m={K.steel} scale={0.016} p={[0.23, 1.032, 0.02]} castShadow={false} />
+            </Static>
           </group>
         </group>
         </Static>

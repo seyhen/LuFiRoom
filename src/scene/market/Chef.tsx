@@ -80,13 +80,15 @@ export function Chef({ position }: { position: V3 }) {
           ))}
         </Static>
         <group ref={eyes} userData={LIVE} position={[0, -0.025, 0]}>
-          {[-1, 1].map((s) => (
-            <group key={s} position={[s * 0.092, 0, 0.2]}>
-              <Part geo={SPH} m={figEye} scale={[0.036, 0.046, 0.024]} castShadow={false} />
-              <Part geo={SPH} m={figGlint} scale={0.0125} p={[0.011, 0.02, 0.019]} castShadow={false} />
-              <Part geo={SPH} m={figGlint} scale={0.0058} p={[-0.012, -0.017, 0.02]} castShadow={false} />
-            </group>
-          ))}
+          <Static>
+            {[-1, 1].map((s) => (
+              <group key={s} position={[s * 0.092, 0, 0.2]}>
+                <Part geo={SPH} m={figEye} scale={[0.036, 0.046, 0.024]} castShadow={false} />
+                <Part geo={SPH} m={figGlint} scale={0.0125} p={[0.011, 0.02, 0.019]} castShadow={false} />
+                <Part geo={SPH} m={figGlint} scale={0.0058} p={[-0.012, -0.017, 0.02]} castShadow={false} />
+              </group>
+            ))}
+          </Static>
         </group>
       </group>
     </group>

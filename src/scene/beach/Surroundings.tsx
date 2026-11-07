@@ -8,6 +8,12 @@ import { DuneGrass, Driftwood, FoamRings, Parasol, Rocks, SandCastle, Shells } f
 import { Terrain } from './Terrain'
 import { Soarers } from './Gulls'
 import { WIND } from './surroundMaterials'
+import { OutdoorPrecip } from '../objects/OutdoorPrecip'
+import { WATER, groundY } from './isle'
+
+/** Où la pluie et la neige s'arrêtent : le sable, ou la mer. */
+const rainGround = (x: number, z: number) => Math.max(WATER, groundY(x, z))
+const PRECIP_AREA: [number, number, number, number] = [-12, 12, -12, 12]
 
 // Des mouettes qui planent au large : centre du cercle, rayon, hauteur, vitesse (rad/s), phase
 const SOAR = [
@@ -27,7 +33,8 @@ function WindClock() {
 
 /**
  * Le décor autour du bungalow : une île de sable que la mer lèche de tous côtés, avec ses dunes, son ponton, ses palmiers, ses
- * rochers, ses barques et ses mouettes. La pièce n'est plus une coupe posée sur un ciel uni : elle est quelque part.
+ * rochers, ses barques et ses mouettes, et la pluie ou la neige qui tombent autour. La pièce n'est plus une coupe posée sur un ciel uni :
+ * elle est quelque part.
  */
 export function Surroundings() {
   return (
@@ -36,6 +43,8 @@ export function Surroundings() {
       <Terrain />
       <Soarers list={SOAR} />
       <FloatBoat at={[PIER.x + 1.5, PIER.z - 6.0]} ry={1.45} />
+      {/* la pluie et la neige autour du bungalow (jamais dedans) : aucun tracé par beau temps */}
+      <OutdoorPrecip ground={rainGround} area={PRECIP_AREA} />
     </>
   )
 }
@@ -52,8 +61,8 @@ export function SurroundStatic() {
         <Palm at={[-7.2, 2.4]} h={4.6} lean={[-0.8, 0.5]} seed={1} />
         <Palm at={[-5.6, 5.9]} h={3.7} lean={[-0.3, 0.9]} seed={2} size={0.9} />
         <Palm at={[-7.6, -2.0]} h={4.3} lean={[-0.6, -0.3]} seed={3} size={1.05} />
-        {/* à droite : deux palmiers sur la langue de sable avant le ponton */}
-        <Palm at={[7.9, -4.6]} h={4.2} lean={[0.6, -0.6]} seed={6} size={0.95} />
+        {/* à droite : un palmier sur la langue de sable avant le ponton, le pied hors du rocher, penché vers la plage pour ne pas cacher la lanterne du ponton */}
+        <Palm at={[7.6, -4.7]} h={4.0} lean={[0.3, 0.9]} seed={6} size={0.95} />
         <Parasol at={[-3.0, 6.4]} />
         <SandCastle at={[1.4, 7.0]} />
         <Driftwood at={[-5.2, 1.0]} ry={0.25} s={1.2} />

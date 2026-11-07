@@ -5,7 +5,7 @@ import { SPH_MID as SPH } from '../igloo/spheres'
 import { Part, cyl, rrPath, worldUV, type V3 } from '../parts'
 import { puff } from '../igloo/puff'
 import { T } from './materials'
-import { DECK, LADDER, LIMB, POSTS, ROOF, TRUNK, roofY } from './layout'
+import { BRIDGE, DECK, LADDER, LIMB, POSTS, ROOF, TRUNK, roofY } from './layout'
 
 const HOLE = TRUNK.r + 0.09 // le jour laissé autour du tronc : le chêne grandit, la cabane ne le serre pas
 
@@ -102,12 +102,16 @@ export function Deck() {
       {[0.32, 0.62].map((y) => (
         <Part key={y} geo={rb(0.05, 0.07, z1 - z0 - 1.6, 0.02)} m={T.plank} p={[x0 + 0.1, y, (z1 + z0) / 2 + 0.55]} castShadow={false} />
       ))}
-      {/* le garde-corps de droite, jusqu'à l'ouverture de l'échelle */}
-      {[z0 + 0.1, -1.0, LADDER.z0 - 0.05].map((z) => <Post key={z} x={x1 - 0.1} z={z} />)}
-      <Part geo={rb(0.12, 0.08, LADDER.z0 - z0 - 0.1, 0.03)} m={T.beam} p={[x1 - 0.1, 0.95, (LADDER.z0 + z0) / 2]} />
-      {Array.from({ length: 11 }, (_, i) => (
-        <Part key={i} geo={rb(0.04, 0.78, 0.2, 0.015)} m={i % 4 ? T.plank : T.plankDark} p={[x1 - 0.1, 0.44, z0 + 0.32 + i * 0.315]} castShadow={false} />
+      {/* le garde-corps de droite, jusqu'à l'ouverture de l'échelle, ouvert aussi sur le pont de corde (ses deux poteaux le tiennent) */}
+      {[z0 + 0.1, BRIDGE.z0, BRIDGE.z1, LADDER.z0 - 0.05].map((z) => <Post key={z} x={x1 - 0.1} z={z} />)}
+      {[[z0 + 0.1, BRIDGE.z0], [BRIDGE.z1, LADDER.z0 - 0.05]].map(([a, b]) => (
+        <Part key={a} geo={rb(0.12, 0.08, b - a + 0.1, 0.03)} m={T.beam} p={[x1 - 0.1, 0.95, (a + b) / 2]} />
       ))}
+      {Array.from({ length: 11 }, (_, i) => {
+        const z = z0 + 0.32 + i * 0.315
+        if (z + 0.1 > BRIDGE.z0 - 0.06 && z - 0.1 < BRIDGE.z1 + 0.06) return null
+        return <Part key={i} geo={rb(0.04, 0.78, 0.2, 0.015)} m={i % 4 ? T.plank : T.plankDark} p={[x1 - 0.1, 0.44, z]} castShadow={false} />
+      })}
       {/* l'ouverture de l'échelle : ses deux poteaux, la main courante de corde sur le devant */}
       <Post x={x1 - 0.1} z={LADDER.z1 + 0.05} />
       <Post x={-0.05} z={z1 - 0.1} h={0.92} />

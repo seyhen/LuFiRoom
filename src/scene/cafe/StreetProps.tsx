@@ -1,13 +1,13 @@
 import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { AdditiveBlending, BackSide, BoxGeometry, Color, type Sprite } from 'three'
+import { AdditiveBlending, BackSide, BoxGeometry, BufferGeometry, Color, Float32BufferAttribute, type PointsMaterial } from 'three'
 import { smooth } from '../../math'
 import { seeded } from '../paint'
 import { Batch, Part, cyl, noRay, type Item, type V3 } from '../parts'
 import { gummy } from '../materials'
 import { Foliage } from '../nature/Foliage'
 import { Vessel } from '../igloo/Vessel'
-import { mood } from '../anim'
+import { mood, useWorldPointSize } from '../anim'
 import { K } from './materials'
 import { B, Box, LAMP_A, LAMP_B, LOW, Link, SW } from './streetKit'
 import { S } from './streetMaterials'
@@ -21,15 +21,37 @@ const wickerInner = gummy(0x8f6040, { roughness: 0.7, side: BackSide })
 const LIGHT_DAY = new Color(0xc9d4de), LIGHT_NIGHT = new Color(0xf2f6ff)
 const H = 3.2
 
-/** Un réverbère de fonte noire à lanterne, comme celui de la vitre : fût cannelé, échelle de l'allumeur, lanterne à quatre vitres. */
-function Post({ at, glow }: { at: [number, number]; glow: boolean }) {
-  const halo = useRef<Sprite>(null!)
+/** Le verre des deux lanternes : éteint le jour, blanc froid la nuit (et sous la pluie, il fait sombre). */
+function tickGlass() {
+  const n = smooth(mood.night), wet = mood.rain
+  S.glass.color.copy(LIGHT_DAY).lerp(LIGHT_NIGHT, Math.max(n, wet * 0.5))
+  return 0.12 + wet * 0.12 + n * 0.55
+}
+
+/**
+ * Les halos froids des deux réverbères de la rue, en un seul tracé (un nuage de points, comme `GlowPoints`, mais avec la texture
+ * froide du café : `GlowPoints` n'a que le halo chaud).
+ */
+function Halos() {
+  const mat = useRef<PointsMaterial>(null!)
+  const geo = useMemo(() => {
+    const g = new BufferGeometry()
+    g.setAttribute('position', new Float32BufferAttribute([LAMP_A, LAMP_B].flatMap(([x, z]) => [x, SW + H + 0.27, z + 0.05]), 3))
+    return g
+  }, [])
+  useWorldPointSize(mat, 2.8)
   useFrame(() => {
-    if (!glow) return
-    const n = smooth(mood.night), wet = mood.rain
-    S.glass.color.copy(LIGHT_DAY).lerp(LIGHT_NIGHT, Math.max(n, wet * 0.5))
-    halo.current.material.opacity = 0.12 + wet * 0.12 + n * 0.55
+    mat.current.opacity = tickGlass()
   })
+  return (
+    <points geometry={geo} frustumCulled={false} raycast={noRay}>
+      <pointsMaterial ref={mat} map={coldGlowTex} size={10} sizeAttenuation={false} transparent depthWrite={false} blending={AdditiveBlending} opacity={0} />
+    </points>
+  )
+}
+
+/** Un réverbère de fonte noire à lanterne, comme celui de la vitre : fût cannelé, échelle de l'allumeur, lanterne à quatre vitres. */
+function Post({ at }: { at: [number, number] }) {
   return (
     <group position={[at[0], SW, at[1]]} raycast={noRay}>
       <Part geo={cyl(0.13, 0.18, 0.16, 18)} m={K.iron} p={[0, 0.08, 0]} castShadow={false} raycast={noRay} />
@@ -53,13 +75,6 @@ function Post({ at, glow }: { at: [number, number]; glow: boolean }) {
       })}
       <Part geo={cyl(0.07, 0.23, 0.14, 4)} m={K.iron} p={[0, H + 0.53, 0]} rotation-y={Math.PI / 4} castShadow={false} raycast={noRay} />
       <Part geo={LOW} m={K.iron} scale={0.04} p={[0, H + 0.64, 0]} castShadow={false} raycast={noRay} />
-      {glow && (
-        <>
-          <sprite ref={halo} scale={2.8} position={[0, H + 0.27, 0.05]} raycast={noRay}>
-            <spriteMaterial map={coldGlowTex} blending={AdditiveBlending} transparent depthWrite={false} opacity={0} />
-          </sprite>
-        </>
-      )}
     </group>
   )
 }
@@ -306,8 +321,9 @@ function Kegs() {
 export function StreetProps() {
   return (
     <>
-      <Post at={LAMP_A} glow />
-      <Post at={LAMP_B} glow={false} />
+      <Post at={LAMP_A} />
+      <Post at={LAMP_B} />
+      <Halos />
       <LockChain />
       <Bicycle />
       <Bin />
