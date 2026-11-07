@@ -43,6 +43,8 @@ export default defineConfig({
     VitePWA({
       // La nouvelle version prend la main toute seule, sans recharger la page : la musique ne s'arrête pas.
       registerType: 'autoUpdate',
+      // Enregistré à la main dans src/main.tsx : seulement sur le site, jamais dans l'app mobile (Capacitor), qui a déjà tout sur place.
+      injectRegister: false,
       includeAssets: ['icon.svg', 'apple-touch-icon.png'],
       manifest: {
         name: 'LufiRoom',

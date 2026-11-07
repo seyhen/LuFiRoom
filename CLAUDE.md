@@ -72,6 +72,7 @@ scripts/smoke.mjs           # npm run test:smoke : test de fumée dans Chromium 
 wrangler.jsonc              # hébergement : Cloudflare Workers publie dist/ (voir docs/DEPLOY.md)
 public/_headers             # cache et en-têtes lus par Cloudflare ; netlify.toml dit la même chose pour Netlify (plus utilisé, gardé en réserve)
 vite.config.ts              # dont vite-plugin-pwa : manifeste, service worker, cache des sons (voir docs/PWA.md)
+capacitor.config.ts, android/, ios/   # l'app mobile (Capacitor) : le site embarqué dans une coque native (voir docs/MOBILE.md)
 ```
 
 Principe clé : **une chambre est une donnée**. Les objets interactifs, les sons qu'ils pilotent, leurs ancres, le ciel et les lumières viennent de `rooms/*.ts`, pour pouvoir ajouter d'autres pièces (café, cabane sous la neige, toit-terrasse...) sans toucher au moteur.
@@ -155,6 +156,7 @@ npm run stations  # vérifie la musique des stations de la radio
 npm run audio:check  # vérifie les crêtes (max -0,5 dBTP) et la sonie des sons de public/audio/ (ffmpeg requis)
 npm test          # build + stations + test de fumée (tout ce que la CI vérifie, sauf audio:check)
 npm run test:smoke   # test de fumée seul, sur le dist/ déjà construit
+npm run mobile:sync  # construit et copie le site dans les apps Android et iOS (voir docs/MOBILE.md)
 ```
 
 Le test de fumée (`scripts/smoke.mjs`) sert `dist/` avec `vite preview` et ouvre chaque pièce dans Chromium sans écran (WebGL logiciel),
