@@ -14,6 +14,8 @@ export type SoundId =
   | 'aurora' | 'icehole' | 'sew' | 'cocoa'
   // la cabane perchée : le ruisseau, les cigales (le vent et les oiseaux reprennent les sons de base)
   | 'brook' | 'cicadas'
+  // la serre : le chœur de grenouilles du bassin, la boîte à musique, le tonneau d'eau de pluie
+  | 'frogs' | 'musicbox' | 'rainbarrel'
   // la laverie de nuit : le lave-linge, le sèche-linge (l'extracteur et le néon reprennent les sons de base)
   | 'wash' | 'tumble'
 /** Un objet interactif de la scène. */
@@ -26,6 +28,7 @@ export type ObjectId =
   | 'icewindow' | 'icehole' | 'mitten' | 'thermos'
   | 'birdhouse' | 'hammock' | 'oak' | 'brook' | 'lemonade'
   | 'washer' | 'dryer' | 'changer' | 'folding'
+  | 'pond' | 'musicbox' | 'barrel'
 /** Ce qu'un objet pilote : un son, ou le passage jour / nuit. */
 export type Target = SoundId | 'night'
 

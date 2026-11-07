@@ -55,6 +55,9 @@ import sew from './channels/sew'
 import cocoa from './channels/cocoa'
 import brook from './channels/brook'
 import cicadas from './channels/cicadas'
+import frogs from './channels/frogs'
+import musicbox from './channels/musicbox'
+import rainbarrel from './channels/rainbarrel'
 import wash from './channels/wash'
 import tumble from './channels/tumble'
 
@@ -125,6 +128,9 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   cocoa: { build: cocoa, base: 1.25 },
   brook: { build: brook, base: 4.2 },
   cicadas: { build: cicadas, base: 3.0 },
+  frogs: { build: frogs, base: 3.5 },
+  musicbox: { build: musicbox, base: 2.5 },
+  rainbarrel: { build: rainbarrel, base: 3.0 },
   wash: { build: wash, base: 1.0 },
   tumble: { build: tumble, base: 1.0 },
 }
