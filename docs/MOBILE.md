@@ -27,14 +27,23 @@ Il faut Android Studio (et son SDK) pour Android, et un Mac avec Xcode pour iOS 
   - Android : la WebView continue de jouer tant que le système garde l'app. **À vérifier sur un vrai téléphone** : si Android
     coupe le son après quelques minutes d'écran éteint, il faudra un service de premier plan avec sa notification de lecture
     (un petit plugin natif).
-- Les polices viennent de Google Fonts : hors ligne, l'app retombe sur les polices du système. À embarquer avant la publication.
+- **Polices embarquées** (`@fontsource/*`, latin seulement, 127 Ko) : rien n'est demandé à Google, tout marche hors ligne.
+- **Liens de partage** : dans l'app, ils pointent vers le site (`PUBLIC_SITE_URL` dans `src/state/mixes.ts`), pas vers `https://localhost`.
+  Ouvrir un lien partagé *dans* l'app demande des App Links (Android) et des Universal Links (iOS), pas encore faits.
+- **Pas de mesure d'audience** dans l'app : `npm run mobile:sync` construit avec `build:mobile` (`--mode mobile`), qui n'ajoute jamais `ANALYTICS_SRC`.
+- **Icônes et écrans de lancement** : dessinés à partir de `public/icon.svg` (Android : `res/mipmap-*`, `res/drawable*/splash.png` ; iOS : `Assets.xcassets`).
+- **iOS** : `ITSAppUsesNonExemptEncryption` = false, `PrivacyInfo.xcprivacy` (aucun pistage, aucune donnée collectée).
+- **Confidentialité** : pages `public/confidentialite.html` et `public/privacy.html` (l'adresse de contact est à compléter). Fiches des stores prêtes à copier : `docs/STORES.md`.
 
-## Avant de publier
+## Avant de publier (ce qu'il reste)
 
-- Icônes et écran de lancement aux tailles des stores (à générer depuis `public/icon.svg`).
-- Taille : les sons pèsent environ 160 Mo, dont 124 Mo pour les pistes de la radio (chacune en WebM et en MP3). Pistes à alléger
-  (un seul format dans l'app) ou à lire en flux depuis le site.
-- Licences : les sons Pixabay sont embarqués dans le paquet ; leur licence interdit de les redistribuer seuls, tels quels. À vérifier.
-- App Store : Apple refuse les simples sites emballés (règle 4.2). Mettre en avant ce que l'app apporte (son en arrière-plan,
-  commandes de l'écran verrouillé, hors ligne, minuteur de sommeil).
-- Comptes : Google Play (25 € une fois), Apple Developer (99 € par an).
+- **Bloquant : licences de la musique de la radio.** Les pistes de `public/audio/radio/` sont notées « à confirmer par le propriétaire »
+  dans `public/audio/CREDITS.md` (dont une reprise, « Melancholic Lo-Fi Jazz Cover »). Il faut une preuve de licence commerciale, sinon retirer les pistes.
+- **Le son en arrière-plan, à tester sur de vrais téléphones** : écran verrouillé et plusieurs minutes d'écran éteint. Android : si le son se coupe,
+  il faut un service de premier plan et sa notification de lecture.
+- Compléter l'adresse de contact des pages de confidentialité, puis les déployer : l'adresse doit répondre avant l'envoi aux stores.
+- Iconographie : vérifier les icônes sur un vrai appareil (zone sûre de l'icône adaptative Android).
+- Taille : environ 160 Mo, dont 124 Mo pour la radio en double format ; garder un seul format par plateforme.
+- Licences Pixabay : les sons sont embarqués dans le paquet ; leur licence interdit de les redistribuer seuls, tels quels. À vérifier.
+- App Store : règle 4.2 (voir `docs/STORES.md`, notes pour la revue). Comptes : Google Play (25 € une fois), Apple Developer (99 € par an).
+- Signature : clé Android (à garder précieusement), équipe de développement dans Xcode.

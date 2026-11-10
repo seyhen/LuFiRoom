@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core'
 import { stationIds } from '../audio/stations'
 import { roomById, rooms } from '../rooms'
 import type { SoundId } from '../rooms/types'
@@ -74,6 +75,9 @@ export function storeMixes(list: SavedMix[]) {
 
 export const MAX_SAVED = MAX
 
+/** Adresse publique du site (sans « / » final), utilisée pour les liens de partage depuis l'app mobile. */
+export const PUBLIC_SITE_URL = 'https://lufiroom.an-alexcore.workers.dev'
+
 // Lien de partage : ?room=cabin&mix=fire.70,rain.60&night=1&station=veillee&weather=snow   (son.volume en %, jour = 0, nuit = 1)
 
 export function mixToUrl(m: Mix) {
@@ -84,7 +88,9 @@ export function mixToUrl(m: Mix) {
   })
   if (m.station) q.set('station', m.station)
   if (m.weather) q.set('weather', m.weather)
-  return `${location.origin}${import.meta.env.BASE_URL}?${q}`
+  // Dans l'app native, location.origin vaut https://localhost ou capacitor://localhost : on partage l'adresse publique du site.
+  const origin = Capacitor.isNativePlatform() ? PUBLIC_SITE_URL : location.origin
+  return `${origin}${import.meta.env.BASE_URL}?${q}`
 }
 
 /** Lit une ambiance dans l'adresse. Rien de valide (pièce inconnue, aucun son connu) : null. */

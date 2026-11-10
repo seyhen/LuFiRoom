@@ -11,7 +11,7 @@ const DAY = '#e5daef' // --bg de tokens.css
  * - la mesure d'audience, si ANALYTICS_SRC est défini (adresse du script du service choisi). ANALYTICS_ATTRS
  *   ajoute ses attributs, par exemple « data-domain=exemple.fr ».
  */
-function siteMeta(): Plugin {
+function siteMeta(analytics = true): Plugin {
   return {
     name: 'site-meta',
     transformIndexHtml() {
@@ -27,7 +27,7 @@ function siteMeta(): Plugin {
         add('meta', { property: 'og:image:alt', content: 'Une chambre en 3D isométrique : lit, chat, bureau avec radio, fenêtre et nuage.' })
         add('meta', { name: 'twitter:image', content: `${site}/og.jpg` })
       }
-      if (process.env.ANALYTICS_SRC) {
+      if (analytics && process.env.ANALYTICS_SRC) {
         const extra = Object.fromEntries((process.env.ANALYTICS_ATTRS ?? '').split(/\s+/).filter(Boolean).map((a) => a.split(/=(.*)/s).slice(0, 2) as [string, string]))
         add('script', { defer: true, src: process.env.ANALYTICS_SRC, ...extra })
       }
@@ -36,10 +36,11 @@ function siteMeta(): Plugin {
   }
 }
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
-    siteMeta(),
+    // Build mobile (`npm run build:mobile`, --mode mobile) : aucune mesure d'audience dans l'app des stores.
+    siteMeta(mode !== 'mobile'),
     VitePWA({
       // La nouvelle version prend la main toute seule, sans recharger la page : la musique ne s'arrête pas.
       registerType: 'autoUpdate',
@@ -66,7 +67,7 @@ export default defineConfig({
       },
       workbox: {
         // L'app (HTML, JS, CSS, icônes) est dans le cache dès la première visite.
-        globPatterns: ['**/*.{js,css,html,svg,png,webmanifest}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,webmanifest,woff2}'],
         // Le JS de l'app (toutes les pièces et leurs décors) dépasse les 2 Mio par défaut : sans cette limite, il ne serait plus
         // mis en cache et l'app ne marcherait plus hors ligne.
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
@@ -85,15 +86,8 @@ export default defineConfig({
               expiration: { maxEntries: 60 },
             },
           },
-          // Les polices du titre et du texte.
-          { urlPattern: /^https:\/\/fonts\.googleapis\.com\//, handler: 'StaleWhileRevalidate', options: { cacheName: 'polices-css' } },
-          {
-            urlPattern: /^https:\/\/fonts\.gstatic\.com\//,
-            handler: 'CacheFirst',
-            options: { cacheName: 'polices', cacheableResponse: { statuses: [0, 200] }, expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 365 } },
-          },
         ],
       },
     }),
   ],
-})
+}))
