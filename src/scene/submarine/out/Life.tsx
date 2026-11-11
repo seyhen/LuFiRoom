@@ -195,8 +195,9 @@ export function Rays() {
 /** Dehors de la coque : l'hélice qui tourne à l'arrière (vers -x) et le projecteur de proue, qui s'allume la nuit. */
 export function HullGear() {
   const prop = useRef<Group>(null!)
-  // une copie : `cyl` rend une géométrie partagée en cache ; la tourner sur place la retournait encore à chaque visite (le cône finissait dressé dans l'eau)
-  const beam = useMemo(() => cyl(0.12, 1.1, 5, 20).clone().translate(0, 2.5, 0).rotateZ(-Math.PI / 2), [])
+  // une copie : `cyl` rend une géométrie partagée en cache ; la tourner sur place la retournait encore à chaque visite (le cône finissait dressé dans l'eau).
+  // Le haut de `cyl(haut, bas)` est en +y, donc en +x après la rotation : le bout large va au loin, le bout étroit reste sur la lentille
+  const beam = useMemo(() => cyl(1.1, 0.12, 5, 20).clone().translate(0, 2.5, 0).rotateZ(-Math.PI / 2), [])
   useFrame((_, dt) => {
     if (!reduceMotion) prop.current.rotation.x += Math.min(dt, 0.05) * 2.2
     const k = Math.min(1, smooth(mood.night) + mood.storm * 0.4)
