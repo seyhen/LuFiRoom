@@ -47,12 +47,12 @@ export const slabTex = canvasTex(256, 256, (x) => {
     x.beginPath(); x.moveTo(i * 128 + r() * 128, j * 128); x.quadraticCurveTo(i * 128 + r() * 128, j * 128 + 64, i * 128 + r() * 128, j * 128 + 128); x.stroke()
   }
   // les taches d'humidité
-  for (let i = 0; i < 6; i++) {
-    x.fillStyle = 'rgba(40,46,52,.10)'
+  for (let i = 0; i < 4; i++) {
+    x.fillStyle = 'rgba(40,46,52,.06)'
     x.beginPath(); x.ellipse(r() * 256, r() * 256, 10 + r() * 16, 6 + r() * 10, r() * 3, 0, TAU); x.fill()
   }
   // les chewing-gums
-  for (let i = 0; i < 6; i++) { x.fillStyle = 'rgba(60,60,64,.55)'; x.beginPath(); x.arc(r() * 256, r() * 256, 2.2, 0, TAU); x.fill() }
+  for (let i = 0; i < 2; i++) { x.fillStyle = 'rgba(60,60,64,.4)'; x.beginPath(); x.arc(r() * 256, r() * 256, 2.2, 0, TAU); x.fill() }
   for (let i = 0; i < 1200; i++) { x.fillStyle = r() < 0.5 ? 'rgba(255,255,255,.1)' : 'rgba(0,0,0,.09)'; x.fillRect(r() * 256, r() * 256, 2, 2) }
 }, [1, 1])
 
@@ -121,8 +121,8 @@ export const treeGrateTex = canvasTex(256, 256, (x) => {
  */
 export const barkTex = canvasTex(256, 256, (x) => {
   const r = seeded(17)
-  x.fillStyle = '#5f5a4a'; x.fillRect(0, 0, 256, 256)
-  const tones = ['#d3cab0', '#bdb799', '#a4ab88', '#dcd6bc', '#8f9477', '#c4b98f']
+  x.fillStyle = '#78725e'; x.fillRect(0, 0, 256, 256)
+  const tones = ['#cdc4aa', '#bdb799', '#adb08f', '#d2cbb0', '#9ca083', '#c2b890']
   for (let i = 0; i < 70; i++) {
     const cx = r() * 256, cy = r() * 256, rx = 12 + r() * 22, ry = 9 + r() * 16, rot = (r() - 0.5) * 0.7, n = 7 + ((r() * 3) | 0)
     const pts = Array.from({ length: n }, (_, k) => { const a = (k / n) * TAU, j = 0.72 + r() * 0.5; return [Math.cos(a) * rx * j, Math.sin(a) * ry * j] as const })
@@ -131,7 +131,7 @@ export const barkTex = canvasTex(256, 256, (x) => {
       x.save(); x.translate(cx + ox, cy + oy); x.rotate(rot)
       x.beginPath(); pts.forEach(([px, py], k) => (k ? x.lineTo(px, py) : x.moveTo(px, py))); x.closePath()
       x.fillStyle = fill; x.fill()
-      x.lineWidth = 2.5; x.strokeStyle = 'rgba(52,48,36,.55)'; x.stroke()
+      x.lineWidth = 2.5; x.strokeStyle = 'rgba(52,48,36,.38)'; x.stroke()
       x.fillStyle = 'rgba(255,255,255,.14)'; x.beginPath(); x.ellipse(-rx * 0.18, -ry * 0.25, rx * 0.5, ry * 0.22, 0, 0, TAU); x.fill()
       x.restore()
     }

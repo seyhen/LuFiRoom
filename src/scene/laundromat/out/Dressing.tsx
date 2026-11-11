@@ -107,7 +107,7 @@ function DryingRack({ p, ry = 0 }: { p: [number, number, number]; ry?: number })
   return (
     <group position={p} rotation-y={ry}>
       {[-0.7, 0.7].map((x) => [-1, 1].map((k) => (
-        <Part key={`${x}${k}`} geo={cyl(0.02, 0.02, 1.2, 6)} m={M.rack} p={[x, 0.58, k * 0.17]} rotation-x={k * 0.28} castShadow={false} />
+        <Part key={`${x}${k}`} geo={cyl(0.02, 0.02, 1.2, 6)} m={M.rack} p={[x, 0.58, k * 0.17]} rotation-x={-k * 0.28} castShadow={false} />
       )))}
       {[0.6, 0.85, 1.08].map((y) => <Part key={y} geo={cyl(0.016, 0.016, 1.5, 6)} m={M.rack} p={[0, y, 0]} rotation-z={Math.PI / 2} castShadow={false} />)}
       <Part geo={rbox(0.5, 0.42, 0.02, 0.006)} m={M.clothA} p={[-0.4, 0.85 - 0.22, 0.01]} castShadow={false} />
