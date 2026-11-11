@@ -18,6 +18,8 @@ node .claude/skills/release-check/check-credits.cjs # chaque son de public/audio
 git status --short                                  # rien d'inattendu (audio-src n'est pas suivi)
 ```
 
+Pour une pièce retouchée, ajoute `npm run test:smoke` (ou `LOFI_SMOKE_ROOMS=<pièces> npm run test:smoke`) : il affiche les **triangles par image** de chaque pièce et échoue au-dessus de 1 000 000 ; les pièces tiennent aujourd'hui entre 110 000 et 540 000, une hausse nette est une régression. Note le tableau dans le rapport.
+
 Tout doit sortir propre. `check-i18n` ne voit que les textes des pièces et des stations : un texte d'interface nouveau (`src/ui/`) se vérifie à la main dans `src/i18n.ts`.
 
 ## 2. Dans le navigateur (dev, page isolée chrome-devtools)
@@ -50,6 +52,14 @@ async () => {
 - **Le dehors** : chaque pièce retouchée dit où elle est (matières et repères du lieu) et garde l'échelle de la pièce ; les quatre coins du haut de l'écran sont remplis.
 - **Le fond** : capture plein écran de chaque pièce retouchée, aucun aplat de ciel vide derrière la pièce (skill `audit-room`, étape 3 bis).
 
+## 2 bis. Rendu et performances (si le moteur, `Stage.tsx`, `Lights.tsx`, `scenes.ts` ou `vite.config.ts` ont bougé)
+
+- **JS de départ** : `npm run build`, lis les tailles. Aujourd'hui `index` ≈ 230 Ko et `three` ≈ 960 Ko (gzip 71 et 263 Ko) ; une scène de pièce est un chunk à part (40 à 120 Ko). Un fichier qui remonte à 2 Mo veut dire qu'un import statique a ramené les 15 pièces dans le bundle : `scenes.ts` n'importe une pièce qu'avec `import()`.
+- **Hors ligne** : le précache liste tous les chunks (≈ 77 entrées, 2,7 Mo) ; `npm run preview`, puis coupe le réseau et change de pièce.
+- **Rendu au repos** : `Stage.tsx` rend à pleine fréquence 4 s après une action, à 30 images par seconde ensuite, 20 pendant le minuteur, rien quand l'onglet est caché (`FrameGovernor`, `frameloop="never"` : `invalidate()` n'y fait rien, tout passe par `advance()`). Si tu ajoutes un état qui doit relancer le rendu, il passe par le store. `gl.info.autoReset` reste à `true` (le test de fumée lit `gl.info.render`).
+- **Ombres** : 2048 partout (en 1024 sur téléphone, les bords d'ombre glissaient sur les murs en flottant : « ça clignote », 2026-11-11). Ne la rebaisse pas sans regarder un ponton et une façade en mouvement sur un vrai téléphone.
+- **Sphères et boîtes** : `Part` et `Batch` choisissent `SPH_MID` / `SPH_LO` d'après la taille ; vérifie en gros plan qu'une forme lisse proche de la caméra (coussin, chat, dôme) garde `SPH`.
+
 ## 3. Le site construit (production locale)
 
 ```bash
@@ -68,7 +78,7 @@ Référence : ~5 s sur un ordinateur rapide (octobre 2026). Une hausse nette = r
 ## 4. Rapport (à coller dans la réponse)
 
 ```
-Mécanique : tsc ✓ build ✓ stations ✓/— traductions ✓ (N textes) crédits ✓ (N fichiers)
+Mécanique : tsc ✓ build ✓ stations ✓/— traductions ✓ (N textes) crédits ✓ (N fichiers) — triangles par pièce (test de fumée) — JS de départ
 Navigateur : console ✓ — fuite : tour 1 G/T, tour 2 G/T — niveaux : …
 Mobile 390 : pièces vues …
 Production locale : écran de chargement X s
