@@ -163,7 +163,7 @@ export function Dish({ p, ry = Math.PI / 4 }: { p: V3; ry?: number }) {
 }
 
 /** Un pigeon : corps rond, gorge irisée, tête, bec rose, queue ; il regarde le long de +z (tourné par `ry`). */
-export function Pigeon({ p, ry = 0, s = 1.4 }: { p: V3; ry?: number; s?: number }) {
+export function Pigeon({ p, ry = 0, s = 1.75 }: { p: V3; ry?: number; s?: number }) {
   return (
     <group position={p} rotation-y={ry} scale={s}>
       <Part geo={SPH} m={R.pigeon} p={[0, 0.09, 0]} scale={[0.065, 0.062, 0.1]} castShadow={false} />
