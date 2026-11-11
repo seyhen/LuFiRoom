@@ -24,14 +24,14 @@ swellTex.wrapS = swellTex.wrapT = RepeatWrapping
 swellTex.repeat.set(5, 5)
 
 const D = {
-  sea: skyFade(new MeshStandardMaterial({ color: 0x6a93b0, roughness: 0.5, metalness: 0 }), F),
+  sea: skyFade(new MeshStandardMaterial({ color: 0x58a2b6, roughness: 0.5, metalness: 0 }), F),
   swell: skyFade(new MeshBasicMaterial({ map: swellTex, transparent: true, opacity: 0.8, depthWrite: false }), F),
   sand: skyFade(farStone(0xe3cdae, { roughness: 0.9 }), F),
   green: [0x6fa886, 0x82b690].map((c) => skyFade(farFoliage(c, { roughness: 0.9 }), F)),
 }
 
 /** Les îlots : [x, z, demi-largeur, hauteur]. À gauche (-x) et au fond droit (-z), à 11 à 15 du centre. */
-const ISLETS: [number, number, number, number][] = [[-13.2, -1.5, 2.4, 0.9], [-12.2, 4.6, 1.6, 0.6], [-11.4, -6.2, 1.9, 0.7], [-3.4, -13.6, 2.6, 1.0], [5.2, -13.0, 1.7, 0.65], [11.6, -9.2, 2.2, 0.8]]
+const ISLETS: [number, number, number, number][] = [[-14.6, -2.5, 1.7, 0.55], [-13.6, 4.2, 1.2, 0.4], [-12.6, -8.2, 1.4, 0.45], [-4.4, -14.8, 1.8, 0.6], [4.6, -14.2, 1.2, 0.4], [12.4, -10.6, 1.5, 0.5]]
 
 /** Un îlot : une dune de sable, une calotte de verdure, et une seconde touffe plus petite. */
 function Islet({ x, z, w, h, i }: { x: number; z: number; w: number; h: number; i: number }) {

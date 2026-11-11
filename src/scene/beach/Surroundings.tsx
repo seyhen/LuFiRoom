@@ -5,6 +5,8 @@ import { BeachedBoat, FloatBoat } from './Boats'
 import { Palm } from './Palms'
 import { PIER, Pier } from './Pier'
 import { DuneGrass, Driftwood, FoamRings, Parasol, Rocks, SandCastle, Shells } from './Props'
+import { SkyFadeClock } from '../outdoor'
+import { beach } from '../../rooms/beach'
 import { Distant } from './Distant'
 import { Terrain } from './Terrain'
 import { Soarers } from './Gulls'
@@ -41,6 +43,7 @@ export function Surroundings() {
   return (
     <>
       <WindClock />
+      <SkyFadeClock room={beach} />
       <Terrain />
       <Soarers list={SOAR} />
       <FloatBoat at={[PIER.x + 1.5, PIER.z - 6.0]} ry={1.45} />
