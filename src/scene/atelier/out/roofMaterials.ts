@@ -61,7 +61,9 @@ function farWall(stone: string, seed: number, glow = false) {
       x.fillStyle = '#efe8dc'; x.fillRect(X, 12, 36, 80)
       x.fillStyle = on ? '#d9b98c' : '#7f93ae'; x.fillRect(X + 4, 16, 28, 72)
       x.fillStyle = '#efe8dc'; x.fillRect(X + 16, 16, 3, 72); x.fillRect(X + 4, 44, 28, 3)
-      x.fillStyle = '#2c2d34'; x.fillRect(X - 2, 74, 40, 3)
+      // l'appui de fenêtre : une tablette de pierre claire sous la vitre (elle barrait la vitre d'un trait sombre à y = 74)
+      x.fillStyle = '#f6f0e4'; x.fillRect(X - 3, 92, 42, 4)
+      x.fillStyle = 'rgba(90,76,60,.22)'; x.fillRect(X - 3, 96, 42, 2)
     }
   })
   t.wrapS = t.wrapT = RepeatWrapping
