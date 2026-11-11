@@ -37,7 +37,7 @@ const M = {
 /** [x, z, rayon du houppier, hauteur du tronc, teinte, forme] : de grands arbres ronds, que sur les côtés du fond (un volume devant cacherait la pièce). */
 const TREES: [number, number, number, number, number, number][] = [
   [-6.4, -4.8, 1.35, 2.2, 0, 1], [-9.0, -1.8, 1.25, 1.9, 1, 2], [-5.4, -8.6, 1.6, 2.6, 2, 3], [-2.0, -9.6, 1.5, 2.3, 0, 4], [2.6, -9.0, 1.7, 2.7, 1, 1],
-  [6.8, -6.2, 1.35, 2.1, 2, 2], [9.2, -3.2, 1.25, 1.9, 0, 5], [5.2, -10.4, 1.5, 2.5, 0, 2], [9.4, -7.6, 1.5, 2.4, 1, 3], [-9.6, -6.0, 1.5, 2.4, 2, 4],
+  [6.8, -6.2, 1.35, 2.1, 2, 2], [9.2, -3.2, 1.25, 1.9, 0, 5], [5.6, -9.4, 1.5, 2.5, 0, 2], [9.4, -7.6, 1.5, 2.4, 1, 3], [-9.6, -6.0, 1.5, 2.4, 2, 4],
 ]
 /** Les haies : [x, z, longueur, sens] ; boules de buis : [x, z, rayon]. */
 const HEDGES: [number, number, number, 'x' | 'z'][] = [[-3.6, -5.6, 5.4, 'x'], [5.0, -4.9, 4.4, 'x'], [-5.2, 1.6, 4.6, 'z'], [-5.2, -2.8, 3.0, 'z'], [5.8, 1.6, 3.4, 'z']]
@@ -47,7 +47,7 @@ const LAMPS: V3[] = [[-3.6, 0, 3.3], [4.8, 0, 3.2], [-2.4, 0, -3.8], [4.6, 0, -3
 function Evening() {
   useFrame(() => {
     const n = smooth(mood.night), k = Math.min(1, n + mood.rain * 0.25)
-    C.glass.emissiveIntensity = 0.04 + n * 1.4 // les fenêtres du château s'allument le soir
+    C.glass.emissiveIntensity = 0.04 + n * 0.95 // les fenêtres du château s'allument le soir
     M.glow.opacity = k * 0.8
   })
   return null
@@ -101,8 +101,8 @@ export function Surroundings() {
           <group key={i}>
             <Part geo={cyl(0.16, 0.3, th, 8)} m={M.trunk} p={[x, GROUND + th / 2, z]} castShadow={false} />
             {/* deux maîtresses branches qui montent vers les masses de feuillage : le houppier ne pose plus sur un bâton */}
-            <Part geo={cyl(0.07, 0.11, r * 1.1, 6)} m={M.trunk} p={[x - r * 0.28, GROUND + th + r * 0.18, z + r * 0.12]} rotation-z={0.55} castShadow={false} />
-            <Part geo={cyl(0.06, 0.1, r * 1.0, 6)} m={M.trunk} p={[x + r * 0.3, GROUND + th + r * 0.1, z - r * 0.1]} rotation-z={-0.6} castShadow={false} />
+            <Part geo={cyl(0.07, 0.11, r * 0.6, 6)} m={M.trunk} p={[x - r * 0.2, GROUND + th + r * 0.2, z + r * 0.1]} rotation-z={0.55} castShadow={false} />
+            <Part geo={cyl(0.06, 0.1, r * 0.55, 6)} m={M.trunk} p={[x + r * 0.22, GROUND + th + r * 0.18, z - r * 0.08]} rotation-z={-0.6} castShadow={false} />
             <Foliage v={v} p={[x, GROUND + th - 0.35, z]} s={[r, r * 0.8, r]} m={M.tree[t % 3]} ry={i} shadow={false} />
             <Foliage v={v + 2} p={[x + r * 0.55, GROUND + th - 0.1, z - r * 0.25]} s={[r * 0.62, r * 0.55, r * 0.62]} m={M.tree[(t + 1) % 3]} ry={i + 1} shadow={false} />
             <Foliage v={v + 4} p={[x - r * 0.5, GROUND + th, z + r * 0.2]} s={[r * 0.55, r * 0.5, r * 0.55]} m={M.tree[(t + 2) % 3]} ry={i + 2} shadow={false} />
