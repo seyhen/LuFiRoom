@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, type Sprite } from 'three'
-import { smooth } from '../../../math'
+import { seeded, smooth } from '../../../math'
 import { mood } from '../../anim'
 import { Static } from '../../Static'
 import { noRay } from '../../parts'
@@ -30,6 +30,21 @@ const FOREST: Fir[] = [
   // devant à droite, au bout du sentier
   fir(8.6, 4.2, 2.4, 1, 3), fir(4.0, 8.8, 1.8, 1.05, 3),
 ]
+
+/**
+ * La forêt lointaine, pour les grands écrans : un arc de sapins à 11 à 16 du centre (derrière et sur les côtés, pas devant),
+ * bas et pâles, au fondu large (matériaux `far*`). Posés sur les collines de `snowY`.
+ */
+function farForest(): Fir[] {
+  const r = seeded(77), out: Fir[] = []
+  for (let i = 0; i < 17; i++) {
+    const deg = 135 + (i / 17) * 205 + (r() - 0.5) * 8, a = (deg * Math.PI) / 180, d = 11.2 + (i % 3) * 1.9 + r() * 1.2
+    const x = Math.cos(a) * d, z = Math.sin(a) * d, h = 2.5 + r() * 1.3
+    out.push({ p: [x, snowY(x, z) - 0.05, z], h, w: 0.95 + r() * 0.25, tiers: 3 })
+  }
+  return out
+}
+const FAR_FOREST = farForest()
 
 /** La lanterne du sentier s'allume le soir (un peu par temps sombre) ; son halo et sa flaque de lumière sur la neige. */
 function LanternLight({ x, z }: { x: number; z: number }) {
@@ -65,6 +80,7 @@ export function Surroundings() {
       <Snowfield />
       <Static>
         <Firs list={FOREST} m={O.fir} snowM={O.snowCap} trunkM={O.trunk} seed={4} />
+        <Firs list={FAR_FOREST} m={O.farFir} snowM={O.farSnow} trunkM={O.farTrunk} seed={9} />
         <Woodshed />
         <Snowman x={-2.5} z={5.5} />
         <Sled x={-0.9} z={6.2} ry={0.55} />

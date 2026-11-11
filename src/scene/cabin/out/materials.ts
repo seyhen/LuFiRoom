@@ -43,8 +43,16 @@ knitScarf.repeat.set(4, 1)
 
 const out = <T extends Parameters<typeof skyFade>[0]>(m: T, r0 = 7.2, r1 = 12.5) => skyFade(m, { c: [0, 0], r0, r1 })
 
+/** Le dehors lointain des grands écrans (les coins du haut sont à 13 à 18 du centre) : fondu large, teintes pâles. */
+const wide = <T extends Parameters<typeof skyFade>[0]>(m: T) => out(m, 9.5, 17.5)
+
 export const O = {
-  snow: out(far(0xffffff, { map: snowTex, vertexColors: true, roughness: 0.62, clearcoat: 0.18, clearcoatRoughness: 0.5 })),
+  // la neige de la clairière va plus loin que le reste : elle porte les sapins lointains
+  snow: out(far(0xffffff, { map: snowTex, vertexColors: true, roughness: 0.62, clearcoat: 0.18, clearcoatRoughness: 0.5 }), 8.8, 16.5),
+  /** La forêt lointaine : vert-bleu poudré, neige bleutée, troncs effacés. */
+  farFir: wide(far(0x5d9a86, { roughness: 0.7, clearcoat: 0.1 })),
+  farSnow: wide(far(0xe9f0fa, { roughness: 0.6, clearcoat: 0.15 })),
+  farTrunk: wide(far(0x7a6a68, { roughness: 0.85 })),
   /** La neige des volumes (capuchons des sapins, toit de l'abri, poteaux) : blanc bleuté, un peu brillant. */
   snowCap: out(far(0xf3f7ff, { roughness: 0.5, clearcoat: 0.3 })),
   fir: out(far(0x3f8f6e, { roughness: 0.6, clearcoat: 0.2 })),

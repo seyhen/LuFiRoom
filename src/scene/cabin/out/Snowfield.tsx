@@ -47,7 +47,7 @@ const ROCKS: [number, number, number, number][] = [
  * avec son bourrelet de neige et ses roseaux, quelques rochers qui dépassent.
  */
 export function Snowfield() {
-  const geo = useMemo(() => groundGrid(0.4, 0.4, 32, 72, snowY, snowColor, 2.4), [])
+  const geo = useMemo(() => groundGrid(0.4, 0.4, 44, 96, snowY, snowColor, 2.4), [])
   const pr = useMemo(prints, [])
   const rd = useMemo(reeds, [])
   const reedGeo = useMemo(() => cyl(0.012, 0.018, 1, 5), [])
