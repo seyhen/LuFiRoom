@@ -37,6 +37,7 @@ const EN: Record<string, string> = {
   // interface
   'Touche les objets pour composer ton ambiance. Glisse pour tourner la pièce.': 'Tap the objects to compose your mood. Drag to turn the room.',
   'Choisir une pièce': 'Choose a room',
+  'Toutes les pièces': 'All rooms',
   'Heure locale': 'Local time',
   'Passer en journée': 'Switch to day',
   'Passer en nuit': 'Switch to night',

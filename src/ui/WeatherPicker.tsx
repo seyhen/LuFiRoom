@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../state/store'
 import { SKY_NAMES, WEATHER_KINDS, skyOf, type Sky } from '../state/weather'
 import { useT } from '../i18n'
-import { skyIcons } from './icons'
+import { skyIcons, weatherIcon } from './icons'
 
 const CHOICES: Sky[] = ['clear', ...WEATHER_KINDS]
 
@@ -43,7 +43,7 @@ export function WeatherPicker() {
         title={t('Choisir la météo')}
         onClick={() => setOpen((o) => !o)}
       >
-        {skyIcons[sky]}
+        {sky === 'clear' ? weatherIcon : skyIcons[sky]}
       </button>
       {open && (
         <div className="sky-menu" role="group" aria-label={t('Choisir la météo')}>

@@ -82,6 +82,11 @@ export const installIcon = svg(<><path d="M12 3.5v11" /><path d="m7.5 10.5 4.5 4
 export const sunIcon = svg(<><circle cx="12" cy="12" r="4" /><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4" /></>)
 export const moonIcon = svg(<path d="M19.5 14.6A7.8 7.8 0 0 1 9.4 4.5a7.8 7.8 0 1 0 10.1 10.1z" />)
 
+/** Le bouton météo quand le ciel est dégagé : un soleil derrière un nuage, pour ne pas ressembler au bouton jour / nuit (un soleil seul). */
+export const weatherIcon = svg(<><circle cx="9" cy="9" r="3" /><path d="M9 3v1.2M3 9h1.2M4.8 4.8l.9.9M13.2 4.8l-.9.9" /><path d="M8.6 19.2a3.4 3.4 0 0 1 .3-6.8 4.7 4.7 0 0 1 8.8 1.5 2.7 2.7 0 0 1-.4 5.3z" /></>)
+/** Le bouton « toutes les pièces » : quatre carreaux. */
+export const gridIcon = svg(<><rect x="4" y="4" width="6.5" height="6.5" rx="1.8" /><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.8" /><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.8" /><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.8" /></>)
+
 /** Les météos du sélecteur (state/weather.ts). */
 export const skyIcons: Record<'clear' | 'drizzle' | 'rain' | 'storm' | 'snow' | 'blizzard', ReactNode> = {
   clear: svg(<><circle cx="12" cy="12" r="4" /><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4" /></>),
