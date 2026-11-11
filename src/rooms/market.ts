@@ -23,7 +23,7 @@ export const market: Room = {
   },
   // la rue du marché continue (tram, immeubles, néons, lanternes) : on recule pour la voir
   zoom: 0.84,
-  sky: { day: ['#f6d4d0', '#e6aeb8', '#b980a8'], night: ['#1a1038', '#110a2a', '#080518'] },
+  sky: { day: ['#e6ccd0', '#cfa2b6', '#9c739e'], night: ['#1a1038', '#110a2a', '#080518'] },
   light: {
     hemi: { sky: [0xffd8e0, 0x7a58c8], ground: [0x7a5a58, 0x2a1a3a], intensity: [0.55, 0.34] },
     sun: { color: [0xffc6a0, 0xb48cff], intensity: [0.45, 0.22] },

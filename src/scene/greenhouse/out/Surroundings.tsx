@@ -12,15 +12,14 @@ import { OutdoorPrecip } from '../../objects/OutdoorPrecip'
 import { GlowPoints } from '../../objects/GlowPoints'
 import { glowTex } from '../../textures'
 import { greenhouse } from '../../../rooms/greenhouse'
-import { Block } from '../../atelier/out/Haussmann'
-import { P } from '../../atelier/out/materials'
+import { C, Chateau } from './Chateau'
 
 // Le dehors de la serre : l'orangerie d'un château de campagne, un soir de pluie dans la brume. La serre est au bout du parc : des haies
 // taillées en boules et en murs, de grands arbres ronds, des allées de gravier mouillé, des lampadaires qui s'allument, une balustrade
-// de pierre, et au fond le château (pierre blonde, toits mansardés de zinc, hautes fenêtres éclairées). Tout se fond dans la brume.
+// de pierre, et au fond le château (brique rose, chaînages de pierre, toits d'ardoise pentus, tourelles, fenêtres éclairées le soir). Tout se fond dans la brume.
 
 const GROUND = -0.5
-const F = { c: [0, 0] as [number, number], r0: 7.5, r1: 12.5 }
+const F = { c: [0, 0] as [number, number], r0: 9, r1: 16.5 }
 
 // Peu de matériaux, partagés : le parc est un tracé par matériau.
 const M = {
@@ -48,8 +47,7 @@ const LAMPS: V3[] = [[-3.6, 0, 3.3], [4.8, 0, 3.2], [-2.4, 0, -3.8], [4.6, 0, -3
 function Evening() {
   useFrame(() => {
     const n = smooth(mood.night), k = Math.min(1, n + mood.rain * 0.25)
-    for (const m of P.facade) m.emissiveIntensity = 0.04 + n * 1.0
-    P.dormerGlass.emissiveIntensity = n * 1.3
+    C.glass.emissiveIntensity = 0.04 + n * 1.4 // les fenêtres du château s'allument le soir
     M.glow.opacity = k * 0.8
   })
   return null
@@ -101,9 +99,13 @@ export function Surroundings() {
         ))}
         {TREES.map(([x, z, r, th, t, v], i) => (
           <group key={i}>
-            <Part geo={cyl(0.18, 0.28, th, 8)} m={M.trunk} p={[x, GROUND + th / 2, z]} castShadow={false} />
-            <Foliage v={v} p={[x, GROUND + th - 0.2, z]} s={[r, r * 0.9, r]} m={M.tree[t % 3]} ry={i} shadow={false} />
-            <Foliage v={v + 2} p={[x + r * 0.45, GROUND + th + 0.2, z - r * 0.2]} s={[r * 0.6, r * 0.55, r * 0.6]} m={M.tree[(t + 1) % 3]} ry={i + 1} shadow={false} />
+            <Part geo={cyl(0.16, 0.3, th, 8)} m={M.trunk} p={[x, GROUND + th / 2, z]} castShadow={false} />
+            {/* deux maîtresses branches qui montent vers les masses de feuillage : le houppier ne pose plus sur un bâton */}
+            <Part geo={cyl(0.07, 0.11, r * 1.1, 6)} m={M.trunk} p={[x - r * 0.28, GROUND + th + r * 0.18, z + r * 0.12]} rotation-z={0.55} castShadow={false} />
+            <Part geo={cyl(0.06, 0.1, r * 1.0, 6)} m={M.trunk} p={[x + r * 0.3, GROUND + th + r * 0.1, z - r * 0.1]} rotation-z={-0.6} castShadow={false} />
+            <Foliage v={v} p={[x, GROUND + th - 0.35, z]} s={[r, r * 0.8, r]} m={M.tree[t % 3]} ry={i} shadow={false} />
+            <Foliage v={v + 2} p={[x + r * 0.55, GROUND + th - 0.1, z - r * 0.25]} s={[r * 0.62, r * 0.55, r * 0.62]} m={M.tree[(t + 1) % 3]} ry={i + 1} shadow={false} />
+            <Foliage v={v + 4} p={[x - r * 0.5, GROUND + th, z + r * 0.2]} s={[r * 0.55, r * 0.5, r * 0.55]} m={M.tree[(t + 2) % 3]} ry={i + 2} shadow={false} />
           </group>
         ))}
         {/* les lampadaires de fonte : colonne, lanterne vitrée, chapeau */}
@@ -115,10 +117,8 @@ export function Surroundings() {
             <Part geo={cyl(0.02, 0.14, 0.12, 4)} m={M.iron} p={[0, 2.7, 0]} castShadow={false} />
           </group>
         ))}
-        {/* le château au fond : deux ailes, de la pierre blonde, des toits mansardés de zinc, ses fenêtres allumées le soir */}
-        <Block x0={-8} x1={0.5} z0={-16} z1={-10.8} wall={2.2} top={4.2} s={1} shift={0.3} dormers={[4, 3]} lowBalcony={false} />
-        <Block x0={0.5} x1={9.5} z0={-15} z1={-10.2} wall={1.8} top={3.6} s={2} shift={0.7} dormers={[3, 2]} lowBalcony={false} />
-        <Block x0={-12} x1={-9} z0={-9} z1={-3.6} wall={1.4} top={3.0} s={0} shift={0.1} dormers={[2, 2]} lowBalcony={false} />
+        {/* le château au fond : brique, ardoise, tourelles (Chateau.tsx), ses fenêtres allumées le soir */}
+        <Chateau />
       </Static>
       {lampHeads.map((p, i) => (
         <sprite key={i} position={[p[0], p[1] + GROUND, p[2]]} scale={1.6} material={M.glow} raycast={noRay} renderOrder={4} />

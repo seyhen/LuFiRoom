@@ -10,7 +10,7 @@ import { snowTop } from '../../snowTop'
 // dans chaque quartier japonais : façade de carrelage beige ou grise, fenêtres coulissantes d'aluminium, balcons étroits où sèchent
 // des futons, climatiseurs, rez-de-chaussée de boutiques (rideau de fer, vitrine allumée, enseigne), citerne d'eau sur le toit.
 
-export const F = { c: [0, 0] as [number, number], r0: 7.5, r1: 12.5 }
+export const F = { c: [0, 0] as [number, number], r0: 9, r1: 15 }
 const JP = '"Yu Gothic","Hiragino Sans","Meiryo","Noto Sans JP","Noto Sans CJK JP",sans-serif'
 const TW = 6, TH = 8, FL = 3, SHOP_H = 3.0, GROUND = -0.3, BOTTOM = -12
 
