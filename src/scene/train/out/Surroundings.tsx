@@ -8,7 +8,7 @@ import { train } from '../../../rooms/train'
 import { R } from './materials'
 import { GROUND, Line } from './Line'
 import { NextCar } from './Cars'
-import { Hills } from './Hills'
+import { Alps, Hills } from './Hills'
 
 const AREA: [number, number, number, number] = [-15, 15, -12, 11]
 /** Où s'arrête la pluie : sur le toit de la voiture suivante (et son soufflet), sinon sur le pré. */
@@ -38,6 +38,7 @@ export function Surroundings() {
         <NextCar />
       </Static>
       <Line />
+      <Alps />
       <Hills />
       <OutdoorPrecip ground={rainGround} area={AREA} />
     </>

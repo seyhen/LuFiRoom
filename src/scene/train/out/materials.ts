@@ -13,6 +13,19 @@ import { glowTex } from '../../textures'
 const meadowTex = canvasTex(256, 256, (x) => {
   const r = seeded(21)
   x.fillStyle = '#8fbf7a'; x.fillRect(0, 0, 256, 256)
+  // des bandes de fauche (en long de la voie) et de larges plaques plus claires ou plus sombres, pour que le pré ne soit pas un aplat ;
+  // dessinées aussi décalées de 256 : la tuile se raccorde
+  const band = x.createLinearGradient(0, 0, 0, 256)
+  band.addColorStop(0, 'rgba(190,225,150,.30)'); band.addColorStop(0.25, 'rgba(190,225,150,0)'); band.addColorStop(0.5, 'rgba(70,120,70,.22)'); band.addColorStop(0.75, 'rgba(190,225,150,0)'); band.addColorStop(1, 'rgba(190,225,150,.30)')
+  x.fillStyle = band; x.fillRect(0, 0, 256, 256)
+  for (let i = 0; i < 7; i++) {
+    const cx = r() * 256, cy = r() * 256, rad = 34 + r() * 40, a = 0.1 + r() * 0.1, light = i % 2 === 0
+    for (const dx of [-256, 0, 256]) for (const dy of [-256, 0, 256]) {
+      const g = x.createRadialGradient(cx + dx, cy + dy, 0, cx + dx, cy + dy, rad)
+      g.addColorStop(0, light ? `rgba(205,230,150,${a})` : `rgba(80,130,80,${a})`); g.addColorStop(1, 'rgba(0,0,0,0)')
+      x.fillStyle = g; x.fillRect(cx + dx - rad, cy + dy - rad, rad * 2, rad * 2)
+    }
+  }
   for (let i = 0; i < 260; i++) {
     x.fillStyle = r() < 0.5 ? 'rgba(110,160,95,.55)' : 'rgba(165,205,140,.5)'
     x.beginPath(); x.ellipse(r() * 256, r() * 256, 3 + r() * 9, 2 + r() * 5, r() * 3, 0, 6.3); x.fill()
@@ -87,11 +100,14 @@ const chaletTex = chaletFront(false), chaletGlowTex = chaletFront(true)
 /** Le fondu de la voie : étiré le long de x (la voie part à gauche et à droite), plus court vers l'avant. */
 const out = <T extends MeshStandardMaterial>(m: T, snow?: [number, number?, number?]) => {
   if (snow) snowTop(m, ...snow)
-  return skyFade(m, { c: [0, 0], r0: 8, r1: 12.5, sx: 1.3, sz: 1.05 })
+  return skyFade(m, { c: [0, 0], r0: 8, r1: 12.5, sx: 1.7, sz: 1.05 })
 }
 
 /** La voiture suivante : son toit reçoit la neige. */
 const car = <T extends MeshStandardMaterial>(m: T) => out(m, [1, 0.45, 0.85])
+
+/** Les Alpes lointaines (grands écrans) : un fondu large, des couleurs par sommet (roche bleutée, neige au sommet). */
+export const alps = skyFade(far(0xffffff, { vertexColors: true, roughness: 0.85, clearcoat: 0 }), { c: [0, 0], r0: 9.5, r1: 17.5, sx: 1.4, sz: 1.3 })
 
 export const meadow = meadowTex
 export const gravel = gravelTex
