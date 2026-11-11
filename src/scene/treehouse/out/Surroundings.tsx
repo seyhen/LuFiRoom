@@ -13,6 +13,7 @@ import { treehouse } from '../../../rooms/treehouse'
 import { GlowPoints } from '../../objects/GlowPoints'
 import { T } from '../materials'
 import { BRIDGE, DECK } from '../layout'
+import { Hills } from './Hills'
 
 // Le dehors de la cabane perchée : un pont de corde file au-dessus des cimes jusqu'à une vigie dans le chêne voisin (un petit
 // plancher rond, un garde-corps, un toit pointu de bardeaux, une longue-vue, un fanion), des bocaux-lanternes pendus aux cordes
@@ -153,6 +154,7 @@ export function Surroundings() {
         <Nest />
       </Static>
       <GlowPoints points={LANTERNS.map(([t, dz]): V3 => { const p = at(t, 0.75, dz); return [p[0], p[1] - 0.28, p[2] + 0.05] })} color={0xffcf80} size={0.55} level={() => glow.opacity} />
+      <Hills />
       <TireSwing />
     </>
   )
