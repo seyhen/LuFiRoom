@@ -18,7 +18,7 @@ const tentacle = (len: number, ph: number) => new TubeGeometry(new CatmullRomCur
 
 /** [x, y, z, taille, couleur (0 à 2), phase]. À 5 à 10 du centre : plus loin, `skyFade` les éteint. */
 const JELLIES: [number, number, number, number, number, number][] = [
-  [-6.8, 2.6, -5.6, 0.52, 0, 0], [-9.2, 1.4, -2.2, 0.4, 1, 1.7], [-7.6, 3.4, 0.6, 0.34, 2, 3.1],
+  [-6.8, 2.6, -5.6, 0.52, 0, 0], [-9.2, 1.4, -2.2, 0.4, 1, 1.7], [-6.6, 3.4, 3.2, 0.34, 2, 3.1],
   [3.2, 2.8, -6.4, 0.46, 1, 2.3], [6.4, 1.5, -2.6, 0.38, 0, 4.2], [8.4, 3.0, 1.6, 0.3, 2, 5.4], [-2.8, 3.6, -8.4, 0.42, 2, 0.9],
 ]
 
