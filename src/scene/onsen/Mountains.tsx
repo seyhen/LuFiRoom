@@ -32,6 +32,8 @@ const PEAKS: [number, number, number, number][][] = [
   [[-13, 5, 3.6, 4.6], [-8, 11, 2.4, 4.2], [-3, 16.5, 2.2, 4], [3, 16.5, 2.4, 4.2], [8, 12.5, 2.6, 4.2], [13, 6.5, 3.6, 4.4]],
   // le second, plus loin et plus pâle, entre les sommets du premier
   [[-11.5, 9.5, 2.0, 4], [-6, 19, 2.2, 4], [6, 19, 2.2, 4], [10.5, 11, 3.2, 4]],
+  // le troisième, très loin et très pâle : il remplit les coins du haut d'un écran large, entre et au-dessus des deux autres
+  [[-14.5, 15, 3.4, 4.4], [-9, 22, 3.0, 4.2], [0, 26, 2.8, 4.6], [9.5, 22, 3.2, 4.2], [15, 15, 3.6, 4.4]],
 ]
 /** Le pied des montagnes (sous le sol du dehors, qui s'efface dans le ciel à cette distance). */
 const BASE = 0.2
@@ -93,7 +95,7 @@ export function Mountains() {
       {PEAKS.map((row, r) =>
         row.map(([sx, k, h, w], i) => {
           const [x, z] = toWorld(sx, k)
-          return <Part key={`${r}${i}`} geo={mountainGeo} m={O.mountains[r + 1]} p={[x, BASE, z]} scale={[w, h, w * 0.5]} rotation-y={Math.PI / 4} castShadow={false} receiveShadow={false} />
+          return <Part key={`${r}${i}`} geo={mountainGeo} m={O.mountains[Math.min(2, r + 1)]} p={[x, BASE, z]} scale={[w, h, w * 0.5]} rotation-y={Math.PI / 4} castShadow={false} receiveShadow={false} />
         }),
       )}
       {/* la lisière : feuillus roux et dorés, quelques conifères sombres et élancés */}
