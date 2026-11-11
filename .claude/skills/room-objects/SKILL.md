@@ -41,7 +41,7 @@ Quand on crée une pièce (ou qu'on ajoute un objet qui change ce qu'on voit au-
 ## Étape 1 quater — Des sons de base, agréables, faits pour le fond (remarque du propriétaire, 2026-11-07)
 
 L'appli sert à lancer un son et à faire autre chose. Chaque objet pilote donc un **son de base** :
-- **continu, doux, familier** : pluie, vent, feu, vagues, ruisseau, oiseaux, grillons, ventilateur, bourdonnement, machine qui tourne, musique. Il tient une heure sans qu'on y pense ;
+- **continu, doux, familier** : pluie, vent, feu, vagues, ruisseau, oiseaux, grenouilles, berceuse, musique (et le ronron d'une machine à laver ou d'un ventilateur seulement quand l'enregistrement est doux et que l'objet est la pièce). Il tient une heure sans qu'on y pense ;
 - **cohérent avec la pièce** : on l'entendrait vraiment là ;
 - **jamais un bruitage de détail** : glaçons dans une carafe, pièces de monnaie, linge qu'on plie, froissement de feuilles synthétique. Ils fatiguent en boucle et ne font pas une ambiance (la cabane perchée et la laverie ont dû être refaites pour ça) ;
 - **un son qu'on a envie d'entendre** (remarque du propriétaire, 2026-11-07) : être « plausible dans la pièce » ne suffit pas. Un bourdonnement de bourdons ou le souffle d'une chaudière sont cohérents, mais personne ne les met en fond pour se détendre. Teste chaque idée avec la question : « est-ce qu'une personne lance ce son exprès, pour travailler, lire ou dormir ? ». Oui : pluie, feu, vagues, ruisseau, oiseaux, grenouilles, vent doux, musique, berceuse, cloches de vent. Non : insectes qui bourdonnent, machines et chaudières, ventilation industrielle, grésillements, tout ce qui évoque un bruit à supporter. Quand le seul son possible d'un objet est désagréable, l'objet est du décor, ou on choisit un autre objet de la pièce ;
@@ -64,6 +64,8 @@ Propose 3 candidats par pièce, puis garde celui qui coche le plus de cases. **U
 | Visible quand il joue | — | Quelque chose bouge : les aiguilles s'entrecroisent, la vapeur monte, le fouet tourne, le sable coule |
 | Reconnaissable de loin | — | Une silhouette qu'on comprend sans l'étiquette (voir « On ne sait pas ce que c'est » dans CLAUDE.md) |
 | Trouvable | — | Un enregistrement existe (Pixabay, CC0) ou se synthétise bien (bruits filtrés, gouttes, grains) |
+
+**Les gestes de cette liste ne valent que continus** : aiguilles qui tricotent, pinceau, eau qui coule, oui ; un coup de carte ou une pièce qui tombe, non (revue du 2026-11-11 : la grille favorisait les gestes alors que la règle de base les écarte quand ils sont ponctuels).
 
 Familles de sons qui marchent pour l'étude et le sommeil : **eau** (filet, versement, gouttes espacées, bulles douces), **papier et bois** (feuilles, plume, pinceau, cartes, boulier, aiguilles de bois), **textiles** (tricot, couture), **souffle** (vapeur douce, sable, bâton de pluie), **cuisine lente** (moudre, fouetter, remuer). À éviter : métal qui claque, électronique, voix, animaux qui crient, moteurs, **et tout ce qui frotte, râcle ou broie** (moulin à café, moulin à poivre, ponceuse, lime, mortier : le grain abrasif fatigue l'oreille au bout de quelques minutes, même quand le geste est humain). Un geste est agréable quand il **glisse, tombe, souffle ou claque doucement** (eau, papier, bois, tissu), pas quand il **gratte**.
 
@@ -129,17 +131,18 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite, 
 | Igloo | trou de pêche dans la glace (clapotis, bulles) | `icehole` |
 | Igloo | moufle qu'on coud sur un billot | `sew` |
 | Igloo | thermos de cacao qu'on verse dans un quart émaillé | `cocoa` |
-| Cabane perchée | nichoir au rouge-gorge (et hulotte la nuit) | `forest` |
-| Cabane perchée | hamac qui se balance | `hammock` |
-| Cabane perchée | feuillage du chêne | `leaves` |
+| Cabane perchée | nichoir au rouge-gorge (et hulotte la nuit) | `outside` (oiseaux de base) |
+| Cabane perchée | hamac qui se balance | `cicadas` |
+| Cabane perchée | le chêne, le vent dans les feuilles | `wind` (vent de base) |
 | Cabane perchée | ruisseau en contrebas | `brook` |
-| Cabane perchée | pichet de citronnade aux glaçons | `lemonade` |
 | Laverie de nuit | lave-linge au tambour qui tourne | `wash` |
-| Laverie de nuit | sèche-linge (ronron chaud, boutons de jean) | `tumble` |
-| Laverie de nuit | distributeur de lessive et monnayeur | `coins` |
-| Laverie de nuit | table à plier le linge | `fold` |
+| Laverie de nuit | sèche-linge (ronron chaud) | `tumble` |
+| Laverie de nuit | extracteur, néon | `fan`, `neon` : **à remplacer**, ils reprennent des sons de la chambre et du marché, et un bourdonnement (revue du 2026-11-11) |
+| Serre | bassin aux nénuphars | `frogs` |
+| Serre | boîte à musique | `musicbox` |
+| Serre | tonneau d'eau de pluie | `rainbarrel` |
 
-Mets ce tableau à jour à chaque objet ajouté.
+Mets ce tableau à jour à chaque objet ajouté **et à chaque son retiré** : la liste réelle est `sounds` de chaque `src/rooms/<id>.ts` (`grep -n "id: '" src/rooms/*.ts`), pas ce tableau.
 
 ## Idées écartées (et pourquoi)
 

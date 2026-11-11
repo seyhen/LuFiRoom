@@ -33,6 +33,8 @@ Dans les deux modes, un son que l'utilisateur refuse va dans « Idées écartée
 
 ## 2. Télécharger (agent + Claude dans Chrome)
 
+**Session cloud (sans Claude dans Chrome, sans dossier `Téléchargements`)** : l'agent ne peut pas télécharger. Passe en mode A : donne à l'utilisateur les liens de recherche et les critères, il dépose les fichiers dans `audio-src/<pièce>/` (ou les indique), puis reprends à l'étape 3 ; `analyze-sound.cjs` et `ffmpeg` fonctionnent partout.
+
 Délègue à un agent en arrière-plan (`Agent`, `general-purpose`) avec un prompt autonome qui contient : soit la liste « titre exact · auteur · durée → `audio-src/<pièce>/<son>.wav` » (mode A), soit les sons voulus avec leurs mots-clés (mode B : l'agent classe, télécharge les candidats dans `Téléchargements/candidats/<son>/` et rapporte), et la méthode qui marche :
 
 - outils `mcp__claude-in-chrome__*` (ToolSearch `select:` en une fois) ; `tabs_context_mcp {createIfEmpty:true}` ;

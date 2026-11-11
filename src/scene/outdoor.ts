@@ -28,6 +28,9 @@ export const SKY = {
   uSkyRes: { value: new Vector2(1, 1) },
 }
 
+/** Gain de la lune sur le dehors, la nuit (voir `skyFade`). */
+const NIGHT_GAIN = 0.6
+
 export interface FadeOpts {
   /** Le centre du fondu (x, z) : le milieu de la pièce. */
   c?: [number, number]
@@ -90,9 +93,14 @@ export function skyFade<T extends Material>(m: T, o: FadeOpts = {}): T {
           float t_ = length(vec2((sp_.x - 0.5) / 1.3, ((1.0 - sp_.y) - 0.4) / 0.9));
           vec3 sky_ = mix(skyGrad_(uSkyDay[0], uSkyDay[1], uSkyDay[2], t_), skyGrad_(uSkyNight[0], uSkyNight[1], uSkyNight[2], t_), uSkyN);
           vec2 d_ = (vSkyP.xz - vec2(${f(c[0])}, ${f(c[1])})) / vec2(${f(sx)}, ${f(sz)});
-          float k_ = smoothstep(${f(r0)}, ${f(r1)}, length(d_));
+          // Le fondu ne démarre pas en ligne droite : la puissance 1,6 garde le décor franc près de la pièce (les immeubles du café, les sapins
+          // du train n'étaient plus que des silhouettes laiteuses) et le fait disparaître vite à la bordure, où il rejoint toujours le ciel (k = 1).
+          float k_ = pow(smoothstep(${f(r0)}, ${f(r1)}, length(d_)), 1.6);
           k_ = max(k_, smoothstep(${f(y0)}, ${f(y1)}, vSkyP.y));
           k_ = max(k_, smoothstep(${f(below)}, ${f(below - 1.2)}, vSkyP.y));
+          ${additive ? '' : `// La nuit, le dehors reçoit la lune : un voile froid et un peu de gain, pour que les volumes se lisent au lieu de tomber au bleu uni
+          // (ce décor n'est jamais dans la pièce : les intérieurs gardent leur nuit).
+          gl_FragColor.rgb = gl_FragColor.rgb * (1.0 + ${f(NIGHT_GAIN)} * uSkyN) + vec3(0.012, 0.022, 0.05) * uSkyN;`}
           gl_FragColor.rgb = mix(gl_FragColor.rgb, ${additive ? 'vec3(0.0)' : 'sky_'}, k_);
         }
         #include <dithering_fragment>`,

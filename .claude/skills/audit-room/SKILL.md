@@ -13,6 +13,15 @@ Règles de la maison à garder en tête : `CLAUDE.md` (« Le soin des ambiances 
 
 ## Étape 0 — Préparer l'outillage (et aller vite)
 
+**Sans chrome-devtools (session cloud, conteneur)** : `preview_start`, `emulate`, `take_screenshot` et `evaluate_script` n'existent pas. Lance `npx vite --port 5173` en arrière-plan, puis le script Playwright du skill (Chromium est déjà installé, ne réinstalle rien) :
+
+```bash
+node .claude/skills/audit-room/capture.mjs <dossier> [pièces,séparées,par,des,virgules] [--mobile] [--sounds] [--check]
+bash .claude/skills/audit-room/pair.sh <dossier> <pièce> [x y w h]    # planche jour | nuit côte à côte
+```
+
+Il visite chaque pièce de jour et de nuit **dans une seule page** (jamais plusieurs navigateurs en parallèle : le rendu logiciel est à 1 image par seconde, deux navigateurs font expirer les captures), compte tracés et triangles, `--sounds` allume tous les sons avant la capture, `--check` lance aussi `overlaps.js` et `coplanar.js` et écrit leurs lignes dans `<dossier>/checks.json`. Compte 1 à 2 minutes par vue. Les étapes qui suivent décrivent les mêmes gestes avec chrome-devtools ; elles s'appliquent telles quelles via `page.evaluate`.
+
 Ce qui prend du temps dans les tests, par ordre : **recharger la page** (chaque pièce visitée recompile ses shaders : 20 à 30 s la première fois, 1,5 s ensuite), les attentes fixes (`sleep` de 3 s « au cas où »), cliquer bouton par bouton, et lire une capture par objet. Les règles :
 
 1. **Une seule page, jamais de rechargement** sauf si tu as changé `store.ts`, `engine.ts` ou `main.tsx`. Le rechargement à chaud de Vite met à jour les scènes sans rien recompiler d'autre. Visite chaque pièce une fois au début.
@@ -47,7 +56,7 @@ async () => {
 bash .claude/skills/audit-room/sheet.sh capture.png planche.png "x y w h" "x y w h" "x y w h" "x y w h"
 ```
 
-   Chaque zone est ramenée à 640 px de large, deux par ligne : on lit **une** image au lieu de quatre. (`scratchpad/zoom.sh in out w h x y [largeur]` recadre une seule zone en grand quand un détail demande plus.) Les coordonnées sont celles de la capture : le point affiché sur l'écran × 1,44. Si `zoom.sh` a disparu, recrée-le : `ffmpeg -y -loglevel error -i "$1" -vf "crop=$3:$4:$5:$6,scale=${7:-1100}:-1:flags=lanczos" "$2"`.
+   Chaque zone est ramenée à 640 px de large, deux par ligne : on lit **une** image au lieu de quatre. (`bash .claude/skills/audit-room/zoom.sh in out w h x y [largeur]` recadre une seule zone en grand quand un détail demande plus.) Les coordonnées sont celles de la capture : le point affiché sur l'écran × 1,44.
 7. Boutons, si tu dois cliquer quand même : `[...document.querySelectorAll('button')].find(x => x.textContent.trim() === 'Marché de nuit').click()` ; les objets ont un `aria-label` qui commence par leur libellé.
 
 ## Étape 1 — Contrôles mécaniques (rien à regarder, tout à mesurer)
@@ -70,34 +79,10 @@ async () => {
 
    Où va le budget : **un sprite compte** (chaque particule de vapeur vivante, chaque halo), un maillage qui projette une ombre compte deux fois, un objet cliquable (`userData.id`) ou animé (`LIVE`) n'est pas fusionné par `<Static>`. Remède : espacer les émetteurs `Steam` (`every` ≥ 1 s pour un détail), imbriquer un `<Static>` dans les groupes animés pour fusionner ce qui ne bouge pas (voir `market/Chef.tsx`), partager le matériau d'une série d'ampoules.
 4. **Lumières ponctuelles** : `grep -rn "<pointLight\|<Flames" src/scene/<pièce>/` : au plus **3** par pièce.
-5. **Niveaux sonores** (si la pièce a de nouveaux sons) : avec `window.__lofi.audio` (`bus` : un `GainNode` par `pièce/son`, `getKit().ctx`), pour chaque son : `toggle` du son, attends 1 s qu'il se construise, branche un `AnalyserNode` sur `bus['pièce/son']`, mesure le RMS et la crête sur 6 à 45 s (les évènements espacés demandent plus), éteins-le. Cibles : fonds continus entre **−28 et −32 dB** RMS, évènements ponctuels à **−10 dB** de crête, radio ≈ −15 dB. Règle le gain avec `base` dans `CHANNELS` (`engine.ts`).
+5. **Niveaux sonores** (si la pièce a de nouveaux sons) : avec `window.__lofi.audio` (`bus` : un `GainNode` par `pièce/son`, `getKit().ctx`), pour chaque son : `toggle` du son, attends 1 s qu'il se construise, branche un `AnalyserNode` sur `bus['pièce/son']`, mesure le RMS et la crête sur 6 à 45 s (les évènements espacés demandent plus), éteins-le. Cibles : fonds continus entre **−28 et −32 dB** RMS, évènements ponctuels à **−10 dB** de crête, radio ≈ −15 à −20 dB RMS (elle se règle par le `level` des stations, `docs/RADIO.md`). Règle le gain avec `base` dans `CHANNELS` (`engine.ts`).
 6. **Objets qui se traversent ou se collent** (le contrôle qui manquait : il aurait attrapé le vélo dans le distributeur, la poubelle dans le distributeur, le banc contre la télé). Colle dans `evaluate_script` ; il compare la boîte de chaque composant de la pièce avec celle des autres :
 
-```js
-async () => {
-  const { scene } = window.__lofi.three(); const V = scene.position.constructor; scene.updateMatrixWorld(true)
-  let best = null; scene.traverse((o) => { if (o.isGroup) { const n = o.children.filter((c) => c.isMesh && c.visible).length; if (!best || n > best.n) best = { o, n } } })
-  // la racine des composants : sous un <Static> unique ou un groupe mis à l'échelle (l'igloo), on descend tant qu'il n'y a qu'un groupe
-  let root = best.o; for (;;) { const gs = root.children.filter((c) => !c.isMesh && !c.isSprite && !c.isLight); if (gs.length !== 1) break; root = gs[0] }
-  let first = null; scene.traverse((o) => { if (!first && o.isMesh && o.geometry) first = o }); first.geometry.computeBoundingBox(); const Box = first.geometry.boundingBox.constructor, objs = []
-  for (const g of root.children) {
-    if (g.isMesh || g.isSprite || g.isLight) continue
-    const box = new Box(); let n = 0
-    g.traverse((m) => { if (!m.isMesh || !m.geometry) return; const mat = m.material; if (mat && (mat.blending === 2 || (mat.transparent && mat.opacity < 0.9))) return; if (!m.geometry.boundingBox) m.geometry.computeBoundingBox(); const bb = m.geometry.boundingBox.clone().applyMatrix4(m.matrixWorld); const s = bb.getSize(new V()); if (Math.max(s.x, s.y, s.z) > 4) return; box.union(bb); n++ })
-    const s = box.getSize(new V()); if (!n || box.isEmpty() || (Math.max(s.x, s.y, s.z) > 2.5 && Math.min(s.x, s.y, s.z) < 0.15)) continue // les câbles et les tuyaux croisent tout : on les ignore
-    objs.push({ id: g.userData.id || '#' + root.children.indexOf(g), box })
-  }
-  const out = []
-  for (let i = 0; i < objs.length; i++) for (let j = i + 1; j < objs.length; j++) {
-    const a = objs[i].box, b = objs[j].box
-    const o = [Math.min(a.max.x, b.max.x) - Math.max(a.min.x, b.min.x), Math.min(a.max.y, b.max.y) - Math.max(a.min.y, b.min.y), Math.min(a.max.z, b.max.z) - Math.max(a.min.z, b.min.z)]
-    const gap = -Math.min(...o) // < 0 : ils se chevauchent ; entre 0 et 0,06 : ils se touchent
-    const floor = a.min.y < 0.3 && b.min.y < 0.3 // deux objets posés au sol ne doivent ni se toucher ni se traverser
-    if ((o.every((v) => v > 0.02)) || (floor && o[1] > 0 && gap < 0.06 && gap > -0.02)) out.push({ a: objs[i].id, b: objs[j].id, chevauche: o.map((v) => +v.toFixed(2)), ca: a.getCenter(new V()).toArray().map((v) => +v.toFixed(1)), cb: b.getCenter(new V()).toArray().map((v) => +v.toFixed(1)) })
-  }
-  return out.sort((p, q) => q.chevauche[0] * q.chevauche[1] * q.chevauche[2] - p.chevauche[0] * p.chevauche[1] * p.chevauche[2]).slice(0, 25)
-}
-```
+Lis `.claude/skills/audit-room/overlaps.js`, colle-le dans `evaluate_script` (pièce affichée) ou, sans navigateur outillé, passe-le à `page.evaluate` (voir `capture.mjs`) : il compare la boîte de chaque composant de la pièce avec celle des autres.
 
    Il doit trouver plusieurs dizaines de composants : une liste vide sur une pièce garnie veut dire qu'il a pris la mauvaise racine (pas « aucun défaut »). Les boîtes d'un `Batch` (bourrelet de neige, pyramide de boules) sont gonflées : écarte leurs faux positifs à l'œil.
    Lis chaque ligne : les coordonnées `ca` / `cb` disent où regarder. Un chevauchement voulu (un objet posé sur une table, une guirlande qui court au-dessus) se justifie ; tout le reste se déplace d'au moins 0,15. Ce n'est pas tout : un objet peut traverser **le mur ou le sol** (non testé ici) et une guirlande peut passer devant la face d'un distributeur (à vérifier à l'œil).
@@ -182,6 +167,7 @@ La pièce n'est pas seule : ce qu'on voit autour doit **lui appartenir** et **ne
 3 quater. **Tous les côtés du fond.** Vérifie les **quatre coins du haut de l'écran** et pas seulement le centre : « derrière » la pièce, c'est le haut, mais le haut gauche (direction -x) et le haut droit (direction -z) se remplissent à part. Remplir le fond du milieu en laissant le haut gauche vide est un défaut (le toit, 2026-11-07) : prolonge le décor le long de chaque côté, à 5 à 12 du centre.
 4. **Pas de grand pan plat.** Un toit voisin ou un mur lointain sans rien dessus (ni matériel, ni fenêtres, ni enseigne) fait vide : habille-le (citernes, climatiseurs, cheminées, antennes) comme l'intérieur.
 5. **L'activité autour.** Si la pièce est un lieu de vie (marché, café, laverie), le dehors montre ce qui s'y passe : étals éclairés, vitrines, passants, véhicules, lanternes. Un décor mort autour d'un lieu vivant se lit comme un fond d'écran.
+5 bis. **Le fondu ne délave pas, la nuit ne tombe pas au bleu uni** (revue graphique du 2026-11-11). `skyFade` (`src/scene/outdoor.ts`) garde le décor franc près de la pièce (fondu en puissance 1,6) et donne au dehors un gain de lune la nuit (`NIGHT_GAIN`, plus un voile froid) : sur la capture de jour, les volumes à 6 ou 7 du centre ont encore leur teinte ; sur celle de nuit, on distingue les volumes du dehors les uns des autres. Si une pièce garde un dehors laiteux de jour ou en aplat de nuit, c'est son `r0` / `r1` ou ses teintes, pas le moteur.
 6. **Jour, nuit, pluie.** Les fenêtres et enseignes du dehors s'allument le soir (`emissiveMap`, animés avec `mood.night`), les volumes se fondent dans le ciel sans couture.
 7. **Retour sur l'onglet.** Après un changement du rendu ou des textures : dans le navigateur, `getContext('webgl2').getExtension('WEBGL_lose_context')` puis `loseContext()`, attends 1 s, `restoreContext()`, attends 8 s et recadre : la pièce doit réapparaître entière (jamais de textures noires). Le garde est dans `src/scene/Stage.tsx` (`ContextGuard`).
 

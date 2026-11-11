@@ -18,22 +18,22 @@ node .claude/skills/release-check/check-credits.cjs # chaque son de public/audio
 git status --short                                  # rien d'inattendu (audio-src n'est pas suivi)
 ```
 
-Pour une pièce retouchée, ajoute `npm run test:smoke` (ou `LOFI_SMOKE_ROOMS=<pièces> npm run test:smoke`) : il affiche les **triangles par image** de chaque pièce et échoue au-dessus de 1 000 000 ; les pièces tiennent aujourd'hui entre 110 000 et 540 000, une hausse nette est une régression. Note le tableau dans le rapport.
+Pour une pièce retouchée, ajoute `npm run test:smoke` (ou `LOFI_SMOKE_ROOMS=<pièces> npm run test:smoke`) : il affiche les **triangles par image** de chaque pièce et échoue au-dessus de 1 000 000 ; les pièces tiennent aujourd'hui entre 110 000 et 540 000 (relevé du 2026-11-11 : phare 118 000 → onsen 537 000, sous-marin 505 000, train 434 000), une hausse nette est une régression. Note le tableau dans le rapport.
 
 Tout doit sortir propre. `check-i18n` ne voit que les textes des pièces et des stations : un texte d'interface nouveau (`src/ui/`) se vérifie à la main dans `src/i18n.ts`.
 
 ## 2. Dans le navigateur (dev, page isolée chrome-devtools)
 
-Méthode et pont de test : skill `audit-room`, étape 0.
+Méthode et pont de test : skill `audit-room`, étape 0. **Sans chrome-devtools (session cloud)** : `node .claude/skills/audit-room/capture.mjs <dossier> [pièces] [--mobile] [--sounds] [--check]` fait la console (erreurs affichées), les tracés, les triangles, les captures jour et nuit ; les scripts de ce skill se passent à `page.evaluate`. Le test de fumée (`npm run test:smoke`) couvre la console et le canvas dans tous les cas.
 
 1. **Console** : toutes les pièces visitées, quelques sons allumés dans chacune : aucune erreur, aucun « Enregistrement indisponible ».
 2. **Sons nouveaux ou changés** : niveaux mesurés (skill `source-sounds`, étape 4).
-3. **Fuite au changement de pièce** : deux tours des douze pièces, puis comparer au premier tour :
+3. **Fuite au changement de pièce** : deux tours de toutes les pièces, puis comparer au premier tour :
 
 ```js
 async () => {
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
-  const st = window.__lofi.store, ids = ['bedroom','cabin','cafe','beach','train','roof','atelier','onsen','lighthouse','submarine','market','igloo','treehouse','laundromat']
+  const st = window.__lofi.store, ids = ['bedroom','cabin','cafe','beach','train','roof','atelier','onsen','lighthouse','submarine','market','igloo','treehouse','laundromat','greenhouse'] // même liste que src/rooms/index.ts : ajoute ici toute pièce nouvelle
   const out = {}
   for (const pass of [1, 2]) {
     for (const r of ids) { st.getState().goto(r); while (st.getState().room !== r || st.getState().leaving) await sleep(100); await sleep(1200) }
