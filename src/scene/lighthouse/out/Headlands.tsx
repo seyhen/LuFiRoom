@@ -1,14 +1,21 @@
+import { useMemo } from 'react'
 import { Shape, ShapeGeometry } from 'three'
 import { Static } from '../../Static'
-import { Part, SPH, cyl, rbox, type V3 } from '../../parts'
+import { Part, SPH, cyl, noRay, rbox, type V3 } from '../../parts'
 import { Rock } from '../../nature/Rock'
 import { S } from './materials'
-import { SEA } from './Sea'
+import { SEA, ringGeo } from './Sea'
 
 // Le fond du phare : des falaises qui sortent de la mer derrière la pièce (le haut gauche de l'écran était un aplat de mer et de
 // ciel), un voilier au large. Les falaises se posent à 8 à 10 du centre, sinon `skyFade` les efface.
 
 /** Une falaise : une base large, un second étage plus étroit et décalé, un dessus d'herbe rase, un éboulis dans l'eau. */
+/** L'écume au pied d'une falaise : sans elle la roche se fond dans la brume et semble flotter au-dessus de l'eau. */
+function CliffFoam({ p, w, i }: { p: [number, number]; w: number; i: number }) {
+  const g = useMemo(() => ringGeo(w * 0.8, 0.3 + w * 0.12, i * 2.3 + 1), [w, i])
+  return <mesh geometry={g} position={[p[0], SEA + 0.02, p[1]]} material={S.foam} renderOrder={3} raycast={noRay} />
+}
+
 function Cliff({ p, w, h, ry = 0, v = 0, far = false }: { p: [number, number]; w: number; h: number; ry?: number; v?: number; far?: boolean }) {
   const [x, z] = p
   const rock = far ? S.rockFar : S.rock, grass = far ? S.grassFar : S.grass, weed = far ? S.weedFar : S.weed
@@ -49,11 +56,11 @@ const sailGeo = (() => {
 function Sailboat({ p, ry }: { p: V3; ry: number }) {
   return (
     <group position={p} rotation-y={ry}>
-      <Part geo={SPH} m={S.hull} p={[0, 0.08, 0]} scale={[0.62, 0.14, 0.2]} castShadow={false} />
-      <Part geo={rbox(0.3, 0.1, 0.16, 0.04)} m={S.white} p={[-0.04, 0.2, 0]} castShadow={false} />
+      <Part geo={SPH} m={S.hull} p={[0, 0.1, 0]} scale={[0.62, 0.2, 0.22]} castShadow={false} />
+      <Part geo={rbox(0.3, 0.1, 0.16, 0.04)} m={S.white} p={[-0.04, 0.33, 0]} castShadow={false} />
       <Part geo={cyl(0.014, 0.014, 1.5, 6)} m={S.iron} p={[0.06, 0.88, 0]} castShadow={false} />
-      <mesh geometry={sailGeo} material={S.sail} position={[0.0, 0.22, 0]} scale={[1.0, 1.35, 1]} />
-      <mesh geometry={sailGeo} material={S.sailRed} position={[0.12, 0.26, 0]} scale={[0.7, 0.9, 1]} rotation-y={Math.PI} />
+      <mesh geometry={sailGeo} material={S.sail} position={[0.0, 0.3, 0]} scale={[1.0, 1.35, 1]} />
+      <mesh geometry={sailGeo} material={S.sailRed} position={[0.12, 0.33, 0]} scale={[0.7, 0.9, 1]} rotation-y={Math.PI} />
     </group>
   )
 }
@@ -66,6 +73,7 @@ export function Headlands() {
         {FAR_CLIFFS.map(([x, z, w, h, ry, v], i) => <Cliff key={`f${i}`} p={[x, z]} w={w} h={h} ry={ry} v={v} far />)}
         <Sailboat p={[-7.6, SEA + 0.02, 1.4]} ry={0.5} />
       </Static>
+      {[...CLIFFS, ...FAR_CLIFFS].map(([x, z, w], i) => <CliffFoam key={i} p={[x, z]} w={w} i={i} />)}
     </>
   )
 }

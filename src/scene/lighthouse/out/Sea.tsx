@@ -10,7 +10,7 @@ import { S, foam, swell } from './materials'
 export const SEA = -2.35
 
 /** Un anneau d'écume autour d'un rocher : rayon intérieur et largeur, un peu bosselé. */
-function ringGeo(r: number, w: number, seed: number) {
+export function ringGeo(r: number, w: number, seed: number) {
   const M = 48, pos: number[] = [], uv: number[] = [], idx: number[] = []
   for (let m = 0; m <= M; m++) {
     const a = (m / M) * TAU, k = 1 + 0.08 * Math.sin(a * 3 + seed) + 0.05 * Math.sin(a * 5 + seed * 2)
