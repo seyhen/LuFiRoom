@@ -8,6 +8,7 @@ import { S } from './materials'
 import { FOAMS, SEA, Sea } from './Sea'
 import { Lighthouse } from './Tower'
 import { BellBuoy, Landing } from './Landing'
+import { Headlands } from './Headlands'
 
 /** Les mouettes qui tournent autour du phare et au large. */
 const SOAR = [
@@ -31,6 +32,7 @@ export function Surroundings() {
           <Rock key={i} v={(i * 3 + 1) % 8} p={[x, SEA - r * 0.8, z]} s={[r * 1.05, r * 1.6, r]} ry={i * 1.7} m={S.rock[i % 3]} moss={i % 2 ? S.weed : undefined} />
         ))}
       </Static>
+      <Headlands />
       <Lighthouse />
       <Landing />
       <BellBuoy x={-7.4} z={3.4} />

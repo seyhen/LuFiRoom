@@ -34,12 +34,22 @@ const foamTex = canvasTex(256, 64, (x) => {
   g.addColorStop(0, 'rgba(255,255,255,.95)'); g.addColorStop(0.45, 'rgba(255,255,255,.6)'); g.addColorStop(1, 'rgba(255,255,255,0)')
   x.fillStyle = g; x.fillRect(0, 0, 256, 64)
   x.globalCompositeOperation = 'destination-out'
-  for (let i = 0; i < 90; i++) { x.beginPath(); x.arc(r() * 256, 20 + r() * 44, 2 + r() * 6, 0, 6.3); x.fill() }
+  for (let i = 0; i < 170; i++) { x.beginPath(); x.arc(r() * 256, 8 + r() * 56, 2 + r() * 7, 0, 6.3); x.fill() }
 }, [1, 1])
 foamTex.wrapS = RepeatWrapping
 
+/** Le faisceau, vu dans sa longueur : vif à la lanterne, éteint au large (v = 0 à la lanterne, 1 au bout du cône). */
+const beamTex = canvasTex(4, 128, (x) => {
+  const g = x.createLinearGradient(0, 0, 0, 128) // le haut du canvas est le bout du cône
+  g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.35, 'rgba(255,255,255,.35)'); g.addColorStop(0.8, 'rgba(255,255,255,.85)'); g.addColorStop(1, 'rgba(255,255,255,1)')
+  x.fillStyle = g; x.fillRect(0, 0, 4, 128)
+}, [1, 1])
+
 const F = { c: [0, 0] as [number, number], r0: 7.5, r1: 12.5 }
 const out = <T extends MeshStandardMaterial>(m: T, snow: [number, number?, number?] = [0.9, 0.4, 0.8]) => skyFade(snowTop(m, ...snow), F)
+// Le fond lointain (falaises à 12 à 16 du centre, les coins du haut d'un grand écran) : un fondu plus large, sinon `skyFade` les efface.
+const F2 = { c: [0, 0] as [number, number], r0: 9.5, r1: 17.5 }
+const outFar = <T extends MeshStandardMaterial>(m: T, snow: [number, number?, number?] = [0.9, 0.4, 0.8]) => skyFade(snowTop(m, ...snow), F2)
 
 export const swell = swellTex
 export const foam = foamTex
@@ -67,7 +77,14 @@ export const S = {
   buoyRed: out(far(0xe2564a, { roughness: 0.4, clearcoat: 0.6 })),
   buoyWhite: out(far(0xfbf6ee, { roughness: 0.4, clearcoat: 0.6 })),
   /** Le faisceau du phare : deux cônes de lumière additifs, visibles la nuit et par temps sombre. */
-  beam: new MeshBasicMaterial({ color: 0xfff0b8, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, side: DoubleSide }),
+  beam: new MeshBasicMaterial({ map: beamTex, color: 0xfff0b8, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, side: DoubleSide }),
+  // les falaises du fond : l'herbe rase du dessus, la voile blanche du voilier
+  grass: out(farMoss(0x6da15c)),
+  rockFar: [outFar(farStone(0x8794a6)), outFar(farStone(0x7886a0)), outFar(farStone(0x94a0b2))],
+  grassFar: outFar(farMoss(0x6da15c)),
+  weedFar: outFar(farMoss(0x4f7a5c)),
+  sail: out(far(0xfbf6ee, { roughness: 0.8, side: DoubleSide })),
+  sailRed: out(far(0xe2564a, { roughness: 0.8, side: DoubleSide })),
   /** La lanterne du ponton : elle s'allume le soir pour qu'on voie encore le ponton et la barque dans l'ombre du socle. */
   dockLamp: out(far(0xfff0cc, { roughness: 0.1, clearcoat: 1, emissive: 0xffc46a, emissiveIntensity: 0 })),
   dockPool: new MeshBasicMaterial({ map: glowTex, color: 0xffc77a, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }),

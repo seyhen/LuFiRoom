@@ -26,15 +26,17 @@ export function Lighthouse() {
     const r = (t: number) => 0.95 - 0.33 * t
     return [0, 1, 2, 3].map((i) => ({ y0: (i / 4) * h, y1: ((i + 1) / 4) * h, r0: r(i / 4), r1: r((i + 1) / 4), m: i % 2 ? S.red : S.white }))
   }, [h])
-  const beamGeo = useMemo(() => {
-    const g = new CylinderGeometry(0.9, 0.14, 4.6, 18, 1, true)
-    g.translate(0, 2.3 + 0.3, 0)
+  // trois cônes emboîtés (large et pâle, moyen, étroit et vif) : le faisceau a un cœur et des bords qui s'estompent, au lieu d'un cône plein
+  // à bord net ; le dégradé de `S.beam` l'éteint au large. Le bout étroit est à la lanterne, le large au loin.
+  const beamGeos = useMemo(() => [[1.45, 0.2, 7], [0.95, 0.15, 6.4], [0.5, 0.1, 5.8]].map(([r1, r0, len]) => {
+    const g = new CylinderGeometry(r1, r0, len, 20, 1, true)
+    g.translate(0, len / 2 + 0.3, 0)
     g.rotateZ(-Math.PI / 2)
     return g
-  }, [])
+  }), [])
   useFrame((_, dt) => {
     const k = Math.min(1, smooth(mood.night) + mood.storm * 0.6 + mood.rain * 0.3)
-    S.beam.opacity = k * 0.16
+    S.beam.opacity = k * 0.22
     S.glow.opacity = k * 0.95
     S.lamp.emissiveIntensity = 0.2 + k * 1.8
     S.window.emissiveIntensity = smooth(mood.night) * 1.2
@@ -83,8 +85,12 @@ export function Lighthouse() {
       </Static>
       <sprite position={[x, top + 0.85, z]} scale={2.6} material={S.glow} raycast={noRay} renderOrder={4} />
       <group ref={beams} position={[x, top + 0.85, z]} userData={LIVE}>
-        <mesh geometry={beamGeo} material={S.beam} renderOrder={5} raycast={noRay} />
-        <mesh geometry={beamGeo} material={S.beam} rotation-y={Math.PI} renderOrder={5} raycast={noRay} />
+        {beamGeos.map((g, i) => (
+          <group key={i}>
+            <mesh geometry={g} material={S.beam} renderOrder={5} raycast={noRay} />
+            <mesh geometry={g} material={S.beam} rotation-y={Math.PI} renderOrder={5} raycast={noRay} />
+          </group>
+        ))}
       </group>
     </group>
   )

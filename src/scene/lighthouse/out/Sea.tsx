@@ -44,7 +44,7 @@ export function Sea() {
     c.copy(DAY).lerp(STORM, Math.max(st, mood.rain * 0.4)).lerp(SNOW, smooth(mood.snow) * 0.6).lerp(NIGHT, n * 0.85)
     S.sea.color.copy(c)
     S.swell.opacity = 0.45 + st * 0.45 - n * 0.15
-    S.foam.opacity = (reduceMotion ? 0.8 : 0.7 + 0.2 * Math.sin(clock.elapsedTime * 1.1)) * (1 - n * 0.3) + st * 0.1
+    S.foam.opacity = (reduceMotion ? 0.55 : 0.48 + 0.14 * Math.sin(clock.elapsedTime * 1.1)) * (1 - n * 0.3) + st * 0.1
   })
   return (
     <>

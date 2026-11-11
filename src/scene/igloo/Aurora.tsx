@@ -19,8 +19,8 @@ export const WINDOW = polar(WIN_A, WIN_R - 0.02, WIN_Y)
 // Les rideaux de l'aurore, derrière le dôme : [x, y, z, largeur, hauteur, vitesse de défilement].
 // Centrés au-dessus du dôme à l'écran (x ≈ z), assez bas pour ne pas passer sous les puces des pièces.
 const CURTAINS: [number, number, number, number, number, number][] = [
-  [-3.2, 3.2, -3.2, 10, 3.0, 0.012],
-  [-4.4, 3.7, -4.4, 9, 2.4, -0.008],
+  [-3.2, 3.2, -3.2, 24, 3.4, 0.012],
+  [-4.4, 3.9, -4.4, 20, 2.8, -0.008],
 ]
 
 /** Un rideau plissé : un plan dont le pied ondule en profondeur (des plis lents), plus fort en bas qu'en haut. */
@@ -51,6 +51,7 @@ export function Aurora() {
     m.map = I.aurora.map!.clone()
     m.map.needsUpdate = true
     m.map.offset.x = i * 0.37
+    m.map.repeat.x = CURTAINS[i][3] / 10 // la texture garde sa taille d'origine : un rideau de 24 la répète 2,4 fois
     return m
   }), [])
   useFrame((_, delta) => {
@@ -58,7 +59,7 @@ export function Aurora() {
     s.k = approach(s.k, on ? 1 : 0, dt * 0.5)
     const night = smooth(mood.night), sky = clear()
     // la nuit, un voile d'aurore même sans le son ; vive quand elle chante ; pâle le jour
-    const level = (0.12 * night + s.k * (0.06 + 0.8 * night)) * sky
+    const level = (0.3 * night + s.k * (0.06 + 0.7 * night)) * sky
     if (!reduceMotion) s.sway += dt * (0.25 + s.k * 0.5)
     mats.forEach((m, i) => {
       m.opacity = level * (i ? 0.75 : 1)

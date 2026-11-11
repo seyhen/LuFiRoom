@@ -3,6 +3,7 @@ import { far, skin } from '../../materials'
 import { canvasTex, seeded } from '../../paint'
 import { skyFade } from '../../outdoor'
 import { farStone } from '../../nature/materials'
+import { glowTex } from '../../textures'
 
 // Le fond de la mer autour du sous-marin : sable ridé, roches, coraux, éponges, kelp, poissons, baleine. Tout se perd dans le
 // bleu-vert de l'eau avec la distance (le ciel de la pièce est l'eau) et vers le bas.
@@ -27,8 +28,9 @@ sandTex.wrapS = sandTex.wrapT = RepeatWrapping
 const causticTex = canvasTex(256, 256, (x) => {
   const r = seeded(23)
   x.fillStyle = '#000'; x.fillRect(0, 0, 256, 256)
-  x.strokeStyle = 'rgba(255,255,255,.6)'; x.lineWidth = 2.2
-  for (let i = 0; i < 28; i++) {
+  // un trait épais et flou, peu contrasté : les caustiques fines se lisaient comme des gribouillis sur le sable
+  x.strokeStyle = 'rgba(255,255,255,.42)'; x.lineWidth = 4.2; x.shadowColor = 'rgba(255,255,255,.7)'; x.shadowBlur = 9
+  for (let i = 0; i < 24; i++) {
     const cx = r() * 256, cy = r() * 256, rr = 14 + r() * 22
     x.beginPath()
     for (let k = 0; k <= 7; k++) { const a = (k / 7) * 6.3, d = rr * (0.8 + r() * 0.4); k ? x.lineTo(cx + Math.cos(a) * d, cy + Math.sin(a) * d) : x.moveTo(cx + d, cy) }
@@ -102,5 +104,8 @@ export const D = {
   lens: out(far(0xfff4d8, { roughness: 0.1, clearcoat: 1, emissive: 0xffe2a0, emissiveIntensity: 0.3 })),
   beam: new MeshBasicMaterial({ color: 0xfff0c8, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, side: DoubleSide }),
   ray: new MeshBasicMaterial({ color: 0xeafff8, vertexColors: true, transparent: true, opacity: 0.1, depthWrite: false, blending: AdditiveBlending, side: DoubleSide }),
+  // les méduses : cloche et halo additifs, qui s'éteignent vers le noir avec la distance
+  jelly: [0x7ff0ff, 0xff9ad8, 0xc0a0ff].map((c) => skyFade(new MeshBasicMaterial({ color: c, transparent: true, opacity: 0.4, depthWrite: false, blending: AdditiveBlending, side: DoubleSide }), { ...F, additive: true })),
+  jellyGlow: [0x7ff0ff, 0xff9ad8, 0xc0a0ff].map((c) => skyFade(new MeshBasicMaterial({ map: glowTex, color: c, transparent: true, opacity: 0.3, depthWrite: false, blending: AdditiveBlending }), { ...F, additive: true })),
   bubble: new MeshBasicMaterial({ color: 0xeafffa, transparent: true, opacity: 0.55, depthWrite: false }),
 }

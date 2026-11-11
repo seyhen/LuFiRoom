@@ -179,7 +179,7 @@ export function Rays() {
     D.ray.opacity = 0.09 * (1 - n * 0.85) * dim
     caustic.offset.x += Math.min(dt, 0.05) * 0.02
     caustic.offset.y += Math.min(dt, 0.05) * 0.013
-    D.caustic.opacity = 0.28 * (1 - n * 0.8) * dim
+    D.caustic.opacity = 0.2 * (1 - n * 0.8) * dim
     if (!reduceMotion) CURRENT.uTime.value = clock.elapsedTime
     rays.forEach((r, i) => { const m = refs.current[i]; if (m) m.rotation.z = 0.25 + Math.sin(clock.elapsedTime * 0.2 + r.ph) * 0.05 })
   })

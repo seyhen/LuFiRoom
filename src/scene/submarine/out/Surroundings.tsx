@@ -2,6 +2,7 @@ import { Static } from '../../Static'
 import { SkyFadeClock } from '../../outdoor'
 import { submarine } from '../../../rooms/submarine'
 import { Seabed } from './Seabed'
+import { Jellies } from './Jellies'
 import { Bubbles, HullGear, Kelp, Rays, Schools, Whale } from './Life'
 
 /**
@@ -20,6 +21,7 @@ export function Surroundings() {
       <Kelp />
       <Schools />
       <Whale />
+      <Jellies />
       <Bubbles />
       <Rays />
       <HullGear />
