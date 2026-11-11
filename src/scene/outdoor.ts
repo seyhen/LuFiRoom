@@ -29,7 +29,7 @@ export const SKY = {
 }
 
 /** Gain de la lune sur le dehors, la nuit (voir `skyFade`). */
-const NIGHT_GAIN = 0.6
+const NIGHT_GAIN = 0.7
 
 export interface FadeOpts {
   /** Le centre du fondu (x, z) : le milieu de la pièce. */
@@ -99,8 +99,10 @@ export function skyFade<T extends Material>(m: T, o: FadeOpts = {}): T {
           k_ = max(k_, smoothstep(${f(y0)}, ${f(y1)}, vSkyP.y));
           k_ = max(k_, smoothstep(${f(below)}, ${f(below - 1.2)}, vSkyP.y));
           ${additive ? '' : `// La nuit, le dehors reçoit la lune : un voile froid et un peu de gain, pour que les volumes se lisent au lieu de tomber au bleu uni
-          // (ce décor n'est jamais dans la pièce : les intérieurs gardent leur nuit).
-          gl_FragColor.rgb = gl_FragColor.rgb * (1.0 + ${f(NIGHT_GAIN)} * uSkyN) + vec3(0.012, 0.022, 0.05) * uSkyN;`}
+          // (ce décor n'est jamais dans la pièce : les intérieurs gardent leur nuit). Le gain vise ce qui est sombre (sapins, gazon, toits) :
+          // la neige et le sable, déjà clairs, ne bougent presque pas (à plein gain, la neige de la cabane virait au violet lumineux).
+          float moon_ = uSkyN * (1.0 - smoothstep(0.10, 0.38, dot(gl_FragColor.rgb, vec3(0.299, 0.587, 0.114))));
+          gl_FragColor.rgb = gl_FragColor.rgb * (1.0 + ${f(NIGHT_GAIN)} * moon_) + vec3(0.012, 0.022, 0.05) * moon_;`}
           gl_FragColor.rgb = mix(gl_FragColor.rgb, ${additive ? 'vec3(0.0)' : 'sky_'}, k_);
         }
         #include <dithering_fragment>`,
