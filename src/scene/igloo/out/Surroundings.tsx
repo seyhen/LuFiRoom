@@ -9,7 +9,7 @@ import { far } from '../../materials'
 import { canvasTex } from '../../paint'
 import { SkyFadeClock, skyFade } from '../../outdoor'
 import { snowTop } from '../../snowTop'
-import { Rock } from '../../nature/Rock'
+import { Ice, glacierGeo, pinnacleGeo, tableGeo } from './Glaciers'
 import { OutdoorPrecip } from '../../objects/OutdoorPrecip'
 import { igloo } from '../../../rooms/igloo'
 import { Penguin } from '../Penguin'
@@ -41,10 +41,9 @@ const M = {
   ripple: skyFade(new MeshBasicMaterial({ map: rippleTex, transparent: true, opacity: 0.5, depthWrite: false }), F),
   floe: skyFade(snowTop(far(0xf2f7fc, { roughness: 0.5, clearcoat: 0.35 }), 0.6), F),
   floeSide: skyFade(far(0xb8d8ec, { roughness: 0.2, clearcoat: 0.9 }), F),
-  berg: skyFade(snowTop(far(0xdcecf8, { roughness: 0.3, clearcoat: 0.9, clearcoatRoughness: 0.2 }), 1, 0.5, 0.85), F),
-  glacier: skyFade(snowTop(far(0xb9d4ea, { roughness: 0.35, clearcoat: 0.5, clearcoatRoughness: 0.25 }), 1, 0.5, 0.85), FG),
-  glacierDeep: skyFade(far(0x7aa6cc, { roughness: 0.3, clearcoat: 0.7 }), FG),
-  bergDeep: skyFade(far(0x9cc8e6, { roughness: 0.25, clearcoat: 0.9 }), F),
+  // la glace des séracs : la couleur vient des sommets (strates, crevasses, ligne d'eau pâle, voir Glaciers.tsx)
+  ice: skyFade(snowTop(far(0xf4f8fc, { vertexColors: true, roughness: 0.3, clearcoat: 0.8, clearcoatRoughness: 0.2 }), 0.9, 0.5, 0.85), F),
+  glacier: skyFade(snowTop(far(0xf4f8fc, { vertexColors: true, roughness: 0.35, clearcoat: 0.5, clearcoatRoughness: 0.25 }), 0.9, 0.5, 0.85), FG),
   kayak: skyFade(far(0xd8552e, { roughness: 0.35, clearcoat: 0.8 }), F),
   deck: skyFade(far(0x2a2e38, { roughness: 0.5, clearcoat: 0.4 }), F),
   wood: skyFade(far(0xc89a62, { roughness: 0.6 }), F),
@@ -154,31 +153,20 @@ export function Surroundings() {
       <Static>
         {TABLES.map(([x, z, w, h, d, ry], i) => (
           <group key={`t${i}`} position={[x, SEA, z]} rotation-y={ry}>
-            {/* le bloc, posé sur une encoche creusée par la houle : une bande bleue en retrait à la ligne d'eau (du relief, pas une planche) */}
-            <Part geo={rbox(w, h - 0.4, d, 0.28)} m={M.berg} p={[0, 0.25 + (h - 0.4) / 2, 0]} castShadow={false} />
-            <Part geo={rbox(w - 0.34, 0.5, d - 0.34, 0.16)} m={M.bergDeep} p={[0, 0.02, 0]} castShadow={false} />
+            {/* la table : huit pans, strates fines, crevasses bleues, encoche pâle à la ligne d'eau ; un éclat détaché au pied */}
+            <Ice geo={tableGeo(i)} m={M.ice} p={[0, 0, 0]} s={[w / 2, h, d / 2]} />
             {/* un second gradin, plus petit, décalé : la table a fondu par le bord */}
-            <Part geo={rbox(w * 0.58, h * 0.42, d * 0.62, 0.22)} m={M.berg} p={[-w * 0.14, h - 0.15 + h * 0.13, -d * 0.1]} castShadow={false} />
-            {/* des bosses de neige tassée sur le dessus : une table plate fait boîte */}
-            <Rock v={i + 2} p={[-w * 0.24, h - 0.2, d * 0.12]} s={[w * 0.28, h * 0.38, d * 0.26]} ry={i} m={M.berg} shadow={false} />
-            <Rock v={i + 5} p={[w * 0.26, h - 0.2, -d * 0.18]} s={[w * 0.2, h * 0.28, d * 0.2]} ry={i + 1} m={M.berg} shadow={false} />
-            {/* un bloc écroulé au pied, sur le flanc vu */}
-            <Part geo={rbox(w * 0.22, h * 0.3, d * 0.24, 0.12)} m={M.berg} p={[w * 0.42, h * 0.08, d * 0.5]} rotation={[0.15, 0.4, -0.2]} castShadow={false} />
-            {/* la grotte bleue creusée par la houle : une voûte sombre qui affleure sur les deux faces vues (une ellipse, pas une plaque) */}
-            <Part geo={SPH} m={M.bergDeep} p={[-w * 0.18, 0.25 + h * 0.18, d / 2 - 0.02]} scale={[w * 0.12, h * 0.17, 0.07]} castShadow={false} />
-            <Part geo={SPH} m={M.bergDeep} p={[w / 2 - 0.02, 0.25 + h * 0.16, d * 0.12]} scale={[0.07, h * 0.15, d * 0.1]} castShadow={false} />
+            <Ice geo={tableGeo(i + 3)} m={M.ice} p={[-w * 0.14, h * 0.86, -d * 0.1]} s={[w * 0.29, h * 0.4, d * 0.31]} ry={0.5 + i} />
+            {/* des séracs posés sur le dessus : une table plate fait boîte */}
+            <Ice geo={glacierGeo(i + 1)} m={M.ice} p={[w * 0.22, h * 0.86, d * 0.12]} s={[w * 0.1, h * 0.5, w * 0.09]} ry={i} />
+            <Ice geo={pinnacleGeo(i + 1)} m={M.ice} p={[-w * 0.3, h * 0.88, d * 0.2]} s={[w * 0.07, h * 0.4, w * 0.07]} ry={i + 2} />
           </group>
         ))}
         {GLACIERS.map(([x, z, w, h, v], i) => (
-          <group key={`g${i}`} position={[x, SEA, z]} rotation-y={i * 0.9}>
-            {/* le socle bleu au ras de l'eau (la glace plonge), puis le massif blanc, puis un second sommet décalé */}
-            <Rock v={v + 2} p={[0, -0.5, 0]} s={[w * 1.18, h * 0.2, w]} m={M.glacierDeep} shadow={false} />
-            <Rock v={v} p={[0, -0.3, 0]} s={[w, h, w * 0.85]} m={M.glacier} shadow={false} />
-            <Rock v={v + 4} p={[w * 0.55, -0.3, w * 0.2]} s={[w * 0.5, h * 0.62, w * 0.45]} ry={0.8} m={M.glacier} shadow={false} />
-          </group>
+          <Ice key={`g${i}`} geo={glacierGeo(v)} m={M.glacier} p={[x, SEA, z]} s={[w, h * (i < 4 ? 0.82 : 1), w * 0.85]} ry={i * 0.9} />
         ))}
         {BERGS.map(([x, z, w, h, v], i) => (
-          <Rock key={i} v={v} p={[x, SEA - 0.2, z]} s={[w, h, w * 0.85]} ry={i * 1.3} m={M.berg} shadow={false} />
+          <Ice key={i} geo={pinnacleGeo(v)} m={M.ice} p={[x, SEA, z]} s={[w * 0.9, h, w * 0.8]} ry={i * 1.3} />
         ))}
       </Static>
       {FLOES.map(([x, z, r], i) => (
