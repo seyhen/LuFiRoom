@@ -24,7 +24,7 @@ function Deck({ len, w }: { len: number; w: number }) {
   return (
     <>
       <Part geo={rbox(w, 0.1, len, 0.03, 1)} m={S.pierBeam} p={[0, 0, len / 2]} />
-      <mesh geometry={g} material={S.pierWood} position={[0, 0.052, len / 2]} rotation-x={-Math.PI / 2} receiveShadow raycast={noRay} />
+      <mesh geometry={g} material={S.pierWood} position={[0, 0.064, len / 2]} rotation-x={-Math.PI / 2} receiveShadow raycast={noRay} />
       {/* les deux longerons qui dépassent un peu au bout */}
       {[-1, 1].map((s) => <Part key={s} geo={rbox(0.1, 0.16, len + 0.1, 0.03, 1)} m={S.pierBeam} p={[s * (w / 2 - 0.02), -0.05, len / 2]} castShadow={false} />)}
     </>

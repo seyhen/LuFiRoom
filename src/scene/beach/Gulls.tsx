@@ -29,9 +29,11 @@ const FLY = blob([
   ell([0.15, 0.012, 0], 0.04, { color: W, k: 0.04 }),
   cone([0.18, 0.012, 0], [0.23, 0.005, 0], 0.014, 0.01, { color: BILL, k: 0.01 }),
   ell([-0.14, 0, 0], [0.07, 0.015, 0.035], { color: W, k: 0.03 }),
-  pair(ell([0, 0.01, 0.2], [0.075, 0.014, 0.19], { color: G, rot: [0.05, 0, 0], k: 0.04 })),
-  pair(ell([-0.02, 0.03, 0.43], [0.05, 0.012, 0.11], { color: INK, rot: [0.1, 0, 0], k: 0.03 })),
-], { h: 0.03, k: 0.05 })
+  // des ailes plus épaisses que le pas du maillage (h) : plus fines, elles se découpaient en morceaux détachés du corps
+  ell([0, 0.01, 0], [0.09, 0.034, 0.09], { color: W, k: 0.05 }),
+  pair(ell([0, 0.01, 0.2], [0.075, 0.03, 0.19], { color: G, rot: [0.05, 0, 0], k: 0.05 })),
+  pair(ell([-0.02, 0.03, 0.4], [0.05, 0.026, 0.14], { color: INK, rot: [0.1, 0, 0], k: 0.04 })),
+], { h: 0.02, k: 0.05 })
 
 /** Une mouette posée (la peau `gullSkin` : couleurs de sommets). */
 export function SittingGull({ p, ry = 0, scale = 1, look = 0 }: { p: [number, number, number]; ry?: number; scale?: number; look?: number }) {

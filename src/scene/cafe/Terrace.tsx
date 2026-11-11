@@ -86,7 +86,7 @@ function Bookbinder() {
     <group>
       {/* le corps : façade de grès (devant) et mur de brique (côté du café) */}
       <B s={[7.0, 6.9, 0.36]} p={[LC, rel(3.45), zF - 0.18]} m={S.sand} uv={2} r={0.05} />
-      <B s={[0.36, 6.9, zF - L.zB]} p={[L.x1 - 0.18, rel(3.45), (zF + L.zB) / 2]} m={S.brick} uv={2} r={0.05} />
+      <B s={[0.36, 6.86, zF - L.zB - 0.03]} p={[L.x1 - 0.18, rel(3.43), (zF - 0.03 + L.zB) / 2]} m={S.brick} uv={2} r={0.05} />
       <B s={[7.2, 0.14, 0.14]} p={[LC, rel(2.85), zF + 0.06]} m={K.stone} r={0.04} />
       <B s={[7.2, 0.1, 0.12]} p={[LC, rel(4.75), zF + 0.05]} m={K.stone} r={0.04} />
 
@@ -126,7 +126,7 @@ function Bookbinder() {
 
       {/* le pignon à redents et son œil-de-bœuf */}
       {[0, 1, 2, 3].map((k) => (
-        <B key={k} s={[7.0 - k * 1.5, 0.44, 0.34]} p={[LC, rel(6.94 + k * 0.42), zF - 0.17]} m={S.sand} uv={2} r={0.05} />
+        <B key={k} s={[6.94 - k * 1.5, 0.44, 0.38]} p={[LC, rel(6.94 + k * 0.42), zF - 0.16]} m={S.sand} uv={2} r={0.05} />
       ))}
       <group position={[LC, rel(7.45), zF + 0.02]}>
         <Part geo={cyl(0.3, 0.3, 0.04, 20)} m={S.lit[2].m} rotation-x={Math.PI / 2} castShadow={false} raycast={noRay} />
@@ -191,7 +191,7 @@ function Pub() {
   return (
     <group>
       <B s={[R.x1 - R.x0, top + 0.6, 0.4]} p={[RC, SW + (top + 0.6) / 2, zF - 0.2]} m={S.sand} uv={2} r={0.05} />
-      <B s={[0.4, top + 0.6, 6]} p={[R.x1 - 0.2, SW + (top + 0.6) / 2, zF - 3]} m={S.brick} uv={2} r={0.05} />
+      <B s={[0.4, top + 0.56, 5.97]} p={[R.x1 - 0.2, SW + (top + 0.56) / 2, zF - 3.015]} m={S.brick} uv={2} r={0.05} />
       {/* le rez-de-chaussée : boiseries vertes, deux baies allumées, la porte cintrée */}
       <B s={[R.x1 - R.x0 - 0.2, 2.9, 0.14]} p={[RC, rel(1.45), zF + 0.07]} m={K.green} r={0.05} />
       {[5.1, 8.9].map((x) => <Box key={x} s={[1.6, 1.3, 0.04]} p={[x, rel(1.5), zF + 0.16]} m={S.lit[x < 6 ? 2 : 1].m} />)}

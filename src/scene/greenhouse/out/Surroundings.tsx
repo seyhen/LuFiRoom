@@ -43,7 +43,7 @@ const TREES: [number, number, number, number, number, number][] = [
 /** Les haies : [x, z, longueur, sens] ; boules de buis : [x, z, rayon]. */
 const HEDGES: [number, number, number, 'x' | 'z'][] = [[-3.6, -5.6, 5.4, 'x'], [5.0, -4.9, 4.4, 'x'], [-5.2, 1.6, 4.6, 'z'], [-5.2, -2.8, 3.0, 'z'], [5.8, 1.6, 3.4, 'z']]
 const BALLS: [number, number, number][] = [[-3.5, -4.4, 0.42], [-1.2, -4.4, 0.42], [3.4, -4.1, 0.42], [-4.4, 3.8, 0.4], [4.6, 4.6, 0.4], [4.6, -1.2, 0.36], [-7.2, 3.6, 0.5], [7.0, 3.4, 0.5]]
-const LAMPS: V3[] = [[-4.4, 0, 3.4], [4.8, 0, 3.2], [-3.4, 0, -4.8], [4.6, 0, -4.6]]
+const LAMPS: V3[] = [[-3.6, 0, 3.3], [4.8, 0, 3.2], [-2.4, 0, -3.8], [4.6, 0, -3.6]]
 
 function Evening() {
   useFrame(() => {
@@ -80,9 +80,19 @@ export function Surroundings() {
         ))}
         <Part geo={rbox(6.4, 0.1, 0.22, 0.03)} m={M.stone} p={[4.2, GROUND + 0.78, -7.4]} castShadow={false} />
         {/* les haies taillées en mur, les boules de buis, les arbres */}
-        {HEDGES.map(([x, z, len, dir], i) => (
-          <Part key={i} geo={rbox(dir === 'x' ? len : 0.8, 0.95, dir === 'x' ? 0.8 : len, 0.3)} m={i % 2 ? M.hedge : M.hedgeLight} p={[x, GROUND + 0.47, z]} castShadow={false} />
-        ))}
+        {HEDGES.map(([x, z, len, dir], i) => {
+          // une haie : un cœur bas et, par-dessus, une rangée de buis ronds de tailles un peu différentes (pas un boudin lisse)
+          const n = Math.round(len / 0.7), m = i % 2 ? M.hedge : M.hedgeLight
+          return (
+            <group key={i}>
+              <Part geo={rbox(dir === 'x' ? len - 0.3 : 0.55, 0.45, dir === 'x' ? 0.55 : len - 0.3, 0.2)} m={m} p={[x, GROUND + 0.22, z]} castShadow={false} />
+              {Array.from({ length: n }, (_, k) => {
+                const t = -len / 2 + 0.35 + ((len - 0.7) * k) / Math.max(1, n - 1), r = 0.46 + 0.07 * ((k + i) % 3)
+                return <Foliage key={k} v={k + i} p={dir === 'x' ? [x + t, GROUND + 0.3, z] : [x, GROUND + 0.3, z + t]} s={[r, r * 0.95, r]} ry={k} m={(k + i) % 2 ? m : i % 2 ? M.hedgeLight : M.hedge} style="clipped" shadow={false} />
+              })}
+            </group>
+          )
+        })}
         {BALLS.map(([x, z, r], i) => (
           <group key={i}>
             <Part geo={cyl(0.12, 0.14, 0.2, 10)} m={M.stone} p={[x, GROUND + 0.1, z]} castShadow={false} />

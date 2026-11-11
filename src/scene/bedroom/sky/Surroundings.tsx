@@ -31,7 +31,7 @@ export function Surroundings() {
     const c = K.cloud.color
     c.copy(CLOUD.day).lerp(CLOUD.rain, r * 0.9).lerp(CLOUD.storm, mood.storm * 0.8).lerp(CLOUD.night, n)
     K.cloud.emissive.copy(CLOUD.emDay).lerp(CLOUD.emNight, n)
-    K.cloud.emissiveIntensity = 0.24 - r * 0.1 + n * 0.08
+    K.cloud.emissiveIntensity = 0.1 - r * 0.04 + n * 0.08
     // l'arc-en-ciel : tendre le jour, une lueur la nuit, effacé sous l'orage et la neige
     K.rainbow.opacity = 0.9 * (1 - n * 0.65) * (1 - mood.storm) * (1 - Math.min(1, mood.snow * 1.3)) * (1 - r * 0.15)
     K.win.emissiveIntensity = n * 0.95

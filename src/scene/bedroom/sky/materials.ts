@@ -31,6 +31,6 @@ export const K = {
 }
 
 export const CLOUD = {
-  day: new Color(0xffffff), night: new Color(0xaaa4e0), rain: new Color(0xc9c3de), storm: new Color(0x8d89a8),
-  emDay: new Color(0xfff3fb), emNight: new Color(0x7a74c4),
+  day: new Color(0xf0eaf6), night: new Color(0xaaa4e0), rain: new Color(0xc9c3de), storm: new Color(0x8d89a8),
+  emDay: new Color(0xe6daf1), emNight: new Color(0x7a74c4),
 }

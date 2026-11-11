@@ -7,12 +7,11 @@ import { approach, lerp, rand, smooth } from '../math'
 import type { Room } from '../rooms/types'
 import { DUSK } from '../state/daylight'
 import { mood, reduceMotion } from './anim'
-import { coarsePointer } from '../motion'
 import { life } from './life'
 import { SNOW } from './snowTop'
 
-// Carte d'ombre : 2048 sur ordinateur, 1024 sur écran tactile (le diorama de 16 unités y garde 64 px par unité ; `shadow-normalBias` couvre le texel plus gros).
-const SHADOW = coarsePointer ? 1024 : 2048
+// Carte d'ombre : 2048 partout. En 1024 sur téléphone, les bords d'ombre (plus gros) glissaient sur les façades et le ponton quand la pièce flotte : ça clignotait.
+const SHADOW = 2048
 
 // Intensités × π : three r155+ n'a plus l'éclairage « legacy » de r128 (voir materials.ts).
 const PI = Math.PI

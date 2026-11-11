@@ -5,7 +5,7 @@ import { S, SLAB } from './layout'
 
 // Les nuages : des paquets de boules aplaties, tous dans un seul `Batch`. Teintes par copie : le dessus crème, le côté rosé,
 // le dessous lilas (le matériau, lui, change avec le jour, la nuit et la pluie).
-const TOP = 0xffffff, SIDE = 0xfdeef5, UNDER = 0xded2f2, DEEP = 0xcfc0ec
+const TOP = 0xf3edf8, SIDE = 0xf0e0ec, UNDER = 0xded2f2, DEEP = 0xcfc0ec
 
 /** Un tas de boules autour de `c` : `n` boules sur une demi-ellipse, plus grosses au milieu. */
 function heap(out: Item[], r: () => number, c: V3, w: number, h: number, n: number, size: number, flat = 0.8) {
