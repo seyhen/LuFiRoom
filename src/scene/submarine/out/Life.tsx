@@ -60,7 +60,7 @@ const FISH = fishGeo()
 
 /** Les bancs : [centre x, y, z, rayon, vitesse (rad/s), nombre, teinte]. */
 const SCHOOLS: [number, number, number, number, number, number, number][] = [
-  [-5.9, 0.8, 2.0, 1.8, 0.32, 14, 0xffb44a], [6.3, 2.6, -4.2, 1.9, -0.26, 12, 0x7ad8f0], [3.0, -1.8, 5.9, 1.6, 0.4, 10, 0xf47a9a], [-3.0, 4.6, -6.5, 2.6, -0.2, 16, 0xf4f0a0],
+  [-5.9, 0.8, 2.0, 1.8, 0.32, 14, 0xffb44a], [6.3, 2.6, -4.2, 1.9, -0.26, 12, 0x7ad8f0], [3.0, -1.8, 5.9, 1.6, 0.4, 10, 0xf47a9a], [-3.0, 4.6, -6.5, 2.1, -0.2, 16, 0xf4f0a0],
 ]
 
 /** Les bancs de poissons qui tournent autour du sous-marin, chacun à sa couleur ; un seul tracé pour tous. */
