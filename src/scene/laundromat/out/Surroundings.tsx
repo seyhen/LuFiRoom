@@ -1,14 +1,18 @@
 import { useFrame } from '@react-three/fiber'
-import { AdditiveBlending, MeshBasicMaterial, SpriteMaterial } from 'three'
+import { AdditiveBlending, MeshBasicMaterial, PlaneGeometry, SpriteMaterial } from 'three'
 import { smooth } from '../../../math'
 import { mood } from '../../anim'
 import { Static } from '../../Static'
-import { Part, SPH, cyl, noRay, rbox } from '../../parts'
-import { far } from '../../materials'
+import { Part, SPH, cyl, noRay, rbox, worldUV } from '../../parts'
+import { far, gummy } from '../../materials'
+import { farFoliage } from '../../nature/materials'
+import { Foliage } from '../../nature/Foliage'
 import { canvasTex, seeded } from '../../paint'
+import { barkTex, cobbleTex, drainTex, manholeTex, roadTex, slabTex, treeGrateTex } from './streetTex'
 import { SkyFadeClock, skyFade } from '../../outdoor'
 import { snowTop } from '../../snowTop'
 import { glowTex } from '../../textures'
+import { puddleTex } from '../textures'
 import { OutdoorPrecip } from '../../objects/OutdoorPrecip'
 import { laundromat } from '../../../rooms/laundromat'
 import { Block } from '../../atelier/out/Haussmann'
@@ -22,20 +26,7 @@ import { P } from '../../atelier/out/materials'
 const SIDEWALK = -0.2, ROAD = -0.34
 const F = { c: [0, 0] as [number, number], r0: 7.5, r1: 12.5 }
 
-/** Les dalles du trottoir : un quadrillage clair, un peu taché. */
-const slabTex = canvasTex(128, 128, (x) => {
-  x.fillStyle = '#b9bcbe'; x.fillRect(0, 0, 128, 128)
-  x.fillStyle = 'rgba(0,0,0,.12)'; x.fillRect(0, 0, 128, 3); x.fillRect(0, 0, 3, 128); x.fillRect(0, 64, 128, 2); x.fillRect(64, 0, 2, 128)
-}, [1, 1])
-slabTex.repeat.set(16, 16)
-slabTex.wrapS = slabTex.wrapT = 1000
-
-/** L'asphalte : gris anthracite grenu, une ligne blanche discontinue. */
-const roadTex = canvasTex(128, 128, (x) => {
-  x.fillStyle = '#4a4c52'; x.fillRect(0, 0, 128, 128)
-  for (let i = 0; i < 400; i++) { x.fillStyle = Math.random() < 0.5 ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.08)'; x.fillRect(Math.random() * 128, Math.random() * 128, 2, 2) }
-}, [1, 1])
-roadTex.repeat.set(10, 10)
+roadTex.repeat.set(5, 5)
 roadTex.wrapS = roadTex.wrapT = 1000
 
 // Peu de matériaux, partagés, et pas d'ombre portée : chaque matériau du dehors coûte un tracé (deux avec l'ombre). Les sacs sont
@@ -78,6 +69,16 @@ const M = {
   // le sol reste mat (presque pas de vernis) : sinon les lampes de la laverie y font une traînée de lumière devant la pièce
   slab: skyFade(snowTop(far(0xffffff, { map: slabTex, roughness: 0.85, clearcoat: 0.08, clearcoatRoughness: 0.7 }), 1, 0.4, 0.8), F),
   road: skyFade(snowTop(far(0xffffff, { map: roadTex, roughness: 0.7, clearcoat: 0.2, clearcoatRoughness: 0.65 }), 1, 0.4, 0.8), F),
+  cobble: skyFade(snowTop(far(0xffffff, { map: cobbleTex, roughness: 0.55 }), 1, 0.4, 0.8), F),
+  manhole: skyFade(far(0xffffff, { map: manholeTex, roughness: 0.4, metalness: 0.25 }), F),
+  drain: skyFade(far(0xffffff, { map: drainTex, roughness: 0.4, metalness: 0.2 }), F),
+  grate: skyFade(far(0xffffff, { map: treeGrateTex, roughness: 0.45, metalness: 0.2 }), F),
+  bark: skyFade(snowTop(far(0xffffff, { map: barkTex, roughness: 0.8 }), 0.8, 0.4, 0.8), F),
+  leaves: [0x7d9650, 0x8fa058, 0xa09a48].map((c) => skyFade(snowTop(farFoliage(c), 0.7, 0.45, 0.8), F)),
+  scooter: skyFade(far(0x86c9bd, { roughness: 0.3 }), F),
+  seat: skyFade(far(0x3a2e2a, { roughness: 0.6 }), F),
+  chrome: skyFade(far(0xc8d2d8, { roughness: 0.2, metalness: 0.5 }), F),
+  tyre: skyFade(far(0x1f2326, { roughness: 0.8 }), F),
   curb: skyFade(snowTop(far(0xa8acb0, { roughness: 0.7, clearcoat: 0.1 }), 1, 0.4, 0.8), F),
   stripe: skyFade(snowTop(far(0xf2f0e8, { roughness: 0.6 }), 1, 0.4, 0.8), F),
   iron: skyFade(snowTop(far(0x2a3236, { roughness: 0.35, clearcoat: 0.6 }), 0.6, 0.55, 0.9), F),
@@ -86,6 +87,8 @@ const M = {
   wood: skyFade(snowTop(far(0x8a5e3e, { roughness: 0.6 }), 0.9, 0.45, 0.85), F),
   shop: skyFade(far(0xffffff, { map: shopTex, emissiveMap: shopTex, emissive: 0xffffff, emissiveIntensity: 0.1, roughness: 0.25, clearcoat: 0.8 }), F),
   lit: skyFade(far(0xfbe4b8, { roughness: 0.2, clearcoat: 0.9, emissive: 0xffc884, emissiveIntensity: 0.15 }), F),
+  puddle: gummy(0x6a8296, { map: puddleTex, alphaMap: puddleTex, roughness: 0.02, clearcoat: 1, transparent: true, opacity: 0.75, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1 }),
+  streak: new MeshBasicMaterial({ map: glowTex, color: 0xffc080, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -3 }),
   pool: new MeshBasicMaterial({ map: glowTex, color: 0xffc888, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -2 }),
   glow: new SpriteMaterial({ map: glowTex, color: 0xffd090, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }),
 }
@@ -118,6 +121,94 @@ function Crosswalk() {
   )
 }
 
+
+/** Un plan au sol dont les UV suivent les mètres (`tile` mètres par texture) : la même texture garde sa taille sur tous les plans. */
+const flats = new Map<string, PlaneGeometry>()
+function flat(w: number, d: number, tile: number) {
+  const k = `${w},${d},${tile}`
+  let g = flats.get(k)
+  if (!g) {
+    g = new PlaneGeometry(w, d)
+    const uv = g.attributes.uv
+    for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * (w / tile), uv.getY(i) * (d / tile))
+    flats.set(k, g)
+  }
+  return g
+}
+const ground = (m: (typeof M)[keyof typeof M], w: number, d: number, tile: number, p: [number, number, number], ry = 0) => (
+  <mesh geometry={flat(w, d, tile)} material={m as never} position={p} rotation={[-Math.PI / 2, 0, ry]} receiveShadow raycast={noRay} />
+)
+
+/** Le caniveau : une bande de pavés le long du trottoir, ses deux avaloirs, une plaque d'égout, une autre sur la chaussée de devant. */
+function Gutter() {
+  const y = ROAD + 0.01
+  return (
+    <>
+      {ground(M.cobble, 0.75, 12.4, 0.8, [6.68, y, 0.5])}
+      {ground(M.cobble, 16.4, 0.75, 0.8, [-2.1, y, 6.43])}
+      {ground(M.drain, 0.5, 0.8, 1, [6.68, y + 0.012, 2.6])}
+      {ground(M.drain, 0.8, 0.5, 1, [-6.6, y + 0.012, 6.43], Math.PI / 2)}
+      <Part geo={cyl(0.4, 0.4, 0.03, 28)} m={M.manhole} p={[8.6, ROAD + 0.015, 3.1]} castShadow={false} />
+      <Part geo={cyl(0.4, 0.4, 0.03, 28)} m={M.manhole} p={[1.6, ROAD + 0.015, 8.4]} castShadow={false} />
+    </>
+  )
+}
+
+/** Les marquages : la ligne de voie en tirets sur la rue de devant et sur celle de droite (elle s'arrête au passage piéton). */
+function Markings() {
+  const y = ROAD + 0.012
+  return (
+    <>
+      {Array.from({ length: 11 }, (_, i) => <Part key={i} geo={rbox(0.13, 0.02, 1.0, 0.01)} m={M.stripe} p={[9.6, y, 0.6 + i * 1.9]} castShadow={false} />)}
+      {Array.from({ length: 8 }, (_, i) => <Part key={i} geo={rbox(1.0, 0.02, 0.13, 0.01)} m={M.stripe} p={[-7.6 + i * 1.9, y, 9.4]} castShadow={false} />)}
+      <Part geo={rbox(0.36, 0.02, 4.4, 0.01)} m={M.stripe} p={[10.4, y, -3.1]} castShadow={false} />
+    </>
+  )
+}
+
+/** Le platane d'alignement : écorce en plaques, trois branches, un houppier de masses de feuillage, sa grille de fonte au pied. */
+function PlaneTree({ x, z }: { x: number; z: number }) {
+  const masses: [number, [number, number, number], [number, number, number]][] = [
+    [0, [0, 2.3, 0], [0.72, 0.62, 0.7]], [1, [0.42, 2.7, 0.1], [0.62, 0.6, 0.6]], [2, [-0.4, 2.65, -0.1], [0.62, 0.6, 0.6]],
+    [3, [0.05, 3.15, 0.0], [0.58, 0.6, 0.58]], [4, [-0.05, 2.55, 0.42], [0.56, 0.55, 0.5]], [5, [0.1, 2.6, -0.42], [0.54, 0.55, 0.5]],
+  ]
+  return (
+    <group position={[x, SIDEWALK, z]}>
+      {ground(M.grate, 1.0, 1.0, 1, [0, 0.012, 0])}
+      <Part geo={cyl(0.15, 0.22, 2.4, 12)} m={M.bark} p={[0, 1.2, 0]} castShadow={false} />
+      {([[0.35, 0.2], [-0.3, -0.15], [0.05, -0.38]] as const).map(([bx, bz], i) => (
+        <Part key={i} geo={cyl(0.04, 0.07, 0.8, 8)} m={M.bark} p={[bx * 0.55, 2.35, bz * 0.55]} rotation={[bz * 1.1, 0, -bx * 1.1]} castShadow={false} />
+      ))}
+      {masses.map(([v, p, s], i) => <Foliage key={i} v={v} p={[p[0], p[1] - s[1] * 0.4, p[2]]} s={s} m={M.leaves[i % 3]} ry={i * 1.3} shadow={false} />)}
+    </group>
+  )
+}
+
+/** Le scooter garé le long du trottoir : caisse crème-menthe, bouclier, selle, guidon à rétroviseurs, phare, deux roues. */
+function Scooter({ x, z }: { x: number; z: number }) {
+  return (
+    <group position={[x, SIDEWALK, z]}>
+      {[-0.52, 0.55].map((dx) => (
+        <group key={dx} position={[dx, 0.17, 0]}>
+          <Part geo={cyl(0.17, 0.17, 0.09, 16)} m={M.tyre} rotation-x={Math.PI / 2} castShadow={false} />
+          <Part geo={cyl(0.08, 0.08, 0.115, 12)} m={M.chrome} rotation-x={Math.PI / 2} castShadow={false} />
+        </group>
+      ))}
+      <Part geo={rbox(0.95, 0.26, 0.34, 0.1)} m={M.scooter} p={[-0.28, 0.38, 0]} castShadow={false} />
+      <Part geo={rbox(0.5, 0.05, 0.3, 0.02)} m={M.scooter} p={[0.2, 0.24, 0]} castShadow={false} />
+      <Part geo={rbox(0.09, 0.62, 0.32, 0.04)} m={M.scooter} p={[0.5, 0.58, 0]} rotation-z={-0.18} castShadow={false} />
+      <Part geo={rbox(0.55, 0.08, 0.28, 0.04)} m={M.seat} p={[-0.28, 0.58, 0]} castShadow={false} />
+      <Part geo={rbox(0.3, 0.04, 0.22, 0.02)} m={M.scooter} p={[0.56, 0.4, 0]} castShadow={false} />
+      <Part geo={cyl(0.025, 0.025, 0.42, 8)} m={M.chrome} p={[0.58, 0.28, 0]} castShadow={false} />
+      <Part geo={cyl(0.022, 0.022, 0.66, 8)} m={M.chrome} p={[0.5, 1.0, 0]} rotation-x={Math.PI / 2} castShadow={false} />
+      {[-1, 1].map((k) => <Part key={k} geo={cyl(0.03, 0.03, 0.12, 8)} m={M.seat} p={[0.5, 1.0, k * 0.36]} rotation-x={Math.PI / 2} castShadow={false} />)}
+      {[-1, 1].map((k) => <Part key={k} geo={cyl(0.012, 0.012, 0.2, 6)} m={M.chrome} p={[0.5, 1.12, k * 0.3]} castShadow={false} />)}
+      <Part geo={SPH} m={M.lit} p={[0.62, 0.88, 0]} scale={[0.07, 0.09, 0.09]} castShadow={false} />
+      <Part geo={rbox(0.08, 0.06, 0.16, 0.02)} m={M.red} p={[-0.78, 0.46, 0]} castShadow={false} />
+    </group>
+  )
+}
+
 /** Le soir, le réverbère, la boutique voisine et les fenêtres s'allument. */
 function Evening() {
   useFrame(() => {
@@ -126,6 +217,7 @@ function Evening() {
     M.shop.emissiveIntensity = 0.1 + k * 0.85
     M.glow.opacity = k * 0.9
     M.pool.opacity = k * 0.5
+    M.streak.opacity = k * 0.55
     for (const m of P.facade) m.emissiveIntensity = 0.04 + n * 0.55
     P.dormerGlass.emissiveIntensity = n * 1.3
   })
@@ -140,10 +232,15 @@ export function Surroundings() {
       {/* la chaussée partout, le trottoir autour de la laverie et de ses voisins */}
       <mesh position={[0, ROAD, 0]} rotation-x={-Math.PI / 2} material={M.road} receiveShadow raycast={noRay}><planeGeometry args={[34, 34]} /></mesh>
       <Static>
-        <Part geo={rbox(16.2, 0.16, 9.8, 0.05)} m={M.slab} p={[-1.9, SIDEWALK - 0.08, -0.6]} castShadow={false} />
+        <Part geo={worldUV(rbox(16.2, 0.16, 11.5, 0.05), 1)} m={M.slab} p={[-1.9, SIDEWALK - 0.08, 0.25]} castShadow={false} />
         <Part geo={rbox(16.3, 0.18, 0.18, 0.05)} m={M.curb} p={[-1.9, SIDEWALK - 0.08, -5.5]} castShadow={false} />
-        <Part geo={rbox(0.18, 0.18, 9.9, 0.05)} m={M.curb} p={[6.2, SIDEWALK - 0.08, -0.6]} castShadow={false} />
+        <Part geo={rbox(16.5, 0.18, 0.18, 0.05)} m={M.curb} p={[-1.9, SIDEWALK - 0.08, 6.0]} castShadow={false} />
+        <Part geo={rbox(0.18, 0.18, 11.6, 0.05)} m={M.curb} p={[6.2, SIDEWALK - 0.08, 0.25]} castShadow={false} />
         <Crosswalk />
+        <Markings />
+        <Gutter />
+        <PlaneTree x={5.4} z={-3.1} />
+        <Scooter x={3.2} z={5.2} />
         {/* l'immeuble voisin à gauche, sa boutique éclairée au rez-de-chaussée ; l'immeuble d'en face, de l'autre côté de la rue */}
         <Block x0={-9.6} x1={-3.8} z0={-3.6} z1={3.4} wall={3.2} top={4.9} s={1} shift={0.25} dormers={[3, 3]} lowBalcony={false} />
         {/* en face : plus bas, plus loin et moins large que le voisin, pour ne pas fermer le coin en haut à droite */}
@@ -187,7 +284,12 @@ export function Surroundings() {
       </Static>
       <sprite position={[5.95, SIDEWALK + 3.35, -4.6]} scale={1.4} material={M.glow} raycast={noRay} renderOrder={4} />
       <mesh position={[5.95, SIDEWALK + 0.01, -4.6]} rotation-x={-Math.PI / 2} material={M.pool} renderOrder={3} raycast={noRay}><planeGeometry args={[3.6, 3.6]} /></mesh>
-      <OutdoorPrecip ground={(x, z) => (x < 6.2 && z > -5.5 && x > -10 ? SIDEWALK : ROAD)} area={[-13, 13, -12, 12]} />
+      {/* les flaques de la chaussée, et le reflet du réverbère dans la plus proche */}
+      {([[8.6, ROAD + 0.014, 5.9, 2.4, 1.5, 0.4], [10.0, ROAD + 0.016, 1.8, 1.8, 1.2, -0.5], [-2.8, ROAD + 0.018, 7.9, 2.0, 1.2, 0.2], [8.0, ROAD + 0.02, -7.2, 2.6, 1.6, 0.1]] as const).map(([px, py, pz, w, d, ry], i) => (
+        <mesh key={i} material={M.puddle} position={[px, py, pz]} rotation={[-Math.PI / 2, 0, ry]} raycast={noRay}><planeGeometry args={[w, d]} /></mesh>
+      ))}
+      <mesh material={M.streak} position={[7.2, ROAD + 0.04, -6.9]} rotation={[-Math.PI / 2, 0, 0.1]} renderOrder={3} raycast={noRay}><planeGeometry args={[1.2, 2.6]} /></mesh>
+      <OutdoorPrecip ground={(x, z) => (x < 6.2 && z > -5.5 && z < 6 && x > -10 ? SIDEWALK : ROAD)} area={[-13, 13, -12, 12]} />
     </>
   )
 }
