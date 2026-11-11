@@ -48,8 +48,8 @@ export function Kelp() {
 /** Un poisson : corps en goutte, queue en éventail, nageoire dorsale (couleur dans les sommets, teinte par banc). */
 function fishGeo() {
   const b = SPH.clone().scale(0.16, 0.08, 0.05).toNonIndexed()
-  const tail = cyl(0.001, 0.07, 0.12, 8).rotateZ(Math.PI / 2).scale(1, 1, 0.3).translate(-0.19, 0, 0).toNonIndexed()
-  const fin = cyl(0.001, 0.04, 0.06, 6).scale(1.4, 1, 0.3).translate(0.02, 0.08, 0).toNonIndexed()
+  const tail = cyl(0.001, 0.07, 0.12, 8).clone().rotateZ(Math.PI / 2).scale(1, 1, 0.3).translate(-0.19, 0, 0).toNonIndexed()
+  const fin = cyl(0.001, 0.04, 0.06, 6).clone().scale(1.4, 1, 0.3).translate(0.02, 0.08, 0).toNonIndexed()
   const eye = SPH.clone().scale(0.018, 0.018, 0.018).translate(0.1, 0.02, 0.04).toNonIndexed()
   const eye2 = eye.clone().translate(0, 0, -0.08)
   const paint = (g: BufferGeometry, c: number) => { const col = new Color(c), n = g.attributes.position.count, a = new Float32Array(n * 3); for (let i = 0; i < n; i++) col.toArray(a, i * 3); g.setAttribute('color', new Float32BufferAttribute(a, 3)); return g }
@@ -195,7 +195,8 @@ export function Rays() {
 /** Dehors de la coque : l'hélice qui tourne à l'arrière (vers -x) et le projecteur de proue, qui s'allume la nuit. */
 export function HullGear() {
   const prop = useRef<Group>(null!)
-  const beam = useMemo(() => cyl(0.12, 1.1, 5, 20).translate(0, 2.5, 0).rotateZ(-Math.PI / 2), [])
+  // une copie : `cyl` rend une géométrie partagée en cache ; la tourner sur place la retournait encore à chaque visite (le cône finissait dressé dans l'eau)
+  const beam = useMemo(() => cyl(0.12, 1.1, 5, 20).clone().translate(0, 2.5, 0).rotateZ(-Math.PI / 2), [])
   useFrame((_, dt) => {
     if (!reduceMotion) prop.current.rotation.x += Math.min(dt, 0.05) * 2.2
     const k = Math.min(1, smooth(mood.night) + mood.storm * 0.4)

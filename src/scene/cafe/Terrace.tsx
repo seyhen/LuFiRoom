@@ -85,7 +85,8 @@ function Bookbinder() {
   return (
     <group>
       {/* le corps : façade de grès (devant) et mur de brique (côté du café) */}
-      <B s={[7.0, 6.9, 0.36]} p={[LC, rel(3.45), zF - 0.18]} m={S.sand} uv={2} r={0.05} />
+      {/* le grès s'arrête 0,03 avant le bout de la brique : sinon leurs deux faces de côté se superposent sur le pilastre d'angle et clignotent */}
+      <B s={[6.97, 6.9, 0.36]} p={[LC - 0.015, rel(3.45), zF - 0.18]} m={S.sand} uv={2} r={0.05} />
       <B s={[0.36, 6.86, zF - L.zB - 0.03]} p={[L.x1 - 0.18, rel(3.43), (zF - 0.03 + L.zB) / 2]} m={S.brick} uv={2} r={0.05} />
       <B s={[7.2, 0.14, 0.14]} p={[LC, rel(2.85), zF + 0.06]} m={K.stone} r={0.04} />
       <B s={[7.2, 0.1, 0.12]} p={[LC, rel(4.75), zF + 0.05]} m={K.stone} r={0.04} />
@@ -190,7 +191,7 @@ function Pub() {
   const { zF } = R, top = 6.4
   return (
     <group>
-      <B s={[R.x1 - R.x0, top + 0.6, 0.4]} p={[RC, SW + (top + 0.6) / 2, zF - 0.2]} m={S.sand} uv={2} r={0.05} />
+      <B s={[R.x1 - R.x0 - 0.03, top + 0.6, 0.4]} p={[RC - 0.015, SW + (top + 0.6) / 2, zF - 0.2]} m={S.sand} uv={2} r={0.05} />
       <B s={[0.4, top + 0.56, 5.97]} p={[R.x1 - 0.2, SW + (top + 0.56) / 2, zF - 3.015]} m={S.brick} uv={2} r={0.05} />
       {/* le rez-de-chaussée : boiseries vertes, deux baies allumées, la porte cintrée */}
       <B s={[R.x1 - R.x0 - 0.2, 2.9, 0.14]} p={[RC, rel(1.45), zF + 0.07]} m={K.green} r={0.05} />

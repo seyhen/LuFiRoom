@@ -12,7 +12,10 @@ import { SittingGull } from './Gulls'
 
 /** L'axe du ponton : il part du côté droit du bungalow, longe le sable, puis file en mer vers le fond droit. */
 export const PIER = { x: 5.1, z: -0.6, len: 8.6, w: 1.3, top: -0.12 }
-const WALK = { x0: 3.45, len: 1.75 }
+// Le débarcadère s'arrête au bord du ponton (x - w / 2) : avant, les deux planchers se chevauchaient à la même hauteur, planches en travers
+// l'une de l'autre, et clignotaient. Le ponton, lui, est prolongé de `JOIN` vers la plage pour fermer l'angle.
+const WALK = { x0: 3.45, len: PIER.x - PIER.w / 2 - 3.45 }
+const JOIN = PIER.w / 2
 
 /** Un plancher : une boîte et son dessus à planches (texture répétée à l'échelle), centré en x, de 0 à `len` en z. */
 function Deck({ len, w }: { len: number; w: number }) {
@@ -93,11 +96,14 @@ export function Pier() {
         ))}
       </group>
       <group position={[x, y, z]} rotation-y={Math.PI}>
-        <Deck len={len} w={w} />
+        <group position={[0, 0, -JOIN]}>
+          <Deck len={len + JOIN} w={w} />
+        </group>
         {posts.map((zz, k) => (
           <group key={zz}>
             <Post p={[-w / 2 + 0.03, 0, zz]} up={0.5} bottom={wet(zz) ? -0.52 : -0.5} />
-            <Post p={[w / 2 - 0.03, 0, zz]} up={k % 2 ? 0.2 : 0.26} bottom={wet(zz) ? -0.52 : -0.5} />
+            {/* pas de bitte d'amarrage dans le passage qui vient du débarcadère */}
+            {k > 0 && <Post p={[w / 2 - 0.03, 0, zz]} up={k % 2 ? 0.2 : 0.26} bottom={wet(zz) ? -0.52 : -0.5} />}
           </group>
         ))}
         {ropes.map((g, i) => <mesh key={i} geometry={g} material={S.rope} raycast={noRay} />)}

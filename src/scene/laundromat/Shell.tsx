@@ -96,8 +96,10 @@ export function Shell() {
       <Part geo={worldUV(rbox(0.82, 0.1, 3.72, 0.02), 0.8)} m={L.tile} p={[-2.6, 0.05, -0.1]} />
       <Part geo={rbox(0.04, 0.03, 3.74, 0.012)} m={L.steel} p={[-2.19, 0.095, -0.1]} castShadow={false} />
       {/* le haut des murs, un chant d'acier laqué blanc */}
-      <Part geo={rbox(6.6, 0.06, 0.32, 0.025)} m={L.frame} p={[-0.07, 4.33, -3.16]} castShadow={false} />
-      <Part geo={rbox(0.32, 0.06, 6.6, 0.025)} m={L.frame} p={[-3.16, 4.33, -0.07]} castShadow={false} />
+      {/* posé au-dessus du biseau du mur du fond (qui monte à 4,36) et plus large que lui : à la même hauteur, les deux dessus clignotaient.
+          Celui de gauche s'arrête contre celui du fond, sans dessus commun dans l'angle. */}
+      <Part geo={rbox(6.6, 0.06, 0.42, 0.025)} m={L.frame} p={[-0.07, 4.375, -3.13]} castShadow={false} />
+      <Part geo={rbox(0.38, 0.06, 6.15, 0.025)} m={L.frame} p={[-3.17, 4.375, 0.155]} castShadow={false} />
       {/* les néons : sur le mur de gauche au-dessus des machines, sur le mur du fond au-dessus de la vitrine */}
       <NeonTube at={[IN, 3.55, -1.25]} len={2.2} along="z" halo={false} />
       <NeonTube at={[IN, 3.55, 1.1]} len={2.2} along="z" halo={false} />

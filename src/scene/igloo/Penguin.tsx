@@ -29,11 +29,12 @@ function coatTex(coat: number) {
     }
     c.fillStyle = col
     c.fillRect(0, 0, TEX_PX, TEX_PX)
-    // le ventre, un peu plus clair au centre et ombré vers le bas, et le masque crème qui couvre tout le devant de la tête
+    // le ventre, un peu plus clair au centre et ombré vers le bas, et le masque crème du visage (yeux et bec dessus) ; le haut de la tête
+    // garde la couleur du pelage : un masque jusqu'au sommet du crâne, vu d'en haut, faisait des manchots chauves
     const bg = c.createLinearGradient(0, Y(0.34), 0, Y(0.04))
     bg.addColorStop(0, CREAM); bg.addColorStop(0.55, '#fff0df'); bg.addColorStop(1, '#f4e2cf')
     blot(0, 0.19, 0.138, 0.15, bg)
-    blot(0, 0.475, 0.128, 0.105, CREAM)
+    blot(0, 0.468, 0.128, 0.078, CREAM)
     // les joues roses : une tache douce de chaque côté, sous les yeux
     for (const sd of [-1, 1]) {
       const g = c.createRadialGradient(X(sd * 0.092), Y(0.428), 0, X(sd * 0.092), Y(0.428), R(0.036))
