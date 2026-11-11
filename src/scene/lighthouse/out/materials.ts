@@ -41,7 +41,7 @@ foamTex.wrapS = RepeatWrapping
 /** Le faisceau, vu dans sa longueur : vif à la lanterne, éteint au large (v = 0 à la lanterne, 1 au bout du cône). */
 const beamTex = canvasTex(4, 128, (x) => {
   const g = x.createLinearGradient(0, 0, 0, 128) // le haut du canvas est le bout du cône
-  g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.35, 'rgba(255,255,255,.35)'); g.addColorStop(0.8, 'rgba(255,255,255,.85)'); g.addColorStop(1, 'rgba(255,255,255,1)')
+  g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.1, 'rgba(255,255,255,0)'); g.addColorStop(0.4, 'rgba(255,255,255,.35)'); g.addColorStop(0.8, 'rgba(255,255,255,.85)'); g.addColorStop(1, 'rgba(255,255,255,1)')
   x.fillStyle = g; x.fillRect(0, 0, 4, 128)
 }, [1, 1])
 
