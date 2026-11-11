@@ -153,7 +153,7 @@ export function Dish({ p, ry = Math.PI / 4 }: { p: V3; ry?: number }) {
       <Part geo={cyl(0.045, 0.055, 1.0, 10)} m={P.antenna} p={[0, 0.55, 0]} castShadow={false} />
       <group position={[0, 1.05, 0.06]} rotation-x={1.0}>
         <Part geo={DISH} m={R.dishOut} scale={[0.5, 0.36, 0.5]} p={[0, 0.34, 0]} castShadow={false} />
-        <Part geo={DISH} m={R.dishIn} scale={[0.47, 0.34, 0.47]} p={[0, 0.355, 0]} castShadow={false} />
+        <Part geo={DISH} m={R.dishIn} scale={[0.455, 0.33, 0.455]} p={[0, 0.36, 0]} castShadow={false} />
         <Part geo={cyl(0.02, 0.02, 0.42, 6)} m={P.antenna} p={[0, 0.3, 0]} castShadow={false} />
         <Part geo={cyl(0.045, 0.035, 0.12, 8)} m={R.lnb} p={[0, 0.54, 0]} castShadow={false} />
         <Part geo={cyl(0.03, 0.05, 0.1, 8)} m={P.iron} p={[0, -0.04, -0.0]} castShadow={false} />

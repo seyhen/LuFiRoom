@@ -80,7 +80,7 @@ export const R = {
   glass: skyFade(far(0xffffff, { map: glassMap, emissiveMap: glassGlow, emissive: 0xffffff, emissiveIntensity: 0, roughness: 0.1, clearcoat: 1, side: DoubleSide }), NEAR),
   dish: skyFade(far(0xc9d1db, { roughness: 0.45, clearcoat: 0.5, side: DoubleSide }), NEAR),
   dishOut: skyFade(far(0xf3eee2, { roughness: 0.4, clearcoat: 0.6, side: DoubleSide }), NEAR),
-  dishIn: skyFade(far(0x5b6676, { roughness: 0.5, clearcoat: 0.3, side: DoubleSide }), NEAR),
+  dishIn: skyFade(far(0x7d8ba0, { roughness: 0.5, clearcoat: 0.3, side: DoubleSide }), NEAR),
   lnb: skyFade(far(0xd9453b, { roughness: 0.5, clearcoat: 0.4 }), NEAR),
   post: skyFade(far(0xc99466, { roughness: 0.65, clearcoat: 0.2 }), NEAR),
   wood: skyFade(far(0xb9855a, { roughness: 0.7 }), NEAR),
