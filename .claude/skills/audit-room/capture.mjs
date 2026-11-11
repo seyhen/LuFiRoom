@@ -46,6 +46,9 @@ const go = (room, night, on) => page.evaluate(async ({ room, night, on }) => {
   const st = window.__lofi.store
   if (st.getState().room !== room) { st.getState().goto(room); while (st.getState().room !== room || st.getState().leaving) await frames(1) }
   if (st.getState().night !== night) st.getState().toggleNight()
+  // Le fondu jour / nuit suit l'horloge (plusieurs dizaines de secondes quand la pièce « suit l'heure ») et le rendu logiciel plafonne le pas de temps :
+  // une capture prise le soir tombait au milieu du fondu. On pose l'état final tout de suite (le pont de dev expose `mood`).
+  if (window.__lofi.mood) window.__lofi.mood.night = night ? 1 : 0
   st.getState().muteAll()
   if (on) {
     const { roomById } = await import('/src/rooms/index.ts')
