@@ -5,6 +5,7 @@ import { BeachedBoat, FloatBoat } from './Boats'
 import { Palm } from './Palms'
 import { PIER, Pier } from './Pier'
 import { DuneGrass, Driftwood, FoamRings, Parasol, Rocks, SandCastle, Shells } from './Props'
+import { Distant } from './Distant'
 import { Terrain } from './Terrain'
 import { Soarers } from './Gulls'
 import { WIND } from './surroundMaterials'
@@ -53,6 +54,7 @@ export function Surroundings() {
 export function SurroundStatic() {
   return (
     <>
+        <Distant />
         <Pier />
         <Rocks />
         <Shells />
