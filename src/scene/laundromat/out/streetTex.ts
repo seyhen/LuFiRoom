@@ -115,13 +115,65 @@ export const treeGrateTex = canvasTex(256, 256, (x) => {
   }
 })
 
-/** L'écorce du platane : des plaques crème, vert-de-gris et gris qui s'écaillent. */
-export const barkTex = canvasTex(128, 128, (x) => {
+/**
+ * L'écorce du platane : des plaques qui s'écaillent, crème, vert-de-gris et gris-brun, aux contours irréguliers, sur un fond
+ * sombre qui apparaît là où la plaque est tombée. Les plaques se prolongent de l'autre côté du bord (la tuile se raccorde).
+ */
+export const barkTex = canvasTex(256, 256, (x) => {
   const r = seeded(17)
-  x.fillStyle = '#8b8470'; x.fillRect(0, 0, 128, 128)
-  for (let i = 0; i < 46; i++) {
-    x.fillStyle = ['#c9c0a2', '#a9a88a', '#6f7660', '#d8d0b4'][i % 4]
-    x.save(); x.translate(r() * 128, r() * 128); x.rotate((r() - 0.5) * 0.6)
-    x.beginPath(); x.ellipse(0, 0, 7 + r() * 12, 4 + r() * 8, 0, 0, TAU); x.fill(); x.restore()
+  x.fillStyle = '#5f5a4a'; x.fillRect(0, 0, 256, 256)
+  const tones = ['#d3cab0', '#bdb799', '#a4ab88', '#dcd6bc', '#8f9477', '#c4b98f']
+  for (let i = 0; i < 70; i++) {
+    const cx = r() * 256, cy = r() * 256, rx = 12 + r() * 22, ry = 9 + r() * 16, rot = (r() - 0.5) * 0.7, n = 7 + ((r() * 3) | 0)
+    const pts = Array.from({ length: n }, (_, k) => { const a = (k / n) * TAU, j = 0.72 + r() * 0.5; return [Math.cos(a) * rx * j, Math.sin(a) * ry * j] as const })
+    const fill = tones[i % tones.length]
+    for (const [ox, oy] of [[0, 0], [-256, 0], [256, 0], [0, -256], [0, 256]] as const) {
+      x.save(); x.translate(cx + ox, cy + oy); x.rotate(rot)
+      x.beginPath(); pts.forEach(([px, py], k) => (k ? x.lineTo(px, py) : x.moveTo(px, py))); x.closePath()
+      x.fillStyle = fill; x.fill()
+      x.lineWidth = 2.5; x.strokeStyle = 'rgba(52,48,36,.55)'; x.stroke()
+      x.fillStyle = 'rgba(255,255,255,.14)'; x.beginPath(); x.ellipse(-rx * 0.18, -ry * 0.25, rx * 0.5, ry * 0.22, 0, 0, TAU); x.fill()
+      x.restore()
+    }
   }
 }, [1, 1])
+
+/**
+ * Le reflet d'une lumière dans l'eau d'une flaque : une raie verticale (à l'écran), fine et très claire au centre, qui s'élargit en
+ * halo doux, hachée par les rides de l'eau. L'extrémité du bas (près de la caméra) est la plus vive : c'est l'image de la lanterne ;
+ * vers le haut, elle s'efface comme le fût. Neutre (blanc) : la teinte vient du matériau.
+ */
+export const reflectTex = canvasTex(64, 256, (x) => {
+  x.clearRect(0, 0, 64, 256)
+  for (let y = 0; y < 256; y++) {
+    const t = y / 255 // 0 en haut (loin) → 1 en bas (près)
+    const env = t < 0.8 ? Math.pow(t / 0.8, 1.5) : Math.pow(Math.max(0, 1 - (t - 0.8) / 0.2), 0.8)
+    const ripple = 0.5 + 0.5 * Math.cos(y * 0.5 + Math.sin(y * 0.13) * 2.2)
+    const gap = 0.35 + 0.65 * ripple
+    const hw = 2.2 + 2.6 * gap
+    const g = x.createLinearGradient(32 - hw * 5, 0, 32 + hw * 5, 0)
+    g.addColorStop(0, 'rgba(255,255,255,0)')
+    g.addColorStop(0.5 - 0.1, `rgba(255,240,215,${(0.2 * env * gap).toFixed(3)})`)
+    g.addColorStop(0.5, `rgba(255,255,250,${Math.min(1, 1.05 * env * gap).toFixed(3)})`)
+    g.addColorStop(0.5 + 0.1, `rgba(255,240,215,${(0.2 * env * gap).toFixed(3)})`)
+    g.addColorStop(1, 'rgba(255,255,255,0)')
+    x.fillStyle = g; x.fillRect(0, y, 64, 1)
+  }
+})
+
+/**
+ * Une flaque : un contour irrégulier (lobes arrondis, jamais une ellipse), l'eau un peu plus claire au centre et un liseré clair
+ * sur le bord mouillé. Le même dessin sert de carte et de masque (la teinte vient du matériau).
+ */
+export const wetTex = canvasTex(128, 128, (x) => {
+  const r = seeded(31), N = 14
+  const rad = Array.from({ length: N }, () => 0.62 + r() * 0.38)
+  const at = (a: number) => { const f = ((a / TAU) % 1 + 1) % 1 * N, i = Math.floor(f), t = f - i, u = t * t * (3 - 2 * t); return rad[i % N] * (1 - u) + rad[(i + 1) % N] * u }
+  x.beginPath()
+  for (let k = 0; k <= 72; k++) { const a = (k / 72) * TAU, R = at(a) * 58; const px = 64 + Math.cos(a) * R, py = 64 + Math.sin(a) * R * 0.95; k ? x.lineTo(px, py) : x.moveTo(px, py) }
+  x.closePath()
+  const g = x.createRadialGradient(54, 52, 4, 64, 64, 62)
+  g.addColorStop(0, '#f2f6fa'); g.addColorStop(1, '#bcc8d4')
+  x.fillStyle = g; x.fill()
+  x.lineWidth = 3.5; x.strokeStyle = '#ffffff'; x.stroke()
+})
