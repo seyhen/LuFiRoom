@@ -149,8 +149,9 @@ async function testRoom(page, vp, room, problems) {
     // Le canvas dessine la nouvelle pièce : plus de 100 tracés depuis qu'elle est là (une image de pièce en fait 150 à 300),
     // et l'image n'est ni vide (transparente) ni d'une seule couleur (noire).
     const drawsAtStart = await page.evaluate(() => window.__smokeDraws)
-    await page.waitForFunction((n) => window.__smokeDraws - n > 100, drawsAtStart, { timeout: 30_000, polling: 250 }).catch(() => {
-      errs.push('le canvas ne dessine pas (moins de 100 tracés en 30 s)')
+    // 60 s : en CI, 4 navigateurs se partagent le WebGL logiciel et une image de la laverie en desktop a dépassé 30 s (2026-11-11).
+    await page.waitForFunction((n) => window.__smokeDraws - n > 100, drawsAtStart, { timeout: 60_000, polling: 250 }).catch(() => {
+      errs.push('le canvas ne dessine pas (moins de 100 tracés en 60 s)')
     })
     const stats = await page.evaluate(canvasStats)
     if (!(stats.opaque > 0.05 && stats.colors >= 24)) errs.push(`canvas vide ou uni (${stats.size}, ${Math.round(stats.opaque * 100)} % opaque, ${stats.colors} couleurs)`)
