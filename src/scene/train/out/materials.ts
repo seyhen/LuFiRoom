@@ -106,9 +106,6 @@ const out = <T extends MeshStandardMaterial>(m: T, snow?: [number, number?, numb
 /** La voiture suivante : son toit reçoit la neige. */
 const car = <T extends MeshStandardMaterial>(m: T) => out(m, [1, 0.45, 0.85])
 
-/** Les Alpes lointaines (grands écrans) : un fondu large, des couleurs par sommet (roche bleutée, neige au sommet). */
-export const alps = skyFade(far(0xffffff, { vertexColors: true, roughness: 0.85, clearcoat: 0 }), { c: [0, 0], r0: 9.5, r1: 17.5, sx: 1.4, sz: 1.3 })
-
 export const meadow = meadowTex
 export const gravel = gravelTex
 meadow.wrapS = meadow.wrapT = RepeatWrapping

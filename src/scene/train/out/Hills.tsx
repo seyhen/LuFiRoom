@@ -1,13 +1,13 @@
 import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { BufferGeometry, Color, Float32BufferAttribute, type Group } from 'three'
+import { BufferGeometry, Float32BufferAttribute, type Group } from 'three'
 import { TAU, seeded } from '../../../math'
 import { reduceMotion } from '../../anim'
 import { LIVE } from '../../Static'
 import { noRay } from '../../parts'
 import { Firs, type Fir } from '../../nature/firs'
 import { noise } from '../../outdoor'
-import { R, alps } from './materials'
+import { R } from './materials'
 import { GROUND, SPEED } from './Line'
 
 /** Le motif des collines (périodique), et leur vitesse : plus loin, elles défilent moins vite que la voie. */
@@ -61,53 +61,6 @@ export function Hills() {
     <group ref={g} userData={LIVE}>
       <mesh geometry={geo} material={R.hill} receiveShadow raycast={noRay} />
       <Firs list={firs} m={R.fir} snowM={R.snowCap} trunkM={R.trunk} seed={2} />
-    </group>
-  )
-}
-
-// Les Alpes au fond : une crête de sommets neigeux, très loin (elle défile à 12 % de la vitesse du train), motif périodique de PA mètres.
-const PA = 60, ZA0 = -9, ZA1 = -13
-const ROCK = new Color(0x8a9cb8), PINE = new Color(0x7fa6a0), SNOW = new Color(0xe8eef6)
-
-/** Le profil de la crête : trois « arêtes » (1 - |sin|) de fréquences entières sur PA, donc sans couture. */
-function ridge(x: number) {
-  const f = (k: number, ph: number) => 1 - Math.abs(Math.sin((x / PA) * Math.PI * k + ph))
-  return 1.4 + 2.4 * f(3, 0.4) ** 1.4 + 1.6 * f(5, 1.7) + 0.9 * f(9, 0.2)
-}
-
-function alpsGeo() {
-  const NX = 180, NZ = 7, pos: number[] = [], col: number[] = [], idx: number[] = []
-  const c = new Color()
-  for (let j = 0; j <= NZ; j++) for (let i = 0; i <= NX; i++) {
-    const x = -PA + (i / NX) * 3 * PA, t = j / NZ, z = ZA0 + (ZA1 - ZA0) * t
-    const h = ridge(x) * t ** 1.25 * (0.9 + noise(((x % PA) + PA) % PA, 3) * 0.2)
-    pos.push(x, GROUND + h, z)
-    const u = h / 5.2
-    c.copy(PINE).lerp(ROCK, Math.min(1, u * 2.2)).lerp(SNOW, Math.min(1, Math.max(0, (u - 0.5) * 6)))
-    col.push(c.r, c.g, c.b)
-  }
-  for (let j = 0; j < NZ; j++) for (let i = 0; i < NX; i++) {
-    const a = j * (NX + 1) + i, b = a + NX + 1
-    idx.push(a, b, a + 1, a + 1, b, b + 1)
-  }
-  const g = new BufferGeometry()
-  g.setAttribute('position', new Float32BufferAttribute(pos, 3))
-  g.setAttribute('color', new Float32BufferAttribute(col, 3))
-  g.setIndex(idx)
-  g.computeVertexNormals()
-  return g
-}
-
-export function Alps() {
-  const g = useRef<Group>(null!), s = useRef(0)
-  const geo = useMemo(alpsGeo, [])
-  useFrame((_, delta) => {
-    if (!reduceMotion) s.current = (s.current + Math.min(delta, 0.05) * SPEED * 0.12) % PA
-    g.current.position.x = -s.current
-  })
-  return (
-    <group ref={g} userData={LIVE}>
-      <mesh geometry={geo} material={alps} raycast={noRay} />
     </group>
   )
 }
