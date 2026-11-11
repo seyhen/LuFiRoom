@@ -9,7 +9,7 @@ import { P } from './materials'
 const TILE_W = 6.9, TILE_H = 6.4
 const BOTTOM = -12
 /** La pente du brisis (la partie raide du toit mansardé) : son retrait, sa hauteur. */
-const INSET = 0.55, BRISIS = 1.7
+export const INSET = 0.55, BRISIS = 1.7
 
 /** Le garde-corps filant en fer forgé : un plan découpé (volutes et barreaux), un seul tracé pour toute la ville. */
 const railTex = canvasTex(256, 64, (x) => {
@@ -44,7 +44,7 @@ function railGeo(len: number) {
  * croisaient et dépassaient l'une de l'autre en ailerons). Pied à y = 0 sur le rectangle w × d, haut rentré de INSET.
  * Les joints debout du zinc tous les 45 cm (une répétition de la texture = 8 bandes = 3,6 m).
  */
-function mansardGeo(w: number, d: number) {
+export function mansardGeo(w: number, d: number) {
   const x = w / 2, z = d / 2, i = INSET
   const lo: [number, number][] = [[-x, z], [x, z], [x, -z], [-x, -z]]
   const hi: [number, number][] = [[-x + i, z - i], [x - i, z - i], [x - i, -z + i], [-x + i, -z + i]]
