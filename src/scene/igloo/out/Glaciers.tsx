@@ -61,7 +61,7 @@ function spireGeo(s: Spire, rnd: () => number, look: Look): BufferGeometry {
     // la couleur, selon la hauteur dans la forme entière (v.y compté depuis la ligne d'eau) et la strate
     const h = v.y // la ligne d'eau est à 0,1 dans le repère de la forme (`Ice` abaisse le groupe de 0,1 × hauteur)
     const band = 0.5 + 0.5 * Math.sin(h * look.stripes * 6 + phase + (k % 2) * 0.7 + (ring[j][k] - 1) * 14)
-    tmp.copy(WHITE).lerp(BLUE, 0.1 + 0.55 * band)
+    tmp.copy(WHITE).lerp(BLUE, 0.1 + 0.42 * band)
     if (look.tq > 0) tmp.lerp(TURQ, look.tq * smooth(0.35, 0.9, band) * 0.7)
     if (cracks.has(k) && t > 0.25 && t < 0.96) tmp.lerp(DEEP, 0.75 * smooth(0.25, 0.4, t) * (1 - smooth(0.88, 0.96, t)))
     tmp.lerp(WHITE, smooth(0.8, 1, t) * 0.75)
