@@ -34,7 +34,9 @@ function coatTex(coat: number) {
     const bg = c.createLinearGradient(0, Y(0.34), 0, Y(0.04))
     bg.addColorStop(0, CREAM); bg.addColorStop(0.55, '#fff0df'); bg.addColorStop(1, '#f4e2cf')
     blot(0, 0.19, 0.138, 0.15, bg)
-    blot(0, 0.468, 0.128, 0.078, CREAM)
+    // `R` convertit un rayon avec l'échelle de la largeur (512 px pour 0,4 m), mais la texture est plus haute que large (512 px pour 0,65 m) :
+    // un rayon vertical écrit « en mètres » grandit de 0,65 / 0,4. Celui-ci vise 0,095 m de demi-hauteur (le masque va de 0,36 à 0,55 m, la tête monte à 0,6 m : une calotte de pelage couvre le crâne).
+    blot(0, 0.455, 0.128, 0.095 * (TEX_W / TEX_H), CREAM)
     // les joues roses : une tache douce de chaque côté, sous les yeux
     for (const sd of [-1, 1]) {
       const g = c.createRadialGradient(X(sd * 0.092), Y(0.428), 0, X(sd * 0.092), Y(0.428), R(0.036))
