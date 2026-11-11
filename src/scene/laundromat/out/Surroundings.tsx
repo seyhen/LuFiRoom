@@ -258,7 +258,7 @@ function Evening() {
     // de nuit, le sol mouillé et les marquages se détachent de l'asphalte : l'eau prend le ciel, la peinture blanche accroche la lumière
     M.puddle.emissiveIntensity = k * 0.3
     M.stripe.emissiveIntensity = k * 0.16
-    M.puddle.color.setHex(0x6a8296).lerp(PUDDLE_NIGHT, k)
+    M.puddle.color.setHex(0x93aec2).lerp(PUDDLE_NIGHT, k)
     for (const m of P.facade) m.emissiveIntensity = 0.04 + n * 0.55
     P.dormerGlass.emissiveIntensity = n * 1.3
   })
