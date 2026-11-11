@@ -45,11 +45,55 @@ const beamTex = canvasTex(4, 128, (x) => {
   x.fillStyle = g; x.fillRect(0, 0, 4, 128)
 }, [1, 1])
 
+/**
+ * La roche des falaises, en strates : bandes horizontales de gris-bleu et de brun, fissures verticales, lichen jaune-vert et
+ * fientes de goélands. Claire (elle multiplie la teinte du matériau) et sans contraste dur : elle ne scintille pas, et se lit
+ * encore sous le voile du lointain. Les UV de `Rock` sont projetées à l'écran : v monte avec la hauteur.
+ */
+const strataTex = canvasTex(256, 256, (x) => {
+  const r = seeded(21)
+  const cols = [[206, 214, 228], [190, 198, 214], [226, 208, 184], [214, 200, 182], [198, 206, 222], [178, 170, 168]]
+  let y = 0
+  while (y < 256) {
+    const h = 9 + r() * 20, c = cols[Math.floor(r() * cols.length)]
+    x.fillStyle = `rgb(${c[0]},${c[1]},${c[2]})`; x.fillRect(0, y, 256, h + 1)
+    // le joint plus sombre sous la strate, et le grain de la couche
+    x.fillStyle = 'rgba(70,74,92,.34)'; x.fillRect(0, y + h - 2.5, 256, 2.5)
+    x.fillStyle = 'rgba(255,255,255,.1)'; x.fillRect(0, y, 256, 2)
+    for (let i = 0; i < 40; i++) { x.fillStyle = `rgba(${r() < 0.5 ? '255,255,255' : '80,84,100'},${0.05 + r() * 0.07})`; x.fillRect(r() * 256, y + r() * h, 4 + r() * 14, 1.5) }
+    y += h
+  }
+  // fissures verticales : traits sombres qui coupent quelques strates, et se bifurquent un peu
+  x.lineCap = 'round'
+  for (let k = 0; k < 11; k++) {
+    let px = r() * 256, py = r() * 200
+    const len = 40 + r() * 90
+    x.strokeStyle = 'rgba(52,56,74,.55)'; x.lineWidth = 2 + r() * 1.5
+    x.beginPath(); x.moveTo(px, py)
+    for (let s = 0; s < len; s += 10) { px += (r() - 0.5) * 5; py += 10; x.lineTo(px, py) }
+    x.stroke()
+  }
+  // lichen (taches jaune-vert) et fientes de goélands (blanc crayeux, coulures)
+  for (let k = 0; k < 16; k++) {
+    const px = r() * 256, py = r() * 256
+    x.fillStyle = `rgba(${150 + r() * 40},${170 + r() * 30},${90 + r() * 30},.55)`
+    for (let i = 0; i < 6; i++) { x.beginPath(); x.arc(px + (r() - 0.5) * 16, py + (r() - 0.5) * 8, 2.5 + r() * 4, 0, 6.3); x.fill() }
+  }
+  for (let k = 0; k < 9; k++) {
+    const px = r() * 256, py = r() * 240
+    x.fillStyle = 'rgba(250,248,240,.8)'
+    x.beginPath(); x.ellipse(px, py, 4 + r() * 5, 3 + r() * 2, 0, 0, 6.3); x.fill()
+    x.fillRect(px - 1, py, 2, 6 + r() * 10)
+  }
+}, [1, 1])
+
 const F = { c: [0, 0] as [number, number], r0: 7.5, r1: 12.5 }
 const out = <T extends MeshStandardMaterial>(m: T, snow: [number, number?, number?] = [0.9, 0.4, 0.8]) => skyFade(snowTop(m, ...snow), F)
 // Le fond lointain (falaises à 12 à 16 du centre, les coins du haut d'un grand écran) : un fondu plus large, sinon `skyFade` les efface.
 const F2 = { c: [0, 0] as [number, number], r0: 9.5, r1: 17.5 }
 const outFar = <T extends MeshStandardMaterial>(m: T, snow: [number, number?, number?] = [0.9, 0.4, 0.8]) => skyFade(snowTop(m, ...snow), F2)
+
+const cliff = (c: number) => farStone(c, { map: strataTex })
 
 export const swell = swellTex
 export const foam = foamTex
@@ -58,7 +102,7 @@ export const S = {
   sea: skyFade(far(0x3e7f96, { roughness: 0.2, clearcoat: 0.8, clearcoatRoughness: 0.2 }), F),
   swell: skyFade(new MeshBasicMaterial({ map: swellTex, transparent: true, opacity: 0.7, depthWrite: false }), F),
   foam: skyFade(new MeshBasicMaterial({ map: foamTex, transparent: true, opacity: 0.9, depthWrite: false, side: DoubleSide }), F),
-  rock: [out(farStone(0x6f7a8a)), out(farStone(0x5c6676)), out(farStone(0x7b8494))],
+  rock: [out(cliff(0x6f7a8a)), out(cliff(0x5c6676)), out(cliff(0x7b8494))],
   weed: out(farMoss(0x4f7a5c)),
   wet: out(far(0x3f4856, { roughness: 0.4, clearcoat: 0.6 })),
   // le phare : blanc, bandes rouges, lanterne de verre, coupole rouge
@@ -80,7 +124,7 @@ export const S = {
   beam: new MeshBasicMaterial({ map: beamTex, color: 0xfff0b8, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, side: DoubleSide }),
   // les falaises du fond : l'herbe rase du dessus, la voile blanche du voilier
   grass: out(farMoss(0x6da15c)),
-  rockFar: [outFar(farStone(0x8794a6)), outFar(farStone(0x7886a0)), outFar(farStone(0x94a0b2))],
+  rockFar: [outFar(cliff(0x8794a6)), outFar(cliff(0x7886a0)), outFar(cliff(0x94a0b2))],
   grassFar: outFar(farMoss(0x6da15c)),
   weedFar: outFar(farMoss(0x4f7a5c)),
   sail: out(far(0xfbf6ee, { roughness: 0.8, side: DoubleSide })),
