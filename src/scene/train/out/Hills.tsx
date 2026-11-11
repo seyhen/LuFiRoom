@@ -66,13 +66,13 @@ export function Hills() {
 }
 
 // Les Alpes au fond : une crête de sommets neigeux, très loin (elle défile à 12 % de la vitesse du train), motif périodique de PA mètres.
-const PA = 60, ZA0 = -12.5, ZA1 = -17.5
+const PA = 60, ZA0 = -9, ZA1 = -13
 const ROCK = new Color(0x8a9cb8), PINE = new Color(0x7fa6a0), SNOW = new Color(0xe8eef6)
 
 /** Le profil de la crête : trois « arêtes » (1 - |sin|) de fréquences entières sur PA, donc sans couture. */
 function ridge(x: number) {
   const f = (k: number, ph: number) => 1 - Math.abs(Math.sin((x / PA) * Math.PI * k + ph))
-  return 2.2 + 2.6 * f(3, 0.4) ** 1.4 + 1.6 * f(5, 1.7) + 0.9 * f(9, 0.2)
+  return 1.4 + 2.4 * f(3, 0.4) ** 1.4 + 1.6 * f(5, 1.7) + 0.9 * f(9, 0.2)
 }
 
 function alpsGeo() {
@@ -82,7 +82,7 @@ function alpsGeo() {
     const x = -PA + (i / NX) * 3 * PA, t = j / NZ, z = ZA0 + (ZA1 - ZA0) * t
     const h = ridge(x) * t ** 1.25 * (0.9 + noise(((x % PA) + PA) % PA, 3) * 0.2)
     pos.push(x, GROUND + h, z)
-    const u = h / 6.2
+    const u = h / 5.2
     c.copy(PINE).lerp(ROCK, Math.min(1, u * 2.2)).lerp(SNOW, Math.min(1, Math.max(0, (u - 0.5) * 6)))
     col.push(c.r, c.g, c.b)
   }
