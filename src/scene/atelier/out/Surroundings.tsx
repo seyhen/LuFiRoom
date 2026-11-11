@@ -85,7 +85,7 @@ export function Surroundings() {
         {/* de la vie sur les toits : verrière d'artiste, cage d'escalier, château d'eau, linge, potager, paraboles, pigeons */}
         <Skylight p={[-7.2, LEFT.top! + 0.075, 5.9]} />
         <StairCage p={[-7.5, BACK_L.top! + 0.075, -5.4]} />
-        <WaterTower p={[8.3, BACK_R.top! + 0.075, -8.6]} />
+        <WaterTower p={[2.6, BACK_C.top! + 0.075, -6.2]} />
         <Laundry p={[4.5, BACK_R.top! + 0.075, -5.9]} len={3} />
         <RoofGarden p={[-8.0, LEFT.top! + 0.075, 3.25]} />
         <Dish p={[4.85, RIGHT.top! + 0.075, -0.4]} />

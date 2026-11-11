@@ -44,16 +44,22 @@ function glassTex(glow: boolean) {
   return t
 }
 
-function farWall(stone: string, seed: number) {
+function farWall(stone: string, seed: number, glow = false) {
   const t = canvasTex(128, 128, (x) => {
     const r = seeded(seed)
-    x.fillStyle = stone; x.fillRect(0, 0, 128, 128)
-    for (let y = 0; y < 128; y += 16) { x.fillStyle = 'rgba(120,100,80,.12)'; x.fillRect(0, y, 128, 2) }
-    x.fillStyle = 'rgba(255,255,255,.35)'; x.fillRect(0, 112, 128, 8)
+    x.fillStyle = glow ? '#000' : stone; x.fillRect(0, 0, 128, 128)
+    if (!glow) {
+      for (let y = 0; y < 128; y += 16) { x.fillStyle = 'rgba(120,100,80,.12)'; x.fillRect(0, y, 128, 2) }
+      x.fillStyle = 'rgba(255,255,255,.35)'; x.fillRect(0, 112, 128, 8)
+    }
     for (let i = 0; i < 2; i++) {
-      const X = 14 + i * 64, on = r() < 0.5
+      const X = 14 + i * 64, on = r() < 0.65
+      if (glow) {
+        if (on) { x.fillStyle = '#ffd08a'; x.fillRect(X + 4, 16, 28, 72); x.fillStyle = '#000'; x.fillRect(X + 16, 16, 3, 72); x.fillRect(X + 4, 44, 28, 3) }
+        continue
+      }
       x.fillStyle = '#efe8dc'; x.fillRect(X, 12, 36, 80)
-      x.fillStyle = on ? '#d9b98c' : '#6d7d92'; x.fillRect(X + 4, 16, 28, 72)
+      x.fillStyle = on ? '#d9b98c' : '#7f93ae'; x.fillRect(X + 4, 16, 28, 72)
       x.fillStyle = '#efe8dc'; x.fillRect(X + 16, 16, 3, 72); x.fillRect(X + 4, 44, 28, 3)
       x.fillStyle = '#2c2d34'; x.fillRect(X - 2, 74, 40, 3)
     }
@@ -63,15 +69,20 @@ function farWall(stone: string, seed: number) {
 }
 
 const seamNear = seams('#8d99a9', '#e2e9f1', '#46505f', 3)
-const seamFar = seams('#aab4c1', '#e9eef4', '#7d8898', 5)
+const seamFar = seams('#b4c2d6', '#eef3fa', '#8393ab', 5)
 const glassMap = glassTex(false), glassGlow = glassTex(true)
-const wall0 = farWall('#e2d8c8', 2), wall1 = farWall('#e6d6bd', 6)
+const wall0 = farWall('#dfdcd6', 2), wall1 = farWall('#e2dacb', 6)
+const glow0 = farWall('', 2, true), glow1 = farWall('', 6, true)
 
 export const R = {
   /** Le terrasson de zinc à joints debout, posé sur le toit lisse des voisins. */
   seam: skyFade(far(0xffffff, { map: seamNear, roughness: 0.4, clearcoat: 0.5, metalness: 0.12 }), NEAR),
   glass: skyFade(far(0xffffff, { map: glassMap, emissiveMap: glassGlow, emissive: 0xffffff, emissiveIntensity: 0, roughness: 0.1, clearcoat: 1, side: DoubleSide }), NEAR),
   dish: skyFade(far(0xc9d1db, { roughness: 0.45, clearcoat: 0.5, side: DoubleSide }), NEAR),
+  dishOut: skyFade(far(0xf3eee2, { roughness: 0.4, clearcoat: 0.6, side: DoubleSide }), NEAR),
+  dishIn: skyFade(far(0x5b6676, { roughness: 0.5, clearcoat: 0.3, side: DoubleSide }), NEAR),
+  lnb: skyFade(far(0xd9453b, { roughness: 0.5, clearcoat: 0.4 }), NEAR),
+  post: skyFade(far(0xc99466, { roughness: 0.65, clearcoat: 0.2 }), NEAR),
   wood: skyFade(far(0xb9855a, { roughness: 0.7 }), NEAR),
   soil: skyFade(far(0x4a362a, { roughness: 0.95 }), NEAR),
   tomato: skyFade(far(0xd9453b, { roughness: 0.45, clearcoat: 0.4 }), NEAR),
@@ -81,11 +92,11 @@ export const R = {
   beak: skyFade(far(0xe3a5a0, { roughness: 0.6 }), NEAR),
   cloth: [0xf6f1e6, 0x7fb0c8, 0xe58a8a, 0xf0d27a, 0xa9c9a0].map((c) => skyFade(far(c, { roughness: 0.9, side: DoubleSide }), NEAR)),
   // le décor lointain
-  farWall: [wall0, wall1].map((map) => skyFade(far(0xffffff, { map, roughness: 0.85 }), FAR)),
+  farWall: [[wall0, glow0], [wall1, glow1]].map(([map, em]) => skyFade(far(0xeef2ff, { map, emissiveMap: em, emissive: 0xffffff, emissiveIntensity: 0, roughness: 0.85 }), FAR)),
   farStone: skyFade(far(0xe4dacb, { roughness: 0.85 }), FAR),
   farTrim: skyFade(far(0xf2ece1, { roughness: 0.7 }), FAR),
-  farZinc: skyFade(far(0xffffff, { map: seamFar, roughness: 0.4, clearcoat: 0.4, metalness: 0.1 }), FAR),
+  farZinc: skyFade(far(0xe6eeff, { map: seamFar, roughness: 0.4, clearcoat: 0.4, metalness: 0.1 }), FAR),
   farPot: skyFade(far(0xc98a64, { roughness: 0.65 }), FAR),
   farPlaster: skyFade(far(0xe3cdb0, { roughness: 0.85 }), FAR),
-  farGlass: skyFade(far(0x6d7d94, { roughness: 0.2, clearcoat: 0.8, emissive: 0xffc888, emissiveIntensity: 0 }), FAR),
+  farGlass: skyFade(far(0x8296b4, { roughness: 0.2, clearcoat: 0.8, emissive: 0xffd49a, emissiveIntensity: 0 }), FAR),
 }

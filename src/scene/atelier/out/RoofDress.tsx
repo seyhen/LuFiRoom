@@ -17,7 +17,8 @@ export function RoofEvening() {
   useFrame(() => {
     const n = smooth(mood.night)
     R.glass.emissiveIntensity = n * 1.4
-    R.farGlass.emissiveIntensity = n * 1.1
+    R.farGlass.emissiveIntensity = n * 1.8
+    for (const m of R.farWall) m.emissiveIntensity = n * 1.1
   })
   return null
 }
@@ -94,15 +95,16 @@ export function WaterTower({ p }: { p: V3 }) {
 /** Du linge sur un fil entre deux poteaux (la ligne est le long de x) : chemise, drap, torchons. */
 export function Laundry({ p, len = 3 }: { p: V3; len?: number }) {
   const items: { x: number; w: number; h: number; c: number }[] = [
-    { x: 0.35, w: 0.34, h: 0.4, c: 1 }, { x: 0.85, w: 0.5, h: 0.62, c: 0 }, { x: 1.42, w: 0.26, h: 0.3, c: 2 },
-    { x: 1.85, w: 0.3, h: 0.34, c: 3 }, { x: 2.35, w: 0.42, h: 0.5, c: 4 },
+    { x: 0.38, w: 0.4, h: 0.5, c: 1 }, { x: 0.98, w: 0.56, h: 0.72, c: 0 }, { x: 1.55, w: 0.32, h: 0.38, c: 2 },
+    { x: 2.0, w: 0.36, h: 0.42, c: 3 }, { x: 2.52, w: 0.44, h: 0.56, c: 4 },
   ]
   return (
     <group position={p}>
-      {[0, len].map((x) => <Part key={x} geo={cyl(0.035, 0.04, 1.2, 8)} m={P.iron} p={[x, 0.6, 0]} castShadow={false} />)}
-      <Part geo={cyl(0.014, 0.014, len, 5)} m={P.iron} p={[len / 2, 1.14, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+      {[0, len].map((x) => <Part key={x} geo={cyl(0.075, 0.09, 1.5, 10)} m={R.post} p={[x, 0.75, 0]} castShadow={false} />)}
+      {[0, len].map((x) => <Part key={`b${x}`} geo={SPH} m={R.post} p={[x, 1.52, 0]} scale={0.1} castShadow={false} />)}
+      <Part geo={cyl(0.02, 0.02, len, 5)} m={R.dishOut} p={[len / 2, 1.38, 0]} rotation-z={Math.PI / 2} castShadow={false} />
       {items.map((it, i) => (
-        <group key={i} position={[it.x, 1.14, 0]} rotation-y={0.03 * (i % 2 ? 1 : -1)}>
+        <group key={i} position={[it.x, 1.37, 0]} rotation-y={0.03 * (i % 2 ? 1 : -1)}>
           <Part geo={rbox(it.w, it.h, 0.015, 0.006)} m={R.cloth[it.c]} p={[0, -it.h / 2, 0]} castShadow={false} />
           {it.c === 1 && [-1, 1].map((s) => <Part key={s} geo={rbox(0.14, 0.11, 0.015, 0.006)} m={R.cloth[1]} p={[s * (it.w / 2 + 0.05), -0.07, 0]} rotation-z={s * 0.7} castShadow={false} />)}
           {[-0.4, 0.4].map((s) => <Part key={s} geo={rbox(0.025, 0.05, 0.02, 0.008)} m={P.iron} p={[s * it.w, 0.0, 0]} castShadow={false} />)}
@@ -142,17 +144,19 @@ export function RoofGarden({ p }: { p: V3 }) {
   )
 }
 
-const DISH = new SphereGeometry(1, 18, 6, 0, Math.PI * 2, 0, 0.75)
-/** Une parabole sur un mât, tournée vers le sud-est (vers la caméra). */
+const DISH = new SphereGeometry(1, 20, 8, 0, Math.PI * 2, Math.PI - 0.8, 0.8)
+/** Une parabole sur un mât, tournée vers le sud-est : cuvette creuse crème à fond sombre, bras et récepteur rouge. */
 export function Dish({ p, ry = Math.PI / 4 }: { p: V3; ry?: number }) {
   return (
-    <group position={p} rotation-y={ry}>
-      <Part geo={cyl(0.03, 0.04, 1.0, 8)} m={P.antenna} p={[0, 0.5, 0]} castShadow={false} />
-      <Part geo={rbox(0.14, 0.05, 0.1, 0.02)} m={P.iron} p={[0, 0.02, 0]} castShadow={false} />
-      <group position={[0, 1.05, 0.04]} rotation-x={0.95}>
-        <Part geo={DISH} m={R.dish} scale={[0.5, 0.2, 0.5]} p={[0, -0.15, 0]} castShadow={false} />
-        <Part geo={cyl(0.012, 0.012, 0.38, 5)} m={P.antenna} p={[0, 0.07, 0]} castShadow={false} />
-        <Part geo={cyl(0.03, 0.03, 0.08, 8)} m={P.iron} p={[0, 0.28, 0]} castShadow={false} />
+    <group position={p} rotation-y={ry} scale={1.25}>
+      <Part geo={rbox(0.26, 0.06, 0.26, 0.025)} m={R.post} p={[0, 0.03, 0]} castShadow={false} />
+      <Part geo={cyl(0.045, 0.055, 1.0, 10)} m={P.antenna} p={[0, 0.55, 0]} castShadow={false} />
+      <group position={[0, 1.05, 0.06]} rotation-x={1.0}>
+        <Part geo={DISH} m={R.dishOut} scale={[0.5, 0.36, 0.5]} p={[0, 0.34, 0]} castShadow={false} />
+        <Part geo={DISH} m={R.dishIn} scale={[0.47, 0.34, 0.47]} p={[0, 0.355, 0]} castShadow={false} />
+        <Part geo={cyl(0.02, 0.02, 0.42, 6)} m={P.antenna} p={[0, 0.3, 0]} castShadow={false} />
+        <Part geo={cyl(0.045, 0.035, 0.12, 8)} m={R.lnb} p={[0, 0.54, 0]} castShadow={false} />
+        <Part geo={cyl(0.03, 0.05, 0.1, 8)} m={P.iron} p={[0, -0.04, -0.0]} castShadow={false} />
       </group>
     </group>
   )
