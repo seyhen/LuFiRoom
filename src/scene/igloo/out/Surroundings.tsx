@@ -5,7 +5,7 @@ import { TAU, seeded, smooth } from '../../../math'
 import { mood, reduceMotion } from '../../anim'
 import { LIVE, Static } from '../../Static'
 import { Part, SPH, noRay, rbox } from '../../parts'
-import { gummy } from '../../materials'
+import { far } from '../../materials'
 import { canvasTex } from '../../paint'
 import { SkyFadeClock, skyFade } from '../../outdoor'
 import { snowTop } from '../../snowTop'
@@ -35,16 +35,16 @@ rippleTex.wrapS = rippleTex.wrapT = RepeatWrapping
 rippleTex.repeat.set(8, 8)
 
 const M = {
-  sea: skyFade(gummy(0x2f6a88, { roughness: 0.15, clearcoat: 0.9, clearcoatRoughness: 0.15 }), F),
+  sea: skyFade(far(0x2f6a88, { roughness: 0.15, clearcoat: 0.9, clearcoatRoughness: 0.15 }), F),
   ripple: skyFade(new MeshBasicMaterial({ map: rippleTex, transparent: true, opacity: 0.5, depthWrite: false }), F),
-  floe: skyFade(snowTop(gummy(0xf2f7fc, { roughness: 0.5, clearcoat: 0.35 }), 0.6), F),
-  floeSide: skyFade(gummy(0xb8d8ec, { roughness: 0.2, clearcoat: 0.9 }), F),
-  berg: skyFade(snowTop(gummy(0xdcecf8, { roughness: 0.3, clearcoat: 0.9, clearcoatRoughness: 0.2 }), 1, 0.5, 0.85), F),
-  bergDeep: skyFade(gummy(0x9cc8e6, { roughness: 0.25, clearcoat: 0.9 }), F),
-  kayak: skyFade(gummy(0xd8552e, { roughness: 0.35, clearcoat: 0.8 }), F),
-  deck: skyFade(gummy(0x2a2e38, { roughness: 0.5, clearcoat: 0.4 }), F),
-  wood: skyFade(gummy(0xc89a62, { roughness: 0.6 }), F),
-  blade: skyFade(gummy(0xf4c040, { roughness: 0.4, clearcoat: 0.6 }), F),
+  floe: skyFade(snowTop(far(0xf2f7fc, { roughness: 0.5, clearcoat: 0.35 }), 0.6), F),
+  floeSide: skyFade(far(0xb8d8ec, { roughness: 0.2, clearcoat: 0.9 }), F),
+  berg: skyFade(snowTop(far(0xdcecf8, { roughness: 0.3, clearcoat: 0.9, clearcoatRoughness: 0.2 }), 1, 0.5, 0.85), F),
+  bergDeep: skyFade(far(0x9cc8e6, { roughness: 0.25, clearcoat: 0.9 }), F),
+  kayak: skyFade(far(0xd8552e, { roughness: 0.35, clearcoat: 0.8 }), F),
+  deck: skyFade(far(0x2a2e38, { roughness: 0.5, clearcoat: 0.4 }), F),
+  wood: skyFade(far(0xc89a62, { roughness: 0.6 }), F),
+  blade: skyFade(far(0xf4c040, { roughness: 0.4, clearcoat: 0.6 }), F),
   foam: skyFade(new MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.6, depthWrite: false }), F),
 }
 

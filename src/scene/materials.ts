@@ -15,6 +15,21 @@ ShaderChunk.lights_pars_begin = ShaderChunk.lights_pars_begin.replace(
 export const gummy = (color: number, o: MeshPhysicalMaterialParameters = {}) =>
   new MeshPhysicalMaterial({ color, roughness: 0.46, metalness: 0, clearcoat: 0.55, clearcoatRoughness: 0.3, ...o })
 
+/**
+ * Gummy léger pour le dehors et les éléments lointains : un `MeshStandardMaterial` (même couleur, même rugosité, même éclairage
+ * que `gummy`) sans le vernis, qui n'est pas lisible de loin et coûte cher (`MeshPhysicalMaterial` est le shader le plus lourd
+ * de three.js). Accepte les mêmes paramètres que `gummy` (le vernis est ignoré). Les chunks de lumière sont ceux du physique, donc
+ * `skyFade` et `snowTop` (onBeforeCompile) s'y appliquent sans changement. Ni pour le mobilier, ni pour ce qui est près de la caméra.
+ */
+export const far = (color: number, o: MeshPhysicalMaterialParameters = {}) => {
+  const { clearcoat, clearcoatRoughness, clearcoatMap, clearcoatNormalMap, clearcoatNormalScale, ior, reflectivity, sheen, sheenColor, sheenRoughness, transmission, thickness, iridescence, ...rest } = o
+  void [clearcoat, clearcoatRoughness, clearcoatMap, clearcoatNormalMap, clearcoatNormalScale, ior, reflectivity, sheen, sheenColor, sheenRoughness, transmission, thickness, iridescence]
+  return new MeshStandardMaterial({ color, roughness: 0.46, metalness: 0, ...rest })
+}
+
+/** La version légère d'un matériau physique existant (mêmes couleur, texture, rugosité, émission), sans le vernis. */
+export const farOf = (m: MeshStandardMaterial) => new MeshStandardMaterial().copy(m)
+
 /** Gummy dont la couleur vient des sommets (voir `blob.ts` : une créature d'une seule peau). */
 export const skin = (o: MeshPhysicalMaterialParameters = {}) => gummy(0xffffff, { vertexColors: true, roughness: 0.62, clearcoat: 0.25, ...o })
 

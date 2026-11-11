@@ -62,7 +62,7 @@ function draw(x: CanvasRenderingContext2D, n: number, rain: number, w: Wx) {
 
 /** Le paysage qui défile, avec le léger roulis du train. */
 export function TrainView() {
-  const tex = usePainted(W, H, draw), g = useRef<Group>(null!)
+  const tex = usePainted(W, H, draw, 0.65), g = useRef<Group>(null!) // 130 px par unité : au-delà de ce qu'un grand écran montre
   useFrame(({ clock }) => {
     if (reduceMotion) return
     const t = clock.elapsedTime

@@ -1,4 +1,4 @@
-import { gummy } from '../../materials'
+import { far } from '../../materials'
 import { canvasTex, seeded } from '../../paint'
 import { Part, SPH, cyl, rbox, worldUV } from '../../parts'
 import { skyFade } from '../../outdoor'
@@ -29,9 +29,9 @@ const tex = (wall: string, glow: boolean, seed: number) =>
 
 const FADE = { c: [0, 0] as [number, number], r0: 7.5, r1: 12.5, below: -4.2 }
 export const T = {
-  tone: TONES.map((c, i) => skyFade(snowTop(gummy(0xffffff, { map: tex(c, false, i + 40), emissiveMap: tex(c, true, i + 40), emissive: 0xffffff, emissiveIntensity: 0, roughness: 0.8 }), 1, 0.4, 0.8), FADE)),
-  trim: skyFade(gummy(0xe6dccb, { roughness: 0.6 }), FADE),
-  steel: skyFade(gummy(0xcfd4dc, { roughness: 0.25, clearcoat: 0.9, metalness: 0.4 }), FADE),
+  tone: TONES.map((c, i) => skyFade(snowTop(far(0xffffff, { map: tex(c, false, i + 40), emissiveMap: tex(c, true, i + 40), emissive: 0xffffff, emissiveIntensity: 0, roughness: 0.8 }), 1, 0.4, 0.8), FADE)),
+  trim: skyFade(far(0xe6dccb, { roughness: 0.6 }), FADE),
+  steel: skyFade(far(0xcfd4dc, { roughness: 0.25, clearcoat: 0.9, metalness: 0.4 }), FADE),
 }
 const BOTTOM = -12
 

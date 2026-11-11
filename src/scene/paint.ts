@@ -44,9 +44,13 @@ export function rr(x: CanvasRenderingContext2D, X: number, Y: number, W: number,
   x.arcTo(X, Y + H, X, Y, R); x.arcTo(X, Y, X + W, Y, R); x.closePath()
 }
 
-/** Une texture qu'on dessine une fois (motif, enseigne…). */
-export function canvasTex(w: number, h: number, draw: (x: CanvasRenderingContext2D) => void, repeat?: [number, number]) {
-  const [c, x] = makeCanvas(w, h)
+/**
+ * Une texture qu'on dessine une fois (motif, enseigne…). `k` (< 1) la dessine sur un canvas réduit : `draw` garde ses coordonnées
+ * de `w` × `h` (le canvas est mis à l'échelle), seule la définition baisse. Pour ce qu'on voit bien plus petit que sa taille de dessin.
+ */
+export function canvasTex(w: number, h: number, draw: (x: CanvasRenderingContext2D) => void, repeat?: [number, number], k = 1) {
+  const [c, x] = makeCanvas(Math.round(w * k), Math.round(h * k))
+  if (k !== 1) x.scale(k, k)
   draw(x)
   const t = new CanvasTexture(c)
   if (repeat) {
@@ -90,11 +94,12 @@ export function useRepaint(draw: (w: Wx) => void) {
  * Texture peinte qui suit l'ambiance : `draw(x, n, r, w)` reçoit la nuit et la pluie (0 → 1, adoucies), et dans `w` la neige
  * et l'orage. Elle n'est redessinée que quand ils bougent (voir `useRepaint`).
  */
-export function usePainted(w: number, h: number, draw: (x: CanvasRenderingContext2D, n: number, r: number, w: Wx) => void) {
+export function usePainted(w: number, h: number, draw: (x: CanvasRenderingContext2D, n: number, r: number, w: Wx) => void, k = 1) {
   const { tex, x } = useMemo(() => {
-    const [c, x] = makeCanvas(w, h)
+    const [c, x] = makeCanvas(Math.round(w * k), Math.round(h * k))
+    if (k !== 1) x.scale(k, k) // `draw` garde ses coordonnées de w × h ; la définition de la texture baisse de k
     return { tex: new CanvasTexture(c), x }
-  }, [w, h])
+  }, [w, h, k])
   useRepaint((wx) => {
     draw(x, wx.n, wx.r, wx)
     tex.needsUpdate = true

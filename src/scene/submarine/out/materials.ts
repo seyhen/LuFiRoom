@@ -1,8 +1,8 @@
-import { AdditiveBlending, DoubleSide, MeshBasicMaterial, MeshPhysicalMaterial, RepeatWrapping, type Material } from 'three'
-import { gummy, skin } from '../../materials'
+import { AdditiveBlending, DoubleSide, MeshBasicMaterial, MeshStandardMaterial, RepeatWrapping, type Material } from 'three'
+import { far, skin } from '../../materials'
 import { canvasTex, seeded } from '../../paint'
 import { skyFade } from '../../outdoor'
-import { stone } from '../../nature/materials'
+import { farStone } from '../../nature/materials'
 
 // Le fond de la mer autour du sous-marin : sable ridé, roches, coraux, éponges, kelp, poissons, baleine. Tout se perd dans le
 // bleu-vert de l'eau avec la distance (le ciel de la pièce est l'eau) et vers le bas.
@@ -68,38 +68,38 @@ export function current<T extends Material>(m: T, amp = 0.25): T {
   return m
 }
 
-const corals = new Map<number, MeshPhysicalMaterial>()
+const corals = new Map<number, MeshStandardMaterial>()
 /** Le matériau d'un massif de corail branchu, à sa couleur (un par couleur : fusionnés par <Static>). */
 export const coralOf = (c: number) => {
   let m = corals.get(c)
-  if (!m) corals.set(c, (m = skyFade(gummy(c, { roughness: 0.5, clearcoat: 0.4 }), F)))
+  if (!m) corals.set(c, (m = skyFade(far(c, { roughness: 0.5, clearcoat: 0.4 }), F)))
   return m
 }
 
 export const sand = sandTex
 export const caustic = causticTex
 
-const out = <T extends MeshPhysicalMaterial>(m: T) => skyFade(m, F)
+const out = <T extends MeshStandardMaterial>(m: T) => skyFade(m, F)
 
 export const D = {
-  sand: out(gummy(0xffffff, { map: sandTex, vertexColors: true, roughness: 0.9, clearcoat: 0 })),
+  sand: out(far(0xffffff, { map: sandTex, vertexColors: true, roughness: 0.9, clearcoat: 0 })),
   caustic: skyFade(new MeshBasicMaterial({ map: causticTex, transparent: true, opacity: 0.25, depthWrite: false, blending: AdditiveBlending }), { ...F, additive: true }),
-  rock: [out(stone(0x6a7a7c)), out(stone(0x56686c))],
+  rock: [out(farStone(0x6a7a7c)), out(farStone(0x56686c))],
   // les coraux, teintés un à un (Batch) ou en couleurs franches
-  coral: out(gummy(0xffffff, { roughness: 0.5, clearcoat: 0.4 })),
-  brain: out(gummy(0xe8a86a, { roughness: 0.6, clearcoat: 0.3 })),
-  sponge: out(gummy(0xb07ad0, { roughness: 0.7, clearcoat: 0.2 })),
-  fan: current(out(gummy(0xe86a7a, { roughness: 0.6, clearcoat: 0.2, side: DoubleSide })), 0.08),
-  anemone: current(out(gummy(0xffffff, { roughness: 0.4, clearcoat: 0.5 })), 0.06),
-  star: out(gummy(0xf08a3c, { roughness: 0.5, clearcoat: 0.5 })),
-  kelp: current(out(gummy(0x6a8a3a, { roughness: 0.6, clearcoat: 0.3, side: DoubleSide })), 0.6),
-  kelpDark: current(out(gummy(0x4f7030, { roughness: 0.6, clearcoat: 0.3, side: DoubleSide })), 0.6),
-  fish: out(gummy(0xffffff, { vertexColors: true, roughness: 0.4, clearcoat: 0.6 })),
+  coral: out(far(0xffffff, { roughness: 0.5, clearcoat: 0.4 })),
+  brain: out(far(0xe8a86a, { roughness: 0.6, clearcoat: 0.3 })),
+  sponge: out(far(0xb07ad0, { roughness: 0.7, clearcoat: 0.2 })),
+  fan: current(out(far(0xe86a7a, { roughness: 0.6, clearcoat: 0.2, side: DoubleSide })), 0.08),
+  anemone: current(out(far(0xffffff, { roughness: 0.4, clearcoat: 0.5 })), 0.06),
+  star: out(far(0xf08a3c, { roughness: 0.5, clearcoat: 0.5 })),
+  kelp: current(out(far(0x6a8a3a, { roughness: 0.6, clearcoat: 0.3, side: DoubleSide })), 0.6),
+  kelpDark: current(out(far(0x4f7030, { roughness: 0.6, clearcoat: 0.3, side: DoubleSide })), 0.6),
+  fish: out(far(0xffffff, { vertexColors: true, roughness: 0.4, clearcoat: 0.6 })),
   whale: out(skin({ roughness: 0.5, clearcoat: 0.4 })),
   // dehors de la coque : hélice, projecteur
-  brass: out(gummy(0xc99a5a, { roughness: 0.35, clearcoat: 0.8 })),
-  hull: out(gummy(0x37505a, { roughness: 0.5, clearcoat: 0.45 })),
-  lens: out(gummy(0xfff4d8, { roughness: 0.1, clearcoat: 1, emissive: 0xffe2a0, emissiveIntensity: 0.3 })),
+  brass: out(far(0xc99a5a, { roughness: 0.35, clearcoat: 0.8 })),
+  hull: out(far(0x37505a, { roughness: 0.5, clearcoat: 0.45 })),
+  lens: out(far(0xfff4d8, { roughness: 0.1, clearcoat: 1, emissive: 0xffe2a0, emissiveIntensity: 0.3 })),
   beam: new MeshBasicMaterial({ color: 0xfff0c8, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, side: DoubleSide }),
   ray: new MeshBasicMaterial({ color: 0xeafff8, vertexColors: true, transparent: true, opacity: 0.1, depthWrite: false, blending: AdditiveBlending, side: DoubleSide }),
   bubble: new MeshBasicMaterial({ color: 0xeafffa, transparent: true, opacity: 0.55, depthWrite: false }),

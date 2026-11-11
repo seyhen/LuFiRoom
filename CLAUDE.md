@@ -164,6 +164,7 @@ en 390 px tactile puis en 1440 px : la pièce se charge, le canvas dessine, un `
 une carte par son dans le mixeur, un clic sur une carte allume un son ; aucune erreur en console ni « Enregistrement indisponible ».
 Ce qu'il attend vient des fiches `src/rooms/*.ts` : une pièce ajoutée est testée d'office. Compte 3 à 6 minutes (4 navigateurs en parallèle).
 Il faut le Chromium de Playwright : `npx playwright install chromium` une fois (ou `LOFI_CHROMIUM` = chemin d'un Chromium).
+Il affiche les triangles par image de chaque pièce et échoue au-dessus de `LOFI_SMOKE_MAX_TRIANGLES` (1 000 000 par défaut) ; les compteurs viennent de `window.__lofiStats`, chargé seulement si l'adresse porte `?stats` (`src/scene/stats.ts`, absent du bundle normal ; `window.__lofi` reste réservé au dev).
 `LOFI_SMOKE_ROOMS=cafe,market` ne teste que ces pièces ; en échec, les captures sont dans `test-results/`.
 La CI (`.github/workflows/ci.yml`) lance tout à chaque push et pull request ; `audio:check` y tourne à part, avec ffmpeg installé par apt.
 

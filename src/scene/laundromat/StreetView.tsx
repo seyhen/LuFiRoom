@@ -324,8 +324,9 @@ function PassingCar() {
  * sur la vitre ; sous la neige, le trottoir et la chaussée blanchissent et les flocons tombent dans la rue.
  */
 export function StreetView() {
-  const facade = usePainted(1024, 608, drawFacade)
-  const road = usePainted(1024, 128, drawRoad)
+  // Dessinées sur 1024 de large (209 px par unité), définies à 157 px par unité : plus qu'un écran n'en montre derrière la vitrine.
+  const facade = usePainted(1024, 608, drawFacade, 0.75)
+  const road = usePainted(1024, 128, drawRoad, 0.75)
   return (
     <group>
       {/* le trottoir, la bordure, le caniveau, la chaussée */}

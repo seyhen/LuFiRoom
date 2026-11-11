@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useLayoutEffect, useRef } from 'react'
+import { forwardRef, useImperativeHandle, useLayoutEffect, useMemo, useRef } from 'react'
 import { BoxGeometry, Color, CylinderGeometry, Euler, ExtrudeGeometry, Matrix4, Object3D, Path, Shape, SphereGeometry, Vector3, type BufferGeometry, type InstancedMesh, type Material } from 'three'
 import type { ThreeElements } from '@react-three/fiber'
 
@@ -21,7 +21,10 @@ function memo<G extends BufferGeometry>(key: string, make: () => G) {
  * Boîte aux arêtes arrondies, reprise telle quelle du prototype plutôt que `RoundedBox` de drei :
  * mêmes formes, et surtout mêmes UV (le parquet n'affiche qu'un septième de sa texture, d'où ses larges lames).
  */
-export function rbox(w: number, h: number, d: number, r = 0.06, seg = 3) {
+export function rbox(w: number, h: number, d: number, r = 0.06, segIn?: number) {
+  // Sans `seg` explicite, le nombre de segments du congé suit son rayon : un congé de 3 cm tient dans quelques pixels, un seul
+  // pan (108 triangles, normales lissées) suffit ; 2 segments jusqu'à 7 cm (300), 3 au-delà (588).
+  const seg = segIn ?? (r <= 0.04 ? 1 : r <= 0.07 ? 2 : 3)
   return memo(`b${w},${h},${d},${r},${seg}`, () => {
     const s = seg * 2 + 1
     const g = new BoxGeometry(1, 1, 1, s, s, s)
@@ -62,6 +65,9 @@ export const cyl = (rt: number, rb: number, h: number, seg = 24) =>
 
 /** Sphère unité : mise à l'échelle, elle fait toutes les formes ovales. */
 export const SPH = new SphereGeometry(1, 32, 22)
+/** Sphères allégées (20x12 : 456 triangles, 12x8 : 176) pour les séries instanciées et les petits éléments ; SPH reste pour les grosses formes lisses (clearcoat). */
+export const SPH_MID = new SphereGeometry(1, 20, 12)
+export const SPH_LO = new SphereGeometry(1, 12, 8)
 
 /** Contour de rectangle arrondi (mur, cadre de fenêtre). */
 export function rrPath<P extends Path>(p: P, x: number, y: number, w: number, h: number, r: number) {
@@ -90,12 +96,26 @@ const radiusOf = (g: BufferGeometry) => {
 const biggest = (s: unknown) => (typeof s === 'number' ? s : Array.isArray(s) ? Math.max(...s.map(Math.abs)) : 1)
 
 /**
+ * Allège la sphère partagée selon la taille réelle de la forme : une perle, une feuille ou une baie n'ont pas besoin de 1 344 triangles.
+ * `s` = échelle (nombre, ou [x, y, z]). Les grosses formes lisses gardent SPH (les facettes se verraient dans le reflet du clearcoat).
+ * Seule SPH est remplacée : une autre géométrie passe telle quelle.
+ */
+export function lodSphere(geo: BufferGeometry, s: unknown): BufferGeometry {
+  if (geo !== SPH) return geo
+  const [, b, c] = (typeof s === 'number' ? [s, s, s] : Array.isArray(s) ? s.map(Math.abs) : [1, 1, 1]).sort((x, y) => x - y)
+  if (b < 0.05 && c < 0.4) return SPH_LO
+  if (c < 0.25 || (b < 0.12 && c < 0.6)) return SPH_MID
+  return SPH
+}
+
+/**
  * Un maillage qui reçoit les ombres, et qui en porte sauf s'il est tout petit (boutons, crayons, perles : leur ombre ne se voit pas
  * et chaque ombre coûte un tracé de plus). `geo` ou une géométrie en enfant ; `castShadow` force le choix.
  */
 export function Part({ geo, m, p, ...rest }: { geo?: BufferGeometry; m: Material | Material[]; p?: V3 } & ThreeElements['mesh']) {
-  const tiny = geo !== undefined && radiusOf(geo) * biggest(rest.scale) < 0.09
-  return <mesh geometry={geo} material={m} position={p} castShadow={!tiny} receiveShadow {...rest} />
+  const lod = geo && lodSphere(geo, rest.scale)
+  const tiny = lod !== undefined && radiusOf(lod) * biggest(rest.scale) < 0.09
+  return <mesh geometry={lod} material={m} position={p} castShadow={!tiny} receiveShadow {...rest} />
 }
 
 const bx = new Vector3(), by = new Vector3(), bz = new Vector3(), bm = new Matrix4(), be = new Euler()
@@ -128,11 +148,22 @@ const dummy = new Object3D(), tint = new Color()
  * Posées une fois ; `c` teinte chaque copie (le matériau reste blanc). La ref donne accès aux copies (ampoules qui scintillent).
  */
 export const Batch = forwardRef<InstancedMesh, { geo: BufferGeometry; m: Material; items: Item[]; shadow?: boolean }>(function Batch(
-  { geo, m, items, shadow = false },
+  { geo: geoIn, m, items, shadow = false },
   ref,
 ) {
   const mesh = useRef<InstancedMesh>(null!)
   useImperativeHandle(ref, () => mesh.current)
+  // une série de sphères minuscules prend une sphère légère : on juge sur la plus grande copie
+  const geo = useMemo(() => {
+    if (geoIn !== SPH) return geoIn
+    let big: V3 = [0, 0, 0]
+    for (const { s } of items) {
+      const v = typeof s === 'number' ? [s, s, s] : s
+      const sorted = v.map(Math.abs).sort((x, y) => x - y)
+      if (sorted[2] > big[2] || (sorted[2] === big[2] && sorted[1] > big[1])) big = sorted as V3
+    }
+    return lodSphere(geoIn, big)
+  }, [geoIn, items])
   useLayoutEffect(() => {
     const g = mesh.current
     items.forEach(({ p, s, r = [0, 0, 0], c }, i) => {

@@ -10,7 +10,7 @@
 
 ## Hors ligne
 
-- **L'app** (HTML, JS, CSS, icônes) est mise en cache dès la première visite.
+- **L'app** (HTML, JS, CSS, icônes) est mise en cache dès la première visite. Le JS est coupé en chunks (un par pièce, `scene/scenes.ts`, plus les briques communes et `three`) : tous sont précachés (~2,5 Mio en tout) pour que changer de pièce marche hors ligne, alors que la première visite en ligne ne télécharge que le moteur et la pièce courante.
 - **Les sons** passent par le cache `sons` (`/audio/**.webm|mp3`, au plus 60 fichiers) : une boucle y entre à son préchargement, une piste de la radio quand elle démarre
   (`keepOffline`, `src/audio/recordings.ts`). Le lecteur `<audio>` demande des morceaux (206) que le cache ne peut pas stocker : on télécharge donc le fichier entier une fois, de plus ; le service worker sert ensuite les morceaux depuis ce fichier.
   Ce téléchargement double n'a pas lieu en mode « économie de données ».

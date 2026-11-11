@@ -113,7 +113,7 @@ function draw(x: CanvasRenderingContext2D, n: number, rain: number, wx: Wx) {
 
 /** Les toits de Paris, et la tour Eiffel qui scintille à l'heure pile... ici, toutes les quelques secondes, la nuit. */
 export function ParisView() {
-  const tex = usePainted(W, H, draw), sparkle = useRef<PointsMaterial>(null!)
+  const tex = usePainted(W, H, draw, 0.65), sparkle = useRef<PointsMaterial>(null!)
   useWorldPointSize(sparkle, 0.12)
   const geo = useMemo(() => {
     const r = seeded(5), pts: number[] = []

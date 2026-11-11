@@ -1,8 +1,8 @@
 import { AdditiveBlending, DoubleSide, MeshBasicMaterial } from 'three'
-import { gummy } from '../../materials'
+import { far } from '../../materials'
 import { canvasTex, seeded } from '../../paint'
 import { skyFade } from '../../outdoor'
-import { stone } from '../../nature/materials'
+import { farStone } from '../../nature/materials'
 import { glowTex, knitTex } from '../../textures'
 import { barkTex, ringsTex } from '../textures'
 
@@ -44,39 +44,39 @@ knitScarf.repeat.set(4, 1)
 const out = <T extends Parameters<typeof skyFade>[0]>(m: T, r0 = 7.2, r1 = 12.5) => skyFade(m, { c: [0, 0], r0, r1 })
 
 export const O = {
-  snow: out(gummy(0xffffff, { map: snowTex, vertexColors: true, roughness: 0.62, clearcoat: 0.18, clearcoatRoughness: 0.5 })),
+  snow: out(far(0xffffff, { map: snowTex, vertexColors: true, roughness: 0.62, clearcoat: 0.18, clearcoatRoughness: 0.5 })),
   /** La neige des volumes (capuchons des sapins, toit de l'abri, poteaux) : blanc bleuté, un peu brillant. */
-  snowCap: out(gummy(0xf3f7ff, { roughness: 0.5, clearcoat: 0.3 })),
-  fir: out(gummy(0x3f8f6e, { roughness: 0.6, clearcoat: 0.2 })),
-  firDark: out(gummy(0x2e7259, { roughness: 0.65, clearcoat: 0.15 })),
-  trunk: out(gummy(0x7a5038, { roughness: 0.8, clearcoat: 0.05 })),
-  bark: out(gummy(0xffffff, { map: barkTex, roughness: 0.78, clearcoat: 0.1 })),
-  rings: out(gummy(0xffffff, { map: ringsTex, roughness: 0.65, clearcoat: 0.12 })),
+  snowCap: out(far(0xf3f7ff, { roughness: 0.5, clearcoat: 0.3 })),
+  fir: out(far(0x3f8f6e, { roughness: 0.6, clearcoat: 0.2 })),
+  firDark: out(far(0x2e7259, { roughness: 0.65, clearcoat: 0.15 })),
+  trunk: out(far(0x7a5038, { roughness: 0.8, clearcoat: 0.05 })),
+  bark: out(far(0xffffff, { map: barkTex, roughness: 0.78, clearcoat: 0.1 })),
+  rings: out(far(0xffffff, { map: ringsTex, roughness: 0.65, clearcoat: 0.12 })),
   /** Planches de l'abri et de la barrière : bois gris argenté par l'hiver. */
-  plank: out(gummy(0xa9876a, { roughness: 0.8, clearcoat: 0.06 })),
-  plankDark: out(gummy(0x8a6a52, { roughness: 0.82, clearcoat: 0.05 })),
-  iron: out(gummy(0x3d3438, { roughness: 0.45, clearcoat: 0.5 })),
-  steel: out(gummy(0xc9cdd6, { roughness: 0.3, clearcoat: 0.8 })),
-  ice: out(gummy(0xffffff, { map: iceTex, roughness: 0.12, clearcoat: 1, clearcoatRoughness: 0.08 })),
-  reed: out(gummy(0xb08a5a, { roughness: 0.8 })),
-  rock: out(stone(0x9ea3b4)),
+  plank: out(far(0xa9876a, { roughness: 0.8, clearcoat: 0.06 })),
+  plankDark: out(far(0x8a6a52, { roughness: 0.82, clearcoat: 0.05 })),
+  iron: out(far(0x3d3438, { roughness: 0.45, clearcoat: 0.5 })),
+  steel: out(far(0xc9cdd6, { roughness: 0.3, clearcoat: 0.8 })),
+  ice: out(far(0xffffff, { map: iceTex, roughness: 0.12, clearcoat: 1, clearcoatRoughness: 0.08 })),
+  reed: out(far(0xb08a5a, { roughness: 0.8 })),
+  rock: out(farStone(0x9ea3b4)),
   // le bonhomme de neige
-  snowball: out(gummy(0xfafcff, { roughness: 0.55, clearcoat: 0.25 })),
-  coal: out(gummy(0x2e2a30, { roughness: 0.5, clearcoat: 0.4 })),
-  carrot: out(gummy(0xf08a3c, { roughness: 0.5, clearcoat: 0.4 })),
-  twig: out(gummy(0x6a4632, { roughness: 0.85 })),
-  scarf: out(gummy(0xd25c72, { map: knitScarf, roughness: 0.85, clearcoat: 0.05 })),
-  scarfCream: out(gummy(0xfff4e6, { roughness: 0.85, clearcoat: 0.05 })),
+  snowball: out(far(0xfafcff, { roughness: 0.55, clearcoat: 0.25 })),
+  coal: out(far(0x2e2a30, { roughness: 0.5, clearcoat: 0.4 })),
+  carrot: out(far(0xf08a3c, { roughness: 0.5, clearcoat: 0.4 })),
+  twig: out(far(0x6a4632, { roughness: 0.85 })),
+  scarf: out(far(0xd25c72, { map: knitScarf, roughness: 0.85, clearcoat: 0.05 })),
+  scarfCream: out(far(0xfff4e6, { roughness: 0.85, clearcoat: 0.05 })),
   // la luge et son paquet
-  runner: out(gummy(0xc8414f, { roughness: 0.35, clearcoat: 0.8, side: DoubleSide })),
-  slat: out(gummy(0xd4a06a, { roughness: 0.6, clearcoat: 0.3 })),
-  rope: out(gummy(0xe7d3a8, { roughness: 0.9 })),
-  giftGreen: out(gummy(0x3f9474, { roughness: 0.4, clearcoat: 0.7 })),
-  ribbon: out(gummy(0xf4c75a, { roughness: 0.3, clearcoat: 0.9 })),
+  runner: out(far(0xc8414f, { roughness: 0.35, clearcoat: 0.8, side: DoubleSide })),
+  slat: out(far(0xd4a06a, { roughness: 0.6, clearcoat: 0.3 })),
+  rope: out(far(0xe7d3a8, { roughness: 0.9 })),
+  giftGreen: out(far(0x3f9474, { roughness: 0.4, clearcoat: 0.7 })),
+  ribbon: out(far(0xf4c75a, { roughness: 0.3, clearcoat: 0.9 })),
   // la lanterne : la vitre s'allume le soir (Surroundings)
-  lanternGlass: out(gummy(0xfff0cc, { roughness: 0.2, clearcoat: 0.9, emissive: 0xffb455, emissiveIntensity: 0.2 })),
-  berry: out(gummy(0xc8414f, { roughness: 0.35, clearcoat: 0.8 })),
-  holly: out(gummy(0x2f7d5d, { roughness: 0.4, clearcoat: 0.6 })),
+  lanternGlass: out(far(0xfff0cc, { roughness: 0.2, clearcoat: 0.9, emissive: 0xffb455, emissiveIntensity: 0.2 })),
+  berry: out(far(0xc8414f, { roughness: 0.35, clearcoat: 0.8 })),
+  holly: out(far(0x2f7d5d, { roughness: 0.4, clearcoat: 0.6 })),
   /** Les traces de pas, un peu plus bleues que la neige (pas de lumière : posées à plat). */
   print: new MeshBasicMaterial({ color: 0x9fb6dc, transparent: true, opacity: 0.32, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 }),
   glow: new MeshBasicMaterial({ map: glowTex, color: 0xffc070, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -3 }),

@@ -1,5 +1,5 @@
-import { MeshPhysicalMaterial, RepeatWrapping } from 'three'
-import { gummy } from '../../materials'
+import { MeshStandardMaterial, RepeatWrapping } from 'three'
+import { far } from '../../materials'
 import { canvasTex, seeded } from '../../paint'
 import { skyFade } from '../../outdoor'
 import { snowTop } from '../../snowTop'
@@ -32,7 +32,7 @@ function facade(stone: string, seed: number, glow: boolean) {
       x.strokeRect(X - 4, Y + h - 62, w + 8, 56)
       for (let k = 0; k < 4; k++) { x.beginPath(); x.arc(X + 10 + k * 19, Y + h - 34, 8, 0, 6.3); x.stroke() }
     }
-  })
+  }, undefined, glow ? 0.5 : 0.67) // vue de loin : 74 texels par mètre suffisent (la carte des vitres allumées, 1 sur 2)
 }
 
 /** Le zinc à joints debout : des bandes bleu-gris, une nervure claire tous les 45 cm. */
@@ -53,22 +53,22 @@ const stones = [
 ] as const
 for (const pair of stones) for (const t of pair) t.wrapS = t.wrapT = RepeatWrapping
 
-const out = <T extends MeshPhysicalMaterial>(m: T, snow?: [number, number?, number?]) => {
+const out = <T extends MeshStandardMaterial>(m: T, snow?: [number, number?, number?]) => {
   if (snow) snowTop(m, ...snow)
   return skyFade(m, { c: [0, 0], r0: 7.5, r1: 12.5, below: -4.6 })
 }
 
 export const P = {
-  facade: stones.map(([map, glow]) => out(gummy(0xffffff, { map, emissiveMap: glow, emissive: 0xffffff, emissiveIntensity: 0, roughness: 0.8, clearcoat: 0.04 }))),
-  stone: [out(gummy(0xe9dcc4, { roughness: 0.8 })), out(gummy(0xecd9bc, { roughness: 0.8 })), out(gummy(0xe2d6c6, { roughness: 0.8 }))],
-  trim: out(gummy(0xf4ede0, { roughness: 0.6 }), [0.9, 0.45, 0.8]),
-  zinc: out(gummy(0xffffff, { map: zincTex, roughness: 0.38, clearcoat: 0.6, metalness: 0.15 }), [1, 0.3, 0.7]),
-  zincFlat: out(gummy(0x8f9aa8, { roughness: 0.4, clearcoat: 0.5, metalness: 0.15 }), [1, 0.35, 0.75]),
-  iron: out(gummy(0x26262c, { roughness: 0.4, clearcoat: 0.5 }), [0.5, 0.6, 0.9]),
-  plaster: out(gummy(0xe6c9a4, { roughness: 0.85 }), [0.9, 0.45, 0.8]),
-  pot: out(gummy(0xc7703e, { roughness: 0.6 }), [0.9, 0.45, 0.85]),
-  dormerGlass: out(gummy(0x5a6a80, { roughness: 0.15, clearcoat: 1, emissive: 0xffc888, emissiveIntensity: 0 })),
-  leaf: out(gummy(0x5a9a68, { roughness: 0.6 }), [0.7, 0.45, 0.85]),
-  geranium: out(gummy(0xe0586e, { roughness: 0.5, clearcoat: 0.3 })),
-  antenna: out(gummy(0x9aa2ae, { roughness: 0.35, clearcoat: 0.6 })),
+  facade: stones.map(([map, glow]) => out(far(0xffffff, { map, emissiveMap: glow, emissive: 0xffffff, emissiveIntensity: 0, roughness: 0.8, clearcoat: 0.04 }))),
+  stone: [out(far(0xe9dcc4, { roughness: 0.8 })), out(far(0xecd9bc, { roughness: 0.8 })), out(far(0xe2d6c6, { roughness: 0.8 }))],
+  trim: out(far(0xf4ede0, { roughness: 0.6 }), [0.9, 0.45, 0.8]),
+  zinc: out(far(0xffffff, { map: zincTex, roughness: 0.38, clearcoat: 0.6, metalness: 0.15 }), [1, 0.3, 0.7]),
+  zincFlat: out(far(0x8f9aa8, { roughness: 0.4, clearcoat: 0.5, metalness: 0.15 }), [1, 0.35, 0.75]),
+  iron: out(far(0x26262c, { roughness: 0.4, clearcoat: 0.5 }), [0.5, 0.6, 0.9]),
+  plaster: out(far(0xe6c9a4, { roughness: 0.85 }), [0.9, 0.45, 0.8]),
+  pot: out(far(0xc7703e, { roughness: 0.6 }), [0.9, 0.45, 0.85]),
+  dormerGlass: out(far(0x5a6a80, { roughness: 0.15, clearcoat: 1, emissive: 0xffc888, emissiveIntensity: 0 })),
+  leaf: out(far(0x5a9a68, { roughness: 0.6 }), [0.7, 0.45, 0.85]),
+  geranium: out(far(0xe0586e, { roughness: 0.5, clearcoat: 0.3 })),
+  antenna: out(far(0x9aa2ae, { roughness: 0.35, clearcoat: 0.6 })),
 }

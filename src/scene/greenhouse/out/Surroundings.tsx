@@ -4,8 +4,8 @@ import { smooth } from '../../../math'
 import { mood } from '../../anim'
 import { Static } from '../../Static'
 import { Part, SPH, cyl, noRay, rbox, type V3 } from '../../parts'
-import { gummy } from '../../materials'
-import { foliage } from '../../nature/materials'
+import { far } from '../../materials'
+import { farFoliage } from '../../nature/materials'
 import { Foliage } from '../../nature/Foliage'
 import { SkyFadeClock, skyFade } from '../../outdoor'
 import { OutdoorPrecip } from '../../objects/OutdoorPrecip'
@@ -24,14 +24,14 @@ const F = { c: [0, 0] as [number, number], r0: 7.5, r1: 12.5 }
 
 // Peu de matériaux, partagés : le parc est un tracé par matériau.
 const M = {
-  grass: skyFade(gummy(0x6f9a58, { roughness: 0.9, clearcoat: 0.04 }), F),
-  gravel: skyFade(gummy(0xb9ae98, { roughness: 0.85, clearcoat: 0.08 }), F),
-  hedge: skyFade(foliage(0x3f7a4e), F),
-  hedgeLight: skyFade(foliage(0x5e9a58), F),
-  tree: [skyFade(foliage(0x4f8a52), F), skyFade(foliage(0x6aa458), F), skyFade(foliage(0x3a7048), F)],
-  trunk: skyFade(gummy(0x6a5040, { roughness: 0.85 }), F),
-  stone: skyFade(gummy(0xd8cfba, { roughness: 0.75 }), F),
-  iron: skyFade(gummy(0x26332e, { roughness: 0.45, clearcoat: 0.5 }), F),
+  grass: skyFade(far(0x6f9a58, { roughness: 0.9, clearcoat: 0.04 }), F),
+  gravel: skyFade(far(0xb9ae98, { roughness: 0.85, clearcoat: 0.08 }), F),
+  hedge: skyFade(farFoliage(0x3f7a4e), F),
+  hedgeLight: skyFade(farFoliage(0x5e9a58), F),
+  tree: [skyFade(farFoliage(0x4f8a52), F), skyFade(farFoliage(0x6aa458), F), skyFade(farFoliage(0x3a7048), F)],
+  trunk: skyFade(far(0x6a5040, { roughness: 0.85 }), F),
+  stone: skyFade(far(0xd8cfba, { roughness: 0.75 }), F),
+  iron: skyFade(far(0x26332e, { roughness: 0.45, clearcoat: 0.5 }), F),
   glow: new SpriteMaterial({ map: glowTex, color: 0xffd490, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }),
 }
 

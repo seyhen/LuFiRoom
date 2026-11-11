@@ -1,5 +1,5 @@
 import { useT } from '../i18n'
-import { useEffect, useLayoutEffect, useRef, useState, type MutableRefObject } from 'react'
+import { Suspense, useEffect, useLayoutEffect, useRef, useState, type MutableRefObject } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Raycaster, Vector2, Vector3, type Group, type Object3D, type OrthographicCamera } from 'three'
 import { useStore } from '../state/store'
@@ -7,6 +7,7 @@ import { roomById } from '../rooms'
 import type { ObjectId, Room as RoomData } from '../rooms/types'
 import { clamp } from '../math'
 import { pointer, reduceMotion } from './anim'
+import { coarsePointer } from '../motion'
 import { shadowTex } from './textures'
 import { Lights } from './Lights'
 import { Hotspots } from './Hotspot'
@@ -35,13 +36,15 @@ export function Stage({ hotspotLayer }: { hotspotLayer: Layer }) {
       camera={{ manual: true, near: 0.1, far: 120 }}
       shadows
       // Téléphone (écran tactile) : 1,5 au plus, un tiers de pixels en moins qu'à 2 pour la même image de loin. Ordinateur : jusqu'à 2.
-      dpr={[1, matchMedia('(pointer: coarse)').matches ? 1.5 : 2]}
+      dpr={[1, coarsePointer ? 1.5 : 2]}
       legacy
       linear
       flat
+      // Le rythme des images est réglé par <FrameGovernor> (plein régime à l'action, 30 images/s au repos, rien si l'onglet est caché).
+      frameloop="never"
     >
+      <FrameGovernor />
       <Framing zoom={room.zoom} />
-      <Ready />
       <ContextGuard onRestored={() => setEpoch((n) => n + 1)} />
       <Lights room={room} />
       {/* ombre douce sous le diorama, pour l'effet « flotte » */}
@@ -52,6 +55,50 @@ export function Stage({ hotspotLayer }: { hotspotLayer: Layer }) {
       <Room key={room.id} room={room} hotspotLayer={hotspotLayer} />
     </Canvas>
   )
+}
+
+const BOOST_MS = 4000 // plein régime pendant ce temps après la dernière action
+const IDLE_FPS = 30 // au repos
+const SLEEP_FPS = 20 // pendant le minuteur de sommeil : l'écran n'est plus regardé (delta = 0,05 s, la limite que les animations acceptent)
+const BOOST_EVENTS = ['pointerdown', 'pointermove', 'pointerup', 'touchstart', 'touchmove', 'wheel', 'keydown', 'resize', 'focus', 'visibilitychange'] as const
+
+/**
+ * Remplace la boucle de rendu de React Three Fiber (`frameloop="never"`, on appelle `advance` nous-mêmes). Pourquoi pas
+ * `frameloop="demand"` : le décor est vivant partout (flottement de la pièce, vapeur, flammes, étoiles, ciel), plus de cent `useFrame`
+ * avancent seuls sans jamais appeler `invalidate` ; il faudrait invalider en continu, soit la même chose en plus fragile. Ici toutes les animations tournent
+ * comme avant, avec le `delta` et l'horloge réels de `advance` (à 30 images/s, delta = 0,033 s : sous le plafond de 0,05 s des `Math.min(delta, 0.05)`,
+ * et les phases s'additionnent image après image, sans saut).
+ * - Action (toucher, glisser, survol, clavier, redimensionnement, retour sur l'onglet, tout changement du store : son, météo, pièce, jour / nuit,
+ *   minuteur) : pleine fréquence de l'écran pendant `BOOST_MS`.
+ * - Repos : `IDLE_FPS` ; minuteur de sommeil en cours : `SLEEP_FPS`. Onglet caché : aucune image.
+ * `ContextGuard` et `Ready` ne changent pas : le canvas reste reconstruit par `ContextGuard`, et les deux premières images sont à pleine fréquence.
+ */
+function FrameGovernor() {
+  const advance = useThree((s) => s.advance)
+  useEffect(() => {
+    const t0 = performance.now()
+    let raf = 0, last = -Infinity, until = t0 + BOOST_MS
+    const boost = () => {
+      until = performance.now() + BOOST_MS
+    }
+    const tick = (now: number) => {
+      raf = requestAnimationFrame(tick)
+      if (document.visibilityState !== 'visible') return
+      const fps = now < until ? Infinity : useStore.getState().sleepEnd !== null ? SLEEP_FPS : IDLE_FPS
+      if (now - last < 1000 / fps - 3) return // 3 ms de tolérance : à 60 Hz on rend une image sur deux, pas une sur trois
+      last = now
+      advance((now - t0) / 1000)
+    }
+    raf = requestAnimationFrame(tick)
+    for (const e of BOOST_EVENTS) window.addEventListener(e, boost, { capture: true, passive: true })
+    const unsub = useStore.subscribe(boost)
+    return () => {
+      cancelAnimationFrame(raf)
+      for (const e of BOOST_EVENTS) window.removeEventListener(e, boost, { capture: true })
+      unsub()
+    }
+  }, [advance])
+  return null
 }
 
 /**
@@ -99,6 +146,10 @@ function Ready() {
   }, [gl, scene, camera])
   // Pont de développement (retiré du build) : `window.__lofi.three()` rend la scène, le rendu et la caméra, pour compter les tracés et inspecter les maillages.
   if (import.meta.env.DEV) ((window as unknown as { __lofi?: Record<string, unknown> }).__lofi ??= {}).three = get
+  // `?stats` : expose les compteurs de rendu au test de fumée (chunk à part, absent de l'usage normal).
+  useEffect(() => {
+    if (location.search.includes('stats')) void import('./stats').then((m) => m.exposeStats(get))
+  }, [get])
   useFrame(() => {
     if (++frames.current === 2) useStore.setState((s) => ({ loading: { ...s.loading, scene: true } }))
   })
@@ -168,8 +219,13 @@ function Room({ room, hotspotLayer }: { room: RoomData; hotspotLayer: Layer }) {
   }, -1)
   return (
     <group ref={group}>
-      <Scene />
-      <Hotspots room={room} layer={hotspotLayer} />
+      {/* Sans repli visible : le changement de pièce attend que la scène soit chargée (store.goto), et le premier chargement
+          est sous l'écran de chargement. `Ready` est ici pour ne compter ses images qu'une fois la scène montée. */}
+      <Suspense fallback={null}>
+        <Scene />
+        <Hotspots room={room} layer={hotspotLayer} />
+        <Ready />
+      </Suspense>
     </group>
   )
 }

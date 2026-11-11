@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { PlaneGeometry, RepeatWrapping } from 'three'
-import { gummy } from '../../materials'
+import { far } from '../../materials'
 import { canvasTex, rr, seeded } from '../../paint'
 import { Part, SPH, cyl, noRay, rbox, type V3 } from '../../parts'
 import { skyFade } from '../../outdoor'
@@ -94,20 +94,20 @@ function shopTex(variant: number, glow: boolean) {
   }, [1, 1])
 }
 
-const mat = <T extends ReturnType<typeof gummy>>(m: T, snow = false) => skyFade(snow ? snowTop(m, 1, 0.4, 0.8) : m, F)
+const mat = <T extends ReturnType<typeof far>>(m: T, snow = false) => skyFade(snow ? snowTop(m, 1, 0.4, 0.8) : m, F)
 
 // Les teintes de la ruelle sous la pluie : bois brûlé et prune au crépuscule, vert de tôle ; les fenêtres chaudes y ressortent.
 const FACADES = [['#5c4a52', '#3a2e38', 5], ['#3e5656', '#26383a', 9]] as const
 export const Z = {
-  facade: FACADES.map(([w, t, s]) => mat(gummy(0xffffff, { map: facadeTex(w, t, false, s), emissiveMap: facadeTex(w, t, true, s), emissive: 0xffffff, emissiveIntensity: 0, roughness: 0.75, clearcoat: 0.05 }))),
-  shop: [0, 1].map((v) => mat(gummy(0xffffff, { map: shopTex(v, false), emissiveMap: shopTex(v, true), emissive: 0xffffff, emissiveIntensity: 0.3, roughness: 0.6, clearcoat: 0.1 }))),
-  body: [mat(gummy(0x5c4a52, { roughness: 0.85 })), mat(gummy(0x3e5656, { roughness: 0.85 }))],
-  roof: mat(gummy(0x3a3642, { roughness: 0.9, clearcoat: 0 }), true),
-  parapet: mat(gummy(0x6a5a60, { roughness: 0.8 }), true),
-  steel: mat(gummy(0x8d96a2, { roughness: 0.4, clearcoat: 0.5 })),
-  tank: mat(gummy(0xa7b4b8, { roughness: 0.4, clearcoat: 0.6 }), true),
-  dark: mat(gummy(0x2c2a34, { roughness: 0.5 })),
-  white: mat(gummy(0xe6e8ea, { roughness: 0.5, clearcoat: 0.4 })),
+  facade: FACADES.map(([w, t, s]) => mat(far(0xffffff, { map: facadeTex(w, t, false, s), emissiveMap: facadeTex(w, t, true, s), emissive: 0xffffff, emissiveIntensity: 0, roughness: 0.75, clearcoat: 0.05 }))),
+  shop: [0, 1].map((v) => mat(far(0xffffff, { map: shopTex(v, false), emissiveMap: shopTex(v, true), emissive: 0xffffff, emissiveIntensity: 0.3, roughness: 0.6, clearcoat: 0.1 }))),
+  body: [mat(far(0x5c4a52, { roughness: 0.85 })), mat(far(0x3e5656, { roughness: 0.85 }))],
+  roof: mat(far(0x3a3642, { roughness: 0.9, clearcoat: 0 }), true),
+  parapet: mat(far(0x6a5a60, { roughness: 0.8 }), true),
+  steel: mat(far(0x8d96a2, { roughness: 0.4, clearcoat: 0.5 })),
+  tank: mat(far(0xa7b4b8, { roughness: 0.4, clearcoat: 0.6 }), true),
+  dark: mat(far(0x2c2a34, { roughness: 0.5 })),
+  white: mat(far(0xe6e8ea, { roughness: 0.5, clearcoat: 0.4 })),
 }
 for (const m of [...Z.facade, ...Z.shop]) {
   const t = m.map!, g = m.emissiveMap!

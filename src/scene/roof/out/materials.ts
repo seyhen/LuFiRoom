@@ -1,10 +1,10 @@
-import { AdditiveBlending, MeshPhysicalMaterial, SpriteMaterial } from 'three'
-import { gummy } from '../../materials'
+import { AdditiveBlending, MeshStandardMaterial, SpriteMaterial } from 'three'
+import { far } from '../../materials'
 import { canvasTex, rr, seeded } from '../../paint'
 import { skyFade } from '../../outdoor'
 import { snowTop } from '../../snowTop'
 import { glowTex } from '../../textures'
-import { foliage } from '../../nature/materials'
+import { farFoliage } from '../../nature/materials'
 
 // Les matériaux des immeubles autour du toit : façades de brique à fenêtres à guillotine (et leurs vitres qui s'allument le soir),
 // toits de bitume, climatiseurs, verrière, panneau publicitaire. Tout descend dans le ciel : les façades se fondent vers le bas.
@@ -41,7 +41,7 @@ function facade(brick: string, seed: number, glow: boolean) {
       x.fillStyle = '#f2ece0'; x.fillRect(X, Y + h / 2 - 3, w, 6); x.fillRect(X + w / 2 - 2, Y, 4, h)
       if (r() < 0.25) { x.fillStyle = '#5a8a5a'; rr(x, X - 4, Y + h - 22, w + 8, 20, 6); x.fill() } // une jardinière
     }
-  })
+  }, undefined, glow ? 0.5 : 0.67) // vue de loin : 74 texels par mètre suffisent (la carte des vitres allumées, 1 sur 2)
 }
 
 /** Le panneau publicitaire : une grande tasse fumante et « COFFEE · day & night », couleurs d'affiche passée. */
@@ -67,30 +67,30 @@ const bricks = [
   [facade('#8a6a72', 11, false), facade('#8a6a72', 11, true)],
 ] as const
 
-const out = <T extends MeshPhysicalMaterial>(m: T, snow?: [number, number?, number?]) => {
+const out = <T extends MeshStandardMaterial>(m: T, snow?: [number, number?, number?]) => {
   if (snow) snowTop(m, ...snow)
   return skyFade(m, { c: [0, 0], r0: 7.5, r1: 12.5, below: -4.2 })
 }
 
 export const O = {
   /** Les façades : notre immeuble (brique rouge), le voisin de droite (brique blonde), celui de gauche (brique prune). */
-  facade: bricks.map(([map, glow]) => out(gummy(0xffffff, { map, emissiveMap: glow, emissive: 0xffffff, emissiveIntensity: 0, roughness: 0.82, clearcoat: 0.04 }))),
-  brick: [out(gummy(0x9a5444, { roughness: 0.85 })), out(gummy(0xb9906a, { roughness: 0.85 })), out(gummy(0x8a6a72, { roughness: 0.85 }))],
-  coping: out(gummy(0xd8ccb8, { roughness: 0.6 }), [1, 0.45, 0.8]),
-  tar: out(gummy(0x58525a, { roughness: 0.9, clearcoat: 0 }), [1, 0.4, 0.8]),
-  steel: out(gummy(0x2e2c34, { roughness: 0.45, clearcoat: 0.4 }), [0.7, 0.55, 0.9]),
-  metal: out(gummy(0xb8bec8, { roughness: 0.35, clearcoat: 0.6 }), [0.9, 0.45, 0.85]),
-  metalDark: out(gummy(0x7a808c, { roughness: 0.4, clearcoat: 0.5 })),
-  glass: out(gummy(0x9fc4d8, { roughness: 0.1, clearcoat: 1, emissive: 0xffc480, emissiveIntensity: 0 }), [0.8, 0.45, 0.85]),
-  rust: out(gummy(0xb4573a, { roughness: 0.7 })),
-  wood: out(gummy(0x8a6448, { roughness: 0.8 }), [0.8, 0.5, 0.85]),
-  terracotta: out(gummy(0xc8704e, { roughness: 0.7 }), [0.9, 0.45, 0.85]),
+  facade: bricks.map(([map, glow]) => out(far(0xffffff, { map, emissiveMap: glow, emissive: 0xffffff, emissiveIntensity: 0, roughness: 0.82, clearcoat: 0.04 }))),
+  brick: [out(far(0x9a5444, { roughness: 0.85 })), out(far(0xb9906a, { roughness: 0.85 })), out(far(0x8a6a72, { roughness: 0.85 }))],
+  coping: out(far(0xd8ccb8, { roughness: 0.6 }), [1, 0.45, 0.8]),
+  tar: out(far(0x58525a, { roughness: 0.9, clearcoat: 0 }), [1, 0.4, 0.8]),
+  steel: out(far(0x2e2c34, { roughness: 0.45, clearcoat: 0.4 }), [0.7, 0.55, 0.9]),
+  metal: out(far(0xb8bec8, { roughness: 0.35, clearcoat: 0.6 }), [0.9, 0.45, 0.85]),
+  metalDark: out(far(0x7a808c, { roughness: 0.4, clearcoat: 0.5 })),
+  glass: out(far(0x9fc4d8, { roughness: 0.1, clearcoat: 1, emissive: 0xffc480, emissiveIntensity: 0 }), [0.8, 0.45, 0.85]),
+  rust: out(far(0xb4573a, { roughness: 0.7 })),
+  wood: out(far(0x8a6448, { roughness: 0.8 }), [0.8, 0.5, 0.85]),
+  terracotta: out(far(0xc8704e, { roughness: 0.7 }), [0.9, 0.45, 0.85]),
   /** Les plants du potager d'en face : du vrai feuillage (`Foliage`), pas des boules. */
-  leaf: out(foliage(0x6aa060), [0.7, 0.45, 0.85]),
-  soil: out(gummy(0x5a4034, { roughness: 0.95, clearcoat: 0 }), [1, 0.4, 0.8]),
-  tomato: out(gummy(0xd9483a, { roughness: 0.3, clearcoat: 0.8 })),
-  billboard: out(gummy(0xffffff, { map: billboardTex, roughness: 0.6, clearcoat: 0.1, emissive: 0xffffff, emissiveMap: billboardTex, emissiveIntensity: 0 })),
-  lampHead: out(gummy(0x2e2c34, { roughness: 0.4, clearcoat: 0.5 })),
-  bulb: out(gummy(0xfff1c8, { roughness: 0.2, emissive: 0xffd080, emissiveIntensity: 0.2 })),
+  leaf: out(farFoliage(0x6aa060), [0.7, 0.45, 0.85]),
+  soil: out(far(0x5a4034, { roughness: 0.95, clearcoat: 0 }), [1, 0.4, 0.8]),
+  tomato: out(far(0xd9483a, { roughness: 0.3, clearcoat: 0.8 })),
+  billboard: out(far(0xffffff, { map: billboardTex, roughness: 0.6, clearcoat: 0.1, emissive: 0xffffff, emissiveMap: billboardTex, emissiveIntensity: 0 })),
+  lampHead: out(far(0x2e2c34, { roughness: 0.4, clearcoat: 0.5 })),
+  bulb: out(far(0xfff1c8, { roughness: 0.2, emissive: 0xffd080, emissiveIntensity: 0.2 })),
   glow: new SpriteMaterial({ map: glowTex, color: 0xffcf80, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }),
 }

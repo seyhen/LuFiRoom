@@ -58,6 +58,8 @@ export const carpetTex = canvasTex(256, 256, (x) => {
 
 // ── Le paysage, en bandes qui défilent. Chaque bande se répète en largeur (son bord droit continue son bord gauche).
 const LW = 1024
+// Les bandes défilantes couvrent 2,9 unités à l'écran (≤ 180 px par unité sur un grand écran) : la moitié de LW suffit, `draw` garde ses coordonnées.
+const LK = 0.5
 
 /** Collines lointaines bleutées, un clocher. `snow` : les mêmes sous la neige (collines blanches, toits blancs). */
 const farHillsDraw = (snow: boolean) => (x: CanvasRenderingContext2D) => {
@@ -78,8 +80,8 @@ const farHillsDraw = (snow: boolean) => (x: CanvasRenderingContext2D) => {
   }
   x.fillStyle = '#c9b8a8'; x.fillRect(640, 62, 6, 28); poly(x, [[638, 62], [643, 50], [648, 62]], snow ? '#eef2f7' : '#7a8a96')
 }
-export const farHillsTex = canvasTex(LW, 128, farHillsDraw(false))
-export const farHillsSnowTex = canvasTex(LW, 128, farHillsDraw(true))
+export const farHillsTex = canvasTex(LW, 128, farHillsDraw(false), undefined, LK)
+export const farHillsSnowTex = canvasTex(LW, 128, farHillsDraw(true), undefined, LK)
 
 /** Les maisons des prés : position, largeur, hauteur, toit. Partagées avec leurs fenêtres allumées. */
 const HOUSES = (() => {
@@ -116,8 +118,8 @@ const meadowDraw = (snow: boolean) => (x: CanvasRenderingContext2D) => {
   }
   field(225, 8, 4, snow ? '#dde5ee' : '#6e9a58')
 }
-export const meadowTex = canvasTex(LW, 256, meadowDraw(false))
-export const meadowSnowTex = canvasTex(LW, 256, meadowDraw(true))
+export const meadowTex = canvasTex(LW, 256, meadowDraw(false), undefined, LK)
+export const meadowSnowTex = canvasTex(LW, 256, meadowDraw(true), undefined, LK)
 
 /** Les fenêtres des maisons, allumées la nuit : mêmes positions que dans `meadowTex`. */
 export const meadowLightsTex = canvasTex(LW, 256, (x) => {
@@ -129,7 +131,7 @@ export const meadowLightsTex = canvasTex(LW, 256, (x) => {
       x.fillStyle = '#ffd88a'; x.fillRect(wx, hs.y - hs.h + 7, 6, 7)
     }
   }
-})
+}, undefined, LK)
 
 /** Tout près de la voie : buissons flous et poteaux télégraphiques avec leurs fils. `snow` : le talus sous la neige. */
 const nearDraw = (snow: boolean) => (x: CanvasRenderingContext2D) => {
@@ -159,8 +161,8 @@ const nearDraw = (snow: boolean) => (x: CanvasRenderingContext2D) => {
   }
   x.fillStyle = snow ? '#e4eaf2' : '#4a7a48'; x.fillRect(0, 440, LW, 72)
 }
-export const nearTex = canvasTex(LW, 512, nearDraw(false))
-export const nearSnowTex = canvasTex(LW, 512, nearDraw(true))
+export const nearTex = canvasTex(LW, 512, nearDraw(false), undefined, LK)
+export const nearSnowTex = canvasTex(LW, 512, nearDraw(true), undefined, LK)
 
 /** Pluie sur la vitre d'un train qui roule : des gouttes et des traînées en biais. */
 export const streakTex = canvasTex(512, 512, (x) => {
@@ -176,7 +178,7 @@ export const streakTex = canvasTex(512, 512, (x) => {
     x.fillStyle = 'rgba(220,232,248,.45)'; x.beginPath(); x.arc(px, py, rad, 0, TAU); x.fill()
     x.fillStyle = 'rgba(255,255,255,.75)'; x.beginPath(); x.arc(px - rad * 0.3, py - rad * 0.3, rad * 0.35, 0, TAU); x.fill()
   }
-}, [1.5, 1])
+}, [1.5, 1], 0.5) // des traînées de pluie, vues par la vitre : 256 px par tuile de 1,9 m suffisent
 
 /** Tapis persan du couloir : bordure bleu nuit, médaillon central, entrelacs crème et rouille. */
 export const persianTex = canvasTex(256, 384, (x) => {

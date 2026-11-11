@@ -5,7 +5,7 @@ import { smooth } from '../../../math'
 import { mood } from '../../anim'
 import { Static } from '../../Static'
 import { Batch, Part, SPH, cyl, noRay, rbox, type Item, type V3 } from '../../parts'
-import { gummy } from '../../materials'
+import { far } from '../../materials'
 import { canvasTex } from '../../paint'
 import { SkyFadeClock, skyFade } from '../../outdoor'
 import { snowTop } from '../../snowTop'
@@ -57,21 +57,21 @@ function signGeo(k: number) {
   for (let i = 0; i < uv.count; i++) uv.setXY(i, (k + uv.getX(i)) / SIGNS.length, 1 - (1 - uv.getY(i)) * (h / ATLAS_H))
   return g
 }
-const signMat = skyFade(gummy(0xffffff, { map: signAtlas(false), emissiveMap: signAtlas(true), emissive: 0xffffff, emissiveIntensity: 0.3, roughness: 0.4 }), F)
+const signMat = skyFade(far(0xffffff, { map: signAtlas(false), emissiveMap: signAtlas(true), emissive: 0xffffff, emissiveIntensity: 0.3, roughness: 0.4 }), F)
 const SIGN_GEOS = SIGNS.map((_, k) => signGeo(k))
 
 // Peu de matériaux, partagés : chaque matériau du dehors coûte un tracé (le pneu, la selle, les fils, les caissons des enseignes
 // et les culots des lanternes sont du même noir ; les rails, le chrome et le pied de l'étal du même acier).
 const M = {
   // la chaussée mouillée : un vernis, mais assez mat pour que la lanterne de la carriole n'y fasse pas une traînée de lumière
-  road: skyFade(snowTop(gummy(0x3a3446, { roughness: 0.6, clearcoat: 0.35, clearcoatRoughness: 0.55 }), 1, 0.4, 0.8), F),
-  walk: skyFade(snowTop(gummy(0x8a8290, { roughness: 0.7 }), 1, 0.4, 0.8), F),
-  steel: skyFade(gummy(0xc8ccd6, { roughness: 0.22, clearcoat: 0.9, metalness: 0.2 }), F),
-  dark: skyFade(gummy(0x28222c, { roughness: 0.5 }), F),
-  lantern: skyFade(gummy(0xe0402e, { roughness: 0.6, emissive: 0xff5a2a, emissiveIntensity: 0.15 }), F),
-  scooter: skyFade(gummy(0x8ad8c0, { roughness: 0.3, clearcoat: 0.8 }), F),
-  stool: skyFade(gummy(0xe04a5a, { roughness: 0.4, clearcoat: 0.6 }), F),
-  umbrella: skyFade(snowTop(gummy(0xf4c040, { roughness: 0.6, side: 2 }), 1, 0.4, 0.8), F),
+  road: skyFade(snowTop(far(0x3a3446, { roughness: 0.6, clearcoat: 0.35, clearcoatRoughness: 0.55 }), 1, 0.4, 0.8), F),
+  walk: skyFade(snowTop(far(0x8a8290, { roughness: 0.7 }), 1, 0.4, 0.8), F),
+  steel: skyFade(far(0xc8ccd6, { roughness: 0.22, clearcoat: 0.9, metalness: 0.2 }), F),
+  dark: skyFade(far(0x28222c, { roughness: 0.5 }), F),
+  lantern: skyFade(far(0xe0402e, { roughness: 0.6, emissive: 0xff5a2a, emissiveIntensity: 0.15 }), F),
+  scooter: skyFade(far(0x8ad8c0, { roughness: 0.3, clearcoat: 0.8 }), F),
+  stool: skyFade(far(0xe04a5a, { roughness: 0.4, clearcoat: 0.6 }), F),
+  umbrella: skyFade(snowTop(far(0xf4c040, { roughness: 0.6, side: 2 }), 1, 0.4, 0.8), F),
   glow: new SpriteMaterial({ map: glowTex, color: 0xff7a50, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }),
   puddle: new MeshBasicMaterial({ color: 0xff7ac8, transparent: true, opacity: 0.18, depthWrite: false, blending: AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -2 }),
 }

@@ -1,9 +1,9 @@
-import { AdditiveBlending, MeshPhysicalMaterial, RepeatWrapping, SpriteMaterial } from 'three'
-import { gummy } from '../../materials'
+import { AdditiveBlending, MeshStandardMaterial, RepeatWrapping, SpriteMaterial } from 'three'
+import { far } from '../../materials'
 import { canvasTex, rr, seeded } from '../../paint'
 import { skyFade } from '../../outdoor'
 import { snowTop } from '../../snowTop'
-import { leafy } from '../../nature/materials'
+import { farLeafy } from '../../nature/materials'
 import { glowTex } from '../../textures'
 
 // Les matériaux du dehors du train : le pré alpin, le ballast, les rails, les poteaux, la voiture suivante, le chalet.
@@ -64,7 +64,7 @@ function carSide(glow: boolean) {
       x.restore()
       if (!glow) { x.lineWidth = 6; x.strokeStyle = '#e2b25a'; rr(x, X, Y, W, H, 26); x.stroke() }
     }
-  })
+  }, undefined, glow ? 0.5 : 0.67) // la voiture voisine, vue de loin derrière le mur : 100 texels par mètre suffisent
 }
 
 /** Le chalet : bois blond, fenêtres à croisillons et volets verts (et leurs vitres qui s'allument). */
@@ -85,13 +85,13 @@ const carSideTex = carSide(false), carGlowTex = carSide(true)
 const chaletTex = chaletFront(false), chaletGlowTex = chaletFront(true)
 
 /** Le fondu de la voie : étiré le long de x (la voie part à gauche et à droite), plus court vers l'avant. */
-const out = <T extends MeshPhysicalMaterial>(m: T, snow?: [number, number?, number?]) => {
+const out = <T extends MeshStandardMaterial>(m: T, snow?: [number, number?, number?]) => {
   if (snow) snowTop(m, ...snow)
   return skyFade(m, { c: [0, 0], r0: 8, r1: 12.5, sx: 1.3, sz: 1.05 })
 }
 
 /** La voiture suivante : son toit reçoit la neige. */
-const car = <T extends MeshPhysicalMaterial>(m: T) => out(m, [1, 0.45, 0.85])
+const car = <T extends MeshStandardMaterial>(m: T) => out(m, [1, 0.45, 0.85])
 
 export const meadow = meadowTex
 export const gravel = gravelTex
@@ -101,42 +101,42 @@ meadow.repeat.set(16, 26 / 3)
 gravel.wrapS = gravel.wrapT = RepeatWrapping
 
 export const R = {
-  meadow: out(gummy(0xffffff, { map: meadowTex, roughness: 0.92, clearcoat: 0 }), [1, 0.4, 0.8]),
-  gravel: out(gummy(0xffffff, { map: gravelTex, roughness: 0.9, clearcoat: 0 }), [0.9, 0.4, 0.8]),
-  rail: out(gummy(0xb8bcc6, { roughness: 0.25, clearcoat: 0.8, metalness: 0.3 })),
-  railFoot: out(gummy(0x5a4a44, { roughness: 0.7 })),
-  sleeper: out(gummy(0x6a4a3a, { roughness: 0.85, clearcoat: 0.05 }), [0.7, 0.5, 0.85]),
-  pole: out(gummy(0x7a5a44, { roughness: 0.8, clearcoat: 0.05 }), [0.8, 0.5, 0.85]),
-  insulator: out(gummy(0x7fc8b8, { roughness: 0.15, clearcoat: 1 })),
-  wire: out(gummy(0x3a3236, { roughness: 0.5 })),
-  fence: out(gummy(0xb08a66, { roughness: 0.8, clearcoat: 0.05 }), [0.8, 0.5, 0.85]),
-  fir: out(gummy(0x3f8a66, { roughness: 0.6, clearcoat: 0.2 }), [0.85, 0.4, 0.8]),
-  trunk: out(gummy(0x6a4632, { roughness: 0.8 })),
-  snowCap: out(gummy(0xf3f7ff, { roughness: 0.5, clearcoat: 0.3 })),
-  bush: out(leafy(0x5f9a5a), [0.8, 0.4, 0.8]),
-  rock: out(gummy(0xa8a4a8, { roughness: 0.75, clearcoat: 0.1 }), [0.9, 0.4, 0.8]),
-  hill: out(gummy(0x7fae72, { roughness: 0.9, clearcoat: 0 }), [1, 0.35, 0.75]),
+  meadow: out(far(0xffffff, { map: meadowTex, roughness: 0.92, clearcoat: 0 }), [1, 0.4, 0.8]),
+  gravel: out(far(0xffffff, { map: gravelTex, roughness: 0.9, clearcoat: 0 }), [0.9, 0.4, 0.8]),
+  rail: out(far(0xb8bcc6, { roughness: 0.25, clearcoat: 0.8, metalness: 0.3 })),
+  railFoot: out(far(0x5a4a44, { roughness: 0.7 })),
+  sleeper: out(far(0x6a4a3a, { roughness: 0.85, clearcoat: 0.05 }), [0.7, 0.5, 0.85]),
+  pole: out(far(0x7a5a44, { roughness: 0.8, clearcoat: 0.05 }), [0.8, 0.5, 0.85]),
+  insulator: out(far(0x7fc8b8, { roughness: 0.15, clearcoat: 1 })),
+  wire: out(far(0x3a3236, { roughness: 0.5 })),
+  fence: out(far(0xb08a66, { roughness: 0.8, clearcoat: 0.05 }), [0.8, 0.5, 0.85]),
+  fir: out(far(0x3f8a66, { roughness: 0.6, clearcoat: 0.2 }), [0.85, 0.4, 0.8]),
+  trunk: out(far(0x6a4632, { roughness: 0.8 })),
+  snowCap: out(far(0xf3f7ff, { roughness: 0.5, clearcoat: 0.3 })),
+  bush: out(farLeafy(0x5f9a5a), [0.8, 0.4, 0.8]),
+  rock: out(far(0xa8a4a8, { roughness: 0.75, clearcoat: 0.1 }), [0.9, 0.4, 0.8]),
+  hill: out(far(0x7fae72, { roughness: 0.9, clearcoat: 0 }), [1, 0.35, 0.75]),
   /** Les fleurs du talus, teintées une à une (Batch). */
-  petal: out(gummy(0xffffff, { roughness: 0.5, clearcoat: 0.3 })),
-  stem: out(gummy(0x5a8a4a, { roughness: 0.7 })),
-  white: out(gummy(0xf4f0e8, { roughness: 0.5, clearcoat: 0.3 }), [0.6, 0.5, 0.85]),
-  black: out(gummy(0x2a2730, { roughness: 0.5, clearcoat: 0.3 })),
+  petal: out(far(0xffffff, { roughness: 0.5, clearcoat: 0.3 })),
+  stem: out(far(0x5a8a4a, { roughness: 0.7 })),
+  white: out(far(0xf4f0e8, { roughness: 0.5, clearcoat: 0.3 }), [0.6, 0.5, 0.85]),
+  black: out(far(0x2a2730, { roughness: 0.5, clearcoat: 0.3 })),
   // la voiture suivante
-  livery: car(gummy(0x1f2f5a, { roughness: 0.35, clearcoat: 0.8 })),
-  carSide: car(gummy(0xffffff, { map: carSideTex, emissiveMap: carGlowTex, emissive: 0xffc070, emissiveIntensity: 0, roughness: 0.35, clearcoat: 0.8 })),
-  carGold: car(gummy(0xe2b25a, { roughness: 0.3, clearcoat: 0.9 })),
-  carIron: car(gummy(0x2a2730, { roughness: 0.5, clearcoat: 0.3 })),
-  roof: car(gummy(0x6f7484, { roughness: 0.5, clearcoat: 0.4 })),
-  gold: out(gummy(0xe2b25a, { roughness: 0.3, clearcoat: 0.9 })),
-  iron: out(gummy(0x2a2730, { roughness: 0.5, clearcoat: 0.3 })),
-  bellows: car(gummy(0x3a3640, { roughness: 0.85 })),
+  livery: car(far(0x1f2f5a, { roughness: 0.35, clearcoat: 0.8 })),
+  carSide: car(far(0xffffff, { map: carSideTex, emissiveMap: carGlowTex, emissive: 0xffc070, emissiveIntensity: 0, roughness: 0.35, clearcoat: 0.8 })),
+  carGold: car(far(0xe2b25a, { roughness: 0.3, clearcoat: 0.9 })),
+  carIron: car(far(0x2a2730, { roughness: 0.5, clearcoat: 0.3 })),
+  roof: car(far(0x6f7484, { roughness: 0.5, clearcoat: 0.4 })),
+  gold: out(far(0xe2b25a, { roughness: 0.3, clearcoat: 0.9 })),
+  iron: out(far(0x2a2730, { roughness: 0.5, clearcoat: 0.3 })),
+  bellows: car(far(0x3a3640, { roughness: 0.85 })),
   // le chalet
-  chalet: out(gummy(0xffffff, { map: chaletTex, emissiveMap: chaletGlowTex, emissive: 0xffb860, emissiveIntensity: 0, roughness: 0.75, clearcoat: 0.05 })),
-  wood: out(gummy(0xb07a4c, { roughness: 0.8, clearcoat: 0.05 })),
-  chaletRoof: out(gummy(0x7a4a3a, { roughness: 0.7, clearcoat: 0.1 }), [1, 0.3, 0.7]),
-  stone: out(gummy(0xb8b0a8, { roughness: 0.8 }), [0.8, 0.5, 0.85]),
+  chalet: out(far(0xffffff, { map: chaletTex, emissiveMap: chaletGlowTex, emissive: 0xffb860, emissiveIntensity: 0, roughness: 0.75, clearcoat: 0.05 })),
+  wood: out(far(0xb07a4c, { roughness: 0.8, clearcoat: 0.05 })),
+  chaletRoof: out(far(0x7a4a3a, { roughness: 0.7, clearcoat: 0.1 }), [1, 0.3, 0.7]),
+  stone: out(far(0xb8b0a8, { roughness: 0.8 }), [0.8, 0.5, 0.85]),
   // le signal : sa lentille verte s'allume le soir
-  lens: out(gummy(0x5adf9a, { roughness: 0.2, clearcoat: 1, emissive: 0x40ff90, emissiveIntensity: 0.3 })),
-  lensRed: out(gummy(0x8a3a3a, { roughness: 0.2, clearcoat: 1 })),
+  lens: out(far(0x5adf9a, { roughness: 0.2, clearcoat: 1, emissive: 0x40ff90, emissiveIntensity: 0.3 })),
+  lensRed: out(far(0x8a3a3a, { roughness: 0.2, clearcoat: 1 })),
   glow: new SpriteMaterial({ map: glowTex, color: 0x7dffb0, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }),
 }

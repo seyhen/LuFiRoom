@@ -3,6 +3,7 @@ import { stationAfter, stationById, stationIds } from '../audio/stations'
 import { roomById, rooms } from '../rooms'
 import type { ObjectId, RoomSound, SoundId, Target } from '../rooms/types'
 import { reduceMotion } from '../motion'
+import { loadScene } from '../scene/scenes'
 import { clockNight, holdFor } from './daylight'
 import { isWeather, type WeatherKind } from './weather'
 import { MAX_SAVED, loadMixes, mixFromSearch, mixName, storeLast, storeMixes, type Mix, type SavedMix } from './mixes'
@@ -287,14 +288,17 @@ export const useStore = create<Store>()((set, get, api) => ({
     if (s.leaving || id === s.room || roomById(id).id !== id) return
     // Les sons de la pièce qu'on quitte s'éteignent tout de suite (c'est encore elle qui est « room »).
     set({ leaving: id, on: perSound(() => false) })
-    setTimeout(() => {
+    // La scène de la pièce visée se télécharge pendant l'effacement : on ne change qu'une fois qu'elle est là (sans flash vide).
+    const fade = new Promise((r) => setTimeout(r, reduceMotion ? 0 : FADE))
+    const scene = loadScene(id).catch(() => {}) // en échec, on change quand même : la Suspense réessaiera
+    void Promise.all([fade, scene]).then(() => {
       set({ room: id, leaving: null, squashAt: {}, onAir: '', station: savedStation(id) })
       try {
         localStorage.setItem(ROOM_KEY, id)
       } catch {
         // pas de stockage : on ne s'en souviendra pas
       }
-    }, reduceMotion ? 0 : FADE)
+    })
   },
 }))
 
@@ -325,6 +329,9 @@ export function preload(p: Promise<unknown>) {
   const done = () => useStore.setState((s) => ({ loading: { ...s.loading, done: s.loading.done + 1 } }))
   p.then(done, done)
 }
+
+// La scène de la première pièce compte dans la progression de l'écran de chargement (elle est un chunk à part).
+preload(loadScene(useStore.getState().room))
 
 // Pont de développement (retiré du build) : `window.__lofi.store` pour changer de pièce, de nuit ou de sons sans recharger la page.
 if (import.meta.env.DEV) ((window as unknown as { __lofi?: Record<string, unknown> }).__lofi ??= {}).store = useStore

@@ -1,9 +1,9 @@
 import { Color, DoubleSide, MeshBasicMaterial, MeshStandardMaterial, type Material, type MeshPhysicalMaterial, type MeshPhysicalMaterialParameters } from 'three'
 import { smooth } from '../../math'
-import { gummy } from '../materials'
+import { far, farOf, gummy } from '../materials'
 import { mood } from '../anim'
 import { snowTop } from '../snowTop'
-import { foliage } from '../nature/materials'
+import { farFoliage } from '../nature/materials'
 import { K } from './materials'
 import { aboardTex, awningTex, bookbinderTex, brickTex, cobbleTex, flagTex, ghostTex, pubSignTex, sandTex, slateTex, streetFade } from './streetTex'
 
@@ -74,35 +74,35 @@ export const S = {
   slate: outside(wet(stone({ map: slateTex, roughness: 0.5, clearcoat: 0.3 }), 0xffffff, 0xaab0bc, 0.3, 0.9), [1, 0.5, 0.85]),
   /** Les corniches, appuis et chaînages de pierre claire. */
   trim: outside(wet(gummy(0xe4d6b8, { roughness: 0.8, clearcoat: 0.06 }), 0xe4d6b8, 0xb5b4b6, 0.06, 0.5), [0.8, 0.5, 0.85]),
-  paint: outside(gummy(0xf0ebe0, { roughness: 0.55 })),
-  oxblood: outside(gummy(0x6b2430, { roughness: 0.5 })),
-  pubGreen: outside(gummy(0x234a3c, { roughness: 0.5 })),
-  navy: outside(gummy(0x2a3a5c, { roughness: 0.5 })),
-  mustard: outside(gummy(0xd2a03c)),
-  iron: outside(gummy(0x2a2428, { roughness: 0.45, clearcoat: 0.5 }), [0.7, 0.5, 0.85]),
-  brass: outside(gummy(0xd6a64a, { roughness: 0.3, clearcoat: 0.8, metalness: 0.4 })),
-  post: outside(gummy(0xc22b33, { roughness: 0.4, clearcoat: 0.8 }), [0.8, 0.5, 0.85]),
-  void: outside(gummy(0x100d12, { roughness: 0.6, clearcoat: 0.2 })),
-  yellow: outside(gummy(0xd9b23a, { roughness: 0.6, clearcoat: 0.3 })),
-  oak: outside(gummy(0xb07a52, { roughness: 0.5 })),
-  teal: outside(gummy(0x37a3b5)),
-  leaf: outside(gummy(0x4a8a5a, { roughness: 0.5 })),
-  heather: outside(gummy(0xa8689a, { roughness: 0.7, clearcoat: 0.1 })),
-  thistle: outside(gummy(0x9a6cc8, { roughness: 0.6 })),
-  soil: outside(gummy(0x4a3a30, { roughness: 0.95, clearcoat: 0 })),
-  tarp: outside(gummy(0x9fc4cf, { roughness: 0.25, clearcoat: 0.9, transparent: true, opacity: 0.8, side: DoubleSide })),
-  awning: outside(gummy(0xffffff, { map: awningTex, roughness: 0.8, clearcoat: 0.05, side: DoubleSide }), [0.7, 0.5, 0.85]),
-  fol: outside(foliage(0x62a070)),
-  folDark: outside(foliage(0x3f7a56)),
-  folHeather: outside(foliage(0xc088bb)),
+  paint: outside(far(0xf0ebe0, { roughness: 0.55 })),
+  oxblood: outside(far(0x6b2430, { roughness: 0.5 })),
+  pubGreen: outside(far(0x234a3c, { roughness: 0.5 })),
+  navy: outside(far(0x2a3a5c, { roughness: 0.5 })),
+  mustard: outside(far(0xd2a03c)),
+  iron: outside(far(0x2a2428, { roughness: 0.45, clearcoat: 0.5 }), [0.7, 0.5, 0.85]),
+  brass: outside(far(0xd6a64a, { roughness: 0.3, clearcoat: 0.8, metalness: 0.4 })),
+  post: outside(far(0xc22b33, { roughness: 0.4, clearcoat: 0.8 }), [0.8, 0.5, 0.85]),
+  void: outside(far(0x100d12, { roughness: 0.6, clearcoat: 0.2 })),
+  yellow: outside(far(0xd9b23a, { roughness: 0.6, clearcoat: 0.3 })),
+  oak: outside(far(0xb07a52, { roughness: 0.5 })),
+  teal: outside(far(0x37a3b5)),
+  leaf: outside(far(0x4a8a5a, { roughness: 0.5 })),
+  heather: outside(far(0xa8689a, { roughness: 0.7, clearcoat: 0.1 })),
+  thistle: outside(far(0x9a6cc8, { roughness: 0.6 })),
+  soil: outside(far(0x4a3a30, { roughness: 0.95, clearcoat: 0 })),
+  tarp: outside(far(0x9fc4cf, { roughness: 0.25, clearcoat: 0.9, transparent: true, opacity: 0.8, side: DoubleSide })),
+  awning: outside(far(0xffffff, { map: awningTex, roughness: 0.8, clearcoat: 0.05, side: DoubleSide }), [0.7, 0.5, 0.85]),
+  fol: outside(farFoliage(0x62a070)),
+  folDark: outside(farFoliage(0x3f7a56)),
+  folHeather: outside(farFoliage(0xc088bb)),
   /** Blanc : la teinte vient de chaque copie (dos des livres). */
-  tint: outside(gummy(0xffffff, { roughness: 0.7, clearcoat: 0.15 })),
+  tint: outside(far(0xffffff, { roughness: 0.7, clearcoat: 0.15 })),
   aboard: outside(new MeshStandardMaterial({ map: aboardTex, roughness: 0.85 })),
   signBook: outside(new MeshStandardMaterial({ map: bookbinderTex, roughness: 0.5 })),
   signPub: outside(new MeshStandardMaterial({ map: pubSignTex, roughness: 0.5, side: DoubleSide })),
   ghost: outside(new MeshStandardMaterial({ map: ghostTex, roughness: 0.9, transparent: true, depthWrite: false })),
   /** Verre éteint : le ciel gris et le café en face s'y reflètent. */
-  dark: outside(gummy(0x45546a, { roughness: 0.12, clearcoat: 1, emissive: 0x6d86a6, emissiveIntensity: 0 })),
+  dark: outside(far(0x45546a, { roughness: 0.12, clearcoat: 1, emissive: 0x6d86a6, emissiveIntensity: 0 })),
   lit: (() => {
     const mk = () => outside(new MeshStandardMaterial({ color: 0xffc77a, emissive: 0xffb45a, emissiveIntensity: 0, roughness: 0.5 }))
     const a = mk(), b = mk()
@@ -118,12 +118,12 @@ export const S = {
  * les mitres rouges restaient nets au milieu des murs effacés). La pierre claire reçoit la neige sur les appuis et les corniches.
  */
 export const T = {
-  stone: outside(K.stone.clone(), [0.8, 0.5, 0.85]),
-  burgundy: outside(K.burgundy.clone()),
-  green: outside(K.green.clone()),
-  mustard: outside(K.mustard.clone()),
-  navy: outside(K.navy.clone()),
-  iron: outside(K.iron.clone()),
+  stone: outside(farOf(K.stone), [0.8, 0.5, 0.85]),
+  burgundy: outside(farOf(K.burgundy)),
+  green: outside(farOf(K.green)),
+  mustard: outside(farOf(K.mustard)),
+  navy: outside(farOf(K.navy)),
+  iron: outside(farOf(K.iron)),
 }
 
 const A = new Color(), B = new Color(), OFF = new Color(0x4a5870), ON = new Color(0xffc77a)

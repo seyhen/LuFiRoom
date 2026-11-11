@@ -1,5 +1,5 @@
 import { PlaneGeometry } from 'three'
-import { gummy } from '../../materials'
+import { far } from '../../materials'
 import { canvasTex } from '../../paint'
 import { Part, SPH, cyl, noRay, rbox, type V3 } from '../../parts'
 import { skyFade } from '../../outdoor'
@@ -25,22 +25,22 @@ const atlas = (glow: boolean) =>
   })
 
 export const S = {
-  sign: skyFade(gummy(0xffffff, { map: atlas(false), emissiveMap: atlas(true), emissive: 0xffffff, emissiveIntensity: 0.5, roughness: 0.6 }), F),
-  wood: skyFade(gummy(0x5a3a2a, { roughness: 0.6, clearcoat: 0.2 }), F),
-  woodPale: skyFade(gummy(0xc89a68, { roughness: 0.55, clearcoat: 0.2 }), F),
-  steel: skyFade(gummy(0xb8bec8, { roughness: 0.3, clearcoat: 0.7, metalness: 0.2 }), F),
-  iron: skyFade(gummy(0x26242e, { roughness: 0.5, clearcoat: 0.3 }), F),
-  red: skyFade(gummy(0xd6334f, { roughness: 0.6 }), F),
-  indigo: skyFade(gummy(0x27358c, { roughness: 0.8 }), F),
-  cream: skyFade(gummy(0xf2e8d2, { roughness: 0.7 }), F),
-  lantern: skyFade(gummy(0xe0402e, { roughness: 0.6, emissive: 0xff5a2a, emissiveIntensity: 0.4 }), F),
-  coals: skyFade(gummy(0x3a1a10, { roughness: 0.8, emissive: 0xff5a1e, emissiveIntensity: 0.6 }), F),
-  takoyaki: skyFade(gummy(0xb4722e, { roughness: 0.55, clearcoat: 0.4 }), F),
-  batter: skyFade(gummy(0xe8c878, { roughness: 0.6 }), F),
-  taiyaki: skyFade(gummy(0xd8923a, { roughness: 0.5, clearcoat: 0.4 }), F),
-  meat: skyFade(gummy(0x9a5a30, { roughness: 0.5, clearcoat: 0.4 }), F),
-  broth: skyFade(gummy(0xc98a3c, { roughness: 0.2, clearcoat: 0.9, emissive: 0xc98a3c, emissiveIntensity: 0.25 }), F),
-  white: skyFade(gummy(0xf6f0e4, { roughness: 0.4, clearcoat: 0.5 }), F),
+  sign: skyFade(far(0xffffff, { map: atlas(false), emissiveMap: atlas(true), emissive: 0xffffff, emissiveIntensity: 0.5, roughness: 0.6 }), F),
+  wood: skyFade(far(0x5a3a2a, { roughness: 0.6, clearcoat: 0.2 }), F),
+  woodPale: skyFade(far(0xc89a68, { roughness: 0.55, clearcoat: 0.2 }), F),
+  steel: skyFade(far(0xb8bec8, { roughness: 0.3, clearcoat: 0.7, metalness: 0.2 }), F),
+  iron: skyFade(far(0x26242e, { roughness: 0.5, clearcoat: 0.3 }), F),
+  red: skyFade(far(0xd6334f, { roughness: 0.6 }), F),
+  indigo: skyFade(far(0x27358c, { roughness: 0.8 }), F),
+  cream: skyFade(far(0xf2e8d2, { roughness: 0.7 }), F),
+  lantern: skyFade(far(0xe0402e, { roughness: 0.6, emissive: 0xff5a2a, emissiveIntensity: 0.4 }), F),
+  coals: skyFade(far(0x3a1a10, { roughness: 0.8, emissive: 0xff5a1e, emissiveIntensity: 0.6 }), F),
+  takoyaki: skyFade(far(0xb4722e, { roughness: 0.55, clearcoat: 0.4 }), F),
+  batter: skyFade(far(0xe8c878, { roughness: 0.6 }), F),
+  taiyaki: skyFade(far(0xd8923a, { roughness: 0.5, clearcoat: 0.4 }), F),
+  meat: skyFade(far(0x9a5a30, { roughness: 0.5, clearcoat: 0.4 }), F),
+  broth: skyFade(far(0xc98a3c, { roughness: 0.2, clearcoat: 0.9, emissive: 0xc98a3c, emissiveIntensity: 0.25 }), F),
+  white: skyFade(far(0xf6f0e4, { roughness: 0.4, clearcoat: 0.5 }), F),
 }
 const WALK = -0.3
 /** Où sont les étals : le trottoir de gauche (face à la rue, +x) et celui du fond à droite (face à +z). */

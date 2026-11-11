@@ -100,7 +100,7 @@ La liste courte est dans `CLAUDE.md` (« Le soin des ambiances ») ; voici le d�
 3. `src/scene/<nom>/<Nom>Scene.tsx` : le décor et les objets de la pièce (hors hotspots, que le moteur ajoute depuis `objects`).
    Le décor qui ne bouge jamais va dans `<Static>` (`src/scene/Static.tsx`) : ses maillages de même matériau sont regroupés en un seul, ce qui divise le nombre de tracés (la chambre est passée de 355 à 210). Ce qui bouge, rebondit ou s'anime reste dehors.
    Un objet interactif est un groupe avec `userData={{ id }}` qui appelle `useSquash(id, ref)`, comme `Cat.tsx` ; il lit son état avec `isActive(s, id)`.
-4. `src/scene/scenes.ts` : associe l'identifiant de la pièce à sa scène.
+4. `src/scene/scenes.ts` : associe l'identifiant de la pièce à sa scène, chargée à la demande (un `import()` par pièce, un chunk à part). `store.goto` attend ce chunk pendant l'effacement de 350 ms, et la scène de la première pièce compte dans la barre de l'écran de chargement.
 5. Nouvel objet, ou nouveau son : ajoute son identifiant à `ObjectId` ou `SoundId` (`src/rooms/types.ts`), son icône à `src/ui/icons.tsx`,
    et pour un son son canal dans `src/audio/channels/` puis `CHANNELS` (`src/audio/engine.ts`). Un canal reçoit la pièce : ses enregistrements sont `room.loops`.
    Un même son peut avoir un autre visage dans une autre pièce : la cabane joue le son `radio` sur un tourne-disque (objet `turntable`, carte « Tourne-disque » avec l'icône `vinyl` et le bouton « Disque suivant »). Pour un son fait d'évènements ponctuels (une tasse qui tinte), `kit.loopOrChannel` et `scheduled` (`src/audio/events.ts`) évitent de réécrire l'ordonnanceur : voir `street.ts`, `espresso.ts`, `pages.ts`.

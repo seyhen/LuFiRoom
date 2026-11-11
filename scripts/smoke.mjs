@@ -9,6 +9,7 @@
 //   - un <button> par objet interactif, avec son aria-label (le libellé de l'objet) et aria-pressed ;
 //   - une carte par son de la pièce dans le mixeur, avec son nom ;
 //   - un clic sur une carte allume le son (aria-pressed, AudioContext « running »), un second l'éteint ;
+//   - le nombre de triangles d'une image (compteur de three.js, exposé par `?stats`) est affiché et reste sous le plafond ;
 //   - aucune erreur en console, aucune exception de page, aucune requête en échec, aucun « Enregistrement indisponible ».
 // Ce qu'on attend vient des fiches des pièces (src/rooms/), lues par Vite : une pièce ajoutée est testée d'office.
 //
@@ -17,7 +18,7 @@
 //
 // Variables : LOFI_CHROMIUM = chemin d'un Chromium à utiliser (sinon celui de Playwright) ; LOFI_SMOKE_ROOMS = identifiants
 // séparés par des virgules pour n'en tester que quelques-uns ; LOFI_SMOKE_WORKERS = nombre de navigateurs en parallèle ;
-// LOFI_SMOKE_HEADED=1 pour voir le navigateur. En cas d'échec, une capture par pièce fautive est écrite dans test-results/.
+// LOFI_SMOKE_HEADED=1 pour voir le navigateur ; LOFI_SMOKE_MAX_TRIANGLES = plafond de triangles par pièce (1 000 000 par défaut). En cas d'échec, une capture par pièce fautive est écrite dans test-results/.
 
 import { existsSync, mkdirSync } from 'node:fs'
 import { availableParallelism } from 'node:os'
@@ -28,6 +29,10 @@ import { chromium } from 'playwright'
 const t0 = performance.now()
 const since = (t) => ((performance.now() - t) / 1000).toFixed(1)
 const OUT = 'test-results'
+// Plafond de triangles dessinés par image et par pièce (ombres comprises) ; surchargeable : LOFI_SMOKE_MAX_TRIANGLES=1500000.
+const MAX_TRIANGLES = Number(process.env.LOFI_SMOKE_MAX_TRIANGLES) || 1_000_000
+const fmt = (n) => n.toLocaleString('fr-FR').replace(/\s/g, ' ')
+const triangles = new Map() // id de pièce -> plus grand nombre de triangles vu
 
 if (!existsSync(join('dist', 'index.html'))) {
   console.error("Pas de dist/index.html : lance d'abord npm run build.")
@@ -118,6 +123,7 @@ const exact = (text) => new RegExp(`^${text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&
 const failures = [], timings = []
 
 async function testRoom(page, vp, room, problems) {
+  let stat = ''
   const errs = [], phases = [], tRoom = performance.now()
   const mark = (what) => phases.push(`${what} ${since(tRoom)}`)
   try {
@@ -149,6 +155,15 @@ async function testRoom(page, vp, room, problems) {
     const stats = await page.evaluate(canvasStats)
     if (!(stats.opaque > 0.05 && stats.colors >= 24)) errs.push(`canvas vide ou uni (${stats.size}, ${Math.round(stats.opaque * 100)} % opaque, ${stats.colors} couleurs)`)
     mark('dessin')
+
+    // Les triangles de l'image (page ouverte avec `?stats`) : toujours affichés, une erreur au-dessus du plafond.
+    const info = await page.evaluate(() => window.__lofiStats?.() ?? null)
+    if (!info) errs.push("compteurs de rendu absents (window.__lofiStats : page ouverte sans ?stats ?)")
+    else {
+      triangles.set(room.id, Math.max(triangles.get(room.id) ?? 0, info.triangles))
+      stat = `${fmt(info.triangles)} triangles, ${info.calls} tracés`
+      if (info.triangles > MAX_TRIANGLES) errs.push(`trop de triangles : ${fmt(info.triangles)} (plafond ${fmt(MAX_TRIANGLES)})`)
+    }
 
     // Les hotspots : de vrais boutons, aria-label = libellé de l'objet, aria-pressed présent.
     const hs = await page.$$eval('.hotspots button', (bs) => bs.map((b) => ({ tag: b.tagName, label: b.getAttribute('aria-label'), pressed: b.getAttribute('aria-pressed') })))
@@ -188,7 +203,7 @@ async function testRoom(page, vp, room, problems) {
     await page.screenshot({ path: shot }).catch(() => {})
     failures.push(label)
     console.log(`ÉCHEC ${label} (${since(tRoom)} s)\n  - ${errs.join('\n  - ')}\n  capture : ${shot}`)
-  } else console.log(`ok    ${label} (${since(tRoom)} s : ${phases.join(', ')})`)
+  } else console.log(`ok    ${label} (${since(tRoom)} s : ${phases.join(', ')}) ${stat}`)
 }
 
 async function runShard(rooms) {
@@ -224,7 +239,7 @@ async function runViewport(browser, vp, rooms) {
     })
 
     const tLoad = performance.now()
-    await page.goto(base)
+    await page.goto(`${base}?stats`)
     // L'écran de chargement s'efface quand la première pièce est dessinée, ou au bout de 12 s (filet de sécurité de l'app) :
     // c'est pourquoi le dessin est vérifié à part, pièce par pièce.
     await page.waitForFunction(() => !document.getElementById('splash'), null, { timeout: 60_000 })
@@ -242,6 +257,11 @@ console.log(`${expected.length} pièce${expected.length > 1 ? 's' : ''} × ${VIE
 await Promise.all(shards.map(runShard))
 await new Promise((r) => server.httpServer.close(r))
 
+console.log(`Triangles par image (plafond ${fmt(MAX_TRIANGLES)}) :`)
+for (const r of expected) {
+  const n = triangles.get(r.id)
+  console.log(`  ${r.id.padEnd(12)} ${n === undefined ? 'inconnu' : fmt(n).padStart(10)}${n > MAX_TRIANGLES ? '  > plafond' : ''}`)
+}
 console.log(`Écran de chargement : ${timings.join(', ')}`)
 console.log(`Fini en ${since(t0)} s : ${failures.length ? `${failures.length} échec${failures.length > 1 ? 's' : ''}` : 'tout passe'}.`)
 process.exit(failures.length ? 1 : 0)

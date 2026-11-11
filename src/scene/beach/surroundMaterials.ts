@@ -1,7 +1,7 @@
 import { AdditiveBlending, DoubleSide, MeshBasicMaterial, MeshStandardMaterial, type Material } from 'three'
-import { gummy } from '../materials'
+import { far, gummy } from '../materials'
 import { stripes } from './textures'
-import { leafy, moss, stone } from '../nature/materials'
+import { farLeafy, farMoss, farStone } from '../nature/materials'
 import { SNOW, snowTop } from '../snowTop'
 import { deckBoards, glintTex, isleFade, lace, palmBark, rippleTex, sandTex, waveTex } from './surroundTex'
 
@@ -82,30 +82,30 @@ export const S = {
   ripple: basic({ map: rippleTex, alphaMap: isleFade, opacity: 0 }),
   foamRing: basic({ color: 0xffffff, opacity: 0.8 }),
   // le bois du ponton et des barques : gris argenté du sel, un peu de vert aux pieds
-  pierWood: gummy(0xffffff, { map: deckBoards, roughness: 0.78, clearcoat: 0.08 }),
-  pierBeam: gummy(0x9c8468, { roughness: 0.82, clearcoat: 0.06 }),
-  pierPost: gummy(0x8a7358, { roughness: 0.85, clearcoat: 0.05 }),
-  pierPostWet: gummy(0x5d5a4a, { roughness: 0.85, clearcoat: 0.05 }),
-  driftwood: gummy(0xd9cdb8, { roughness: 0.85, clearcoat: 0.04 }),
-  rope: gummy(0xe2cfa4, { roughness: 0.9, clearcoat: 0 }),
-  iron: gummy(0x4a4a52, { roughness: 0.5, clearcoat: 0.4 }),
+  pierWood: far(0xffffff, { map: deckBoards, roughness: 0.78, clearcoat: 0.08 }),
+  pierBeam: far(0x9c8468, { roughness: 0.82, clearcoat: 0.06 }),
+  pierPost: far(0x8a7358, { roughness: 0.85, clearcoat: 0.05 }),
+  pierPostWet: far(0x5d5a4a, { roughness: 0.85, clearcoat: 0.05 }),
+  driftwood: far(0xd9cdb8, { roughness: 0.85, clearcoat: 0.04 }),
+  rope: far(0xe2cfa4, { roughness: 0.9, clearcoat: 0 }),
+  iron: far(0x4a4a52, { roughness: 0.5, clearcoat: 0.4 }),
   lantern: gummy(0xffe9c0, { roughness: 0.3, clearcoat: 0.6, emissive: 0xffb050, emissiveIntensity: 0 }),
   // les palmiers
-  trunk: gummy(0xffffff, { map: palmBark, roughness: 0.85, clearcoat: 0.04 }),
-  palmA: sway(snowTop(leafy(0x58b078, { side: DoubleSide }), 0.8), 0.16),
-  palmB: sway(snowTop(leafy(0x3f9b6c, { side: DoubleSide }), 0.8), 0.16),
+  trunk: far(0xffffff, { map: palmBark, roughness: 0.85, clearcoat: 0.04 }),
+  palmA: sway(snowTop(farLeafy(0x58b078, { side: DoubleSide }), 0.8), 0.16),
+  palmB: sway(snowTop(farLeafy(0x3f9b6c, { side: DoubleSide }), 0.8), 0.16),
   coconut: gummy(0x6a5238, { roughness: 0.6, clearcoat: 0.3 }),
-  grass: sway(snowTop(gummy(0xffffff, { vertexColors: true, roughness: 0.7, clearcoat: 0.1, side: DoubleSide }), 0.9), 0.12),
+  grass: sway(snowTop(far(0xffffff, { vertexColors: true, roughness: 0.7, clearcoat: 0.1, side: DoubleSide }), 0.9), 0.12),
   // les rochers du rivage : gris chaud, un peu de rose du couchant
-  rock: snowTop(stone(0xb9aca0), 0.9),
-  rockDark: snowTop(stone(0x8f857f), 0.9),
-  algae: gummy(0x6f9a64, { roughness: 0.7, clearcoat: 0.2 }),
-  barnacle: gummy(0xf1e8d8, { roughness: 0.6, clearcoat: 0.2 }),
+  rock: snowTop(farStone(0xb9aca0), 0.9),
+  rockDark: snowTop(farStone(0x8f857f), 0.9),
+  algae: far(0x6f9a64, { roughness: 0.7, clearcoat: 0.2 }),
+  barnacle: far(0xf1e8d8, { roughness: 0.6, clearcoat: 0.2 }),
   // le parasol, la serviette, les barques
   canvas: gummy(0xffffff, { vertexColors: true, roughness: 0.8, clearcoat: 0.06, side: DoubleSide }),
   castle: gummy(0xf0d9a8, { roughness: 0.95, clearcoat: 0 }),
   towel: gummy(0xffffff, { map: stripeTex, roughness: 0.9, clearcoat: 0.02 }),
-  algaeMoss: moss(0x6f9a64),
+  algaeMoss: farMoss(0x6f9a64),
   star: gummy(0xf08a76, { roughness: 0.5, clearcoat: 0.5 }),
   canvasCoral: gummy(0xf08a76, { roughness: 0.8, clearcoat: 0.06, side: DoubleSide }),
   canvasCream: gummy(0xfbf1e2, { roughness: 0.8, clearcoat: 0.06, side: DoubleSide }),

@@ -7,8 +7,12 @@ import { approach, lerp, rand, smooth } from '../math'
 import type { Room } from '../rooms/types'
 import { DUSK } from '../state/daylight'
 import { mood, reduceMotion } from './anim'
+import { coarsePointer } from '../motion'
 import { life } from './life'
 import { SNOW } from './snowTop'
+
+// Carte d'ombre : 2048 sur ordinateur, 1024 sur écran tactile (le diorama de 16 unités y garde 64 px par unité ; `shadow-normalBias` couvre le texel plus gros).
+const SHADOW = coarsePointer ? 1024 : 2048
 
 // Intensités × π : three r155+ n'a plus l'éclairage « legacy » de r128 (voir materials.ts).
 const PI = Math.PI
@@ -76,7 +80,7 @@ export function Lights({ room }: { room: Room }) {
   return (
     <>
       <hemisphereLight ref={hemi} />
-      <directionalLight ref={sun} position={[5, 10, 7]} castShadow shadow-mapSize={[2048, 2048]} shadow-bias={-0.0008} shadow-normalBias={0.06}>
+      <directionalLight ref={sun} position={[5, 10, 7]} castShadow shadow-mapSize={[SHADOW, SHADOW]} shadow-bias={-0.0008} shadow-normalBias={0.06}>
         <orthographicCamera attach="shadow-camera" args={[-8, 8, 8, -8, 1, 30]} />
       </directionalLight>
     </>

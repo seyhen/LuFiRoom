@@ -4,7 +4,7 @@ import { smooth } from '../../../math'
 import { mood } from '../../anim'
 import { Static } from '../../Static'
 import { Part, SPH, cyl, noRay, rbox } from '../../parts'
-import { gummy } from '../../materials'
+import { far } from '../../materials'
 import { canvasTex, seeded } from '../../paint'
 import { SkyFadeClock, skyFade } from '../../outdoor'
 import { snowTop } from '../../snowTop'
@@ -76,16 +76,16 @@ const shopTex = canvasTex(384, 208, (x) => {
 })
 const M = {
   // le sol reste mat (presque pas de vernis) : sinon les lampes de la laverie y font une traînée de lumière devant la pièce
-  slab: skyFade(snowTop(gummy(0xffffff, { map: slabTex, roughness: 0.85, clearcoat: 0.08, clearcoatRoughness: 0.7 }), 1, 0.4, 0.8), F),
-  road: skyFade(snowTop(gummy(0xffffff, { map: roadTex, roughness: 0.7, clearcoat: 0.2, clearcoatRoughness: 0.65 }), 1, 0.4, 0.8), F),
-  curb: skyFade(snowTop(gummy(0xa8acb0, { roughness: 0.7, clearcoat: 0.1 }), 1, 0.4, 0.8), F),
-  stripe: skyFade(snowTop(gummy(0xf2f0e8, { roughness: 0.6 }), 1, 0.4, 0.8), F),
-  iron: skyFade(snowTop(gummy(0x2a3236, { roughness: 0.35, clearcoat: 0.6 }), 0.6, 0.55, 0.9), F),
-  red: skyFade(gummy(0xc8403a, { roughness: 0.4, clearcoat: 0.6 }), F),
-  green: skyFade(snowTop(gummy(0x37725a, { roughness: 0.55, clearcoat: 0.3 }), 0.9, 0.45, 0.85), F),
-  wood: skyFade(snowTop(gummy(0x8a5e3e, { roughness: 0.6 }), 0.9, 0.45, 0.85), F),
-  shop: skyFade(gummy(0xffffff, { map: shopTex, emissiveMap: shopTex, emissive: 0xffffff, emissiveIntensity: 0.1, roughness: 0.25, clearcoat: 0.8 }), F),
-  lit: skyFade(gummy(0xfbe4b8, { roughness: 0.2, clearcoat: 0.9, emissive: 0xffc884, emissiveIntensity: 0.15 }), F),
+  slab: skyFade(snowTop(far(0xffffff, { map: slabTex, roughness: 0.85, clearcoat: 0.08, clearcoatRoughness: 0.7 }), 1, 0.4, 0.8), F),
+  road: skyFade(snowTop(far(0xffffff, { map: roadTex, roughness: 0.7, clearcoat: 0.2, clearcoatRoughness: 0.65 }), 1, 0.4, 0.8), F),
+  curb: skyFade(snowTop(far(0xa8acb0, { roughness: 0.7, clearcoat: 0.1 }), 1, 0.4, 0.8), F),
+  stripe: skyFade(snowTop(far(0xf2f0e8, { roughness: 0.6 }), 1, 0.4, 0.8), F),
+  iron: skyFade(snowTop(far(0x2a3236, { roughness: 0.35, clearcoat: 0.6 }), 0.6, 0.55, 0.9), F),
+  red: skyFade(far(0xc8403a, { roughness: 0.4, clearcoat: 0.6 }), F),
+  green: skyFade(snowTop(far(0x37725a, { roughness: 0.55, clearcoat: 0.3 }), 0.9, 0.45, 0.85), F),
+  wood: skyFade(snowTop(far(0x8a5e3e, { roughness: 0.6 }), 0.9, 0.45, 0.85), F),
+  shop: skyFade(far(0xffffff, { map: shopTex, emissiveMap: shopTex, emissive: 0xffffff, emissiveIntensity: 0.1, roughness: 0.25, clearcoat: 0.8 }), F),
+  lit: skyFade(far(0xfbe4b8, { roughness: 0.2, clearcoat: 0.9, emissive: 0xffc884, emissiveIntensity: 0.15 }), F),
   pool: new MeshBasicMaterial({ map: glowTex, color: 0xffc888, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -2 }),
   glow: new SpriteMaterial({ map: glowTex, color: 0xffd090, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }),
 }

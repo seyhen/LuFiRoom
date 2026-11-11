@@ -1,5 +1,5 @@
 import type { MeshPhysicalMaterialParameters } from 'three'
-import { gummy } from '../materials'
+import { far, gummy } from '../materials'
 import { foliageTex, leafTex, mossTex, stoneTex } from './textures'
 
 // Fabriques de matériaux pour la nature : chaque pièce les appelle avec ses propres couleurs (dans son materials.ts).
@@ -21,3 +21,9 @@ export const foliage = (color: number, o: MeshPhysicalMaterialParameters = {}) =
 /** Une feuille (avec `leafGeo`) : nervures claires, un peu de brillant comme une vraie feuille de plante d'intérieur. */
 export const leafy = (color: number, o: MeshPhysicalMaterialParameters = {}) =>
   gummy(color, { map: leafTex, roughness: 0.42, clearcoat: 0.55, clearcoatRoughness: 0.25, ...o })
+
+// Les mêmes pour le dehors et le lointain : même teinte, même texture, sans vernis (`far`, voir scene/materials.ts).
+export const farStone = (color: number, o: MeshPhysicalMaterialParameters = {}) => far(color, { map: stoneTex, roughness: 0.78, ...o })
+export const farMoss = (color: number) => far(color, { map: mossTex, roughness: 0.95 })
+export const farFoliage = (color: number, o: MeshPhysicalMaterialParameters = {}) => far(color, { map: foliageTex, roughness: 0.72, ...o })
+export const farLeafy = (color: number, o: MeshPhysicalMaterialParameters = {}) => far(color, { map: leafTex, roughness: 0.42, ...o })
