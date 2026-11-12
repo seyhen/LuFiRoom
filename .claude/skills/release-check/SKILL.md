@@ -28,24 +28,28 @@ Méthode et pont de test : skill `audit-room`, étape 0. **Sans chrome-devtools 
 
 1. **Console** : toutes les pièces visitées, quelques sons allumés dans chacune : aucune erreur, aucun « Enregistrement indisponible ».
 2. **Sons nouveaux ou changés** : niveaux mesurés (skill `source-sounds`, étape 4).
-3. **Fuite au changement de pièce** : deux tours de toutes les pièces, puis comparer au premier tour :
+3. **Fuite au changement de pièce** : **par pièce**, pas par tour. Un tour de toutes les pièces reste bruité (+4 à +6 sur certains passages sans pièce coupable) ; la méthode par pièce a trouvé les deux vraies fuites (2026-11-12). Pour chaque pièce R : `goto(R)`, attendre que `gl.info.memory` soit stable (rAF, 8 lectures identiques), `goto('bedroom')`, stable de nouveau ; trois paires. On ignore la première visite (elle remplit les caches : shaders, textures partagées). **Une pièce dont les chiffres MONTENT aux visites 2 et 3 fuit.** Passe quelques pièces par appel (le script dépasse vite 60 s) ; la liste vient de `rooms` dans `src/rooms/index.ts` (même ordre, ajoute toute pièce nouvelle).
 
 ```js
-async () => {
-  const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
-  const st = window.__lofi.store, ids = ['bedroom','cabin','cafe','beach','train','roof','atelier','onsen','lighthouse','submarine','market','igloo','treehouse','laundromat','greenhouse'] // même liste que src/rooms/index.ts : ajoute ici toute pièce nouvelle
+async (ids) => {
+  const frames = (n) => new Promise((res) => { let i = 0; const t = () => (++i >= n ? res() : requestAnimationFrame(t)); requestAnimationFrame(t) })
+  const st = window.__lofi.store, gl = window.__lofi.three().gl
+  const sig = () => { const m = gl.info.memory; return m.geometries + '/' + m.textures }
+  const stable = async () => { let last = '', same = 0; for (let n = 0; n < 600 && same < 8; n++) { await frames(1); const s = sig(); same = s === last ? same + 1 : 0; last = s } return last }
+  const goto = async (r) => { st.getState().goto(r); while (st.getState().room !== r || st.getState().leaving) await frames(1) }
   const out = {}
-  for (const pass of [1, 2]) {
-    for (const r of ids) { st.getState().goto(r); while (st.getState().room !== r || st.getState().leaving) await sleep(100); await sleep(1200) }
-    st.getState().goto('bedroom'); while (st.getState().room !== 'bedroom' || st.getState().leaving) await sleep(100); await sleep(1500)
-    const i = window.__lofi.three().gl.info
-    out['tour ' + pass] = `géométries ${i.memory.geometries}, textures ${i.memory.textures}, bus audio ${Object.keys(window.__lofi.audio.bus).length}`
+  for (const r of ids) {
+    const row = []
+    for (let k = 0; k < 3; k++) { await goto(r); const a = await stable(); await goto('bedroom'); const b = await stable(); row.push(`${a} -> ${b}`) }
+    out[r] = row.join(' | ')   // géométries/textures : [pièce -> chambre] aux visites 1, 2, 3
   }
   return out
 }
 ```
 
-   Les deux tours doivent donner les mêmes chiffres (à quelques unités près). Une hausse à chaque tour = une géométrie ou une texture créée hors JSX et jamais libérée (voir `freeScene` dans `Stage.tsx`), ou un canal audio pas déchargé (`evict` dans `engine.ts`). Le script dépasse 60 s : coupe-le en deux appels si besoin.
+   Appel : `ids = ['train','roof','market']`, etc. Lis les colonnes 2 et 3 : identiques = pièce saine ; une hausse à chacune = fuite. Pour trouver *quoi* fuit, relève la signature (liste des `uuid` de géométries et de textures de `gl.info`/`scene` avant et après une visite) et regarde le composant qui les crée. Le bus audio (`Object.keys(window.__lofi.audio.bus).length`) se compte de la même façon : une hausse = un canal pas déchargé (`evict` dans `engine.ts`).
+   Causes connues : (a) un `useMemo` à dépendance neuve à chaque rendu du parent (tableau ou objet littéral dans le JSX) qui refabrique une texture ou une géométrie jamais libérée : `GlowPoints` (+1 géométrie par visite, train et toit), `Blade` du marché (+3 à +5 textures) ; correctif : clé sur le contenu et `dispose()` au démontage (`docs/ROOMS.md`) ; (b) une ressource créée hors JSX et absente de la scène, que `freeScene` (`Stage.tsx`) ne voit pas ; (c) un canal audio non déchargé. Ne touche ni `freeScene`, ni `ContextGuard`, ni `makeCanvas` pour masquer une fuite : corrige le composant.
+   Pour les captures : `capture.mjs` pose lui-même `window.__lofi.mood.night` (le fondu jour / nuit suit l'horloge et le rendu logiciel plafonne le pas de temps) ; fais de même si tu photographies à la main.
 4. **Affichage mobile** : `emulate 390x844x2,mobile,touch`, captures de 2 ou 3 pièces (dont celles qui ont changé), jour et nuit : rien ne déborde, les puces et le mixeur tiennent, les boutons ne se chevauchent pas. Remets ensuite `1440x900x2`.
 
 - **Retour sur l'onglet** : perds puis rends le contexte WebGL (`WEBGL_lose_context`), la pièce doit revenir entière, sans texture noire.
