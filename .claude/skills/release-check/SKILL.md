@@ -28,26 +28,31 @@ Méthode et pont de test : skill `audit-room`, étape 0. **Sans chrome-devtools 
 
 1. **Console** : toutes les pièces visitées, quelques sons allumés dans chacune : aucune erreur, aucun « Enregistrement indisponible ».
 2. **Sons nouveaux ou changés** : niveaux mesurés (skill `source-sounds`, étape 4).
-3. **Fuite au changement de pièce** : **par pièce**, pas par tour. Un tour de toutes les pièces reste bruité (+4 à +6 sur certains passages sans pièce coupable) ; la méthode par pièce a trouvé les deux vraies fuites (2026-11-12). Pour chaque pièce R : `goto(R)`, attendre que `gl.info.memory` soit stable (rAF, 8 lectures identiques), `goto('bedroom')`, stable de nouveau ; trois paires. On ignore la première visite (elle remplit les caches : shaders, textures partagées). **Une pièce dont les chiffres MONTENT aux visites 2 et 3 fuit.** Passe quelques pièces par appel (le script dépasse vite 60 s) ; la liste vient de `rooms` dans `src/rooms/index.ts` (même ordre, ajoute toute pièce nouvelle).
+3. **Fuite au changement de pièce** : **par pièce**, pas par tour. Un tour de toutes les pièces reste bruité (+4 à +6 sur certains passages sans pièce coupable) ; la méthode par pièce a trouvé les deux vraies fuites (2026-11-12). Pour chaque pièce R : `goto(R)`, attendre que `gl.info.memory` soit stable (rAF, 8 lectures identiques), `goto('bedroom')`, stable de nouveau ; trois paires. On ignore la première visite (elle remplit les caches : shaders, textures partagées). La liste des pièces vient de `rooms` dans `src/rooms/index.ts` (même ordre, ajoute toute pièce nouvelle).
+
+   **Durée réelle (rendu logiciel, 2026-11-12) : compte 1 minute par pièce sur une machine libre (train 50 s, marché 65 s), 2 à 6 minutes quand d'autres navigateurs tournent en même temps (mesuré sur les 15 pièces : 80 s la chambre, 100 à 240 s la plupart, 340 à 370 s l'onsen et le marché)**, soit 15 à 20 minutes pour les 15 pièces sur machine libre, deux fois plus avec deux navigateurs qui se disputent le processeur. Un appel `evaluate` à la fois par pièce, dans un script Playwright lancé en arrière-plan (`nohup node … &`) ; ne l'enchaîne pas dans un seul appel d'outil de moins de 2 minutes. **Le serveur de développement recharge la page à chaque fichier modifié** (et au tout premier chargement, pendant l'optimisation des dépendances) : l'`evaluate` meurt alors (« Execution context was destroyed »). Lance le script quand personne ne touche au code, et enveloppe chaque pièce d'un `try / catch` qui recharge la page et recommence.
 
 ```js
 async (ids) => {
   const frames = (n) => new Promise((res) => { let i = 0; const t = () => (++i >= n ? res() : requestAnimationFrame(t)); requestAnimationFrame(t) })
   const st = window.__lofi.store, gl = window.__lofi.three().gl
-  const sig = () => { const m = gl.info.memory; return m.geometries + '/' + m.textures }
-  const stable = async () => { let last = '', same = 0; for (let n = 0; n < 600 && same < 8; n++) { await frames(1); const s = sig(); same = s === last ? same + 1 : 0; last = s } return last }
+  const read = () => { const m = gl.info.memory; return [m.geometries, m.textures] }
+  const stable = async () => { let last = '', same = 0; for (let n = 0; n < 600 && same < 8; n++) { await frames(1); const s = read().join('/'); same = s === last ? same + 1 : 0; last = s } return read() }
   const goto = async (r) => { st.getState().goto(r); while (st.getState().room !== r || st.getState().leaving) await frames(1) }
+  const rising = (v) => v[1] > v[0] && v[2] > v[1]   // monte à chaque visite (1 -> 2 -> 3)
   const out = {}
   for (const r of ids) {
-    const row = []
-    for (let k = 0; k < 3; k++) { await goto(r); const a = await stable(); await goto('bedroom'); const b = await stable(); row.push(`${a} -> ${b}`) }
-    out[r] = row.join(' | ')   // géométries/textures : [pièce -> chambre] aux visites 1, 2, 3
+    const room = [], back = []   // [géométries, textures] dans la pièce / une fois revenu dans la chambre, aux visites 1, 2, 3
+    for (let k = 0; k < 3; k++) { await goto(r); room.push(await stable()); await goto('bedroom'); back.push(await stable()) }
+    const col = (rows, i) => rows.map((x) => x[i])
+    const fuit = rising(col(back, 0)) || rising(col(back, 1)) || rising(col(room, 0)) || (rising(col(room, 1)) && room[2][1] - room[0][1] >= 4)
+    out[r] = (fuit ? 'FUIT  ' : 'ok    ') + room.map((x) => x.join('/')).join(' ') + '  ->  chambre ' + back.map((x) => x.join('/')).join(' ')   // géométries/textures, visites 1 2 3
   }
   return out
 }
 ```
 
-   Appel : `ids = ['train','roof','market']`, etc. Lis les colonnes 2 et 3 : identiques = pièce saine ; une hausse à chacune = fuite. Pour trouver *quoi* fuit, relève la signature (liste des `uuid` de géométries et de textures de `gl.info`/`scene` avant et après une visite) et regarde le composant qui les crée. Le bus audio (`Object.keys(window.__lofi.audio.bus).length`) se compte de la même façon : une hausse = un canal pas déchargé (`evict` dans `engine.ts`).
+   Appel : `ids = ['train']` (une pièce par appel), etc. Le verdict `FUIT` veut dire : les géométries (dans la pièce ou une fois revenu dans la chambre) ou les textures de retour dans la chambre MONTENT à chaque visite, ou les textures de la pièce gagnent 4 ou plus sur les visites 2 et 3. Les chiffres de la chambre (131/23 à 131/26) et ±1 texture dans la pièce sont du bruit (évènements rares qui créent une texture, tirés pendant la visite ; le marché a fait 48, 49, 50 dans la pièce pendant une passe chargée (évènements rares tirés pendant la visite) puis 48, 48, 48 sur machine libre, et revient à 24, 25, 25 et reste à 51 ou 52 sur quatre visites chronométrées en images : pas une fuite). Si une pièce est douteuse, refais-la avec 4 visites et un nombre d'images fixe (60 images) au lieu de « stable ». Pour trouver *quoi* fuit, enveloppe `ctx.createTexture` / `deleteTexture` (`gl.getContext()`) et compare les identifiants vivants après chaque retour dans la chambre, puis regarde le composant qui crée ces ressources. Le bus audio (`Object.keys(window.__lofi.audio.bus).length`) se compte de la même façon : une hausse = un canal pas déchargé (`evict` dans `engine.ts`).
    Causes connues : (a) un `useMemo` à dépendance neuve à chaque rendu du parent (tableau ou objet littéral dans le JSX) qui refabrique une texture ou une géométrie jamais libérée : `GlowPoints` (+1 géométrie par visite, train et toit), `Blade` du marché (+3 à +5 textures) ; correctif : clé sur le contenu et `dispose()` au démontage (`docs/ROOMS.md`) ; (b) une ressource créée hors JSX et absente de la scène, que `freeScene` (`Stage.tsx`) ne voit pas ; (c) un canal audio non déchargé. Ne touche ni `freeScene`, ni `ContextGuard`, ni `makeCanvas` pour masquer une fuite : corrige le composant.
    Pour les captures : `capture.mjs` pose lui-même `window.__lofi.mood.night` (le fondu jour / nuit suit l'horloge et le rendu logiciel plafonne le pas de temps) ; fais de même si tu photographies à la main.
 4. **Affichage mobile** : `emulate 390x844x2,mobile,touch`, captures de 2 ou 3 pièces (dont celles qui ont changé), jour et nuit : rien ne déborde, les puces et le mixeur tiennent, les boutons ne se chevauchent pas. Remets ensuite `1440x900x2`.
