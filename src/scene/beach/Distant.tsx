@@ -31,7 +31,7 @@ const D = {
 }
 
 /** Les îlots : [x, z, demi-largeur, hauteur]. À gauche (-x) et au fond droit (-z), à 11 à 15 du centre. */
-const ISLETS: [number, number, number, number][] = [[-14.6, -2.5, 1.7, 0.55], [-13.6, 4.2, 1.2, 0.4], [-12.6, -8.2, 1.4, 0.45], [-4.4, -14.8, 1.8, 0.6], [4.6, -14.2, 1.2, 0.4], [12.4, -10.6, 1.5, 0.5]]
+const ISLETS: [number, number, number, number][] = [[-14.6, -2.5, 1.7, 0.55], [-13.6, 4.2, 1.2, 0.4], [-12.6, -8.2, 1.4, 0.45], [-4.4, -14.8, 1.8, 0.6], [4.6, -14.2, 1.2, 0.4], [12.4, -10.6, 1.5, 0.5], [-10.8, -10.4, 1.6, 0.5], [-8.2, -16.2, 1.6, 0.5]]
 
 /** Un îlot : une dune de sable, une calotte de verdure, et une seconde touffe plus petite. */
 function Islet({ x, z, w, h, i }: { x: number; z: number; w: number; h: number; i: number }) {

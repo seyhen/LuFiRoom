@@ -45,7 +45,7 @@ export const beach: Room = {
     sleep: { sounds: [['waves',.55], ['rainstick',.3], ['chimes',.2]], night: true },
   },
   objects: [
-    { id: 'window', target: 'waves', label: 'La mer · vagues', anchor: [1.25, 2.1, -3.0] },
+    { id: 'window', target: 'waves', label: 'La mer · vagues', anchor: [1.9, 1.5, -3.0] },
     { id: 'gull', target: 'gulls', label: 'Mouette · cris au loin', anchor: [-0.28, 1.25, -3.6] },
     { id: 'chimes', target: 'chimes', label: 'Carillon · brise', anchor: [1.85, 2.95, -2.9] },
     { id: 'radio', target: 'radio', label: 'Ukulélé · lofi', anchor: [-2.45, 1.15, 1.55] },
