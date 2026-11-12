@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, Color, Quaternion, Vector3, type BufferGeometry, type Group, type Mesh, type MeshBasicMaterial, type Sprite } from 'three'
 import { smooth } from '../../math'
@@ -39,7 +39,10 @@ function Manhole({ position }: { position: V3 }) {
 
 /** Un petit néon en drapeau, perpendiculaire au mur : caisson sombre, tubes de couleur qui vacillent chacun à son rythme. */
 function Blade({ position, lines, color, glow, ph, w = 0.34, h = 0.68 }: { position: V3; lines: string[]; color: string; glow: string; ph: number; w?: number; h?: number }) {
-  const tex = useMemo(() => smallNeon(lines, color, glow), [lines, color, glow])
+  // `lines` arrive en tableau neuf à chaque rendu : on clé sur le contenu, sinon chaque re-rendu repeignait une texture jamais libérée.
+  const text = lines.join('\n')
+  const tex = useMemo(() => smallNeon(text.split('\n'), color, glow), [text, color, glow])
+  useEffect(() => () => tex.dispose(), [tex])
   const lit = useRef<Mesh>(null!), halo = useRef<Sprite>(null!)
   useFrame(({ clock }) => {
     const t = clock.elapsedTime, n = smooth(mood.night)
