@@ -27,7 +27,7 @@ export function RoomPicker() {
     const el = row.current, chip = el?.querySelector<HTMLElement>('[aria-pressed=true]')
     if (!el || !chip) return
     const left = chip.offsetLeft - el.offsetLeft, right = left + chip.offsetWidth
-    if (left < el.scrollLeft || right > el.scrollLeft + el.clientWidth - 24) el.scrollTo({ left: left - 16, behavior: 'smooth' })
+    if (left < el.scrollLeft || right > el.scrollLeft + el.clientWidth - 24) el.scrollTo({ left: left - 6, behavior: 'smooth' }) // 6 px = l'espace entre deux puces : la précédente est entièrement cachée, pas de fragment collé au bouton « toutes les pièces »
   }, [current])
   if (rooms.length < 2) return null
   return (
