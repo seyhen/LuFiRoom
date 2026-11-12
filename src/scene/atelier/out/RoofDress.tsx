@@ -148,7 +148,7 @@ const DISH = new SphereGeometry(1, 20, 8, 0, Math.PI * 2, Math.PI - 0.8, 0.8)
 /** Une parabole sur un mât, tournée vers le sud-est : cuvette creuse crème à fond sombre, bras et récepteur rouge. */
 export function Dish({ p, ry = Math.PI / 4 }: { p: V3; ry?: number }) {
   return (
-    <group position={p} rotation-y={ry} scale={1.25}>
+    <group position={p} rotation-y={ry} scale={1.6}>
       <Part geo={rbox(0.26, 0.06, 0.26, 0.025)} m={R.post} p={[0, 0.03, 0]} castShadow={false} />
       <Part geo={cyl(0.045, 0.055, 1.0, 10)} m={P.antenna} p={[0, 0.55, 0]} castShadow={false} />
       <group position={[0, 1.05, 0.06]} rotation-x={1.0}>

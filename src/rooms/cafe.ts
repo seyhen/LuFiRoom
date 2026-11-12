@@ -49,9 +49,9 @@ export const cafe: Room = {
   },
   objects: [
     { id: 'window', target: 'street', label: 'Fenêtre · la rue', anchor: [1.4, 3.35, -3.0] },
-    { id: 'radio', target: 'radio', label: 'Jukebox · lofi', anchor: [-0.45, 1.3, -2.53] },
-    { id: 'espresso', target: 'espresso', label: 'Machine à café · expresso', anchor: [-1.85, 1.6, -2.5] },
-    { id: 'guests', target: 'murmur', label: 'Clients · conversations', anchor: [1.4, 1.55, -2.2] },
+    { id: 'radio', target: 'radio', label: 'Jukebox · lofi', anchor: [-0.3, 1.5, -2.53] },
+    { id: 'espresso', target: 'espresso', label: 'Machine à café · expresso', anchor: [-2.05, 1.6, -2.5] },
+    { id: 'guests', target: 'murmur', label: 'Clients · conversations', anchor: [2.2, 1.25, -2.2] },
     { id: 'fireplace', target: 'fire', label: 'Cheminée · feu', anchor: [-2.45, 1.0, 0] },
     { id: 'books', target: 'pages', label: 'Bibliothèque · pages', anchor: [-2.55, 2.6, 1.85] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-0.11, 1.0, -0.67] },
