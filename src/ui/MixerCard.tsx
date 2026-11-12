@@ -26,8 +26,8 @@ export function MixerCard({ sound, extra }: { sound: RoomSound; extra?: ReactNod
           </span>
         </span>
         <span className="txt">
-          <span className="nm">{t(sound.name)}</span>
-          <span className="sb" aria-live="polite">{line}</span>
+          <span className="nm" title={t(sound.name)}>{t(sound.name)}</span>
+          <span className="sb" title={line} aria-live="polite">{line}</span>
         </span>
       </button>
       <div className="vol">
