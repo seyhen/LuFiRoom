@@ -1,4 +1,4 @@
-import { AdditiveBlending, BackSide, DoubleSide, MeshBasicMaterial, MeshStandardMaterial, RepeatWrapping, SpriteMaterial } from 'three'
+import { AdditiveBlending, BackSide, DoubleSide, LinearFilter, MeshBasicMaterial, MeshStandardMaterial, RepeatWrapping, SpriteMaterial } from 'three'
 import { far } from '../../materials'
 import { canvasTex, seeded } from '../../paint'
 import { skyFade } from '../../outdoor'
@@ -41,9 +41,12 @@ foamTex.wrapS = RepeatWrapping
 /** Le faisceau, vu dans sa longueur : vif à la lanterne, éteint au large (v = 0 à la lanterne, 1 au bout du cône). */
 const beamTex = canvasTex(4, 128, (x) => {
   const g = x.createLinearGradient(0, 0, 0, 128) // le haut du canvas est le bout du cône
-  g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.1, 'rgba(255,255,255,0)'); g.addColorStop(0.4, 'rgba(255,255,255,.35)'); g.addColorStop(0.8, 'rgba(255,255,255,.85)'); g.addColorStop(1, 'rgba(255,255,255,1)')
+  // éteint sur le premier sixième (le bord du cône) et en douceur : un bord à alpha non nul laissait une fine ligne d'ellipse au bout large
+  g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.16, 'rgba(255,255,255,0)'); g.addColorStop(0.3, 'rgba(255,255,255,.1)'); g.addColorStop(0.5, 'rgba(255,255,255,.4)'); g.addColorStop(0.8, 'rgba(255,255,255,.85)'); g.addColorStop(1, 'rgba(255,255,255,1)')
   x.fillStyle = g; x.fillRect(0, 0, 4, 128)
 }, [1, 1])
+beamTex.generateMipmaps = false // le niveau le plus flou du filtre moyenne tout le dégradé : son bord n'était plus à zéro
+beamTex.minFilter = LinearFilter
 
 /**
  * La roche des falaises, en strates : bandes horizontales de gris-bleu et de brun, fissures verticales, lichen jaune-vert et
@@ -121,7 +124,7 @@ export const S = {
   buoyRed: out(far(0xe2564a, { roughness: 0.4, clearcoat: 0.6 })),
   buoyWhite: out(far(0xfbf6ee, { roughness: 0.4, clearcoat: 0.6 })),
   /** Le faisceau du phare : deux cônes de lumière additifs, visibles la nuit et par temps sombre. */
-  beam: new MeshBasicMaterial({ map: beamTex, color: 0xfff0b8, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, side: DoubleSide }),
+  beam: new MeshBasicMaterial({ map: beamTex, color: 0xfff0b8, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, side: DoubleSide, vertexColors: true }),
   // les falaises du fond : l'herbe rase du dessus, la voile blanche du voilier
   grass: out(farMoss(0x6da15c)),
   rockFar: [outFar(cliff(0x8794a6)), outFar(cliff(0x7886a0)), outFar(cliff(0x94a0b2))],

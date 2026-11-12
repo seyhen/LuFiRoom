@@ -1,6 +1,6 @@
 import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { CylinderGeometry, TorusGeometry, type Group } from 'three'
+import { BufferAttribute, CylinderGeometry, TorusGeometry, type Group } from 'three'
 import { smooth } from '../../../math'
 import { mood, reduceMotion } from '../../anim'
 import { LIVE, Static } from '../../Static'
@@ -29,7 +29,16 @@ export function Lighthouse() {
   // trois cônes emboîtés (large et pâle, moyen, étroit et vif) : le faisceau a un cœur et des bords qui s'estompent, au lieu d'un cône plein
   // à bord net ; le dégradé de `S.beam` l'éteint au large. Le bout étroit est à la lanterne, le large au loin.
   const beamGeos = useMemo(() => [[1.45, 0.2, 7], [0.95, 0.15, 6.4], [0.5, 0.1, 5.8]].map(([r1, r0, len]) => {
-    const g = new CylinderGeometry(r1, r0, len, 20, 1, true)
+    const g = new CylinderGeometry(r1, r0, len, 20, 10, true)
+    // le bord du cône au large est à zéro exactement (couleur noire, additif : rien ne s'ajoute) : sans cela, une fine ligne d'ellipse
+    // restait visible au bout large, vue de côté de nuit
+    const pos = g.attributes.position, col = new Float32Array(pos.count * 3)
+    for (let i = 0; i < pos.count; i++) {
+      const t = pos.getY(i) / len + 0.5 // 0 à la lanterne, 1 au large
+      const f = Math.max(0, Math.min(1, (1 - t) / 0.3)), k = f * f * (3 - 2 * f)
+      col.set([k, k, k], i * 3)
+    }
+    g.setAttribute('color', new BufferAttribute(col, 3))
     g.translate(0, len / 2 + 0.3, 0)
     g.rotateZ(-Math.PI / 2)
     return g
