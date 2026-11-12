@@ -181,14 +181,15 @@ async function testRoom(page, vp, room, problems) {
     for (const c of cards) if (!['true', 'false'].includes(c.pressed) || !c.range) errs.push(`carte mal formée : ${JSON.stringify(c)}`)
 
     // Un geste : clic sur la carte d'un son (pas la radio, qui télécharge un morceau entier) ; il s'allume, puis s'éteint.
+    // 30 s d'attente : le WebGL logiciel de la CI, partagé par 4 navigateurs, bloque parfois la page plus de 10 s (café en desktop, 2026-11-12).
     const sound = room.sounds.find((s) => s.id !== 'radio') ?? room.sounds[0]
     const toggle = page.locator('.mix .card').filter({ has: page.locator('.nm', { hasText: exact(sound.name) }) }).locator('button.tg')
     await toggle.click()
-    await page.waitForFunction((el) => el.getAttribute('aria-pressed') === 'true', await toggle.elementHandle(), { timeout: 10_000 })
-    await page.waitForFunction(() => window.__smokeCtx.some((c) => c.state === 'running'), null, { timeout: 10_000 })
+    await page.waitForFunction((el) => el.getAttribute('aria-pressed') === 'true', await toggle.elementHandle(), { timeout: 30_000 })
+    await page.waitForFunction(() => window.__smokeCtx.some((c) => c.state === 'running'), null, { timeout: 30_000 })
     await page.waitForTimeout(800) // le son se construit (son enregistrement se charge) : une erreur aurait le temps de sortir
     await toggle.click()
-    await page.waitForFunction((el) => el.getAttribute('aria-pressed') === 'false', await toggle.elementHandle(), { timeout: 10_000 })
+    await page.waitForFunction((el) => el.getAttribute('aria-pressed') === 'false', await toggle.elementHandle(), { timeout: 30_000 })
     mark(`son « ${sound.id} »`)
   } catch (e) {
     errs.push(String(e.message ?? e).split('\n')[0])
