@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, Color, type Group, type Sprite } from 'three'
 import { isActive, useStore } from '../../state/store'
 import { approach } from '../../math'
-import { Part, SPH, cyl } from '../parts'
+import { Part, SPH, cyl, rbox } from '../parts'
 import { reduceMotion, useSquash } from '../anim'
 import { noRay } from '../parts'
 import { Static } from '../Static'
@@ -14,6 +14,7 @@ import { skin } from '../materials'
 
 /** La conque sur son piédestal, à l'avant gauche : son pied au sol. */
 export const CONCH = { x: -1.2, z: 2.1, top: 0.77 }
+const SC = 1.6 // l'échelle de la conque : elle se lit depuis la pièce, bien plus haute que sa coupe
 
 const SHELL = 0xf3dccb, SPINE = 0xe9c9ad, LIP = 0xf8cfc6, MOUTH = 0xf4a3b2
 const band = new Color(0xc99a78), shellCol = new Color(SHELL)
@@ -74,14 +75,40 @@ export function Conch() {
         <Part geo={cyl(0.3, 0.33, 0.08, 28)} m={S.hullDark} p={[0, 0.04, 0]} />
         <Part geo={cyl(0.15, 0.2, 0.62, 24)} m={S.verdigris} p={[0, 0.39, 0]} />
         <Part geo={cyl(0.19, 0.17, 0.035, 24)} m={S.band} p={[0, 0.2, 0]} castShadow={false} />
-        <Part geo={cyl(0.25, 0.18, 0.07, 28)} m={S.band} p={[0, CONCH.top - 0.035, 0]} />
+        <Part geo={cyl(0.29, 0.19, 0.07, 28)} m={S.band} p={[0, CONCH.top - 0.035, 0]} />
+        {/* un coussin de velours lie-de-vin dans la coupe, sous le coquillage */}
+        <Part geo={SPH} m={S.leather} scale={[0.26, 0.04, 0.23]} p={[0, CONCH.top + 0.005, 0]} castShadow={false} />
+        {/* la plaque de laiton sur le fût, tournée vers la pièce, et ses quatre rivets */}
+        <group position={[0, 0.4, 0]} rotation-y={Math.PI / 4}>
+          <Part geo={rbox(0.15, 0.085, 0.012, 0.004)} m={S.brass} p={[0, 0, 0.178]} castShadow={false} />
+          <Part geo={rbox(0.12, 0.05, 0.004, 0.002)} m={S.band} p={[0, 0, 0.186]} castShadow={false} />
+          {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([a, b]) => (
+            <Part key={`${a}${b}`} geo={SPH} m={S.brassDull} scale={0.006} p={[a * 0.066, b * 0.034, 0.185]} castShadow={false} />
+          ))}
+        </group>
+        {/* sur la base, devant : une étoile de mer orange, un cauris et un petit escargot de mer, ramassés sur la plage */}
+        <group position={[0.19, 0.082, 0.163]} rotation-y={0.5}>
+          {Array.from({ length: 5 }, (_, i) => {
+            const a = (i / 5) * Math.PI * 2
+            return <Part key={i} geo={SPH} m={S.fish} scale={[0.05, 0.013, 0.017]} p={[Math.cos(a) * 0.032, 0.006, Math.sin(a) * 0.032]} rotation-y={-a} castShadow={false} />
+          })}
+          <Part geo={SPH} m={S.fish} scale={[0.03, 0.016, 0.03]} p={[0, 0.01, 0]} castShadow={false} />
+        </group>
+        <group position={[-0.1, 0.09, 0.26]} rotation-y={-0.4}>
+          <Part geo={SPH} m={S.cream} scale={[0.04, 0.026, 0.028]} castShadow={false} />
+          <Part geo={rbox(0.05, 0.004, 0.005, 0.002)} m={S.leatherDark} p={[0, 0.021, 0]} castShadow={false} />
+        </group>
+        <group position={[0.2, 0.088, -0.15]} rotation-y={1.2}>
+          <Part geo={SPH} m={S.pearl} scale={[0.036, 0.03, 0.036]} castShadow={false} />
+          <Part geo={SPH} m={S.pearlLip} scale={[0.02, 0.02, 0.02]} p={[0.012, 0.03, 0]} castShadow={false} />
+        </group>
         {/* la conque, couchée : la spire à gauche, la bouche vers la pièce */}
-        <group position={[0, CONCH.top - 0.005, 0]} rotation-y={0.6} scale={1.3}>
+        <group position={[0, CONCH.top - 0.005, 0]} rotation-y={0.6} scale={SC}>
           <mesh geometry={SHELL_GEO} material={SHELL_MAT} castShadow />
         </group>
       </Static>
       {/* le fond de la bouche, nacré : il rougeoit quand la conque chante */}
-      <group position={[0, CONCH.top - 0.005, 0]} rotation-y={0.6} scale={1.3}>
+      <group position={[0, CONCH.top - 0.005, 0]} rotation-y={0.6} scale={SC}>
         <Part geo={SPH} m={S.pearlGlow} scale={[0.13, 0.06, 0.035]} p={[0.05, 0.14, 0.135]} rotation={[0.25, 0, -0.12]} castShadow={false} />
         <sprite ref={halo} position={[0.08, 0.17, 0.24]} scale={0.55} raycast={noRay}>
           <spriteMaterial map={glowTex} color={0xffb8d0} blending={AdditiveBlending} transparent depthWrite={false} opacity={0} />

@@ -3,7 +3,7 @@ import { Motes } from '../Floaters'
 import { Deck, RopeLadder } from './Deck'
 import { LowerCrown, Oak, UpperCrown } from './Oak'
 import { Forest } from './Forest'
-import { Banjo, CHEST, CHEST_TOP, Chest } from './Banjo'
+import { BANJO, Banjo, CHEST_TOP, Chest } from './Banjo'
 import { Hammock } from './Hammock'
 import { Birdhouse } from './Birdhouse'
 import { JarLanterns } from './JarLanterns'
@@ -34,7 +34,7 @@ export function TreehouseScene() {
       <Telescope position={[-1.45, 0, 2.4]} ry={-0.5} />
       <Lounge />
       <Chest />
-      <Banjo position={[CHEST.x - 0.3, CHEST_TOP, CHEST.z - 0.02]} ry={-0.32} />
+      <Banjo position={[BANJO.x, CHEST_TOP, BANJO.z]} ry={BANJO.ry} />
       <Hammock />
       <Birdhouse position={[LIMB.x + 0.315, 2.0, LIMB.z]} />
       <JarLanterns x={0.72} />

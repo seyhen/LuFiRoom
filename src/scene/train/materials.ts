@@ -1,7 +1,7 @@
 import { BackSide, DoubleSide, MeshBasicMaterial } from 'three'
 import { M, gummy } from '../materials'
 import { leafy } from '../nature/materials'
-import { boardTex, carpetTex, panelTex, persianTex, streakTex } from './textures'
+import { boardTex, carpetTex, panelTex, pageTextTex, persianTex, streakTex } from './textures'
 
 // Le mur du fond est une extrusion : ses UV sont ses coordonnées (1 unité de large, 4.4 de haut par tuile).
 const wallPanels = panelTex.clone()
@@ -30,6 +30,7 @@ export const T = {
   sheet: gummy(0xfbf8f2, { roughness: 0.8, clearcoat: 0.1 }),
   blanket: gummy(0x2c3f6b, { roughness: 0.85, clearcoat: 0.05 }),
   cream: gummy(0xf3e6cf, { roughness: 0.6 }),
+  pageText: gummy(0xffffff, { map: pageTextTex, roughness: 0.7, clearcoat: 0 }),
   leather: gummy(0x8a5a3a, { roughness: 0.4, clearcoat: 0.6 }),
   leatherDark: gummy(0x5e3a26, { roughness: 0.4, clearcoat: 0.6 }),
   canvas: gummy(0xd9c9a8, { roughness: 0.8 }),

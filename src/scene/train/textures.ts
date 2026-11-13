@@ -200,3 +200,16 @@ export const persianTex = canvasTex(256, 384, (x) => {
 export const boardTex = canvasTex(128, 128, (x) => {
   for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) { x.fillStyle = (i + j) % 2 ? '#5a3424' : '#e9d2a8'; x.fillRect(i * 16, j * 16, 16, 16) }
 })
+
+/** Une page de livre : une marge, des lignes de texte de longueurs inégales, un titre plus gras en haut ; papier crème. Pour un plan de 0,25 × 0,36. */
+export const pageTextTex = canvasTex(128, 184, (x) => {
+  const r = seeded(31)
+  x.fillStyle = '#f6ead4'; x.fillRect(0, 0, 128, 184)
+  x.fillStyle = 'rgba(70,45,30,.55)'; x.fillRect(22, 16, 56, 6)
+  x.fillStyle = 'rgba(70,45,30,.38)'
+  for (let i = 0; i < 17; i++) {
+    const w = i % 6 === 5 ? 40 + r() * 30 : 82 + r() * 14
+    x.fillRect(14, 34 + i * 8.4, w, 3.2)
+  }
+  x.fillStyle = 'rgba(70,45,30,.4)'; x.fillRect(58, 176, 12, 3)
+})

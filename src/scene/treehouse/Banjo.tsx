@@ -12,6 +12,8 @@ import { T } from './materials'
 /** La malle : où elle est, et la hauteur de son couvercle. */
 export const CHEST = { x: -0.7, z: -2.5, w: 1.05, d: 0.56, h: 0.46, ry: 0.0 }
 export const CHEST_TOP = CHEST.h + 0.1
+/** Où le banjo est posé sur le couvercle (centre de la caisse) et son orientation. */
+export const BANJO = { x: CHEST.x - 0.3, z: CHEST.z - 0.02, ry: -0.32 }
 
 /**
  * La malle de voyage, au fond sous le toit : caisse de bois sombre à lattes, deux sangles de cuir, coins et serrure de laiton,
@@ -60,11 +62,15 @@ export function Chest() {
   )
 }
 
-const POT = { r: 0.17, h: 0.07 }
-const NECK = 0.66
+const POT = { r: 0.19, h: 0.075 }
+const NECK = 0.62
 /** Le banjo est à l'échelle de la cabane (un peu plus grand que nature, pour se lire de loin). */
 const BANJO_S = 1.35
 const STR_Y = 0.136 // les cordes passent au-dessus du chevalet et de la touche
+// la sangle va du talon du manche (point d'attache, côté +z du banjo) jusqu'au bord avant du couvercle
+const HEEL = POT.r + 0.06
+const HEEL_Z_WORLD = BANJO.z + BANJO_S * (-HEEL * Math.sin(BANJO.ry) + 0.047 * Math.cos(BANJO.ry))
+const STRAP_LEN = Math.max(0.05, (CHEST.z + (CHEST.d + 0.05) / 2 - 0.012 - HEEL_Z_WORLD) / (BANJO_S * Math.cos(BANJO.ry)))
 
 /**
  * Le banjo, couché sur la malle : c'est l'objet « radio » de la cabane. Le fût d'érable, la peau claire et sa couronne de tirants de
@@ -124,6 +130,30 @@ export function Banjo({ position, ry = 0 }: { position: V3; ry?: number }) {
             <Part geo={cyl(0.005, 0.005, 0.03, 6)} m={T.chrome} rotation-x={Math.PI / 2} castShadow={false} />
             <Part geo={SPH} m={T.paper} scale={[0.01, 0.014, 0.008]} p={[0, 0, 0.02]} castShadow={false} />
           </group>
+          {/* la bride chromée qui ceinture le résonateur, et l'appui-bras qui épouse le cercle du côté de la musicienne */}
+          <Part m={T.chrome} p={[0, 0.052, 0]} rotation-x={Math.PI / 2} castShadow={false}>
+            <torusGeometry args={[POT.r + 0.021, 0.008, 8, 40]} />
+          </Part>
+          <Part m={T.chrome} p={[0, 0.05 + POT.h + 0.016, 0]} rotation-x={Math.PI / 2} rotation-z={0.7} castShadow={false}>
+            <torusGeometry args={[POT.r + 0.004, 0.006, 6, 20, 1.3]} />
+          </Part>
+          {/* la peau, usée là où la main frotte : une tache plus claire devant le chevalet */}
+          <Part geo={SPH} m={T.maple} scale={[0.07, 0.0015, 0.045]} p={[-0.0, 0.05 + POT.h + 0.0045, 0]} castShadow={false} />
+          {/* le capo : une barre de chrome sur les cordes, ses deux bras de part et d'autre du manche, une molette */}
+          <group position={[POT.r + 0.03 + 3 * 0.065 * (1 - 3 * 0.03) + 0.032, 0, 0]}>
+            <Part geo={rb(0.016, 0.012, 0.085, 0.004)} m={T.chrome} p={[0, STR_Y + 0.016, 0]} castShadow={false} />
+            {[-1, 1].map((sz) => (
+              <Part key={sz} geo={rb(0.016, 0.034, 0.008, 0.003)} m={T.chrome} p={[0, STR_Y - 0.003, sz * 0.041]} castShadow={false} />
+            ))}
+            <Part geo={SPH} m={T.iron} scale={[0.009, 0.009, 0.009]} p={[0, STR_Y + 0.028, 0]} castShadow={false} />
+          </group>
+          {/* la sangle de cuir : attachée au talon du manche, elle descend sur le couvercle et pend sur le devant de la malle */}
+          <Part geo={cyl(0.009, 0.009, 0.02, 8)} m={T.chrome} p={[POT.r + 0.06, 0.05 + POT.h - 0.01, 0.034]} rotation-x={Math.PI / 2} castShadow={false} />
+          <Part geo={cyl(0.009, 0.009, 0.02, 8)} m={T.chrome} p={[-POT.r - 0.026, 0.07, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+          <Part geo={rb(0.032, 0.1, 0.006, 0.002)} m={T.leather} p={[POT.r + 0.06, 0.05 + POT.h - 0.06, 0.047]} castShadow={false} />
+          <Part geo={rb(0.032, 0.006, STRAP_LEN, 0.002)} m={T.leather} p={[POT.r + 0.06, 0.004, 0.047 + STRAP_LEN / 2 - 0.003]} castShadow={false} />
+          <Part geo={rb(0.032, 0.13, 0.006, 0.002)} m={T.leather} p={[POT.r + 0.06, -0.06, 0.047 + STRAP_LEN]} castShadow={false} />
+          <Part geo={rb(0.034, 0.014, 0.01, 0.003)} m={T.brass} p={[POT.r + 0.06, -0.09, 0.047 + STRAP_LEN + 0.003]} castShadow={false} />
           {/* le chevalet, le cordier */}
           <Part geo={rb(0.014, 0.022, 0.07, 0.004)} m={T.maple} p={[-0.03, 0.05 + POT.h + 0.014, 0]} castShadow={false} />
           <Part geo={rb(0.11, 0.012, 0.045, 0.005)} m={T.chrome} p={[-0.12, 0.05 + POT.h + 0.012, 0]} castShadow={false} />

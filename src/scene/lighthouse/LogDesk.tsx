@@ -1,9 +1,10 @@
 import { useRef } from 'react'
+import { LatheGeometry, Vector2 } from 'three'
 import { useFrame } from '@react-three/fiber'
 import type { Group } from 'three'
 import { isActive, useStore } from '../../state/store'
 import { approach, lerp } from '../../math'
-import { Part, SPH, cyl, rbox } from '../parts'
+import { Part, SPH, cyl, noRay, rbox } from '../parts'
 import { reduceMotion, useSquash } from '../anim'
 import { Static } from '../Static'
 import { L } from './materials'
@@ -18,6 +19,9 @@ const X0 = 0.04 // début des lignes de la page de droite
 const rowZ = (i: number) => -0.12 + i * 0.075
 const INK = { x: 0.36, z: -0.12 }
 const ROW_T = 5.5 // secondes par ligne
+const DS = 1.15 // le bureau est un peu plus grand que nature, pour se lire depuis la pièce
+// le sablier : une double ampoule de verre (un seul tracé) ; le sable dedans
+const hourglass = new LatheGeometry([[0.024, 0], [0.029, 0.008], [0.03, 0.018], [0.02, 0.032], [0.008, 0.043], [0.004, 0.05], [0.008, 0.057], [0.02, 0.068], [0.029, 0.082], [0.03, 0.092], [0.024, 0.1]].map(([r, y]) => new Vector2(r, y)), 16)
 
 /**
  * Le journal de bord : un petit bureau de chêne, le journal ouvert, l'encrier et la plume d'oie. Quand le son joue, la plume
@@ -63,6 +67,7 @@ export function LogDesk() {
   })
   return (
     <group ref={g} userData={{ id: 'quill' }} position={[LOG.x, 0, LOG.z]} rotation-y={0.3}>
+     <group scale={DS}>
       <Static>
         {/* le bureau : un plateau de chêne sur quatre pieds fuselés, un tiroir */}
         <Part geo={rbox(0.95, 0.05, 0.58, 0.02)} m={L.oakPale} p={[0, TOP - 0.025, 0]} />
@@ -75,6 +80,12 @@ export function LogDesk() {
         {/* le journal ouvert : couverture de cuir, deux pages, les lignes déjà écrites à gauche */}
         <Part geo={rbox(0.62, 0.03, 0.4, 0.012)} m={L.leatherDark} p={[-0.03, TOP + 0.015, 0.02]} rotation-y={-0.06} />
         <group position={[-0.03, 0, 0.02]} rotation-y={-0.06}>
+          {/* le signet : un ruban rouge posé sur la page, qui pend au bord du journal */}
+          <Part geo={rbox(0.012, 0.003, 0.105, 0.001)} m={L.red} p={[-0.004, PAGE + 0.0025, 0.1275]} castShadow={false} />
+          <Part geo={rbox(0.014, 0.027, 0.004, 0.001)} m={L.red} p={[-0.004, PAGE - 0.011, 0.182]} castShadow={false} />
+          <Part geo={rbox(0.014, 0.003, 0.034, 0.001)} m={L.red} p={[-0.004, TOP + 0.0315, 0.197]} castShadow={false} />
+          {/* une tache d'encre au coin de la page de droite */}
+          <Part geo={SPH} m={L.navyDark} scale={[0.016, 0.0016, 0.011]} p={[0.22, PAGE + 0.0012, 0.15]} castShadow={false} />
           <Part geo={rbox(0.29, 0.022, 0.36, 0.008)} m={L.paper} p={[-0.145, PAGE - 0.011, 0]} rotation-z={0.02} castShadow={false} />
           <Part geo={rbox(0.29, 0.022, 0.36, 0.008)} m={L.paper} p={[0.145, PAGE - 0.011, 0]} rotation-z={-0.02} castShadow={false} />
           {[0.18, 0.2, 0.15, 0.2, 0.12, 0.19].map((w, i) => (
@@ -86,7 +97,23 @@ export function LogDesk() {
         <Part geo={cyl(0.026, 0.03, 0.025, 14)} m={L.navy} p={[INK.x, TOP + 0.082, INK.z]} castShadow={false} />
         <Part geo={cyl(0.03, 0.03, 0.014, 14)} m={L.navyDark} p={[INK.x, TOP + 0.0935, INK.z]} castShadow={false} />
         <Part geo={cyl(0.022, 0.022, 0.03, 10)} m={L.rope} p={[0.36, TOP + 0.015, 0.14]} castShadow={false} />
+        {/* le bâton de cire à cacheter et son cachet de laiton, entre le journal et le bord */}
+        <Part geo={rbox(0.014, 0.014, 0.09, 0.005)} m={L.red} p={[0.41, TOP + 0.007, 0.06]} rotation-y={0.2} castShadow={false} />
+        <Part geo={cyl(0.024, 0.024, 0.008, 16)} m={L.red} p={[0.4, TOP + 0.004, -0.03]} castShadow={false} />
+        <Part geo={cyl(0.012, 0.012, 0.004, 12)} m={L.brass} p={[0.4, TOP + 0.0095, -0.03]} castShadow={false} />
+        {/* le sablier du gardien, au coin arrière gauche : deux disques de laiton, trois montants, le sable en bas */}
+        <group position={[-0.415, TOP, -0.215]} scale={1.25}>
+          <Part geo={cyl(0.042, 0.042, 0.012, 18)} m={L.brass} p={[0, 0.006, 0]} castShadow={false} />
+          <Part geo={cyl(0.042, 0.042, 0.012, 18)} m={L.brass} p={[0, 0.114, 0]} castShadow={false} />
+          {[0, 1, 2].map((i) => {
+            const a = (i / 3) * Math.PI * 2 + 0.5
+            return <Part key={i} geo={cyl(0.0045, 0.0045, 0.1, 6)} m={L.oakDark} p={[Math.cos(a) * 0.034, 0.06, Math.sin(a) * 0.034]} castShadow={false} />
+          })}
+          <Part geo={SPH} m={L.rope} scale={[0.024, 0.014, 0.024]} p={[0, 0.021, 0]} castShadow={false} />
+          <Part geo={cyl(0.02, 0.004, 0.022, 10)} m={L.rope} p={[0, 0.082, 0]} castShadow={false} />
+        </group>
       </Static>
+      <mesh geometry={hourglass} material={L.glass} position={[-0.415, TOP + 0.015, -0.215]} scale={1.25} raycast={noRay} />
       {/* les lignes qu'écrit la plume, page de droite : on les agrandit une à une */}
       <group position={[-0.03, 0, 0.02]} rotation-y={-0.06}>
         {Array.from({ length: ROWS }, (_, i) => (
@@ -96,7 +123,7 @@ export function LogDesk() {
         ))}
       </group>
       {/* la plume d'oie : sa pointe à l'origine du groupe, le tuyau monte, les barbes en éventail */}
-      <group ref={quill} position={[INK.x, TOP + 0.14, INK.z]}>
+      <group ref={quill} position={[INK.x, TOP + 0.14, INK.z]} scale={1.2}>
        {/* tournée sur son axe pour que les barbes fassent face à la caméra */}
        <group rotation-y={0.5}>
         {/* le bec taillé, noirci d'encre */}
@@ -115,6 +142,7 @@ export function LogDesk() {
         <Part geo={SPH} m={L.paper} scale={[0.03, 0.025, 0.014]} p={[0.012, 0.16, 0]} castShadow={false} />
        </group>
       </group>
+     </group>
     </group>
   )
 }

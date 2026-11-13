@@ -1,27 +1,36 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { BackSide, Quaternion, Vector3, type BufferGeometry, type Group, type Mesh } from 'three'
+import { BackSide, CylinderGeometry, DoubleSide, Quaternion, Vector3, type BufferGeometry, type Group, type Mesh } from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { Vessel, innerR } from '../igloo/Vessel'
 import { isActive, useStore } from '../../state/store'
 import { TAU, approach, lerp } from '../../math'
 import { gummy } from '../materials'
-import { Part, SPH, cyl } from '../parts'
+import { Part, SPH, cyl, rbox } from '../parts'
 import { reduceMotion, useSquash } from '../anim'
 import { Static } from '../Static'
 import { O } from './materials'
 
-/** La table de pierre du matcha, dans la cour de devant : son pied au sol (la table, le bol et le fouet). */
+/** La table de pierre du matcha, dans la cour de devant : son pied au sol (la table, le plateau, le bol, le fouet et la louche). */
 export const MATCHA = { x: -0.55, z: 1.95, top: 0.44 }
 const tea = gummy(0x6f9a3c, { roughness: 0.4, clearcoat: 0.9 })
+const lacquer = gummy(0x34201e, { roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.12 })
+
 const froth = gummy(0xb4d878, { roughness: 0.9, clearcoat: 0.05 })
 const celadonIn = O.celadon.clone()
 celadonIn.side = BackSide
+// la louche : un seul matériau à double face (paroi dehors et dedans), sans ombre, pour ne coûter qu'un tracé
+const bambooLadle = O.bambooDry.clone()
+bambooLadle.side = DoubleSide
+const LADLE_CUP = new CylinderGeometry(0.052, 0.045, 0.08, 18, 1, true)
+// la mise en place : un grand plateau laqué sur la table, le bol (échelle S) un peu à gauche, le fouet couché et la boîte à thé à droite
+const S = 1.7, BX = -0.14, TRAY = 0.04, TOP = MATCHA.top + TRAY
 // le bol (repère du bol, avant l'échelle 1,4) : rayon en haut, en bas, hauteur de la panse ; le thé à 70 % de sa hauteur
 const BOWL = { rt: 0.13, rb: 0.075, h: 0.1 }
 const TEA_Y = 0.02 + BOWL.h * 0.7
 const TEA_R = innerR(BOWL.rt, BOWL.rb, BOWL.h, BOWL.h * 0.7, 0.008) - 0.002
 const REST_Y = 0.055
+const REST_X = (0.2 - BX) / S, REST_Z = -0.12
 // les dents du fouet : chacune part de la ligature, s'écarte en bulbe puis se recourbe vers la pointe (deux segments)
 const TINES = (() => {
   const parts: BufferGeometry[] = [], up = new Vector3(0, 1, 0)
@@ -54,7 +63,7 @@ export function MatchaTable() {
     s.foam = approach(s.foam, on ? 1 : 0.15, dt * (on ? 0.12 : 0.25))
     if (on && !reduceMotion) s.a += dt * 9 // phase image après image (le fouet bat plus vite quand on s'y met)
     const r = 0.045 * s.k
-    whisk.current.position.set(lerp(0.22, Math.cos(s.a) * r, s.k), lerp(REST_Y, TEA_Y + 0.012, s.k), lerp(-0.15, Math.sin(s.a) * r, s.k))
+    whisk.current.position.set(lerp(REST_X, Math.cos(s.a) * r, s.k), lerp(REST_Y, TEA_Y + 0.012, s.k), lerp(REST_Z, Math.sin(s.a) * r, s.k))
     whisk.current.rotation.set(lerp(1.5, 0, s.k) + 0.3 * s.k * Math.cos(s.a - 0.6), 0, 0.3 * s.k * Math.sin(s.a - 0.6))
     foam.current.scale.set(TEA_R * (0.6 + 0.38 * s.foam), 0.004 + 0.012 * s.foam, TEA_R * (0.6 + 0.38 * s.foam))
     foam.current.visible = s.foam > 0.2
@@ -63,17 +72,29 @@ export function MatchaTable() {
     <group ref={g} userData={{ id: 'whisk' }} position={[MATCHA.x, 0, MATCHA.z]}>
       <Static>
         {/* la table : un fût de pierre et un plateau rond */}
-        <Part geo={cyl(0.2, 0.25, 0.06, 20)} m={O.stone[1]} p={[0, 0.03, 0]} />
-        <Part geo={cyl(0.13, 0.17, 0.34, 20)} m={O.stone[1]} p={[0, 0.23, 0]} />
-        <Part geo={cyl(0.36, 0.33, 0.07, 28)} m={O.stone[0]} p={[0, MATCHA.top - 0.035, 0]} />
+        <Part geo={cyl(0.24, 0.3, 0.06, 24)} m={O.stone[1]} p={[0, 0.03, 0]} />
+        <Part geo={cyl(0.15, 0.2, 0.34, 24)} m={O.stone[1]} p={[0, 0.23, 0]} />
+        <Part geo={cyl(0.54, 0.5, 0.07, 32)} m={O.stone[0]} p={[0, MATCHA.top - 0.035, 0]} />
+        {/* le plateau laqué, son fond de laque rouge, la boîte à thé (corps et couvercle) */}
+        <Part geo={rbox(0.88, TRAY, 0.5, 0.02)} m={lacquer} p={[0, MATCHA.top + TRAY / 2, 0]} castShadow={false} />
+        <group position={[0.35, MATCHA.top + TRAY, -0.04]}>
+          <Part geo={cyl(0.052, 0.05, 0.07, 18)} m={lacquer} p={[0, 0.035, 0]} castShadow={false} />
+          <Part geo={cyl(0.056, 0.056, 0.022, 18)} m={O.ceramic} p={[0, 0.081, 0]} castShadow={false} />
+        </group>
         {/* le bol ouvert : un pied, la panse évasée (dehors céladon, dedans plus clair), le bord, et le thé dedans, sous le bord */}
-        <group position={[0, MATCHA.top, 0]} scale={1.4}>
+        <group position={[BX, TOP, 0]} scale={S}>
           <Part geo={cyl(0.06, 0.06, 0.02, 16)} m={O.ceramic} p={[0, 0.01, 0]} castShadow={false} />
           <Vessel p={[0, 0.02, 0]} rt={BOWL.rt} rb={BOWL.rb} h={BOWL.h} m={O.celadon} inner={celadonIn} t={0.008} />
           <Part geo={cyl(TEA_R, TEA_R, 0.006, 26)} m={tea} p={[0, TEA_Y, 0]} castShadow={false} />
         </group>
+        {/* la louche de bambou (hishaku) posée sur la pierre, devant le plateau : godet ouvert (un tronçon de bambou), long manche, bout qui touche la table */}
+        <group position={[-0.26, MATCHA.top, 0.36]} rotation-y={0.12}>
+          <Part geo={LADLE_CUP} m={bambooLadle} p={[0, 0.04, 0]} castShadow={false} />
+          <Part geo={cyl(0.045, 0.045, 0.008, 18)} m={bambooLadle} p={[0, 0.004, 0]} castShadow={false} />
+          <Part geo={cyl(0.011, 0.009, 0.5, 8)} m={bambooLadle} p={[0.29, 0.035, 0]} rotation-z={-(Math.PI / 2 + 0.1)} castShadow={false} />
+        </group>
       </Static>
-      <group position={[0, MATCHA.top, 0]} scale={1.4}>
+      <group position={[BX, TOP, 0]} scale={S}>
         {/* la mousse, qui monte sans jamais passer le bord */}
         <mesh ref={foam} geometry={SPH} material={froth} position={[0, TEA_Y + 0.004, 0]} scale={[0.06, 0.004, 0.06]} />
         {/* le chasen : manche de bambou, ligature, et la tête en bulbe de fines dents recourbées ; sa pointe à l'origine du groupe */}

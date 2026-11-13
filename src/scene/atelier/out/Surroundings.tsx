@@ -82,14 +82,13 @@ export function Surroundings() {
           <Terrasson key={i} cx={(b.x0 + b.x1) / 2} cz={(b.z0 + b.z1) / 2} w={b.x1 - b.x0 - INSET * 2 + 0.06} d={b.z1 - b.z0 - INSET * 2 + 0.06} y={b.top! + 0.075} />
         ))}
         {FARTHER.map((f, i) => <FarBlock key={i} {...f} />)}
-        {/* de la vie sur les toits : verrière d'artiste, cage d'escalier, château d'eau, linge, potager, paraboles, pigeons */}
+        {/* de la vie sur les toits : verrière d'artiste, cage d'escalier, château d'eau, linge, potager, parabole, pigeons */}
         <Skylight p={[-7.2, LEFT.top! + 0.075, 5.9]} />
         <StairCage p={[-7.5, BACK_L.top! + 0.075, -5.4]} />
         <WaterTower p={[2.1, BACK_C.top! + 0.075, -5.3]} />
         <Laundry p={[4.5, BACK_R.top! + 0.075, -5.9]} len={3} />
         <RoofGarden p={[-8.0, LEFT.top! + 0.075, 3.25]} />
-        <Dish p={[4.85, RIGHT.top! + 0.075, -0.4]} ry={0.1} />
-        <Dish p={[-1.9, BACK_C.top! + 0.075, -6.0]} ry={Math.PI / 2 - 0.1} />
+        <Dish p={[-1.9, BACK_C.top! + 0.075, -6.0]} ry={Math.PI / 2 - 0.1 + Math.PI} />
         <Pigeon p={[7.6, RIGHT.top! + 0.075, -3.0]} ry={0.9} />
         <Pigeon p={[8.5, RIGHT.top! + 0.075, -3.3]} ry={-0.6} />
         <Pigeon p={[8.0, RIGHT.top! + 0.075, -3.9]} ry={2.2} />

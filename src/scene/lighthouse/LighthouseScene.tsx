@@ -41,7 +41,7 @@ export function LighthouseScene() {
       <Cat position={[-0.7, 0.035, 0.55]} rotation={-0.5} coat={{ fur: L.catFur, light: L.catLight, dark: L.catDark }} />
       <LogDesk />
       <SeaChest />
-      <Concertina position={[CHEST.x, CHEST.lid, CHEST.z - 0.05]} />
+      <Concertina position={[CHEST.x, CHEST.lid, CHEST.z - 0.18]} />
       <Motes colors={[0xfff0d0, 0xffc98a]} opacity={[0.3, 0.5]} n={20} />
     </Static>
     </>

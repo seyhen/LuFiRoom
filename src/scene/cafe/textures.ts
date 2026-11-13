@@ -220,7 +220,7 @@ function paintingTexture() {
 
 /**
  * La vitre côté salle : de la buée en bas et dans les coins, des gouttes et des coulures qui dégagent la buée,
- * et le nom du café peint à la feuille d'or à l'extérieur (donc lu à l'envers d'ici).
+ * et le nom du café en lettres d'or, à l'endroit depuis la caméra.
  */
 function glassTexture() {
   const Wd = 512, Ht = 384, [c, x] = makeCanvas(Wd, Ht), r = seeded(21)
@@ -252,10 +252,9 @@ function glassTexture() {
     x.strokeStyle = 'rgba(50,70,95,.28)'; x.lineWidth = 1; x.beginPath(); x.arc(px, py + rad * 0.15, rad, 0.1 * Math.PI, 0.9 * Math.PI); x.stroke()
     x.fillStyle = 'rgba(255,255,255,.7)'; x.beginPath(); x.arc(px - rad * 0.35, py - rad * 0.35, Math.max(0.6, rad * 0.28), 0, TAU); x.fill()
   }
-  // L'enseigne dorée est peinte dehors : vue d'ici, elle est à l'envers. Un mot par battant, en arc dans l'imposte
-  // (le haut de chaque battant), pour que la traverse du milieu ne coupe pas les lettres.
+  // L'enseigne dorée, lisible à l'endroit depuis la caméra (le propriétaire la veut lisible, pas fidèle à la vitre vue de dehors).
+  // Un mot par battant, en arc dans l'imposte (le haut de chaque battant), pour que la traverse du milieu ne coupe pas les lettres.
   x.save()
-  x.translate(Wd, 0); x.scale(-1, 1)
   x.textAlign = 'center'; x.textBaseline = 'middle'
   const gold = x.createLinearGradient(0, 30, 0, 70)
   gold.addColorStop(0, '#f7dc8f'); gold.addColorStop(0.5, '#d4a443'); gold.addColorStop(1, '#a87a2c')

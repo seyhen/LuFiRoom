@@ -6,13 +6,13 @@ import { TAU, approach, rand, smooth } from '../../math'
 import { Part, SPH, cyl, noRay, rbox } from '../parts'
 import { mood, reduceMotion, useParticles, useSquash } from '../anim'
 import { glowTex } from '../textures'
-import { LIVE } from '../Static'
+import { LIVE, Static } from '../Static'
 import { O } from './materials'
 import { leafTex } from './textures'
 import { Foliage } from '../nature/Foliage'
 import { Rock } from '../nature/Rock'
 
-const bell = new SphereGeometry(0.075, 20, 10, 0, TAU, 0, Math.PI / 2)
+const bell = new SphereGeometry(0.083, 20, 10, 0, TAU, 0, Math.PI / 2)
 
 /** Le furin, clochette de verre pendue à l'avant-toit, et sa bande de papier qui prend le vent. */
 export function Furin() {
@@ -29,22 +29,40 @@ export function Furin() {
   })
   return (
     <group ref={g} userData={{ id: 'furin' }} position={[-1.9, 3.02, 0.35]}>
-      {/* une fois et demie la taille d'avant : on doit lire la clochette, son battant et sa bande de papier sous l'avant-toit */}
-      <group ref={swing} userData={LIVE} scale={1.5}>
-        <Part geo={cyl(0.006, 0.006, 0.2, 5)} m={O.ink} p={[0, -0.1, 0]} castShadow={false} />
-        <Part geo={bell} m={O.furin} p={[0, -0.27, 0]} />
-        {/* le bord peint en rouge et deux poissons rouges sur le verre */}
-        <Part m={O.red} p={[0, -0.268, 0]} rotation-x={Math.PI / 2} castShadow={false}>
-          <torusGeometry args={[0.074, 0.006, 6, 24]} />
+      {/* la baguette de bambou clouée sous l'avant-toit et son crochet de fer : ils ne bougent pas */}
+      <Static>
+        <Part geo={cyl(0.014, 0.014, 0.4, 8)} m={O.bambooDry} p={[0, -0.01, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+        <Part m={O.iron} p={[0, -0.055, 0]} rotation-y={Math.PI / 2} castShadow={false}>
+          <torusGeometry args={[0.022, 0.005, 6, 14]} />
         </Part>
-        {[0.6, 2.2].map((a, i) => (
-          <Part key={i} geo={SPH} m={O.red} scale={[0.018, 0.011, 0.006]} p={[Math.cos(a) * 0.058, -0.235, Math.sin(a) * 0.058]} rotation-y={-a + Math.PI / 2} castShadow={false} />
-        ))}
-        <Part geo={SPH} m={O.red} scale={[0.02, 0.012, 0.02]} p={[0, -0.2, 0]} castShadow={false} />
-        <Part geo={cyl(0.004, 0.004, 0.14, 4)} m={O.ink} p={[0, -0.34, 0]} castShadow={false} />
-        <Part geo={SPH} m={O.furin} scale={0.014} p={[0, -0.32, 0]} castShadow={false} />
-        <group ref={strip} userData={LIVE} position={[0, -0.41, 0]}>
-          <Part geo={rbox(0.06, 0.2, 0.006, 0.003)} m={O.tanzaku} p={[0, -0.1, 0]} castShadow={false} />
+      </Static>
+      {/* deux fois la taille d'origine : on doit lire la cloche de verre, son battant et sa bande de papier sous l'avant-toit */}
+      <group ref={swing} userData={LIVE} scale={2} position={[0, -0.06, 0]}>
+        <Static>
+          <Part geo={cyl(0.005, 0.005, 0.18, 5)} m={O.ink} p={[0, -0.09, 0]} castShadow={false} />
+          {/* la calotte de fer qui coiffe la cloche, et le bouton rouge */}
+          <Part geo={cyl(0.018, 0.03, 0.026, 10)} m={O.iron} p={[0, -0.19, 0]} castShadow={false} />
+          <Part geo={SPH} m={O.red} scale={[0.02, 0.012, 0.02]} p={[0, -0.204, 0]} castShadow={false} />
+          {/* le bord peint en rouge et deux poissons rouges sur le verre */}
+          <Part m={O.red} p={[0, -0.275, 0]} rotation-x={Math.PI / 2} castShadow={false}>
+            <torusGeometry args={[0.083, 0.006, 6, 24]} />
+          </Part>
+          {[0.6, 2.4].map((a, i) => (
+            <Part key={i} geo={SPH} m={O.red} scale={[0.02, 0.012, 0.007]} p={[Math.cos(a) * 0.069, -0.225, Math.sin(a) * 0.069]} rotation-y={-a + Math.PI / 2} castShadow={false} />
+          ))}
+          {/* le battant de métal, au bout de son fil, et le fil qui descend jusqu'à la bande */}
+          <Part geo={cyl(0.002, 0.002, 0.07, 4)} m={O.ink} p={[0, -0.222, 0]} castShadow={false} />
+          <Part geo={SPH} m={O.iron} scale={0.013} p={[0, -0.262, 0]} castShadow={false} />
+          <Part geo={cyl(0.003, 0.003, 0.15, 4)} m={O.ink} p={[0, -0.345, 0]} castShadow={false} />
+        </Static>
+        <Part geo={bell} m={O.furin} p={[0, -0.275, 0]} />
+        {/* la bande de papier (tanzaku) : crème, bandeau rose en bas, trait d'encre */}
+        <group ref={strip} userData={LIVE} position={[0, -0.42, 0]}>
+          <Static>
+            <Part geo={rbox(0.085, 0.3, 0.006, 0.003)} m={O.ceramic} p={[0, -0.15, 0]} castShadow={false} />
+            <Part geo={rbox(0.087, 0.09, 0.008, 0.003)} m={O.tanzaku} p={[0, -0.255, 0]} castShadow={false} />
+            <Part geo={rbox(0.014, 0.12, 0.009, 0.004)} m={O.ink} p={[0, -0.13, 0]} castShadow={false} />
+          </Static>
         </group>
       </group>
     </group>
