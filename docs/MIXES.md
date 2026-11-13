@@ -17,10 +17,23 @@ Désactivés tant qu'aucun son ne joue. Les ambiances restent sur l'appareil : p
 https://exemple.fr/?room=cabin&mix=fire.80,wind.40&night=1
 ```
 
-`room` : identifiant de la pièce ; `mix` : `son.volume` en pourcentage, séparés par des virgules ; `night` : `1` pour la nuit, `0` pour le jour ; `noise` (`white`, `pink`, `brown`, `green`) et `tilt` (−100 à 100) règlent la carte « Bruit » si elle est dans `mix` (`&noise=brown&tilt=-30`). Un lien sans eux, ou une ambiance enregistrée avant la carte, reste valide : le réglage de l'appareil ne change pas.
+`room` : identifiant de la pièce ; `mix` : `son.volume` en pourcentage de curseur, séparés par des virgules ; `v=2` : la courbe des volumes (voir plus bas ; un lien sans `v` est un ancien lien) ; `night` : `1` pour la nuit, `0` pour le jour ; `noise` (`white`, `pink`, `brown`, `green`) et `tilt` (−100 à 100) règlent la carte « Bruit » si elle est dans `mix` (`&noise=brown&tilt=-30`). Un lien sans eux, ou une ambiance enregistrée avant la carte, reste valide : le réglage de l'appareil ne change pas.
 Ouvert, le lien n'allume **rien** tout seul (le navigateur interdit l'audio avant un geste, et ce serait mal poli) : une carte au-dessus du mixeur propose « Écouter » ou « Non merci », puis l'adresse est nettoyée.
 
 Un lien est ignoré, sans erreur, si sa pièce est inconnue ou si aucun de ses sons n'existe dans cette pièce ; les sons inconnus sont écartés, les volumes ramenés entre 0 et 100.
+
+## Courbe des volumes
+
+Le volume général suit l'oreille (au carré) ; les curseurs des cartes font de même depuis la version 2 des ambiances : le moteur joue un son à `vol² × base`
+(`userLevel` dans `src/audio/engine.ts`). Le `vol` du store est donc une **position de curseur** (0 à 1), et c'est elle que les ambiances et les liens gardent.
+Avant, le curseur était directement l'amplitude : à 50 %, un son jouait à 0,5 de son niveau ; maintenant, à 0,25. Pour que rien ne change à l'oreille :
+- **Les fiches des pièces** (`volume` de `rooms/*.ts`) restent l'amplitude d'origine (le niveau voulu, `volume × base`) : le store les convertit au démarrage en position,
+  `√volume` (`sliderOf` dans `state/mixes.ts`). Une fiche n'est donc pas à retoucher, et un nouveau son se règle comme avant ; seule la position du curseur change (0,49 devient 0,7).
+- **Les ambiances** portent `v: 2` (`MIX_VERSION`). Celles sans `v` (enregistrées dans le navigateur avant la courbe, « Reprendre » compris) sont converties à la lecture : `√volume`, arrondi au centième.
+  Le même niveau sonore, un curseur plus haut.
+- **Les liens** : ceux qui portent `v=2` donnent des positions de curseur ; les anciens (sans `v`) donnent des amplitudes et sont convertis de la même façon. `mixToUrl` écrit toujours `v=2`.
+
+Le curseur du volume général, lui, était déjà au carré : il n'a pas changé.
 
 ## Pour le code
 

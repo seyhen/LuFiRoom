@@ -131,7 +131,7 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   cocoa: { build: cocoa, base: 1.25 },
   brook: { build: brook, base: 4.2 },
   cicadas: { build: cicadas, base: 3.0 },
-  frogs: { build: frogs, base: 3.5 },
+  frogs: { build: frogs, base: 2.6 }, // 3,5 avant la chaîne de sortie plus douce : l’ancien compresseur en retenait ~2,5 dB sur ce son (mesure A/B)
   musicbox: { build: musicbox, base: 2.5 },
   rainbarrel: { build: rainbarrel, base: 3.0 },
   wash: { build: wash, base: 1.0 },
@@ -293,13 +293,13 @@ function ensure() {
   hp.frequency.value = 25
   hp.Q.value = 0.6
   const lim = ctx.createDynamicsCompressor()
-  lim.threshold.value = -3
-  lim.knee.value = 0
-  lim.ratio.value = 20
-  lim.attack.value = 0.002
-  lim.release.value = 0.15
+  lim.threshold.value = LIMIT.threshold
+  lim.knee.value = LIMIT.knee
+  lim.ratio.value = LIMIT.ratio
+  lim.attack.value = LIMIT.attack
+  lim.release.value = LIMIT.release
   // La compression de Web Audio ajoute son propre gain de rattrapage ; ce gain-ci recale le niveau sur celui de l'ancienne chaîne
-  // (+4 dB sur un bruit de niveau courant), avant le limiteur pour que son plafond soit bien celui de la sortie.
+  // (à 1 dB près, sur un son de niveau courant), avant le limiteur pour que son plafond soit bien celui de la sortie.
   const trim = ctx.createGain()
   trim.gain.value = GLUE.trim
   // Dernier filet : un limiteur Web Audio ne tient pas un plafond à l'échantillon près ; ce profil laisse tout passer sous -3 dB
@@ -331,7 +331,8 @@ function ensure() {
 }
 
 // Valeurs de la fin de chaîne (mesurées avec window.__lofi.audio en dev : bruit rose + cloche, voir le bilan de la revue du moteur).
-const GLUE = { threshold: -8, knee: 12, ratio: 1.7, attack: 0.03, release: 0.7, trim: 1.38 }
+const GLUE = { threshold: -8, knee: 12, ratio: 1.7, attack: 0.03, release: 0.7, trim: 1.23 }
+const LIMIT = { threshold: -3, knee: 0, ratio: 20, attack: 0.002, release: 0.15 }
 
 function ceilingCurve() {
   const n = 2048, T = 0.708, C = 0.891, curve = new Float32Array(n)
@@ -604,7 +605,8 @@ async function renderOffline(id: SoundId, roomId: string, seconds = 20) {
   window.clearInterval = ((i: number) => { ticks.delete(i); realClear(i) }) as typeof window.clearInterval
   try {
     const ch = def.build(k, bus, { ...room, loops: {}, playlist: [] })
-    ch?.start()
+    // L'horloge d'un contexte réel n'est jamais à 0 quand un canal démarre (certains en dépendent) : on l'allume un peu après.
+    void octx.suspend(0.05).then(() => { ch?.start(); void octx.resume() })
     for (let t = 0.1; t < seconds; t += 0.1) void octx.suspend(t).then(() => { for (const f of [...ticks.values()]) f(); void octx.resume() })
     const buf = await octx.startRendering()
     const L = buf.getChannelData(0), R = buf.getChannelData(1)

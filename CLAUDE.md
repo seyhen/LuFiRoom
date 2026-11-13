@@ -69,6 +69,7 @@ scripts/encode-audio.mjs    # npm run audio : sources → Opus/WebM + MP3 dans p
 scripts/make-noises.mjs     # npm run noises : bruits colorés calculés
 scripts/check-stations.mjs  # npm run stations : vérifie la musique des stations (accords, notes, rythmes)
 scripts/check-audio.mjs     # npm run audio:check : crêtes, sonie et paires webm + mp3 de public/audio/
+scripts/measure-levels.mjs  # npm run audio:levels : sonie de chaque canal (rendu hors ligne dans Chromium), écarts à la médiane ; `--ids`, `--rooms`, `--seconds`, `--json`
 scripts/smoke.mjs           # npm run test:smoke : test de fumée dans Chromium (Playwright), chaque pièce en 390 px et en desktop
 .github/workflows/ci.yml    # CI GitHub Actions à chaque push et pull request : build, stations, test de fumée, audio:check
 wrangler.jsonc              # hébergement : Cloudflare Workers publie dist/ (voir docs/DEPLOY.md)
