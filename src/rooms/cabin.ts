@@ -45,7 +45,7 @@ export const cabin: Room = {
     sleep: { sounds: [['fire',.4], ['wind',.4], ['purr',.3]], night: true },
   },
   objects: [
-    { id: 'fireplace', target: 'fire', label: 'Cheminée · feu', anchor: [-1.9, 1.3, -2.25] },
+    { id: 'fireplace', target: 'fire', label: 'Cheminée · feu', anchor: [-1.9, 1.05, -2.25] },
     { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-1.5, 0.3, -1.15] },
     { id: 'turntable', target: 'radio', label: 'Tourne-disque · lofi', anchor: [1.9, 1.05, -2.6] },
     { id: 'window', target: 'wind', label: 'Fenêtre · le vent', anchor: [1.4, 3.35, -3.0] },

@@ -82,7 +82,7 @@ export function Turntable({ position = [1.9, 0.71, -2.64] }: { position?: V3 }) 
         {/* couvercle ouvert, adossé : coque verte dehors, haut-parleur à l'intérieur */}
         <group position={[0, 0.2, -0.35]} rotation-x={-1.45}>
           <Part geo={rbox(1.14, 0.06, 0.7, 0.04)} m={C.deck} p={[0, 0.03, 0.35]} />
-          <mesh position={[0, -0.001, 0.35]} rotation-x={Math.PI / 2} material={C.lid} receiveShadow>
+          <mesh position={[0, -0.012, 0.35]} rotation-x={Math.PI / 2} material={C.lid} receiveShadow>
             <planeGeometry args={[1.08, 0.64]} />
           </mesh>
           <Part geo={rbox(0.5, 0.03, 0.03, 0.012)} m={C.brass} p={[0, 0.03, 0.7]} castShadow={false} />
