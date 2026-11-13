@@ -181,7 +181,7 @@ export function Surroundings() {
           )}
         </Floe>
       ))}
-      <OutdoorPrecip ground={SEA} area={[-13, 13, -12, 12]} />
+      <OutdoorPrecip ground={SEA} area={[-13, 13, -12, 12]} covered top={5} />
     </>
   )
 }

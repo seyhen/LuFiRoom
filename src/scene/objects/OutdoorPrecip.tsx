@@ -21,6 +21,12 @@ interface Props {
   /** Combien de traits de pluie, de flocons (0 : pas de neige, la pièce a la sienne). */
   rain?: number
   snow?: number
+  /**
+   * Rien ne tombe sur la silhouette de la pièce, même en partie : on écarte toute colonne dont un point, de haut en bas, passe
+   * devant elle. Pour une pièce dont le sol dépasse le socle carré (l'igloo : une île ronde plus large, sa pluie venait du bord de
+   * l'île et rayait l'intérieur du dôme). Par défaut, seule une colonne entièrement devant la pièce est écartée.
+   */
+  covered?: boolean
   /** Le haut de la pièce à l'écran (une tour plus haute que les autres pièces). */
   top?: number
   /** Couleur de la pluie le jour, la nuit. */
@@ -35,17 +41,21 @@ const AREA: [number, number, number, number] = [-13, 12, -13, 12]
  * La pluie et la neige du dehors, autour de la pièce : des traits fins et des flocons qui s'arrêtent au sol. Rien ne tombe dans la
  * pièce (ni au-dessus de son socle, ni devant elle vue de la caméra). Invisible par beau temps : aucun tracé.
  */
-export function OutdoorPrecip({ ground, area = AREA, rain: nRain = 200, snow: nSnow = 120, top = 6.2, tint = TINT }: Props) {
+export function OutdoorPrecip({ ground, area = AREA, rain: nRain = 200, snow: nSnow = 120, top = 6.2, tint = TINT, covered = false }: Props) {
   const gy = useMemo(() => (typeof ground === 'number' ? () => ground : ground), [ground])
   const spot = useMemo(() => (fromTop: boolean): [number, number, number] => {
     for (let k = 0; k < 40; k++) {
       const x = rand(area[0], area[1]), z = rand(area[2], area[3]), g = gy(x, z), y = fromTop ? TOP : rand(g, TOP)
       if (slabGap(x, z, 0.3) < 0) continue
-      if (overRoom(x, y, z, top) && overRoom(x, g, z, top)) continue
+      if (covered) {
+        let hit = false
+        for (let k = 0; k <= 8 && !hit; k++) hit = overRoom(x, g + ((TOP - g) * k) / 8, z, top)
+        if (hit) continue
+      } else if (overRoom(x, y, z, top) && overRoom(x, g, z, top)) continue
       return [x, y, z]
     }
     return [area[0], TOP, area[2]]
-  }, [area, gy, top])
+  }, [area, gy, top, covered])
   const d = useMemo(() => ({
     rain: Array.from({ length: nRain }, () => ({ p: spot(false), v: rand(7, 10) })),
     snow: Array.from({ length: nSnow }, () => ({ p: spot(false), v: rand(0.5, 1.0), ph: rand(0, 6.3) })),

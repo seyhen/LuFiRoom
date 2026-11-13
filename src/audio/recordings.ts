@@ -64,6 +64,20 @@ const UP = Float32Array.from({ length: 64 }, (_, i) => Math.sin((i / 63) * (Math
 const DOWN = UP.slice().reverse()
 
 /**
+ * Pose une courbe de fondu sur un paramètre. Le navigateur refuse (« setValueCurveAtTime overlaps setValueCurveAtTime ») une courbe
+ * qui chevauche une autre du même paramètre, ce qui arrive quand la page a pris du retard (rendu logiciel, onglet gelé) et que deux
+ * courbes d'un même passage sont ramenées à « maintenant ». Les appelants ne programment plus dans le passé ; en cas de refus
+ * malgré tout, on garde la courbe déjà posée : un fondu raté vaut mieux qu'une erreur et un son qui s'arrête.
+ */
+function curve(p: AudioParam, values: Float32Array, at: number, dur: number) {
+  try {
+    p.setValueCurveAtTime(values, at, dur)
+  } catch {
+    // chevauchement : la courbe d'avant l'emporte
+  }
+}
+
+/**
  * Joue un enregistrement en boucle, sans fin. La fin de chaque passage se fond dans le début du suivant
  * (`fade` secondes, puissance constante) : pas de couture audible, même avec un fichier qui n'a pas été préparé
  * pour boucler, ou le silence que l'encodeur MP3 ajoute aux extrémités. Le premier passage part d'un point au hasard.
@@ -81,11 +95,13 @@ export function crossLoop(ctx: BaseAudioContext, buf: AudioBuffer, dest: AudioNo
     out = m
     // Programme un passage qui démarre à l'échantillon `t`, lu depuis `from`, et renvoie le départ du suivant.
     // Chaque passage, en finissant, programme celui d'après le suivant : il y en a toujours un d'avance.
-    const play = (t: number, from: number, rise: number): number => {
-      const s = ctx.createBufferSource(), g = ctx.createGain(), end = t + N - from
+    const play = (t0: number, from: number, rise: number): number => {
+      // Jamais dans le passé : un passage programmé en retard (page figée) partirait avec ses deux fondus au même instant.
+      const t = Math.max(t0, Math.ceil(ctx.currentTime * sr)), s = ctx.createBufferSource(), g = ctx.createGain(), end = t + N - from
       s.buffer = buf
-      g.gain.setValueCurveAtTime(UP, t / sr, rise / sr)
-      g.gain.setValueCurveAtTime(DOWN, (end - F) / sr, F / sr)
+      g.gain.value = 0
+      curve(g.gain, UP, t / sr, rise / sr)
+      curve(g.gain, DOWN, (end - F) / sr, F / sr)
       s.connect(g).connect(m)
       s.start(t / sr, from / sr)
       s.stop(end / sr)
@@ -150,8 +166,8 @@ export function grainLoop(ctx: BaseAudioContext, buf: AudioBuffer, dest: AudioNo
       s.buffer = buf
       s.playbackRate.value = r
       g.gain.value = 0 // pas d'autre évènement sur la même plage qu'une courbe : sinon le navigateur refuse
-      g.gain.setValueCurveAtTime(UP.map((x) => x * v), next, f)
-      g.gain.setValueCurveAtTime(DOWN.map((x) => x * v), next + want - f, f)
+      curve(g.gain, UP.map((x) => x * v), next, f)
+      curve(g.gain, DOWN.map((x) => x * v), next + want - f, f)
       s.connect(g).connect(dest)
       s.start(next, from, want * r)
       s.onended = () => g.disconnect()

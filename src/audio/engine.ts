@@ -60,6 +60,8 @@ import musicbox from './channels/musicbox'
 import rainbarrel from './channels/rainbarrel'
 import wash from './channels/wash'
 import tumble from './channels/tumble'
+import rinse from './channels/rinse'
+import gutter from './channels/gutter'
 
 // canal (bus Gain) ─┬─> master Gain 0.9 ─> volume général ─> compresseur ─> sortie
 // canal (bus Gain) ─┘
@@ -133,6 +135,8 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   rainbarrel: { build: rainbarrel, base: 3.0 },
   wash: { build: wash, base: 1.0 },
   tumble: { build: tumble, base: 1.0 },
+  rinse: { build: rinse, base: 1.4 },
+  gutter: { build: gutter, base: 1.4 },
 }
 const ids = Object.keys(CHANNELS) as SoundId[]
 

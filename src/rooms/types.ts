@@ -16,8 +16,8 @@ export type SoundId =
   | 'brook' | 'cicadas'
   // la serre : le chœur de grenouilles du bassin, la boîte à musique, le tonneau d'eau de pluie
   | 'frogs' | 'musicbox' | 'rainbarrel'
-  // la laverie de nuit : le lave-linge, le sèche-linge (l'extracteur et le néon reprennent les sons de base)
-  | 'wash' | 'tumble'
+  // la laverie de nuit : le lave-linge, le sèche-linge, le rinçage, la gouttière
+  | 'wash' | 'tumble' | 'rinse' | 'gutter'
 /** Un objet interactif de la scène. */
 export type ObjectId =
   | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
@@ -27,7 +27,7 @@ export type ObjectId =
   | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'abacus' | 'drip'
   | 'icewindow' | 'icehole' | 'mitten' | 'thermos'
   | 'birdhouse' | 'hammock' | 'oak' | 'brook' | 'lemonade'
-  | 'washer' | 'dryer' | 'changer' | 'folding'
+  | 'washer' | 'dryer' | 'changer' | 'folding' | 'rinse' | 'gutter'
   | 'pond' | 'musicbox' | 'barrel'
 /** Ce qu'un objet pilote : un son, ou le passage jour / nuit. */
 export type Target = SoundId | 'night'

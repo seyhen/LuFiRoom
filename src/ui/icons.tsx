@@ -63,6 +63,8 @@ export const soundIcons: Record<SoundId, ReactNode> = {
   rainbarrel: svg(<><path d="M6.5 7c0-1.4 2.5-2.5 5.5-2.5s5.5 1.1 5.5 2.5v10c0 1.4-2.5 2.5-5.5 2.5S6.5 18.4 6.5 17z" /><path d="M6.5 10.5c0 1.4 2.5 2.5 5.5 2.5s5.5-1.1 5.5-2.5M6.5 14.5c0 1.4 2.5 2.5 5.5 2.5s5.5-1.1 5.5-2.5" /><path d="M12 1.5v3" /></>),
   cicadas: svg(<><path d="M12 6c-3 0-5 2-5 5v3c0 1.5 1 2.5 2.5 2.5h5c1.5 0 2.5-1 2.5-2.5v-3c0-3-2-5-5-5z" /><path d="M12 6V4M9 6 7 4.5M15 6l2-1.5" /><path d="M7 11 3.5 9.5M17 11l3.5-1.5" /><path d="M9.5 17.5 8 20M14.5 17.5 16 20" /></>),
   wash: svg(<><rect x="4.5" y="3" width="15" height="18" rx="2.6" /><path d="M4.5 7h15" /><circle cx="12" cy="14" r="4.3" /><path d="M9.3 15c1.2-.9 2.4-.9 3.6 0s1.9.7 2.6.2" /></>),
+  rinse: svg(<><rect x="4.5" y="3" width="15" height="18" rx="2.6" /><circle cx="12" cy="13" r="5" /><path d="M8.4 13c1-.9 2-.9 3 0s2 .9 3.2 0" /><circle cx="9.5" cy="10.8" r=".5" /><circle cx="13.5" cy="15.6" r=".5" /></>),
+  gutter: svg(<><path d="M8 2.5v11a2 2 0 0 0 2 2h4a2 2 0 0 1 2 2v1.5" /><path d="M5.5 2.5h5" /><path d="M14 19.5v1.8M17.5 18.8v2.5" /></>),
   tumble: svg(<><rect x="4.5" y="3" width="15" height="18" rx="2.6" /><circle cx="12" cy="13" r="5" /><path d="M10 11.5c1.4 1.4 2.6 1.4 4 0M10 14.5c1.4 1.4 2.6 1.4 4 0" /><circle cx="8" cy="5.5" r=".6" /></>),
 }
 
