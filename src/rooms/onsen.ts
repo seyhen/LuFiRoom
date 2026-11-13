@@ -45,8 +45,8 @@ export const onsen: Room = {
     sleep: { sounds: [['spring',.5], ['outside',.35]], night: true },
   },
   objects: [
-    { id: 'spring', target: 'spring', label: 'Source · eau chaude', anchor: [1.15, 1.45, -2.4] },
-    { id: 'bamboo', target: 'bamboo', label: 'Shishi-odoshi · bambou', anchor: [-1.1, 1.1, -2.35] },
+    { id: 'spring', target: 'spring', label: 'Source · eau chaude', anchor: [1.15, 1.1, -2.4] },
+    { id: 'bamboo', target: 'bamboo', label: 'Shishi-odoshi · bambou', anchor: [-1.1, 0.85, -2.35] },
     { id: 'furin', target: 'chimes', label: 'Furin · clochette', anchor: [-1.9, 2.6, 0.35] },
     { id: 'maple', target: 'outside', label: 'Érable · le jardin', anchor: [2.5, 3.0, -2.6] },
     { id: 'radio', target: 'radio', label: 'Shamisen · lofi', anchor: [-2.45, 0.85, 2.0] },
