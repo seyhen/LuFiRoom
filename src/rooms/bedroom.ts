@@ -35,7 +35,7 @@ export const bedroom: Room = {
   },
   stations: ['pluie-fine', 'nuit-douce', 'soleil-bas', 'petit-matin', 'veillee', 'bureau'],
   objects: [
-    { id: 'radio', target: 'radio', label: 'Radio · lofi', anchor: [2.3, 1.9, -2.58] },
+    { id: 'radio', target: 'radio', label: 'Radio · lofi', anchor: [2.3, 1.72, -2.58] },
     { id: 'window', target: 'outside', label: 'Fenêtre · dehors', anchor: [1.4, 3.35, -3.0] },
     { id: 'fan', target: 'fan', label: 'Ventilo · bruit blanc', anchor: [0.62, 1.74, -2.55] },
     { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-1.3, 1.18, -0.54] },
