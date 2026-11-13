@@ -45,6 +45,7 @@ export function Sea() {
     S.sea.color.copy(c)
     S.swell.opacity = 0.45 + st * 0.45 - n * 0.15
     S.foam.opacity = (reduceMotion ? 0.55 : 0.48 + 0.14 * Math.sin(clock.elapsedTime * 1.1)) * (1 - n * 0.3) + st * 0.1
+    S.foamFar.opacity = S.foam.opacity
   })
   return (
     <>

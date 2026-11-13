@@ -61,19 +61,26 @@ const strataTex = canvasTex(256, 256, (x) => {
     const h = 9 + r() * 20, c = cols[Math.floor(r() * cols.length)]
     x.fillStyle = `rgb(${c[0]},${c[1]},${c[2]})`; x.fillRect(0, y, 256, h + 1)
     // le joint plus sombre sous la strate, et le grain de la couche
-    x.fillStyle = 'rgba(70,74,92,.34)'; x.fillRect(0, y + h - 2.5, 256, 2.5)
+    x.fillStyle = 'rgba(70,74,92,.24)'; x.fillRect(0, y + h - 2.5, 256, 2.5)
     x.fillStyle = 'rgba(255,255,255,.1)'; x.fillRect(0, y, 256, 2)
     for (let i = 0; i < 40; i++) { x.fillStyle = `rgba(${r() < 0.5 ? '255,255,255' : '80,84,100'},${0.05 + r() * 0.07})`; x.fillRect(r() * 256, y + r() * h, 4 + r() * 14, 1.5) }
     y += h
   }
-  // fissures verticales : traits sombres qui coupent quelques strates, et se bifurquent un peu
+  // de larges nappes de teinte, pour que la répétition de la tuile ne se lise pas
+  for (let k = 0; k < 9; k++) {
+    const px = r() * 256, py = r() * 256, rad = 40 + r() * 50
+    const g = x.createRadialGradient(px, py, 0, px, py, rad)
+    g.addColorStop(0, r() < 0.5 ? 'rgba(255,248,235,.16)' : 'rgba(60,66,92,.14)'); g.addColorStop(1, 'rgba(0,0,0,0)')
+    x.fillStyle = g; x.fillRect(px - rad, py - rad, rad * 2, rad * 2)
+  }
+  // fissures : peu, courtes, de travers et fines, qui coupent une ou deux strates (de longues verticales faisaient des planches)
   x.lineCap = 'round'
-  for (let k = 0; k < 11; k++) {
-    let px = r() * 256, py = r() * 200
-    const len = 40 + r() * 90
-    x.strokeStyle = 'rgba(52,56,74,.55)'; x.lineWidth = 2 + r() * 1.5
+  for (let k = 0; k < 6; k++) {
+    let px = r() * 256, py = r() * 220
+    const len = 20 + r() * 40, lean = (r() - 0.5) * 6
+    x.strokeStyle = 'rgba(52,56,74,.34)'; x.lineWidth = 1.2 + r() * 1.2
     x.beginPath(); x.moveTo(px, py)
-    for (let s = 0; s < len; s += 10) { px += (r() - 0.5) * 5; py += 10; x.lineTo(px, py) }
+    for (let s = 0; s < len; s += 8) { px += lean + (r() - 0.5) * 5; py += 8; x.lineTo(px, py) }
     x.stroke()
   }
   // lichen (taches jaune-vert) et fientes de goélands (blanc crayeux, coulures)
@@ -82,11 +89,11 @@ const strataTex = canvasTex(256, 256, (x) => {
     x.fillStyle = `rgba(${150 + r() * 40},${170 + r() * 30},${90 + r() * 30},.55)`
     for (let i = 0; i < 6; i++) { x.beginPath(); x.arc(px + (r() - 0.5) * 16, py + (r() - 0.5) * 8, 2.5 + r() * 4, 0, 6.3); x.fill() }
   }
-  for (let k = 0; k < 9; k++) {
+  for (let k = 0; k < 5; k++) {
     const px = r() * 256, py = r() * 240
-    x.fillStyle = 'rgba(250,248,240,.8)'
-    x.beginPath(); x.ellipse(px, py, 4 + r() * 5, 3 + r() * 2, 0, 0, 6.3); x.fill()
-    x.fillRect(px - 1, py, 2, 6 + r() * 10)
+    x.fillStyle = 'rgba(250,248,240,.6)'
+    x.beginPath(); x.ellipse(px, py, 3 + r() * 4, 2 + r() * 2, 0, 0, 6.3); x.fill()
+    x.fillRect(px - 1, py, 1.5, 4 + r() * 8)
   }
 }, [1, 1])
 
@@ -105,6 +112,8 @@ export const S = {
   sea: skyFade(far(0x3e7f96, { roughness: 0.2, clearcoat: 0.8, clearcoatRoughness: 0.2 }), F),
   swell: skyFade(new MeshBasicMaterial({ map: swellTex, transparent: true, opacity: 0.7, depthWrite: false }), F),
   foam: skyFade(new MeshBasicMaterial({ map: foamTex, transparent: true, opacity: 0.9, depthWrite: false, side: DoubleSide }), F),
+  /** L'écume des falaises du fond : même matière, fondu large (sinon elle s'efface à 12,5 et la falaise semble flotter). */
+  foamFar: skyFade(new MeshBasicMaterial({ map: foamTex, transparent: true, opacity: 0.9, depthWrite: false, side: DoubleSide }), F2),
   rock: [out(cliff(0x6f7a8a)), out(cliff(0x5c6676)), out(cliff(0x7b8494))],
   weed: out(farMoss(0x4f7a5c)),
   wet: out(far(0x3f4856, { roughness: 0.4, clearcoat: 0.6 })),

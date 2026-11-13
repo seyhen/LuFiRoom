@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Shape, ShapeGeometry } from 'three'
 import { Static } from '../../Static'
 import { Part, SPH, cyl, noRay, rbox, type V3 } from '../../parts'
@@ -11,9 +11,10 @@ import { SEA, ringGeo } from './Sea'
 
 /** Une falaise : une base large, un second étage plus étroit et décalé, un dessus d'herbe rase, un éboulis dans l'eau. */
 /** L'écume au pied d'une falaise : sans elle la roche se fond dans la brume et semble flotter au-dessus de l'eau. */
-function CliffFoam({ p, w, i }: { p: [number, number]; w: number; i: number }) {
+function CliffFoam({ p, w, i, far }: { p: [number, number]; w: number; i: number; far: boolean }) {
   const g = useMemo(() => ringGeo(w * 0.8, 0.3 + w * 0.12, i * 2.3 + 1), [w, i])
-  return <mesh geometry={g} position={[p[0], SEA + 0.02, p[1]]} material={S.foam} renderOrder={3} raycast={noRay} />
+  useEffect(() => () => g.dispose(), [g])
+  return <mesh geometry={g} position={[p[0], SEA + 0.02, p[1]]} material={far ? S.foamFar : S.foam} renderOrder={3} raycast={noRay} />
 }
 
 function Cliff({ p, w, h, ry = 0, v = 0, far = false }: { p: [number, number]; w: number; h: number; ry?: number; v?: number; far?: boolean }) {
@@ -73,7 +74,7 @@ export function Headlands() {
         {FAR_CLIFFS.map(([x, z, w, h, ry, v], i) => <Cliff key={`f${i}`} p={[x, z]} w={w} h={h} ry={ry} v={v} far />)}
         <Sailboat p={[-7.6, SEA + 0.02, 1.4]} ry={0.5} />
       </Static>
-      {[...CLIFFS, ...FAR_CLIFFS].map(([x, z, w], i) => <CliffFoam key={i} p={[x, z]} w={w} i={i} />)}
+      {[...CLIFFS, ...FAR_CLIFFS].map(([x, z, w], i) => <CliffFoam key={i} p={[x, z]} w={w} i={i} far={i >= CLIFFS.length} />)}
     </>
   )
 }
