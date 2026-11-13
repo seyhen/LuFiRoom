@@ -39,23 +39,24 @@ export function Furin() {
       {/* deux fois la taille d'origine : on doit lire la cloche de verre, son battant et sa bande de papier sous l'avant-toit */}
       <group ref={swing} userData={LIVE} scale={2} position={[0, -0.06, 0]}>
         <Static>
-          <Part geo={cyl(0.005, 0.005, 0.18, 5)} m={O.ink} p={[0, -0.09, 0]} castShadow={false} />
+          <Part geo={cyl(0.005, 0.005, 0.15, 5)} m={O.ink} p={[0, -0.075, 0]} castShadow={false} />
           {/* la calotte de fer qui coiffe la cloche, et le bouton rouge */}
-          <Part geo={cyl(0.018, 0.03, 0.026, 10)} m={O.iron} p={[0, -0.19, 0]} castShadow={false} />
-          <Part geo={SPH} m={O.red} scale={[0.02, 0.012, 0.02]} p={[0, -0.204, 0]} castShadow={false} />
+          <Part geo={cyl(0.018, 0.03, 0.026, 10)} m={O.iron} p={[0, -0.163, 0]} castShadow={false} />
+          <Part geo={SPH} m={O.red} scale={[0.02, 0.012, 0.02]} p={[0, -0.178, 0]} castShadow={false} />
           {/* le bord peint en rouge et deux poissons rouges sur le verre */}
           <Part m={O.red} p={[0, -0.275, 0]} rotation-x={Math.PI / 2} castShadow={false}>
             <torusGeometry args={[0.083, 0.006, 6, 24]} />
           </Part>
           {[0.6, 2.4].map((a, i) => (
-            <Part key={i} geo={SPH} m={O.red} scale={[0.02, 0.012, 0.007]} p={[Math.cos(a) * 0.069, -0.225, Math.sin(a) * 0.069]} rotation-y={-a + Math.PI / 2} castShadow={false} />
+            <Part key={i} geo={SPH} m={O.red} scale={[0.02, 0.012, 0.007]} p={[Math.cos(a) * 0.068, -0.212, Math.sin(a) * 0.068]} rotation-y={-a + Math.PI / 2} castShadow={false} />
           ))}
           {/* le battant de métal, au bout de son fil, et le fil qui descend jusqu'à la bande */}
-          <Part geo={cyl(0.002, 0.002, 0.07, 4)} m={O.ink} p={[0, -0.222, 0]} castShadow={false} />
+          <Part geo={cyl(0.002, 0.002, 0.1, 4)} m={O.ink} p={[0, -0.215, 0]} castShadow={false} />
           <Part geo={SPH} m={O.iron} scale={0.013} p={[0, -0.262, 0]} castShadow={false} />
           <Part geo={cyl(0.003, 0.003, 0.15, 4)} m={O.ink} p={[0, -0.345, 0]} castShadow={false} />
         </Static>
-        <Part geo={bell} m={O.furin} p={[0, -0.275, 0]} />
+        {/* la cloche : un dôme de verre un peu haut, pour qu'on ne la prenne pas pour un couvercle */}
+        <Part geo={bell} m={O.furin} p={[0, -0.275, 0]} scale={[1, 1.3, 1]} />
         {/* la bande de papier (tanzaku) : crème, bandeau rose en bas, trait d'encre */}
         <group ref={strip} userData={LIVE} position={[0, -0.42, 0]}>
           <Static>

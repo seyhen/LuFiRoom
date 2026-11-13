@@ -59,7 +59,7 @@ function Book() {
     page.current.rotation.z = 0.075 + (ph < 1 ? Math.sin(ph * Math.PI) * 2.55 : 0)
   })
   return (
-    <group ref={g} userData={{ id: 'book' }} position={[X, BOOK_Y, -1.15]} rotation-y={0.5}>
+    <group ref={g} userData={{ id: 'book' }} position={[X + 0.08, BOOK_Y, -1.68]} rotation-y={0.25}>
       <Static>
         {/* les deux moitiés : couverture, bloc de pages, texte ; elles remontent vers l'extérieur, le dos est au creux */}
         {[-1, 1].map((s) => (
@@ -73,10 +73,10 @@ function Book() {
         ))}
         <Part geo={cyl(0.02, 0.02, 0.42, 10)} m={T.velvet} p={[0, 0.006, 0]} rotation-x={Math.PI / 2} />
         {/* les lunettes de lecture, branches repliées, posées à côté : deux verres cerclés d'or et le pont */}
-        <group position={[0.02, -0.005, 0.4]} rotation-y={-0.25}>
+        <group position={[0.02, -0.003, 0.4]} rotation-y={-0.25}>
           {[-1, 1].map((s) => (
             <Part key={s} m={T.gold} p={[s * 0.062, 0, 0]} rotation-x={Math.PI / 2} castShadow={false}>
-              <torusGeometry args={[0.048, 0.006, 6, 20]} />
+              <torusGeometry args={[0.046, 0.008, 6, 20]} />
             </Part>
           ))}
           <Part geo={cyl(0.005, 0.005, 0.03, 6)} m={T.gold} rotation-z={Math.PI / 2} castShadow={false} />

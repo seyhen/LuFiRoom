@@ -47,7 +47,7 @@ export const train: Room = {
     { id: 'window', target: 'rails', label: 'Fenêtre · le train', anchor: [0.9, 2.4, -3.0] },
     { id: 'radio', target: 'radio', label: 'Gramophone · lofi', anchor: [-2.55, 1.1, 1.5] },
     { id: 'tea', target: 'tea', label: 'Verre de thé · cuillère', anchor: [0.8, 1.2, -2.6] },
-    { id: 'book', target: 'pages', label: 'Livre · pages', anchor: [-2.5, 0.8, -1.15] },
+    { id: 'book', target: 'pages', label: 'Livre · pages', anchor: [-2.42, 0.8, -1.68] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-0.05, 1.6, -2.68] },
     { id: 'cards', target: 'cards', label: 'Réussite · les cartes', anchor: [2.6, 0.78, 1.05] },
   ],
