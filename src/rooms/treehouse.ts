@@ -52,12 +52,12 @@ export const treehouse: Room = {
     sleep: { sounds: [['wind', 0.35], ['brook', 0.35], ['cicadas', 0.25]], night: true },
   },
   objects: [
-    { id: 'radio', target: 'radio', label: 'Banjo · lofi', anchor: [-1.1, 0.5, -2.1] },
+    { id: 'radio', target: 'radio', label: 'Banjo · lofi', anchor: [-0.85, 0.7, -2.5] },
     { id: 'birdhouse', target: 'outside', label: 'Nichoir · les oiseaux', anchor: [-2.34, 2.3, 1.9] },
     { id: 'hammock', target: 'cicadas', label: 'Hamac · les cigales', anchor: [-2.36, 0.69, -0.06] },
     { id: 'lamp', target: 'night', label: 'Lanternes en bocal · jour / nuit', anchor: [1.15, 2.3, -1.42] },
     { id: 'oak', target: 'wind', label: 'Le chêne · le vent dans les feuilles', anchor: [2.0, 4.7, -2.9] },
-    { id: 'brook', target: 'brook', label: 'Ruisseau · l’eau en contrebas', anchor: [-2.6, -2.4, -7.9] },
+    { id: 'brook', target: 'brook', label: 'Ruisseau · l’eau en contrebas', anchor: [-2.0, -2.5, -7.8] },
   ],
   sounds: [
     { id: 'radio', name: 'Banjo lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
