@@ -87,7 +87,7 @@ function Book() {
       </Static>
       {/* la page qui se tourne : elle pivote sur le dos du livre */}
       <group ref={page} userData={LIVE} position={[0, 0.047, 0]} rotation-z={0.075}>
-        <Part geo={rbox(0.27, 0.004, 0.37, 0.002)} m={T.cream} p={[0.14, 0.004, 0]} castShadow={false} />
+        <Part geo={rbox(0.27, 0.004, 0.37, 0.002)} m={T.pageText} p={[0.14, 0.004, 0]} castShadow={false} />
       </group>
     </group>
   )
