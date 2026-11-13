@@ -45,9 +45,9 @@ const D = {
   sand: skyFade(farStone(0xe3cdae, { roughness: 0.9 }), F),
   wet: skyFade(farStone(0xb3a590, { roughness: 0.8 }), F),
   trunk: skyFade(farStone(0x8a6a4c, { roughness: 0.9 }), F),
-  frond: skyFade(farFoliage(0x4f9a6c, { roughness: 0.8 }), F),
+  frond: skyFade(farFoliage(0x62b080, { roughness: 0.8 }), F),
   foam: skyFade(new MeshBasicMaterial({ map: foamTex, transparent: true, opacity: 0.8, depthWrite: false, side: DoubleSide }), F),
-  green: [0x5f9e72, 0x72ad7c].map((c) => skyFade(farFoliage(c, { roughness: 0.9 }), F)),
+  green: [0x72b584, 0x86c48f].map((c) => skyFade(farFoliage(c, { roughness: 0.9 }), F)),
 }
 
 /** Les îlots : [x, z, demi-largeur, hauteur]. À gauche (-x) et au fond droit (-z), à 11 à 15 du centre. */
