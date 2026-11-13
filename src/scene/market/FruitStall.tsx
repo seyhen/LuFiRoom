@@ -15,7 +15,7 @@ const fruit = gummy(0xffffff, { roughness: 0.35, clearcoat: 0.8 })
 const bead = gummy(0xffffff, { roughness: 0.4, clearcoat: 0.7 })
 // le soroban : sept tiges verticales, une boule du ciel (5) au-dessus de la barre et quatre boules de terre (1) dessous
 const RODS = 7, BEADS = 5
-const ROD_X = (r: number) => (r - 3) * 0.065
+const ROD_X = (r: number) => (r - 3) * 0.06
 const BEAM = 0.04 // hauteur de la barre de compte
 const STEP = 0.0235 // l'écart entre deux boules
 const HEAVEN = { rest: 0.117, active: 0.063 }
@@ -25,7 +25,7 @@ const colorOf = (i: number) => (i === 0 ? 0xd6334f : 0xf0e2bc)
 
 // les fruits : mandarines (aplaties, une feuille), pommes rouges (une fossette et une queue), poires (un ventre, un col, une queue),
 // dans deux cagettes. Chaque sorte a sa silhouette : on les reconnaît sans lire la couleur.
-const CRATES = [0.24, 0.48]
+const CRATES = [0.12, 0.35]
 const KINDS = ['mandarin', 'apple', 'mandarin', 'pear'] as const
 const SLOTS = CRATES.flatMap((x0, crate) =>
   Array.from({ length: 8 }, (_, i) => ({ x: x0 + ((i % 2) - 0.5) * 0.09, y: STALL.top + 0.1 + (i % 3) * 0.004, z: -0.105 + (i >> 1) * 0.07, kind: KINDS[(i + crate * 2) % 4], i })),
@@ -70,7 +70,7 @@ export function FruitStall() {
           ? HEAVEN.rest + (HEAVEN.active - HEAVEN.rest) * h
           : EARTH_REST - (i - 1) * STEP + (EARTH_ACTIVE - EARTH_REST) * smooth(clamp(e - (i - 1), 0, 1))
         d.position.set(ROD_X(r), y, 0)
-        d.scale.set(0.026, 0.0125, 0.026)
+        d.scale.set(0.0235, 0.0125, 0.0235)
         d.updateMatrix()
         beads.current.setMatrixAt(r * BEADS + i, d.matrix)
       }
@@ -81,11 +81,11 @@ export function FruitStall() {
     <group ref={g} userData={{ id: 'abacus' }} position={[STALL.x, 0, STALL.z]} rotation-y={0.25}>
       <Static>
         {/* le comptoir : un plateau de bois, quatre pieds, une étagère basse */}
-        <Part geo={rbox(1.1, 0.05, 0.5, 0.02)} m={K.wood} p={[0.075, STALL.top - 0.025, 0]} />
-        {[[-0.385, -0.2], [0.535, -0.2], [-0.385, 0.2], [0.535, 0.2]].map(([x, z]) => (
+        <Part geo={rbox(1.035, 0.05, 0.5, 0.02)} m={K.wood} p={[-0.0425, STALL.top - 0.025, 0]} />
+        {[[-0.485, -0.2], [0.395, -0.2], [-0.485, 0.2], [0.395, 0.2]].map(([x, z]) => (
           <Part key={`${x}${z}`} geo={rbox(0.05, STALL.top - 0.05, 0.05, 0.015)} m={K.woodDark} p={[x, (STALL.top - 0.05) / 2, z]} />
         ))}
-        <Part geo={rbox(1.0, 0.03, 0.42, 0.012)} m={K.woodDark} p={[0.075, 0.2, 0]} castShadow={false} />
+        <Part geo={rbox(0.935, 0.03, 0.42, 0.012)} m={K.woodDark} p={[-0.0425, 0.2, 0]} castShadow={false} />
         {/* deux cagettes de bois clair, sur la moitié droite */}
         {CRATES.map((x, i) => (
           <group key={i} position={[x, STALL.top, 0.0]}>
@@ -94,16 +94,16 @@ export function FruitStall() {
           </group>
         ))}
         {/* le soroban : un cadre de bois sombre, un fond, une barre claire à trois points de laiton, des tiges de laiton ; il repose dans une lisse */}
-        <Part geo={rbox(0.57, 0.04, 0.04, 0.012)} m={K.woodDark} p={[-0.19, STALL.top + 0.02, 0.025]} />
-        <group position={[-0.19, STALL.top + 0.175, -0.05]} rotation-x={-0.2}>
+        <Part geo={rbox(0.55, 0.04, 0.04, 0.012)} m={K.woodDark} p={[-0.27, STALL.top + 0.02, 0.025]} />
+        <group position={[-0.27, STALL.top + 0.175, -0.05]} rotation-x={-0.2}>
           {[-1, 1].map((s) => (
-            <Part key={s} geo={rbox(0.04, 0.34, 0.05, 0.014)} m={K.woodDark} p={[s * 0.265, 0, 0]} />
+            <Part key={s} geo={rbox(0.04, 0.34, 0.05, 0.014)} m={K.woodDark} p={[s * 0.25, 0, 0]} />
           ))}
           {[-1, 1].map((s) => (
-            <Part key={s} geo={rbox(0.57, 0.04, 0.05, 0.014)} m={K.woodDark} p={[0, s * 0.15, 0]} />
+            <Part key={s} geo={rbox(0.54, 0.04, 0.05, 0.014)} m={K.woodDark} p={[0, s * 0.15, 0]} />
           ))}
-          <Part geo={rbox(0.5, 0.27, 0.012, 0.004)} m={K.woodDark} p={[0, 0, -0.014]} castShadow={false} />
-          <Part geo={rbox(0.5, 0.022, 0.032, 0.006)} m={K.woodPale} p={[0, BEAM, 0]} />
+          <Part geo={rbox(0.47, 0.27, 0.012, 0.004)} m={K.woodDark} p={[0, 0, -0.014]} castShadow={false} />
+          <Part geo={rbox(0.47, 0.022, 0.032, 0.006)} m={K.woodPale} p={[0, BEAM, 0]} />
           {[-3, 0, 3].map((r) => (
             <Part key={r} geo={SPH} m={K.brass} scale={0.0065} p={[ROD_X(r + 3), BEAM, 0.0165]} castShadow={false} />
           ))}
@@ -112,7 +112,7 @@ export function FruitStall() {
           ))}
         </group>
         {/* le carnet de comptes, ouvert devant, et le pinceau qui y est posé */}
-        <group position={[-0.19, STALL.top, 0.155]} rotation-y={0.15}>
+        <group position={[-0.27, STALL.top, 0.155]} rotation-y={0.15}>
           <Part geo={rbox(0.22, 0.016, 0.15, 0.006)} m={K.woodDark} p={[0, 0.008, 0]} />
           <Part geo={rbox(0.095, 0.01, 0.13, 0.003)} m={K.woodPale} p={[-0.051, 0.019, 0]} />
           <Part geo={rbox(0.095, 0.01, 0.13, 0.003)} m={K.woodPale} p={[0.051, 0.019, 0]} />
@@ -126,7 +126,7 @@ export function FruitStall() {
       {/* les fruits des cagettes, en un seul tracé */}
       <Batch geo={SPH} m={fruit} items={DETAILS} />
       {/* les boules du soroban : un seul tracé, repositionnées à chaque image */}
-      <group position={[-0.19, STALL.top + 0.175, -0.05]} rotation-x={-0.2}>
+      <group position={[-0.27, STALL.top + 0.175, -0.05]} rotation-x={-0.2}>
         <instancedMesh ref={beads} args={[SPH_MID, bead, RODS * BEADS]} raycast={noRay} castShadow />
       </group>
     </group>

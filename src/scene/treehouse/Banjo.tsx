@@ -67,15 +67,16 @@ const NECK = 0.62
 /** Le banjo est à l'échelle de la cabane (un peu plus grand que nature, pour se lire de loin). */
 const BANJO_S = 1.35
 const STR_Y = 0.136 // les cordes passent au-dessus du chevalet et de la touche
-// la sangle va du talon du manche (point d'attache, côté +z du banjo) jusqu'au bord avant du couvercle
-const HEEL = POT.r + 0.06
-const HEEL_Z_WORLD = BANJO.z + BANJO_S * (-HEEL * Math.sin(BANJO.ry) + 0.047 * Math.cos(BANJO.ry))
-const STRAP_LEN = Math.max(0.05, (CHEST.z + (CHEST.d + 0.05) / 2 - 0.012 - HEEL_Z_WORLD) / (BANJO_S * Math.cos(BANJO.ry)))
+// la sangle tissée : accrochée à un bouton de chrome du résonateur (côté talon), elle sort sur le couvercle et pend sur le devant de la malle
+const STRAP_A = 0.8 // l'angle (depuis +x vers +z) du bouton sur le résonateur
+const STRAP_BX = Math.cos(STRAP_A) * (POT.r + 0.026), STRAP_BZ = Math.sin(STRAP_A) * (POT.r + 0.026)
+const STRAP_Z0 = BANJO.z + BANJO_S * (-STRAP_BX * Math.sin(BANJO.ry) + STRAP_BZ * Math.cos(BANJO.ry)) // z du bouton dans la scène
+const STRAP_LEN = Math.max(0.03, (CHEST.z + (CHEST.d + 0.05) / 2 + 0.012 - STRAP_Z0) / (BANJO_S * Math.cos(BANJO.ry)) - 0.022) // jusqu'au bord avant du couvercle, un peu au-delà
 
 /**
  * Le banjo, couché sur la malle : c'est l'objet « radio » de la cabane. Le fût d'érable, la peau claire et sa couronne de tirants de
  * chrome, le résonateur de noyer dessous ; le manche et sa touche sombre, ses frettes, la tête et ses quatre clés, la cinquième clé sur
- * le côté du manche ; le chevalet, le cordier, cinq cordes. Quand la musique joue : il rebondit sur le temps, les cordes s'allument et
+ * le côté du manche ; le chevalet, le cordier, cinq cordes, un capo de chrome, une sangle tissée posée à plat, la peau usée sous la main. Quand la musique joue : il rebondit sur le temps, les cordes s'allument et
  * vibrent, des notes s'envolent.
  */
 export function Banjo({ position, ry = 0 }: { position: V3; ry?: number }) {
@@ -147,13 +148,13 @@ export function Banjo({ position, ry = 0 }: { position: V3; ry?: number }) {
             ))}
             <Part geo={SPH} m={T.iron} scale={[0.009, 0.009, 0.009]} p={[0, STR_Y + 0.028, 0]} castShadow={false} />
           </group>
-          {/* la sangle de cuir : attachée au talon du manche, elle descend sur le couvercle et pend sur le devant de la malle */}
-          <Part geo={cyl(0.009, 0.009, 0.02, 8)} m={T.chrome} p={[POT.r + 0.06, 0.05 + POT.h - 0.01, 0.034]} rotation-x={Math.PI / 2} castShadow={false} />
-          <Part geo={cyl(0.009, 0.009, 0.02, 8)} m={T.chrome} p={[-POT.r - 0.026, 0.07, 0]} rotation-z={Math.PI / 2} castShadow={false} />
-          <Part geo={rb(0.032, 0.1, 0.006, 0.002)} m={T.leather} p={[POT.r + 0.06, 0.05 + POT.h - 0.06, 0.047]} castShadow={false} />
-          <Part geo={rb(0.032, 0.006, STRAP_LEN, 0.002)} m={T.leather} p={[POT.r + 0.06, 0.004, 0.047 + STRAP_LEN / 2 - 0.003]} castShadow={false} />
-          <Part geo={rb(0.032, 0.13, 0.006, 0.002)} m={T.leather} p={[POT.r + 0.06, -0.06, 0.047 + STRAP_LEN]} castShadow={false} />
-          <Part geo={rb(0.034, 0.014, 0.01, 0.003)} m={T.brass} p={[POT.r + 0.06, -0.09, 0.047 + STRAP_LEN + 0.003]} castShadow={false} />
+          {/* la sangle tissée : accrochée à deux boutons de chrome du résonateur, elle sort sur le couvercle et pend sur le devant de la malle, sa boucle de laiton au bout */}
+          <Part geo={cyl(0.009, 0.009, 0.022, 8)} m={T.chrome} p={[-POT.r - 0.026, 0.03, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+          <Part geo={cyl(0.009, 0.009, 0.022, 8)} m={T.chrome} p={[STRAP_BX, 0.03, STRAP_BZ]} rotation-y={-STRAP_A} rotation-z={Math.PI / 2} castShadow={false} />
+          <Part geo={rb(0.034, 0.03, 0.007, 0.002)} m={T.cushion3} p={[STRAP_BX + 0.012, 0.0165, STRAP_BZ + 0.012]} rotation-y={-STRAP_A + 0.3} castShadow={false} />
+          <Part geo={rb(0.034, 0.006, STRAP_LEN + 0.02, 0.002)} m={T.cushion3} p={[STRAP_BX + 0.02, 0.005, STRAP_BZ + 0.012 + STRAP_LEN / 2]} castShadow={false} />
+          <Part geo={rb(0.034, 0.16, 0.007, 0.002)} m={T.cushion3} p={[STRAP_BX + 0.02, -0.07, STRAP_BZ + 0.012 + STRAP_LEN + 0.01]} castShadow={false} />
+          <Part geo={rb(0.04, 0.016, 0.01, 0.003)} m={T.brass} p={[STRAP_BX + 0.02, -0.1, STRAP_BZ + 0.012 + STRAP_LEN + 0.012]} castShadow={false} />
           {/* le chevalet, le cordier */}
           <Part geo={rb(0.014, 0.022, 0.07, 0.004)} m={T.maple} p={[-0.03, 0.05 + POT.h + 0.014, 0]} castShadow={false} />
           <Part geo={rb(0.11, 0.012, 0.045, 0.005)} m={T.chrome} p={[-0.12, 0.05 + POT.h + 0.012, 0]} castShadow={false} />

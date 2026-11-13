@@ -17,7 +17,7 @@ const BTN_ROWS: [number, number[]][] = [[0.075, [-0.09, -0.045, 0, 0.045, 0.09]]
  * Un concertina de marin posé sur le coffre, dans le sens de la crête du couvercle : deux plateaux hexagonaux d'ébène cerclés de
  * laiton, quinze boutons (laiton et nacre) sur chaque face, un soufflet rouge aux plis crème, ses garde-coins de laiton, une courroie
  * de cuir bouclée autour, un pli remplacé par un tissu moutarde (il a servi). Joué, il s'ouvre et se referme ; il pulse à chaque kick
- * et lâche des notes. À côté, sur le couvercle : une feuille de chants de marin et l'harmonica du gardien. C'est l'objet « radio ».
+ * et lâche des notes. Devant le coffre, par terre : une feuille de chants de marin et l'harmonica du gardien. C'est l'objet « radio ».
  */
 export function Concertina({ position }: { position: V3 }) {
   const bellows = useRef<Group>(null!), right = useRef<Group>(null!), left = useRef<Group>(null!)
@@ -27,7 +27,7 @@ export function Concertina({ position }: { position: V3 }) {
     right.current.position.x = HALF * s
     left.current.position.x = -HALF * s
   })
-  const [px, py, pz] = position
+  const [px, , pz] = position
   return (
     <>
       <group ref={g} userData={{ id: 'radio' }} position={position} rotation-y={-1.5}>
@@ -74,8 +74,8 @@ export function Concertina({ position }: { position: V3 }) {
         </group>
       </group>
       <group ref={notes.group} />
-      {/* sur le couvercle, vers l'avant : une feuille de chants, et l'harmonica posé dessus (usé, le laiton est terni) */}
-      <group position={[px, py + 0.0065, pz + 0.45]} scale={1.25}>
+      {/* par terre devant le coffre : une feuille de chants et l'harmonica du gardien posé dessus (usé, son laiton est terni) */}
+      <group position={[px - 0.05, 0.004, pz + 0.93]} scale={1.55}>
         <Static>
           <Part geo={rbox(0.13, 0.006, 0.17, 0.002)} m={L.paper} p={[0, 0.006, 0]} rotation-y={0.3} castShadow={false} />
           {[-0.05, -0.025, 0, 0.025, 0.05].map((z) => (

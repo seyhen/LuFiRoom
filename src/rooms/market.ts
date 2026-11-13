@@ -51,7 +51,7 @@ export const market: Room = {
     { id: 'pot', target: 'simmer', label: 'Marmite · bouillon', anchor: [1.42, 1.28, -0.85] },
     { id: 'lamp', target: 'night', label: 'Lanterne · jour / nuit', anchor: [1.4, 2.36, -0.73] },
     { id: 'radio', target: 'radio', label: 'Télé · lofi', anchor: [-2.3, 0.95, 2.75] },
-    { id: 'abacus', target: 'abacus', label: 'Boulier · les comptes', anchor: [0.9, 0.85, 2.0] },
+    { id: 'abacus', target: 'abacus', label: 'Boulier · les comptes', anchor: [0.83, 0.85, 2.02] },
   ],
   sounds: [
     { id: 'radio', name: 'Télé lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },

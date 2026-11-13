@@ -80,27 +80,27 @@ export function Conch() {
         <Part geo={SPH} m={S.leather} scale={[0.26, 0.04, 0.23]} p={[0, CONCH.top + 0.005, 0]} castShadow={false} />
         {/* la plaque de laiton sur le fût, tournée vers la pièce, et ses quatre rivets */}
         <group position={[0, 0.4, 0]} rotation-y={Math.PI / 4}>
-          <Part geo={rbox(0.15, 0.085, 0.012, 0.004)} m={S.brass} p={[0, 0, 0.178]} castShadow={false} />
-          <Part geo={rbox(0.12, 0.05, 0.004, 0.002)} m={S.band} p={[0, 0, 0.186]} castShadow={false} />
+          <Part geo={rbox(0.15, 0.085, 0.012, 0.004)} m={S.band} p={[0, 0, 0.178]} />
+          <Part geo={rbox(0.12, 0.05, 0.004, 0.002)} m={S.hullDark} p={[0, 0, 0.186]} />
           {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([a, b]) => (
-            <Part key={`${a}${b}`} geo={SPH} m={S.brassDull} scale={0.006} p={[a * 0.066, b * 0.034, 0.185]} castShadow={false} />
+            <Part key={`${a}${b}`} geo={SPH} m={S.band} scale={0.006} p={[a * 0.066, b * 0.034, 0.185]} />
           ))}
         </group>
         {/* sur la base, devant : une étoile de mer orange, un cauris et un petit escargot de mer, ramassés sur la plage */}
-        <group position={[0.19, 0.082, 0.163]} rotation-y={0.5}>
+        <group position={[0.175, 0.082, 0.148]} rotation-y={0.5}>
           {Array.from({ length: 5 }, (_, i) => {
             const a = (i / 5) * Math.PI * 2
-            return <Part key={i} geo={SPH} m={S.fish} scale={[0.05, 0.013, 0.017]} p={[Math.cos(a) * 0.032, 0.006, Math.sin(a) * 0.032]} rotation-y={-a} castShadow={false} />
+            return <Part key={i} geo={SPH} m={S.fish} scale={[0.065, 0.016, 0.022]} p={[Math.cos(a) * 0.04, 0.007, Math.sin(a) * 0.04]} rotation-y={-a} castShadow={false} />
           })}
           <Part geo={SPH} m={S.fish} scale={[0.03, 0.016, 0.03]} p={[0, 0.01, 0]} castShadow={false} />
         </group>
         <group position={[-0.1, 0.09, 0.26]} rotation-y={-0.4}>
-          <Part geo={SPH} m={S.cream} scale={[0.04, 0.026, 0.028]} castShadow={false} />
-          <Part geo={rbox(0.05, 0.004, 0.005, 0.002)} m={S.leatherDark} p={[0, 0.021, 0]} castShadow={false} />
+          <Part geo={SPH} m={S.fish} scale={[0.04, 0.026, 0.028]} castShadow={false} />
+          <Part geo={rbox(0.05, 0.004, 0.005, 0.002)} m={S.fish} p={[0, 0.021, 0]} castShadow={false} />
         </group>
         <group position={[0.2, 0.088, -0.15]} rotation-y={1.2}>
-          <Part geo={SPH} m={S.pearl} scale={[0.036, 0.03, 0.036]} castShadow={false} />
-          <Part geo={SPH} m={S.pearlLip} scale={[0.02, 0.02, 0.02]} p={[0.012, 0.03, 0]} castShadow={false} />
+          <Part geo={SPH} m={S.fish} scale={[0.036, 0.03, 0.036]} castShadow={false} />
+          <Part geo={SPH} m={S.fish} scale={[0.02, 0.02, 0.02]} p={[0.012, 0.03, 0]} castShadow={false} />
         </group>
         {/* la conque, couchée : la spire à gauche, la bouche vers la pièce */}
         <group position={[0, CONCH.top - 0.005, 0]} rotation-y={0.6} scale={SC}>
