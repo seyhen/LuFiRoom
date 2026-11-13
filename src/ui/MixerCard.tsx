@@ -3,7 +3,9 @@ import { useStore } from '../state/store'
 import { useT } from '../i18n'
 import type { RoomSound } from '../rooms/types'
 import { SKY_NAMES } from '../state/weather'
+import { NOISE_SUBS } from '../state/noise'
 import { skyIcons, soundIcons, vinylIcon } from './icons'
+import { NoiseControls } from './NoiseControls'
 
 /** Un son : pastille, nom, sous-titre vivant (le bouton bascule) et curseur de volume, avec un bouton en plus si `extra`. */
 export function MixerCard({ sound, extra }: { sound: RoomSound; extra?: ReactNode }) {
@@ -13,9 +15,11 @@ export function MixerCard({ sound, extra }: { sound: RoomSound; extra?: ReactNod
   const sub = useStore((s) => sound.sub(s))
   // La carte « Météo » dit le temps qu'il fait, puis d'où on l'entend (« neige · contre les rondins »).
   const weather = useStore((s) => (sound.id === 'rain' ? s.weather : null))
-  const line = weather ? `${t(SKY_NAMES[weather])} · ${t(sub)}` : t(sub)
+  // La carte « Bruit » dit la couleur choisie.
+  const noise = useStore((s) => (sound.id === 'noise' ? s.noise.color : null))
+  const line = weather ? `${t(SKY_NAMES[weather])} · ${t(sub)}` : noise ? t(NOISE_SUBS[noise]) : t(sub)
   return (
-    <div className={on ? 'card on' : 'card'}>
+    <div className={`card${on ? ' on' : ''}${sound.id === 'noise' ? ' noise' : ''}`}>
       <button className="tg" type="button" aria-pressed={on} onClick={() => useStore.getState().toggle(sound.id)}>
         <span className="ico" style={{ '--chip': sound.chip } as CSSProperties}>
           {sound.icon === 'vinyl' ? vinylIcon : weather ? skyIcons[weather] : soundIcons[sound.id]}
@@ -41,6 +45,7 @@ export function MixerCard({ sound, extra }: { sound: RoomSound; extra?: ReactNod
         />
         {extra}
       </div>
+      {sound.id === 'noise' && <NoiseControls />}
     </div>
   )
 }

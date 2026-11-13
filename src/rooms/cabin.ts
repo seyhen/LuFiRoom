@@ -59,5 +59,6 @@ export const cabin: Room = {
     { id: 'knit', name: 'Tricot', chip: 'var(--c-knit)', volume: 0.45, sub: () => 'les aiguilles de bois' },
     { id: 'purr', name: 'Ronron', chip: 'var(--c-cat)', volume: 0.7, sub: () => 'près du feu' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'contre les rondins' },
+    { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
   ],
 }

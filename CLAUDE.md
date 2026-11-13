@@ -13,6 +13,7 @@ Nom : « LufiRoom » (le dossier et les clés de stockage gardent « chambre-lof
 - `docs/ROOMS.md` : comment est faite une pièce, les outils de décor, le budget de dessin. À lire avant d'ajouter ou de refaire une pièce.
 - `docs/RADIO.md` : les stations de la radio générative.
 - `docs/WEATHER.md` : la météo (sélecteur, son, ce qu'on voit dehors).
+- `docs/NOISE.md` : la carte « Bruit » (blanc, rose, brun, vert ; worklet, tonalité, niveaux).
 - `docs/captures/` : captures du prototype, jour et nuit, mobile et desktop.
 
 ## Stack cible
@@ -34,6 +35,7 @@ src/
   state/store.ts            # Zustand : on/off et volume par son, mode nuit, pièce, minuteur, ambiances
   i18n.ts                   # langue (fr / en), dictionnaire des traductions, `tr` et `useT`
   state/mixes.ts            # ambiances : modèle, stockage, lien de partage (voir docs/MIXES.md)
+  state/noise.ts            # la carte « Bruit » : couleur et tonalité, retenues et partagées avec les ambiances (voir docs/NOISE.md)
   state/weather.ts          # la météo : les choix, ce qu'on voit et entend (voir docs/WEATHER.md)
   state/daylight.ts         # le jour et la nuit qui suivent l'heure, et la règle de la main (voir docs/ROOMS.md)
   rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen, lighthouse, submarine, market, igloo, treehouse, laundromat, greenhouse), index.ts, weather.ts (enregistrements de la météo partagés)
@@ -60,7 +62,7 @@ src/
     stations.ts             # les stations de la radio générative (accords, rythmes, timbres) ; chaque pièce choisit les siennes
     events.ts               # canal d'évènements ponctuels (tasse qui tinte, page qui se tourne)
     thunder.ts              # le tonnerre de l'orage (dans le bus de la pluie ou de la tempête)
-    channels/               # un canal par son : radio.ts, tracks.ts (pistes lofi), rain.ts, fan.ts, purr.ts, outside.ts, waves.ts, rails.ts…
+    channels/               # un canal par son : radio.ts, tracks.ts (pistes lofi), rain.ts, noise.ts (bruit blanc, rose, brun, vert ; public/noise-worklet.js), fan.ts, purr.ts, outside.ts, waves.ts, rails.ts…
   ui/                       # TopBar, WeatherPicker (sélecteur de météo), WeatherSky (pluie et neige dans le ciel du fond), SkyLife (étoile filante, oiseau, éclair, crépuscule derrière la pièce), RoomPicker, Mixer, MixerCard, SleepTimer, MixesMenu, SharedMix, InstallButton, splash.ts (écran de chargement, HTML dans index.html)
   styles/tokens.css
 scripts/encode-audio.mjs    # npm run audio : sources → Opus/WebM + MP3 dans public/audio/
@@ -152,7 +154,7 @@ Comment travailler un objet :
 Le moteur synthétise tout en direct (celui du prototype) : c'est le repli de tout son sans enregistrement, et la radio est générative (`src/audio/stations.ts`, `docs/RADIO.md`). Les boucles enregistrées se déclarent dans `loops` de la pièce (`docs/ASSETS.md`).
 Licences : CC0 ou licence achetée qui permet l'usage commercial. Seule exception accordée par le propriétaire du projet : la Pixabay Content License, pour les boucles déjà listées (2026-10-02) et pour les futurs sons de météo (2026-10-24). Toute autre licence se demande d'abord.
 Note la source de chaque fichier dans `public/audio/CREDITS.md`.
-**Des sons de base, agréables, faits pour rester en fond** (remarque du propriétaire sur la cabane perchée et la laverie, 2026-11-07) : l'appli sert à mettre un son et à faire autre chose. Un objet interactif pilote un son **continu, doux et familier** (pluie, vent, feu, vagues, ruisseau, oiseaux, grillons, ventilateur, bourdonnement, machine qui tourne, musique), qu'on peut écouter une heure sans y penser. Jamais un bruitage ponctuel ou un détail (glaçons qui tintent, pièces de monnaie, linge qu'on plie, froissement de feuilles synthétique) : ça ne se supporte pas en boucle et ça n'a pas de sens pour l'ambiance. **Un son qu'on a envie d'écouter** (remarque du propriétaire, 2026-11-07) : cohérent avec la pièce ne suffit pas ; une personne doit le lancer exprès pour se détendre (pluie, feu, vagues, ruisseau, oiseaux, grenouilles, vent doux, musique, berceuse). Pas de bourdonnement d'insectes, de chaudière, de machine ou de grésillement. **Pas de son répété d'une pièce à l'autre** (remarque du propriétaire, 2026-11-07) : chaque pièce a ses propres sons, sauf la météo (`rain`) ; un son qui existe déjà ailleurs n'a aucun intérêt ici. Un son synthétisé n'est qu'un repli provisoire de l'enregistrement qui viendra. Un son nouveau doit être cohérent avec la pièce (on l'entendrait vraiment là) ET familier ; en cas de doute, demande. Pas d'enregistrement qui convienne : génère un son synthétisé continu et doux (provisoire), le propriétaire trouvera un enregistrement à associer.
+**Des sons de base, agréables, faits pour rester en fond** (remarque du propriétaire sur la cabane perchée et la laverie, 2026-11-07) : l'appli sert à mettre un son et à faire autre chose. Un objet interactif pilote un son **continu, doux et familier** (pluie, vent, feu, vagues, ruisseau, oiseaux, grillons, ventilateur, bourdonnement, machine qui tourne, musique), qu'on peut écouter une heure sans y penser. Jamais un bruitage ponctuel ou un détail (glaçons qui tintent, pièces de monnaie, linge qu'on plie, froissement de feuilles synthétique) : ça ne se supporte pas en boucle et ça n'a pas de sens pour l'ambiance. **Un son qu'on a envie d'écouter** (remarque du propriétaire, 2026-11-07) : cohérent avec la pièce ne suffit pas ; une personne doit le lancer exprès pour se détendre (pluie, feu, vagues, ruisseau, oiseaux, grenouilles, vent doux, musique, berceuse). Pas de bourdonnement d'insectes, de chaudière, de machine ou de grésillement. **Pas de son répété d'une pièce à l'autre** (remarque du propriétaire, 2026-11-07) : chaque pièce a ses propres sons, sauf la météo (`rain`) et la carte « Bruit » (`noise`, blanc / rose / brun / vert, générée en direct par un AudioWorklet : voir `docs/NOISE.md`), deux exceptions voulues, présentes dans les quinze pièces sans objet 3D ; un son qui existe déjà ailleurs n'a aucun intérêt ici. Un son synthétisé n'est qu'un repli provisoire de l'enregistrement qui viendra. Un son nouveau doit être cohérent avec la pièce (on l'entendrait vraiment là) ET familier ; en cas de doute, demande. Pas d'enregistrement qui convienne : génère un son synthétisé continu et doux (provisoire), le propriétaire trouvera un enregistrement à associer.
 
 ## Commandes
 

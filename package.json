@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "audio": "node scripts/encode-audio.mjs",
     "audio:check": "node scripts/check-audio.mjs",
+    "audio:levels": "node scripts/measure-levels.mjs",
     "noises": "node scripts/make-noises.mjs",
     "stations": "node scripts/check-stations.mjs",
     "test": "npm run build && npm run stations && npm run test:smoke",

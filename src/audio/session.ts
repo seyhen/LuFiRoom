@@ -3,6 +3,7 @@ import type { SoundId } from '../rooms/types'
 import { useStore } from '../state/store'
 import { stationById } from './stations'
 import { tr, useLang } from '../i18n'
+import { NOISE_NAMES } from '../state/noise'
 
 // Media Session : ce que le système affiche (écran verrouillé, notification, touches multimédia) et ce qu'il peut commander.
 // Pause coupe l'ambiance en retenant ce qui jouait ; Lecture le remet.
@@ -31,7 +32,7 @@ if ('mediaSession' in navigator) {
     const s = useStore.getState(), room = roomById(s.room), on = active()
     // La radio joue des stations (générative) ou des pistes enregistrées, qui ont un titre.
     const stations = !room.playlist.length
-    const name = (x: { id: SoundId; name: string }) => (x.id === 'radio' && stations ? `${tr(x.name)} · ${tr(stationById(s.station).name)}` : tr(x.name))
+    const name = (x: { id: SoundId; name: string }) => (x.id === 'noise' ? tr(NOISE_NAMES[s.noise.color]) : x.id === 'radio' && stations ? `${tr(x.name)} · ${tr(stationById(s.station).name)}` : tr(x.name))
     const title = (s.on.radio && room.playlist.length && s.onAir) || on.map(name).join(' · ') || tr('Silence')
     const key = `${title}|${room.name}|${useLang.getState().lang}`
     // Suivant sur l'écran verrouillé : le morceau suivant (pistes) ou la station (générative) ; précédent : les stations seulement.

@@ -61,5 +61,6 @@ export const beach: Room = {
     { id: 'rainstick', name: 'Bâton de pluie', chip: 'var(--c-rainstick)', volume: 0.4, sub: () => 'les graines dans le bambou' },
     { id: 'purr', name: 'Chat', chip: 'var(--c-cat)', volume: 0.7, sub: () => 'sieste au soleil' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'sur la terrasse' },
+    { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
   ],
 }

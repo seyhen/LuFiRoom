@@ -6,6 +6,7 @@ import { mutedIcon, volumeIcon } from './icons'
 /** Volume général : un bouton dans l'en-tête du mixeur, qui ouvre un curseur. Le mélange de chaque son reste tel quel. */
 export function MasterVolume() {
   const master = useStore((s) => s.master)
+  const uiSounds = useStore((s) => s.uiSounds)
   const t = useT()
   const [open, setOpen] = useState(false)
   const root = useRef<HTMLDivElement>(null)
@@ -51,6 +52,10 @@ export function MasterVolume() {
             onChange={(e) => useStore.getState().setMaster(Number(e.target.value) / 100)}
           />
           <output aria-hidden="true">{pct} %</output>
+          <label className="pop-switch" title={t('Le petit « pop » quand un son s’allume ou s’éteint, et le carillon du jour et de la nuit')}>
+            <input type="checkbox" role="switch" checked={uiSounds} onChange={(e) => useStore.getState().setUiSounds(e.target.checked)} />
+            <span>{t('Sons d’interface')}</span>
+          </label>
         </div>
       )}
     </div>

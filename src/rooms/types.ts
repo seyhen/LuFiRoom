@@ -18,6 +18,8 @@ export type SoundId =
   | 'frogs' | 'musicbox' | 'rainbarrel'
   // la laverie de nuit : le lave-linge, le sèche-linge, le rinçage, la gouttière
   | 'wash' | 'tumble' | 'rinse' | 'gutter'
+  // la carte « Bruit » (blanc, rose, brun, vert), dans toutes les pièces, sans objet 3D : voir docs/NOISE.md
+  | 'noise'
 /** Un objet interactif de la scène. */
 export type ObjectId =
   | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'

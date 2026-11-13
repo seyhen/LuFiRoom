@@ -66,5 +66,6 @@ export const treehouse: Room = {
     { id: 'brook', name: 'Ruisseau', chip: 'var(--c-brook)', volume: 0.5, sub: () => 'l’eau sur les galets' },
     { id: 'cicadas', name: 'Cigales', chip: 'var(--c-cicadas)', volume: 0.35, sub: () => 'l’été dans le chêne' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'dans les feuilles' },
+    { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
   ],
 }

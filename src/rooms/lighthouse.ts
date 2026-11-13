@@ -65,5 +65,6 @@ export const lighthouse: Room = {
     { id: 'quill', name: 'Plume d’oie', chip: 'var(--c-quill)', volume: 0.5, sub: () => 'le journal de bord' },
     { id: 'purr', name: 'Ronron', chip: 'var(--c-cat)', volume: 0.5, sub: () => 'le chat du phare' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'contre la pierre' },
+    { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
   ],
 }

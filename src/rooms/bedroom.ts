@@ -51,6 +51,7 @@ export const bedroom: Room = {
       sub: radioSub(PLAYLIST.length),
     },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.7, sub: (s) => (s.on.outside ? 'vitre ouverte' : 'vitre fermée') },
+    { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
     { id: 'fan', name: 'Bruit blanc', chip: 'var(--c-fan)', volume: 0.55, sub: () => 'ventilateur' },
     { id: 'purr', name: 'Ronron', chip: 'var(--c-cat)', volume: 0.7, sub: () => 'chat endormi' },
     { id: 'mist', name: 'Brume', chip: 'var(--c-mist)', volume: 0.45, sub: () => 'le diffuseur d’huiles' },

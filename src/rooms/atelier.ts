@@ -54,6 +54,7 @@ export const atelier: Room = {
   sounds: [
     { id: 'radio', name: 'Vinyle lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.7, sub: () => 'sur la verrière' },
+    { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
     { id: 'pencil', name: 'Crayon', chip: 'var(--c-pencil)', volume: 0.5, sub: () => 'sur le papier' },
     { id: 'brush', name: 'Pinceau', chip: 'var(--c-brush)', volume: 0.45, sub: () => 'sur la toile' },
     { id: 'keys', name: 'Clavier', chip: 'var(--c-keys)', volume: 0.45, sub: () => 'quelqu’un écrit' },

@@ -199,3 +199,7 @@ rebond, au survol et aux animations. Leur ancre de hotspot reste dans `bedroom.t
 - Nuit : à décider avec le modèle. Soit une seconde lightmap fondue avec la première, soit le jour cuit plus la lampe en lumière dynamique.
   Le fondu jour / nuit actuel dure ~0.9 s ; la pluie assombrit un peu la pièce.
 - Les ombres temps réel (shadow map 2048) disparaissent : c'est le gain de performance attendu de cette phase.
+
+## Le bruit blanc, rose, brun, vert
+
+Aucun fichier : la carte « Bruit » (`noise`) est calculée en direct par un AudioWorklet (`public/noise-worklet.js`), rien à encoder ni à créditer. Voir `docs/NOISE.md`.

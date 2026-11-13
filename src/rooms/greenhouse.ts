@@ -53,5 +53,6 @@ export const greenhouse: Room = {
     { id: 'musicbox', name: 'Boîte à musique', chip: 'var(--c-musicbox)', volume: 0.4, sub: () => 'une berceuse douce' },
     { id: 'rainbarrel', name: 'Tonneau', chip: 'var(--c-rainbarrel)', volume: 0.45, sub: () => 'l’eau de la gouttière' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'sur le verre' },
+    { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
   ],
 }

@@ -55,5 +55,6 @@ export const igloo: Room = {
     { id: 'sew', name: 'Couture', chip: 'var(--c-sew)', volume: 0.45, sub: () => 'l’aiguille dans la moufle' },
     { id: 'cocoa', name: 'Cacao', chip: 'var(--c-cocoa)', volume: 0.5, sub: () => 'on se ressert' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'contre la neige' },
+    { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
   ],
 }

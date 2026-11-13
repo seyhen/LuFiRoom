@@ -66,5 +66,6 @@ export const submarine: Room = {
     { id: 'shell', name: 'Conque', chip: 'var(--c-shell)', volume: 0.45, sub: () => 'la mer, dans le coquillage' },
     { id: 'whale', name: 'Baleine', chip: 'var(--c-whale)', volume: 0.5, sub: () => 'un chant au loin' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'loin, à la surface' },
+    { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
   ],
 }

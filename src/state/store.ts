@@ -6,7 +6,8 @@ import { reduceMotion } from '../motion'
 import { loadScene } from '../scene/scenes'
 import { clockNight, holdFor } from './daylight'
 import { isWeather, type WeatherKind } from './weather'
-import { MAX_SAVED, loadMixes, mixFromSearch, mixName, storeLast, storeMixes, type Mix, type SavedMix } from './mixes'
+import { clampTilt, loadNoise, storeNoise, type NoiseColor, type NoiseSetting } from './noise'
+import { MAX_SAVED, MIX_VERSION, loadMixes, mixFromSearch, mixName, sliderOf, storeLast, storeMixes, type Mix, type SavedMix } from './mixes'
 
 type PerSound<T> = Record<SoundId, T>
 // Les sons de toutes les pièces : un son qui revient d'une pièce à l'autre garde son volume.
@@ -30,8 +31,12 @@ export interface Store {
   /** La météo choisie (elle joue quand la carte « Météo », le son `rain`, est allumée ; voir state/weather.ts). */
   weather: WeatherKind
   vol: PerSound<number>
+  /** La carte « Bruit » : sa couleur et sa tonalité (voir state/noise.ts). Elle joue quand le son `noise` est allumé. */
+  noise: NoiseSetting
   /** Volume général (0 à 1), par-dessus le mélange : propre à l'appareil, il ne fait pas partie des ambiances. */
   master: number
+  /** « Sons d'interface » : le pop d'allumage et d'extinction, le carillon jour / nuit. Propre à l'appareil, hors des ambiances. */
+  uiSounds: boolean
   /** Gestes sur les objets et le mixeur : les hotspots arrêtent de pulser après 3. */
   taps: number
   /** Dernier rebond demandé pour chaque objet (performance.now()). */
@@ -63,10 +68,15 @@ export interface Store {
   toggle: (target: Target) => void
   /** Choisit la météo et l'allume, ou « clear » : la carte « Météo » s'éteint. */
   setWeather: (w: WeatherKind | 'clear') => void
+  /** Choisit la couleur du bruit et l'allume (comme choisir une météo). */
+  setNoiseColor: (c: NoiseColor) => void
+  /** Règle la tonalité du bruit, de -1 (graves) à 1 (aigus). */
+  setNoiseTilt: (t: number) => void
   toggleNight: () => void
   muteAll: () => void
   setVolume: (id: SoundId, v: number) => void
   setMaster: (v: number) => void
+  setUiSounds: (on: boolean) => void
   /** Lance le minuteur de sommeil (durée en minutes), ou l'annule (null). */
   setSleep: (minutes: number | null) => void
   /** L'ambiance en cours : pièce, sons qui jouent et leur volume, jour / nuit. */
@@ -92,6 +102,7 @@ const WEATHER_KEY = 'chambre-lofi.weather'
 const STATION_KEY = 'chambre-lofi.station'
 const stationKey = (room: string) => `${STATION_KEY}.${room}`
 const MASTER_KEY = 'chambre-lofi.volume'
+const UI_SOUNDS_KEY = 'chambre-lofi.uisounds'
 const FADE = 350 // ms, la durée de l'effacement (voir app.css)
 
 // La dernière pièce visitée, si le navigateur veut bien s'en souvenir.
@@ -144,6 +155,15 @@ function savedMaster() {
   }
 }
 
+// Les sons d'interface, activés par défaut.
+function savedUiSounds() {
+  try {
+    return localStorage.getItem(UI_SOUNDS_KEY) !== '0'
+  } catch {
+    return true
+  }
+}
+
 function rememberStation(room: string, id: string) {
   try {
     localStorage.setItem(stationKey(room), id)
@@ -173,8 +193,11 @@ export const useStore = create<Store>()((set, get, api) => ({
   room: firstRoom,
   leaving: null,
   on: perSound(() => false),
-  vol: perSound((s) => s.volume),
+  // `volume` des fiches : le niveau sonore d'origine (échelle d'amplitude) ; le curseur le montre à sa position sur la courbe d'oreille.
+  vol: perSound((s) => sliderOf(s.volume)),
+  noise: loadNoise(),
   master: savedMaster(),
+  uiSounds: savedUiSounds(),
   weather: savedWeather(),
   taps: 0,
   squashAt: {},
@@ -192,11 +215,13 @@ export const useStore = create<Store>()((set, get, api) => ({
   currentMix: () => {
     const s = get(), on = roomById(s.room).sounds.filter((x) => s.on[x.id]).map((x) => x.id)
     return {
+      v: MIX_VERSION,
       room: s.room,
       on,
       vol: Object.fromEntries(on.map((id) => [id, Math.round(s.vol[id] * 100) / 100])),
       night: s.night,
       ...(on.includes('rain') ? { weather: s.weather } : {}),
+      ...(on.includes('noise') ? { noise: s.noise } : {}),
       // La station ne compte que si la radio joue (et si elle joue des stations : sans piste enregistrée).
       ...(on.includes('radio') && !roomById(s.room).playlist.length ? { station: s.station } : {}),
     }
@@ -222,9 +247,11 @@ export const useStore = create<Store>()((set, get, api) => ({
       const station = m.station && stationIds(roomById(m.room).stations).includes(m.station) ? m.station : get().station
       rememberStation(m.room, station)
       if (m.weather) rememberWeather(m.weather)
+      if (m.noise) storeNoise(m.noise)
       set((s) => ({
         station,
         ...(m.weather ? { weather: m.weather } : {}),
+        ...(m.noise ? { noise: m.noise } : {}),
         ...byHand(m.night),
         vol: { ...s.vol, ...m.vol },
         on: { ...perSound(() => false), ...Object.fromEntries(sounds.filter((x) => m.on.includes(x.id)).map((x) => [x.id, true])) },
@@ -255,6 +282,17 @@ export const useStore = create<Store>()((set, get, api) => ({
     rememberWeather(w)
     set((s) => ({ taps: s.taps + 1, weather: w, on: { ...s.on, rain: true } }))
   },
+  setNoiseColor: (color) => {
+    if (get().leaving) return
+    const noise = { ...get().noise, color }
+    storeNoise(noise)
+    set((s) => ({ taps: s.taps + 1, noise, on: { ...s.on, noise: true } }))
+  },
+  setNoiseTilt: (t) => {
+    const noise = { ...get().noise, tilt: clampTilt(t) }
+    storeNoise(noise)
+    set({ noise })
+  },
   // Bouton jour / nuit : comme toucher la lampe, sans compter comme un geste.
   toggleNight: () => set((s) => flip(s, 'night')),
   muteAll: () => set({ on: perSound(() => false) }),
@@ -263,6 +301,14 @@ export const useStore = create<Store>()((set, get, api) => ({
     set({ master: v })
     try {
       localStorage.setItem(MASTER_KEY, String(v))
+    } catch {
+      // pas de stockage : on ne s'en souviendra pas
+    }
+  },
+  setUiSounds: (on) => {
+    set({ uiSounds: on })
+    try {
+      localStorage.setItem(UI_SOUNDS_KEY, on ? '1' : '0')
     } catch {
       // pas de stockage : on ne s'en souviendra pas
     }
@@ -305,7 +351,7 @@ export const useStore = create<Store>()((set, get, api) => ({
 // La dernière ambiance jouée est gardée, pour le bouton « Reprendre » : pas pendant un changement de pièce (tout est coupé), ni en silence.
 // Un passage du jour à la nuit fait par l'horloge ne compte pas : c'est l'ambiance qu'on a composée qu'on garde.
 useStore.subscribe((s, p) => {
-  if (s.leaving || (s.on === p.on && (s.night === p.night || s.dusk) && s.vol === p.vol && s.weather === p.weather)) return
+  if (s.leaving || (s.on === p.on && (s.night === p.night || s.dusk) && s.vol === p.vol && s.weather === p.weather && s.noise === p.noise)) return
   const mix = s.currentMix()
   if (mix.on.length) storeLast(mix)
 })

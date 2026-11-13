@@ -58,5 +58,6 @@ export const laundromat: Room = {
     { id: 'rinse', name: 'Rinçage', chip: 'var(--c-rinse)', volume: 0.5, sub: () => 'le clapotis dans le tambour' },
     { id: 'gutter', name: 'Gouttière', chip: 'var(--c-gutter)', volume: 0.5, sub: () => 'l’eau de pluie dans le tuyau' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'contre la vitrine' },
+    { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
   ],
 }

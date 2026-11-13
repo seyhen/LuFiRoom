@@ -62,8 +62,9 @@ import wash from './channels/wash'
 import tumble from './channels/tumble'
 import rinse from './channels/rinse'
 import gutter from './channels/gutter'
+import noise from './channels/noise'
 
-// canal (bus Gain) ─┬─> master Gain 0.9 ─> volume général ─> compresseur ─> sortie
+// canal (bus Gain) ─┬─> master Gain 0.9 ─> volume général ─> liant doux ─> passe-haut 25 Hz ─> recalage ─> limiteur ─> plafond doux ─> sortie
 // canal (bus Gain) ─┘
 
 export type { SoundId }
@@ -137,6 +138,7 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   tumble: { build: tumble, base: 1.0 },
   rinse: { build: rinse, base: 1.4 },
   gutter: { build: gutter, base: 1.4 },
+  noise: { build: noise, base: 0.5 }, // sonie (pondérée A) du rose à 0,4 : celle du ventilateur et de la pluie par défaut ; couleurs égalisées dans public/noise-worklet.js
 }
 const ids = Object.keys(CHANNELS) as SoundId[]
 
@@ -245,10 +247,14 @@ preloadRoom(roomById(useStore.getState().room), true)
 
 let kit: Kit | null = null
 let masterGain: GainNode | null = null
+// Fin de chaîne : liant très doux, passe-haut, limiteur de sécurité, puis la sortie (voir `ensure`).
+let glue: DynamicsCompressorNode | null = null
 let limiter: DynamicsCompressorNode | null = null
+let tail: AudioNode | null = null
 // Volume général, à part du master (que le minuteur de sommeil fait descendre) : les deux se multiplient.
 let userGain: GainNode | null = null
 // Le curseur suit l'oreille plutôt que l'amplitude : au carré, la moitié du curseur sonne à peu près à moitié aussi fort.
+// Même courbe pour le volume général et pour le curseur de chaque carte (`vol` du store est une position de curseur).
 const userLevel = (v: number) => v * v
 // Sortie : un flux (MediaStream) lu par un élément <audio>, plutôt que les haut-parleurs directs. Pour le système, c'est alors
 // un lecteur de média : la lecture continue écran verrouillé ou app en arrière-plan, et la Media Session (src/audio/session.ts)
@@ -267,35 +273,111 @@ const keyOf = (id: SoundId) => `${useStore.getState().room}/${id}`
 /** Crée l'AudioContext (au premier geste), ou le relance s'il a été suspendu. */
 function ensure() {
   if (kit) {
-    if (kit.ctx.state === 'suspended') kit.ctx.resume()
+    // Appelé pendant un geste (voir `unlockAudio`) : le bon moment pour relancer, même si rien ne joue encore.
+    if ((kit.ctx.state as string) !== 'running' && kit.ctx.state !== 'closed') kit.ctx.resume().then(resumeSink, () => {})
     return kit
   }
   if (typeof AudioContext === 'undefined') return null
   const ctx = new AudioContext()
+  // Fin de chaîne, pensée pour des bruits continus qu'on écoute longtemps : rien ne doit « pomper » quand un son ponctuel
+  // (cloche, corne, tonnerre) passe par-dessus. Un liant très doux (ratio 1,8 sous un seuil haut, attaque lente pour laisser
+  // passer les transitoires, relâchement long), un passe-haut qui retire l'inaudible, puis un limiteur de sécurité vers -3 dB.
   const comp = ctx.createDynamicsCompressor()
-  comp.threshold.value = -16
-  comp.knee.value = 12
-  comp.ratio.value = 3.5
-  comp.attack.value = 0.008
-  comp.release.value = 0.3
+  comp.threshold.value = GLUE.threshold
+  comp.knee.value = GLUE.knee
+  comp.ratio.value = GLUE.ratio
+  comp.attack.value = GLUE.attack
+  comp.release.value = GLUE.release
+  const hp = ctx.createBiquadFilter()
+  hp.type = 'highpass'
+  hp.frequency.value = 25
+  hp.Q.value = 0.6
+  const lim = ctx.createDynamicsCompressor()
+  lim.threshold.value = -3
+  lim.knee.value = 0
+  lim.ratio.value = 20
+  lim.attack.value = 0.002
+  lim.release.value = 0.15
+  // La compression de Web Audio ajoute son propre gain de rattrapage ; ce gain-ci recale le niveau sur celui de l'ancienne chaîne
+  // (+4 dB sur un bruit de niveau courant), avant le limiteur pour que son plafond soit bien celui de la sortie.
+  const trim = ctx.createGain()
+  trim.gain.value = GLUE.trim
+  // Dernier filet : un limiteur Web Audio ne tient pas un plafond à l'échantillon près ; ce profil laisse tout passer sous -3 dB
+  // et arrondit doucement ce qui dépasse, vers -1 dBFS, sans jamais écrêter net.
+  const ceiling = ctx.createWaveShaper()
+  ceiling.curve = ceilingCurve()
+  ceiling.oversample = '2x'
   const master = ctx.createGain()
   master.gain.value = MASTER
   const user = ctx.createGain()
   user.gain.value = userLevel(useStore.getState().master)
-  master.connect(user).connect(comp)
+  master.connect(user).connect(comp).connect(hp).connect(trim).connect(lim).connect(ceiling)
   userGain = user
-  limiter = comp
+  glue = comp
+  limiter = lim
+  tail = ceiling
   masterGain = master
   // `?direct` dans l'adresse : sortie directe vers les haut-parleurs, sans le flux <audio> (pour savoir si un grésillement vient de lui).
   if (!new URLSearchParams(location.search).has('direct') && typeof ctx.createMediaStreamDestination === 'function' && 'srcObject' in HTMLMediaElement.prototype) {
     const dest = ctx.createMediaStreamDestination()
-    comp.connect(dest)
+    ceiling.connect(dest)
     sink = new Audio()
     sink.srcObject = dest.stream
-  } else comp.connect(ctx.destination)
+  } else ceiling.connect(ctx.destination)
   kit = makeKit(ctx, master)
+  // Une interruption (appel, alarme, veille de l'onglet) suspend le contexte : on le relance dès qu'on peut.
+  ctx.addEventListener('statechange', revive)
   return kit
 }
+
+// Valeurs de la fin de chaîne (mesurées avec window.__lofi.audio en dev : bruit rose + cloche, voir le bilan de la revue du moteur).
+const GLUE = { threshold: -8, knee: 12, ratio: 1.7, attack: 0.03, release: 0.7, trim: 1.38 }
+
+function ceilingCurve() {
+  const n = 2048, T = 0.708, C = 0.891, curve = new Float32Array(n)
+  for (let i = 0; i < n; i++) {
+    const x = (i / (n - 1)) * 2 - 1, a = Math.abs(x)
+    curve[i] = a <= T ? x : Math.sign(x) * (T + (C - T) * Math.tanh((a - T) / (C - T)))
+  }
+  return curve
+}
+
+/** Le son est-il censé jouer ? Au moins un canal allumé. */
+const playing = () => ids.some((id) => useStore.getState().on[id])
+
+// Reprise après interruption. Sans geste de l'utilisateur, le navigateur refuse parfois (surtout iOS, état « interrupted ») :
+// on réessaie alors au prochain toucher ou clic sur la page, avec un seul jeu d'écouteurs, retiré dès qu'il a servi.
+let tapArmed = false, reviveTimer = 0
+const TAP_EVENTS = ['pointerup', 'click', 'touchend', 'keydown'] as const
+function armTap() {
+  if (tapArmed) return
+  tapArmed = true
+  const go = () => {
+    tapArmed = false
+    for (const e of TAP_EVENTS) removeEventListener(e, go, true)
+    revive()
+  }
+  for (const e of TAP_EVENTS) addEventListener(e, go, true)
+}
+function resumeSink() {
+  if (sink?.paused && playing()) sink.play().catch(armTap) // le flux est lu par l'élément <audio> : un appel l'a peut-être mis en pause
+}
+function revive() {
+  if (!kit || !playing()) return
+  const { ctx } = kit
+  if ((ctx.state as string) === 'running') return resumeSink()
+  if (ctx.state === 'closed') return
+  ctx.resume().then(resumeSink, () => {})
+  // Un resume() sans geste peut rester sans réponse, ou être refusé sans erreur : on vérifie ensuite, et on attend un geste.
+  clearTimeout(reviveTimer)
+  reviveTimer = window.setTimeout(() => {
+    if (!playing() || (ctx.state as string) === 'running') return
+    if (!tapArmed) console.warn(`Le son est suspendu (${ctx.state}) : il reprendra au prochain toucher.`)
+    armTap()
+  }, 1200)
+}
+document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && revive())
+addEventListener('pageshow', revive)
 
 /** Lance la lecture du flux de sortie (pendant un geste de l'utilisateur), puis le met en pause quand plus rien ne joue. */
 function keepOutput(anyOn: boolean) {
@@ -307,8 +389,8 @@ function keepOutput(anyOn: boolean) {
       // Lecture refusée : on revient à la sortie directe, sans contrôles système mais sans silence.
       console.warn('Sortie en flux indisponible, sortie directe.', e)
       sink = null
-      limiter!.disconnect()
-      limiter!.connect(kit!.ctx.destination)
+      tail!.disconnect()
+      tail!.connect(kit!.ctx.destination)
     })
   }
   // Rien ne joue (les fondus durent moins de 2 s) : on libère l'audio du système, sinon ses contrôles restent affichés.
@@ -356,7 +438,7 @@ function set(k: Kit, id: SoundId) {
   const { on, vol } = useStore.getState()
   const g = bus[key].gain, now = k.ctx.currentTime
   g.cancelScheduledValues(now)
-  g.setTargetAtTime(on[id] ? vol[id] * CHANNELS[id].base : 0, now, on[id] ? 0.45 : 0.28)
+  g.setTargetAtTime(on[id] ? userLevel(vol[id]) * CHANNELS[id].base : 0, now, on[id] ? 0.45 : 0.28)
   const ch = built[key]
   if (ch) on[id] ? ch.start() : ch.stop()
 }
@@ -366,7 +448,7 @@ function volume(k: Kit, id: SoundId) {
   if (!on[id] || !b) return
   const now = k.ctx.currentTime
   b.gain.cancelScheduledValues(now)
-  b.gain.setTargetAtTime(vol[id] * CHANNELS[id].base, now, 0.06)
+  b.gain.setTargetAtTime(userLevel(vol[id]) * CHANNELS[id].base, now, 0.06)
 }
 
 /** « Pop » d'interface : montant à l'allumage, descendant à l'extinction. */
@@ -475,8 +557,11 @@ useStore.subscribe((s, p) => {
     const k = ensure()
     if (!k) return
     for (const id of changed) set(k, id)
-    if (changed.length) pop(k, changed.some((id) => s.on[id]))
-    if (nightByHand) pop(k, !s.night)
+    // « Sons d'interface » coupés : ni pop d'allumage ni carillon jour / nuit (le carillon du minuteur de concentration reste).
+    if (s.uiSounds) {
+      if (changed.length) pop(k, changed.some((id) => s.on[id]))
+      if (nightByHand) pop(k, !s.night)
+    }
     keepOutput(ids.some((id) => s.on[id]))
   }
   if (kit) for (const id of ids) if (s.vol[id] !== p.vol[id]) volume(kit, id)
@@ -490,5 +575,60 @@ useStore.subscribe((s, p) => {
   }
 })
 
+/**
+ * Mesure des niveaux (dev seulement, voir scripts/measure-levels.mjs) : rend le canal `id` de la pièce `roomId` hors ligne, en
+ * synthèse (sans enregistrement), pendant `seconds` s, et renvoie sa sonie à gain de bus 1 (LUFS approchées : filtres de pondération K
+ * de BS.1770, blocs de 400 ms, double porte) avec la crête et son gain par défaut (volume de la fiche × gain de base × master).
+ * Les ordonnanceurs de canaux (`setInterval`) sont avancés à la main, au rythme du temps rendu, pas de l'horloge réelle.
+ */
+async function renderOffline(id: SoundId, roomId: string, seconds = 20) {
+  const SR = 44100, def = CHANNELS[id], room = roomById(roomId)
+  const sound = room.sounds.find((x) => x.id === id)
+  const octx = new OfflineAudioContext(2, SR * seconds, SR)
+  const mst = octx.createGain()
+  mst.gain.value = 1
+  const subs: (() => void)[] = []
+  const k0 = makeKit(octx as unknown as AudioContext, mst)
+  const k: Kit = { ...k0, watch: (fn) => { const u = useStore.subscribe(fn); subs.push(u); return u } }
+  const bus = octx.createGain()
+  bus.gain.value = 1
+  // Pondération K : étage 1 = étagère aiguë +4 dB à 1,68 kHz, étage 2 = passe-haut 38 Hz.
+  const shelf = octx.createBiquadFilter(), hp = octx.createBiquadFilter()
+  shelf.type = 'highshelf'; shelf.frequency.value = 1681.97; shelf.gain.value = 4
+  hp.type = 'highpass'; hp.frequency.value = 38.135; hp.Q.value = 0.5
+  bus.connect(mst).connect(shelf).connect(hp).connect(octx.destination)
+  const ticks = new Map<number, () => void>()
+  let nid = 9e8
+  const realSet = window.setInterval, realClear = window.clearInterval
+  window.setInterval = ((fn: () => void) => { ticks.set(++nid, fn); return nid }) as unknown as typeof window.setInterval
+  window.clearInterval = ((i: number) => { ticks.delete(i); realClear(i) }) as typeof window.clearInterval
+  try {
+    const ch = def.build(k, bus, { ...room, loops: {}, playlist: [] })
+    ch?.start()
+    for (let t = 0.1; t < seconds; t += 0.1) void octx.suspend(t).then(() => { for (const f of [...ticks.values()]) f(); void octx.resume() })
+    const buf = await octx.startRendering()
+    const L = buf.getChannelData(0), R = buf.getChannelData(1)
+    // sonie par blocs de 400 ms, pas de 100 ms ; porte absolue -70 LUFS puis relative -10 LU (BS.1770-4)
+    const blk = Math.round(0.4 * SR), hop = Math.round(0.1 * SR), ms: number[] = []
+    let peak = 0
+    for (let i = 0; i < L.length; i++) peak = Math.max(peak, Math.abs(L[i]), Math.abs(R[i]))
+    for (let o = Math.round(2 * SR); o + blk <= L.length; o += hop) { // les 2 premières secondes (mise en route des fondus) ne comptent pas
+      let a = 0, b = 0
+      for (let i = o; i < o + blk; i++) { a += L[i] * L[i]; b += R[i] * R[i] }
+      ms.push((a + b) / blk)
+    }
+    const lk = (z: number) => -0.691 + 10 * Math.log10(z || 1e-12)
+    const abs = ms.filter((z) => lk(z) > -70)
+    const mean = (xs: number[]) => xs.reduce((u, v) => u + v, 0) / (xs.length || 1)
+    const rel = abs.filter((z) => lk(z) > lk(mean(abs)) - 10)
+    const gainDef = (sound?.volume ?? 0) * def.base * MASTER
+    return { id, room: roomId, base: def.base, volume: sound?.volume ?? 0, lufs: lk(mean(rel)), lufsMean: lk(mean(ms)), peak, gainDef, lufsDef: lk(mean(rel)) + 20 * Math.log10(Math.max(gainDef, 1e-9)) }
+  } finally {
+    window.setInterval = realSet
+    window.clearInterval = realClear
+    subs.forEach((u) => u())
+  }
+}
+
 // Pont de développement (retiré du build) : les bus de chaque son et le kit, pour mesurer les niveaux (skill audit-room).
-if (import.meta.env.DEV) ((window as unknown as { __lofi?: Record<string, unknown> }).__lofi ??= {}).audio = { bus, getKit: () => kit, getLimiter: () => limiter, getUserGain: () => userGain }
+if (import.meta.env.DEV) ((window as unknown as { __lofi?: Record<string, unknown> }).__lofi ??= {}).audio = { bus, getKit: () => kit, getComp: () => glue, getLimiter: () => limiter, getOut: () => tail, getUserGain: () => userGain, renderOffline }

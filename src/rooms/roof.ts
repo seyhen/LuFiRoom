@@ -62,5 +62,6 @@ export const roof: Room = {
     { id: 'watering', name: 'Arrosoir', chip: 'var(--c-watering)', volume: 0.45, sub: () => 'un filet d’eau sur la terre' },
     { id: 'pigeons', name: 'Pigeons', chip: 'var(--c-pigeons)', volume: 0.45, sub: (s) => (s.night ? 'ils somnolent' : 'roucoulements') },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'sur les toits' },
+    { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
   ],
 }

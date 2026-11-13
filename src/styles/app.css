@@ -100,6 +100,18 @@ html.dusk .sky-night { transition: opacity 40s cubic-bezier(.45, 0, .55, 1) }
 /* ligne du volume : le curseur, et au besoin un bouton (la station suivante de la radio) */
 .vol { display: flex; align-items: center; gap: 4px; min-width: 0 }
 .vol input[type=range] { flex: 1 1 0; width: auto; min-width: 0 }
+/* carte « Bruit » : plus large, pour quatre pastilles de 44 px au doigt, puis la tonalité */
+.card.noise { flex-basis: 236px }
+.nz-chips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px }
+.nz-chip { min-width: 44px; height: 44px; display: grid; place-content: center; justify-items: center; gap: 4px; padding: 0 2px; border: 1px solid var(--line);
+  border-radius: 12px; background: none; color: var(--ink); font: 800 10.5px/1 var(--font-body); cursor: pointer; transition: background-color .25s, border-color .25s, transform .2s }
+.nz-chip i { width: 15px; height: 15px; border-radius: 50%; background: var(--dot); box-shadow: inset 0 0 0 1px rgba(60, 40, 90, .22) }
+.nz-chip[aria-pressed=true] { border-color: var(--accent); background: var(--accent-soft) }
+.nz-chip:active { transform: scale(.94) }
+.nz-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px }
+.nz-tone { display: flex; align-items: center; gap: 6px; min-width: 0; margin-top: -4px; font: 500 10px/1 var(--font-mono); color: var(--ink-soft) }
+.nz-tone span { flex: none }
+.card .nz-tone input[type=range] { flex: 1 1 0; width: auto; min-width: 0; height: 44px; opacity: .85 }
 .skip { flex: none; width: 30px; height: 30px; margin: -6px -4px -6px 0; display: grid; place-items: center; padding: 0; border: 0; border-radius: 10px;
   background: none; color: var(--ink-soft); cursor: pointer; transition: color .2s, transform .2s }
 .skip svg { width: 15px; height: 15px }
@@ -125,6 +137,8 @@ html.dusk .sky-night { transition: opacity 40s cubic-bezier(.45, 0, .55, 1) }
 .pop-actions svg { width: 16px; height: 16px; flex: none }
 .pop-menu.volume { min-width: 220px; grid-template-columns: 1fr auto; align-items: center; gap: 10px; padding: 12px 14px }
 .pop-menu.volume input[type=range] { width: 100%; margin: 0; height: 22px; accent-color: var(--accent); cursor: pointer }
+.pop-menu .pop-switch { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding-top: 8px; border-top: 1px solid var(--line); font: 800 13px/1.2 var(--font-body); color: var(--ink); cursor: pointer }
+.pop-menu .pop-switch input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); cursor: pointer }
 .pop-menu.volume output { font: 500 12px/1 var(--font-mono); color: var(--ink-soft); min-width: 4ch; text-align: right; font-variant-numeric: tabular-nums }
 .pop-note { margin: 0; padding: 2px 8px; min-height: 1.4em; font: 500 11.5px/1.35 var(--font-body); color: var(--ink-soft) }
 .pop-note:empty { display: none }
@@ -262,6 +276,7 @@ html.night .sky-veil.snowy { background: linear-gradient(180deg, rgba(150, 160, 
 /* 360 px : cartes un peu plus étroites et fondu plus court, pour qu'un bout net de la carte suivante dépasse */
 @media (max-width: 399px) {
   .card { flex-basis: 140px }
+  .card.noise { flex-basis: 224px }
   .mix.more-r { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 18px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 18px), transparent) }
   .mix.more-l.more-r { -webkit-mask-image: linear-gradient(90deg, transparent, #000 20px, #000 calc(100% - 18px), transparent); mask-image: linear-gradient(90deg, transparent, #000 20px, #000 calc(100% - 18px), transparent) }
 }
