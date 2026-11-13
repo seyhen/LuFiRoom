@@ -80,7 +80,7 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite, 
 
 1. **Fiche** dans `src/rooms/<id>.ts` :
    - `objects` : `{ id, target, label: 'Objet · ce qu'il fait', anchor }` — l'ancre sur le corps de l'objet, centrée.
-   - `sounds` : `{ id, name, chip, volume, sub }` — un nom court, un sous-titre vivant (« les aiguilles s'entrecroisent »), un volume par défaut bas (0,4 à 0,6).
+   - `sounds` : `{ id, name, chip, volume, sub }` — un nom court, un sous-titre vivant (« les aiguilles s'entrecroisent »), un volume par défaut bas (0,4 à 0,6). Ce volume est une **position de curseur** : le moteur joue à `volume² × base` (même courbe que le volume général, `docs/MIXES.md`, « Courbe des volumes »), donc 0,5 sonne à peu près à moitié aussi fort que 1. Une pièce nouvelle porte aussi, en dernière carte et éteinte, la carte commune `{ id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4 }` (bruit blanc, rose, brun, vert généré en direct, sans objet 3D ni enregistrement : `docs/NOISE.md`) ; le test de fumée la vérifie dans chaque pièce.
    - `presets` : ajoute le son au préréglage où il a sa place (lire, dormir, travailler).
 2. **Types** : le nouvel identifiant dans `SoundId` (et `ObjectId` si l'objet est nouveau), `src/rooms/types.ts`.
 3. **Scène** : un fichier par objet dans `src/scene/<id>/`, posé avec `position` à son pied (rebond de clic), `userData={{ id }}` sur le groupe, `useSquash`. Ce qui ne bouge pas en `<Static>` imbriqué ; ce qui bouge quand le son joue lit `isActive(useStore.getState(), '<son>')` dans un `useFrame` (jamais de logique audio dans la scène).
@@ -100,7 +100,7 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite, 
    - fond continu (eau, souffle) → `kit.loopOrChannel` ;
    - évènement espacé (un versement, un tir) → `kit.shotsOr` avec un `gap` de plusieurs secondes.
    Toujours une synthèse de repli dans le dernier argument (un bruit filtré qui évoque le son suffit).
-5. **Niveaux** (pont `window.__lofi.audio`, voir `audit-room` étape 1.5) : fond continu −28 à −32 dB RMS, geste ponctuel ≈ −10 dB de crête ; règle `base` dans `CHANNELS`. Écoute ensuite **avec les autres sons de la pièce** : le nouveau ne doit pas les couvrir.
+5. **Niveaux** (pont `window.__lofi.audio`, voir `audit-room` étape 1.5) : fond continu −28 à −32 dB RMS, geste ponctuel ≈ −10 dB de crête ; règle `base` dans `CHANNELS`. Lance aussi `npm run audio:levels --rooms <pièce>` : il rend chaque canal hors ligne et donne sa sonie ; un canal à plus de ±3 dB de la médiane (−26,9 LUFS au 2026-11-13) est à revoir, et chaque son synthétisé de repli doit sonner du même niveau que ses voisins (les repères : `brook`, `frogs`, `rainbarrel`, `cicadas` étaient 5 à 15 dB trop hauts parce que réglés sans mesure). Écoute ensuite **avec les autres sons de la pièce** : le nouveau ne doit pas les couvrir. La chaîne de sortie (liant doux, passe-haut 25 Hz, limiteur −3 dB) est commune à tous les sons : n'ajoute pas de compresseur dans un canal pour « tenir » un évènement fort, baisse son `base`.
 
 ## Étape 5 — Vérifier
 

@@ -85,7 +85,7 @@ async () => {
 }
 ```
 
-Cibles : **fond continu −28 à −32 dB RMS** ; **évènement ou geste ponctuel ≈ −10 dB de crête** ; radio ≈ −20 dB RMS. Corrige avec `base` dans `CHANNELS` (`src/audio/engine.ts`) : écart en dB → facteur `10^(dB/20)`. Un fichier qui sort trop fort d'un coup se règle là, pas en retouchant le WAV. Un seul `evaluate_script` ne doit pas dépasser ~60 s (sinon il expire) : mesure par lots.
+Cibles : **fond continu −28 à −32 dB RMS** ; **évènement ou geste ponctuel ≈ −10 dB de crête** ; radio ≈ −20 dB RMS. Corrige avec `base` dans `CHANNELS` (`src/audio/engine.ts`) : écart en dB → facteur `10^(dB/20)`. Un fichier qui sort trop fort d'un coup se règle là, pas en retouchant le WAV. Le niveau final est `volume² × base` (le volume d'une carte est une position de curseur, `docs/MIXES.md`), puis la chaîne commune : liant doux, passe-haut 25 Hz, limiteur −3 dB. `npm run audio:levels` donne une première estimation hors ligne de tous les canaux avec leur écart à la médiane : lance-le avant et après avoir associé un enregistrement à un son synthétique, le niveau doit rester dans ±3 dB de ses voisins. Un seul `evaluate_script` ne doit pas dépasser ~60 s (sinon il expire) : mesure par lots.
 
 Puis écoute **avec les autres sons de la pièce** (le préréglage « travailler » par exemple) : le nouveau ne couvre rien.
 
