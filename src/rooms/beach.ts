@@ -36,6 +36,7 @@ export const beach: Room = {
     chimes: { src: 'audio/beach/chimes', gain: 0.7 },
     waves: { src: 'audio/beach/waves', gain: 0.8 },
     rainstick: { src: 'audio/beach/rainstick', gain: 0.8 },
+    purr: { src: 'audio/beach/purr', gain: 0.75 },
   },
   stations: ['soleil-bas', 'rosee', 'petit-matin'],
   playlist: PLAYLIST,

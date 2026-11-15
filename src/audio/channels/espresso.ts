@@ -8,7 +8,7 @@ import type { Channel, Kit } from '../engine'
  * souffle de la vapeur), et des tasses qui tintent sur leur soucoupe entre deux.
  */
 export default function espresso(kit: Kit, out: GainNode, { loops }: Room): Channel {
-  return kit.loopOrChannel(loops.espresso, out, () => {
+  return kit.grainsOr(loops.espresso, out, { len: [8, 14], fade: 1, rate: 0.03, level: 0.15 }, () => {
     const { ctx, gain, biq, osc, noise } = kit
     // Niveau de la synthèse : réglé pour valoir les autres sons du mixeur (des évènements brefs, donc plus forts qu'un fond continu).
     const bus = gain(3.2)

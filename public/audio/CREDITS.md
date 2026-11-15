@@ -32,9 +32,7 @@ Toutes viennent de Pixabay, sous la **Pixabay Content License** (<https://pixaba
 | Fichier | Contenu | Auteur | Source (lien) | Retouches | Ajouté le |
 |---|---|---|---|---|---|
 | `cafe/murmur` | brouhaha de café, « Coffee Shop Ambience » | freesound_community | <https://pixabay.com/sound-effects/people-coffee-shop-ambience-27829/> | 48 s à partir de 6 s, mono | 2026-10-17 |
-| `cafe/espresso` | machine à café, « Coffee Espresso Machine Wave 44100hz » | freesound_community | <https://pixabay.com/sound-effects/search/coffee%20espresso%20machine%20wave/> (id 32002) | entier (24,6 s), mono | 2026-10-17 |
 | `cafe/pages` | pages qu'on tourne, « turning paper, turning page » | sarthakraj_308 | <https://pixabay.com/sound-effects/film-special-effects-turning-paper-turning-page-290380/> | entier (26 s), mono | 2026-10-17 |
-| `cafe/street` | rue, « Street Sound » | Aman4u | <https://pixabay.com/sound-effects/city-street-sound-456586/> | 46 s à partir de 2 s, mono | 2026-10-17 |
 | `cafe/rain`, `atelier/rain`, `train/rain` | pluie, « CALMING RAIN » | Liecio | id 257596 sur Pixabay (recherche « calming rain liecio ») | trois passages de 45 s (à 10 s, 45 s, 62 s), mono | 2026-10-17 |
 | `cafe/fire` | feu qui crépite, « Fire Crackling Sound » | SoundReality | id 499636 sur Pixabay (recherche « fire crackling sound soundreality ») | 40 s à partir de 8 s, mono | 2026-10-17 |
 | `atelier/pencil` | crayon sur papier, « pencil » | freesound_community | id 29272 sur Pixabay (recherche « pencil freesound_community ») | entier (48 s), mono | 2026-10-17 |
@@ -178,3 +176,15 @@ Licence **CC0** (domaine public) : aucune mention obligatoire. Aperçu MP3 de Fr
 | `igloo/icehole` | icebergs 02 | rucisko | <https://freesound.org/people/rucisko/sounds/342447/> | CC0 | 41 s à partir de 0 s, mono | 2026-11-15 |
 | `igloo/stove` | 20 seconds of smokies boiling on a camp stove | SoundsLikeYukon | <https://freesound.org/people/SoundsLikeYukon/sounds/864615/> | CC0 | 33 s à partir de 0 s, mono | 2026-11-15 |
 | `igloo/husky` | ANIMAL_PUG_DOG_SLEEP_SNORE_INHALE_EXHALE_BREATH_H4N_NTG3_20120527.wav | samueljustice00 | <https://freesound.org/people/samueljustice00/sounds/156597/> | CC0 | 60 s à partir de 8 s, mono | 2026-11-15 |
+| `cabin/purr` | Cat purr.wav | Trautwein | <https://freesound.org/people/Trautwein/sounds/260881/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `beach/purr` | Cat purring | cubilon | <https://freesound.org/people/cubilon/sounds/130968/> | CC0 | 38 s à partir de 0 s, mono | 2026-11-15 |
+| `lighthouse/purr` | katzenmix.wav | ChaliceWell | <https://freesound.org/people/ChaliceWell/sounds/529605/> | CC0 | 34 s à partir de 0 s, mono | 2026-11-15 |
+| `lighthouse/wind` | By the sea | OSFX | <https://freesound.org/people/OSFX/sounds/404696/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `treehouse/wind` | wind_forest_08_strong_l_01.wav | teadrinker | <https://freesound.org/people/teadrinker/sounds/403051/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `roof/fire` | fire crackles | florianreichelt | <https://freesound.org/people/florianreichelt/sounds/563766/> | CC0 | 51 s à partir de 0 s, mono | 2026-11-15 |
+| `treehouse/crickets` | Cricket chirping | GB01 | <https://freesound.org/people/GB01/sounds/530477/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `onsen/crickets` | cricket | FunkApache | <https://freesound.org/people/FunkApache/sounds/393389/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `onsen/chimes` | Wind chimes 1 | giddster | <https://freesound.org/people/giddster/sounds/437337/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `treehouse/birds` | blackbird-evening.wav | echobones | <https://freesound.org/people/echobones/sounds/521558/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `cafe/street` | Soft ambience of street from interior terraced street Leeds, UK, Autumn | smellor123 | <https://freesound.org/people/smellor123/sounds/412012/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `cafe/espresso` | Coffee machine pouring espresso.wav | greatsoundstube | <https://freesound.org/people/greatsoundstube/sounds/628845/> | CC0 | 34 s, mono | 2026-11-15 |

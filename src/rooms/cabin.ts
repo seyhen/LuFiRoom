@@ -34,7 +34,7 @@ export const cabin: Room = {
     rain: { src: 'audio/cafe/rain', gain: 0.8 }, // la pluie du café, un peu plus bas qu'ailleurs : la cabane est petite et close
     fire: { src: 'audio/cabin/fire', gain: 0.5 },
     wind: { src: 'audio/cabin/wind', gain: 0.7 },
-    purr: { src: 'audio/bedroom/purr', gain: 0.5 },
+    purr: { src: 'audio/cabin/purr', gain: 0.36 },
     knit: { src: 'audio/cabin/knit', gain: 0.8 },
   },
   // Le tourne-disque joue d'abord le disque de Noël, puis les stations les plus douces.

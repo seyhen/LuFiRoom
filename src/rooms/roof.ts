@@ -35,7 +35,7 @@ export const roof: Room = {
     city: { src: 'audio/roof/city', gain: 0.8 },
     pigeons: { src: 'audio/roof/pigeons', gain: 0.8 },
     wind: { src: 'audio/roof/wind', gain: 0.8 },
-    fire: { src: 'audio/cafe/fire', gain: 0.8 },
+    fire: { src: 'audio/roof/fire', gain: 0.8 },
     watering: { src: 'audio/roof/watering', gain: 0.8 },
   },
   stations: ['soleil-bas', 'nuit-douce', 'bureau', 'rosee'],

@@ -36,10 +36,10 @@ export const treehouse: Room = {
   loops: {
     ...WEATHER_LOOPS,
     // le vent dans le chêne : la brise d'été du toit (enregistrement déjà là, voir public/audio/CREDITS.md)
-    wind: { src: 'audio/roof/wind', gain: 0.8 },
+    wind: { src: 'audio/treehouse/wind', gain: 1 },
     // les oiseaux le jour, les grillons la nuit : les enregistrements de la chambre (voir public/audio/CREDITS.md)
-    birds: { src: 'audio/bedroom/birds', gain: 0.5 },
-    crickets: { src: 'audio/bedroom/crickets', gain: 0.9 },
+    birds: { src: 'audio/treehouse/birds', gain: 1.1 },
+    crickets: { src: 'audio/treehouse/crickets', gain: 0.9 },
     // le ruisseau et les cigales : enregistrements (voir public/audio/CREDITS.md)
     brook: { src: 'audio/treehouse/brook', gain: 0.7 },
     cicadas: { src: 'audio/treehouse/cicadas', gain: 0.6 },
