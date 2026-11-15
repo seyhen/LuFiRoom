@@ -32,7 +32,7 @@ export const train: Room = {
     ...WEATHER_LOOPS,
     rails: { src: 'audio/train/rails', gain: 0.9 },
     tea: { src: 'audio/train/tea', gain: 0.9 },
-    rain: { src: 'audio/train/rain', gain: 1 },
+    rain: { src: 'audio/train/rain', gain: 0.8 },
     pages: { src: 'audio/cafe/pages', gain: 0.8 },
     cards: { src: 'audio/train/cards', gain: 0.8 },
   },

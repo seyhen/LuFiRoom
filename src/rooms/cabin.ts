@@ -31,6 +31,7 @@ export const cabin: Room = {
   // Gains calés sur le niveau de sortie de la synthèse (mesuré à ±1 dB) : un point de départ, à régler à l'oreille.
   loops: {
     ...WEATHER_LOOPS,
+    rain: { src: 'audio/cafe/rain', gain: 0.8 }, // la pluie du café, un peu plus bas qu'ailleurs : la cabane est petite et close
     fire: { src: 'audio/cabin/fire', gain: 0.5 },
     wind: { src: 'audio/cabin/wind', gain: 0.7 },
     purr: { src: 'audio/bedroom/purr', gain: 0.5 },

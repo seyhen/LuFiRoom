@@ -36,7 +36,7 @@ export const cafe: Room = {
     espresso: { src: 'audio/cafe/espresso', gain: 0.8 },
     pages: { src: 'audio/cafe/pages', gain: 0.8 },
     street: { src: 'audio/cafe/street', gain: 0.7 },
-    rain: { src: 'audio/cafe/rain', gain: 1 },
+    rain: { src: 'audio/cafe/rain', gain: 0.8 },
     fire: { src: 'audio/cafe/fire', gain: 0.8 },
     drip: { src: 'audio/cafe/drip', gain: 0.8 },
   },

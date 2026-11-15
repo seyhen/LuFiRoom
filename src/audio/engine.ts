@@ -128,15 +128,15 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   icehole: { build: icehole, base: 1.0 },
   sew: { build: sew, base: 1.4 },
   cocoa: { build: cocoa, base: 1.25 },
-  brook: { build: brook, base: 4.2 },
+  brook: { build: brook, base: 1.05 },
   cicadas: { build: cicadas, base: 3.0 },
   frogs: { build: frogs, base: 1.8 },
   musicbox: { build: musicbox, base: 0.9 },
   rainbarrel: { build: rainbarrel, base: 1.1 },
   wash: { build: wash, base: 1.0 },
   tumble: { build: tumble, base: 1.0 },
-  rinse: { build: rinse, base: 1.4 },
-  gutter: { build: gutter, base: 1.4 },
+  rinse: { build: rinse, base: 4.4 },
+  gutter: { build: gutter, base: 4.4 },
 }
 const ids = Object.keys(CHANNELS) as SoundId[]
 
