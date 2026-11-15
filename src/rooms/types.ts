@@ -5,11 +5,13 @@
 /** Un son du mixeur. Le moteur a un canal par identifiant (src/audio/engine.ts). */
 export type SoundId =
   | 'radio' | 'rain' | 'fan' | 'purr' | 'outside' | 'fire' | 'wind' | 'street' | 'murmur' | 'espresso' | 'pages'
-  | 'waves' | 'gulls' | 'chimes' | 'rails' | 'tea' | 'city' | 'pigeons' | 'keys' | 'pencil' | 'kettle' | 'spring' | 'bamboo'
+  | 'waves' | 'gulls' | 'chimes' | 'rails' | 'city' | 'pigeons' | 'keys' | 'kettle' | 'spring'
   // le phare, le sous-marin, le marché de nuit
-  | 'foghorn' | 'bell' | 'sonar' | 'bubbles' | 'hull' | 'engine' | 'whale' | 'sizzle' | 'simmer' | 'neon' | 'tram'
-  // les nouveaux objets : diffuseur, tricot, bâton de pluie, cartes, arrosoir, pinceau, fouet, plume, conque, boulier
-  | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'abacus' | 'drip'
+  | 'foghorn' | 'bell' | 'sonar' | 'bubbles' | 'hull' | 'engine' | 'whale' | 'sizzle' | 'simmer' | 'tram'
+  // les nouveaux objets : diffuseur, tricot, bâton de pluie, cartes, arrosoir, pinceau, fouet, plume, conque
+  | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'drip'
+  // le sablier du train, le bol chantant de l'atelier, la cascade de l'onsen
+  | 'sand' | 'bowl' | 'waterfall'
   // l'igloo : l'aurore, le trou de pêche, le réchaud, le husky
   | 'aurora' | 'icehole' | 'stove' | 'husky'
   // la cabane perchée : le ruisseau, les cigales (le vent et les oiseaux reprennent les sons de base)
@@ -21,10 +23,11 @@ export type SoundId =
 /** Un objet interactif de la scène. */
 export type ObjectId =
   | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
-  | 'gull' | 'chimes' | 'tea' | 'book' | 'brazier' | 'pigeons' | 'city' | 'laundry' | 'keyboard' | 'pencil' | 'kettle'
-  | 'spring' | 'bamboo' | 'furin' | 'maple'
-  | 'foghorn' | 'bell' | 'stove' | 'barometer' | 'sonar' | 'valve' | 'gauge' | 'telegraph' | 'wok' | 'pot' | 'neon' | 'tram'
-  | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'abacus' | 'drip'
+  | 'gull' | 'chimes' | 'brazier' | 'pigeons' | 'city' | 'laundry' | 'keyboard' | 'kettle'
+  | 'spring' | 'waterfall' | 'furin' | 'maple'
+  | 'foghorn' | 'bell' | 'stove' | 'barometer' | 'sonar' | 'valve' | 'gauge' | 'telegraph' | 'wok' | 'pot' | 'tram'
+  | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'drip'
+  | 'hourglass' | 'bowl'
   | 'icewindow' | 'icehole' | 'husky'
   | 'birdhouse' | 'hammock' | 'oak' | 'brook' | 'lemonade'
   | 'washer' | 'dryer' | 'changer' | 'folding' | 'rinse' | 'gutter'

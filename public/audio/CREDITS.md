@@ -35,7 +35,6 @@ Toutes viennent de Pixabay, sous la **Pixabay Content License** (<https://pixaba
 | `cafe/pages` | pages qu'on tourne, « turning paper, turning page » | sarthakraj_308 | <https://pixabay.com/sound-effects/film-special-effects-turning-paper-turning-page-290380/> | entier (26 s), mono | 2026-10-17 |
 | `cafe/rain`, `atelier/rain`, `train/rain` | pluie, « CALMING RAIN » | Liecio | id 257596 sur Pixabay (recherche « calming rain liecio ») | trois passages de 45 s (à 10 s, 45 s, 62 s), mono | 2026-10-17 |
 | `cafe/fire` | feu qui crépite, « Fire Crackling Sound » | SoundReality | id 499636 sur Pixabay (recherche « fire crackling sound soundreality ») | 40 s à partir de 8 s, mono | 2026-10-17 |
-| `atelier/pencil` | crayon sur papier, « pencil » | freesound_community | id 29272 sur Pixabay (recherche « pencil freesound_community ») | entier (48 s), mono | 2026-10-17 |
 | `atelier/keys` | clavier, « Keyboard Typing ASMR » | DRAGON-STUDIO | id 356118 sur Pixabay (recherche « keyboard typing asmr ») | entier (8 s), mono | 2026-10-17 |
 | `atelier/kettle` | eau qui bout, « Boiling Water Sound » | freesound_community | id 62556 sur Pixabay (recherche « boiling water sound ») | entier (16 s), mono | 2026-10-17 |
 | `beach/waves` | vagues, « Ocean Waves » | RMultimediaEU | id 250310 sur Pixabay (recherche « ocean waves rmultimediaeu ») | 45 s à partir de 0 s, stéréo | 2026-10-17 |
@@ -105,7 +104,6 @@ Pixabay Content License (exception accordée par le propriétaire, voir CLAUDE.m
 |---|---|---|---|
 | beach/gulls | Seagull - Sound Effect | u_up4clmd95a | 272695 |
 | beach/chimes (plage, onsen) | Wind Chimes Bells | SoundsForYou | 115747 |
-| train/tea | Stirring Cup | freesound_community | 31593 |
 | roof/city | City-Above-Far-Ambience-Car | CliffordJohnson | 479129 |
 | roof/pigeons | pigeon | freesound_community | 36137 |
 | roof/wind (toit, phare) | Wind Blowing | SoundReality | 457954 |
@@ -121,7 +119,6 @@ Pixabay Content License (exception accordée par le propriétaire, voir CLAUDE.m
 | market/sizzle | Frying in a pan | freesound_community | 6017 |
 | market/tram | Tram, transport, road, wheel noise, rails | SSPsurvival | 10342 |
 | market/simmer | Cauldron Boiling | Irhouen | 173607 |
-| market/neon | Cyberpunk Neon Sign Electric Buzz #1 | Vadim_Makes_Sound | 547828 |
 
 ## Sons des objets ajoutés le 2026-10-24 (un par pièce)
 
@@ -137,8 +134,6 @@ Pixabay Content License (accord du propriétaire du projet), téléchargés depu
 | `atelier/brush` | Paint brush | freesound_community | 57324 |
 | `onsen/whisk` | whisking | freesound_community | 44551 |
 | `lighthouse/quill` | Writing sound loop | freesound_community | 57001 |
-| `submarine/shell` | SeaShell_01 | freesound_community | 90046 |
-| `market/abacus` | Rosary Beads | DOBCommunications | 284813 |
 | `cafe/drip` | Water Dripping | DRAGON-STUDIO | 364450 |
 
 ## Enregistrements réutilisés par d'autres pièces (2026-11-07)
@@ -189,3 +184,6 @@ Licence **CC0** (domaine public) : aucune mention obligatoire. Aperçu MP3 de Fr
 | `cafe/street` | Soft ambience of street from interior terraced street Leeds, UK, Autumn | smellor123 | <https://freesound.org/people/smellor123/sounds/412012/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
 | `cafe/espresso` | Coffee machine pouring espresso.wav | greatsoundstube | <https://freesound.org/people/greatsoundstube/sounds/628845/> | CC0 | 34 s, mono | 2026-11-15 |
 | `lighthouse/waves` | 11ft waves breaking on sandy beach in the distance from the top of the cliff | chris_dagorne | <https://freesound.org/people/chris_dagorne/sounds/426074/> | CC0 | 60 s à partir de 0 s, stéréo | 2026-11-15 |
+| `train/sand` | SAND POUR.wav | nicoproson | <https://freesound.org/people/nicoproson/sounds/627070/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `atelier/bowl` | SingingBowl.wav | Monkay | <https://freesound.org/people/Monkay/sounds/48325/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `onsen/waterfall` | Distant Waterfall 2 | Yoyodaman234 | <https://freesound.org/people/Yoyodaman234/sounds/348823/> | CC0 | 52 s à partir de 0 s, mono | 2026-11-15 |

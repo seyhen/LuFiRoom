@@ -3,7 +3,8 @@ import { Shamisen } from './Shamisen'
 import { OnsenShell } from './OnsenShell'
 import { Mountains } from './Mountains'
 import { Pool } from './Pool'
-import { ShishiOdoshi, Spout } from './Water'
+import { Spout } from './Water'
+import { Waterfall } from './Waterfall'
 import { Furin, Maple, StoneLantern } from './Garden'
 import { BathThings, TeaTray, TowelRack } from './Props'
 import { Macaque } from './Macaque'
@@ -15,7 +16,7 @@ import { Surroundings } from './out/Surroundings'
 
 /**
  * Un bain en plein air (rotenburo) au bord d'un ryokan, en automne : le bassin qui fume entre ses rochers, l'eau de la source
- * qui coule du bambou, le shishi-odoshi, l'érable rouge, la lanterne de pierre, le furin sous l'avant-toit, et les montagnes
+ * qui coule du bambou, la cascade, l'érable rouge, la lanterne de pierre, le furin sous l'avant-toit, et les montagnes
  * dans la brume au-dessus de la palissade.
  */
 export function OnsenScene() {
@@ -28,7 +29,7 @@ export function OnsenScene() {
       <Maple />
       <Pool />
       <Spout />
-      <ShishiOdoshi />
+      <Waterfall position={[-1.2, 0, -2.6]} />
       <StoneLantern />
       <Furin />
       <TeaTray />

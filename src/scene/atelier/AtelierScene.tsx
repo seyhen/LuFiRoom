@@ -8,6 +8,7 @@ import { Kitchenette } from './Kitchenette'
 import { Gallery, Rafters } from './Rafters'
 import { PaintEasel } from './PaintEasel'
 import { FloorNook } from './FloorNook'
+import { SingingBowl } from './SingingBowl'
 import { Bookcase, CanvasCorner, HangingPlants, ReadingCorner, RugAndLadder } from './Corner'
 import { BackWall } from './BackWall'
 import { Surroundings } from './out/Surroundings'
@@ -35,6 +36,7 @@ export function AtelierScene() {
       <ReadingCorner />
       <CanvasCorner />
       <FloorNook />
+      <SingingBowl position={[0.05, 0.008, 0.6]} />
       <Rafters />
       <Gallery />
       <BackWall />

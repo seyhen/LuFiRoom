@@ -1,11 +1,10 @@
 import { useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Color, Object3D, type Group, type InstancedMesh } from 'three'
-import { isActive, useStore } from '../../state/store'
+import { Color, Object3D, type InstancedMesh } from 'three'
 import { approach, clamp, smooth } from '../../math'
 import { gummy } from '../materials'
 import { Batch, Part, SPH, SPH_MID, cyl, noRay, rbox, type Item } from '../parts'
-import { reduceMotion, useSquash } from '../anim'
+import { reduceMotion } from '../anim'
 import { Static } from '../Static'
 import { K } from './materials'
 
@@ -44,12 +43,10 @@ const DETAILS = [...FRUITS, ...STEMS, ...LEAVES]
 
 /**
  * L'étal de fruits : un petit comptoir de bois, deux cagettes de mandarines, de pommes et de poires, et le soroban du marchand,
- * appuyé contre un tasseau. Quand le son joue, les boules glissent d'un côté à l'autre des tiges, l'une après l'autre, comme
- * pour un compte qu'on refait ; au repos, elles restent là où elles sont.
+ * appuyé contre un tasseau. Du décor : les boules du soroban restent là où elles sont.
  */
 export function FruitStall() {
-  const g = useRef<Group>(null!), beads = useRef<InstancedMesh>(null!), st = useRef({ k: 0, ph: 0 })
-  useSquash('abacus', g)
+  const beads = useRef<InstancedMesh>(null!), st = useRef({ k: 0, ph: 0 })
   useLayoutEffect(() => {
     const c = new Color()
     for (let r = 0; r < RODS; r++) for (let i = 0; i < BEADS; i++) beads.current.setColorAt(r * BEADS + i, c.setHex(colorOf(i)))
@@ -57,7 +54,7 @@ export function FruitStall() {
   }, [])
   const dummy = useRef(new Object3D())
   useFrame((_, delta) => {
-    const dt = Math.min(delta, 0.05), s = st.current, on = isActive(useStore.getState(), 'abacus')
+    const dt = Math.min(delta, 0.05), s = st.current, on = false
     s.k = approach(s.k, on ? 1 : 0, dt * 2)
     if (!reduceMotion) s.ph += dt * 0.9 * s.k // la phase s'ajoute image après image
     const d = dummy.current
@@ -78,7 +75,7 @@ export function FruitStall() {
     beads.current.instanceMatrix.needsUpdate = true
   })
   return (
-    <group ref={g} userData={{ id: 'abacus' }} position={[STALL.x, 0, STALL.z]} rotation-y={0.25}>
+    <group position={[STALL.x, 0, STALL.z]} rotation-y={0.25}>
       <Static>
         {/* le comptoir : un plateau de bois, quatre pieds, une étagère basse */}
         <Part geo={rbox(1.035, 0.05, 0.5, 0.02)} m={K.wood} p={[-0.0425, STALL.top - 0.025, 0]} />

@@ -19,14 +19,14 @@ import waves from './channels/waves'
 import gulls from './channels/gulls'
 import chimes from './channels/chimes'
 import rails from './channels/rails'
-import tea from './channels/tea'
+import sand from './channels/sand'
 import city from './channels/city'
 import pigeons from './channels/pigeons'
 import keys from './channels/keys'
-import pencil from './channels/pencil'
+import bowl from './channels/bowl'
 import kettle from './channels/kettle'
 import spring from './channels/spring'
-import bamboo from './channels/bamboo'
+import waterfall from './channels/waterfall'
 import foghorn from './channels/foghorn'
 import bell from './channels/bell'
 import sonar from './channels/sonar'
@@ -36,7 +36,6 @@ import engineSound from './channels/engine'
 import whale from './channels/whale'
 import sizzle from './channels/sizzle'
 import simmer from './channels/simmer'
-import neon from './channels/neon'
 import tram from './channels/tram'
 import mist from './channels/mist'
 import knit from './channels/knit'
@@ -47,7 +46,6 @@ import brush from './channels/brush'
 import whisk from './channels/whisk'
 import quill from './channels/quill'
 import shell from './channels/shell'
-import abacus from './channels/abacus'
 import drip from './channels/drip'
 import aurora from './channels/aurora'
 import icehole from './channels/icehole'
@@ -94,14 +92,14 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   gulls: { build: gulls, base: 0.65 },
   chimes: { build: chimes, base: 1.2 },
   rails: { build: rails, base: 0.45 },
-  tea: { build: tea, base: 0.9 },
+  sand: { build: sand, base: 1.4 },
   city: { build: city, base: 0.63 },
   pigeons: { build: pigeons, base: 0.9 },
   keys: { build: keys, base: 0.9 },
-  pencil: { build: pencil, base: 0.9 },
+  bowl: { build: bowl, base: 0.7 },
   kettle: { build: kettle, base: 0.9 },
   spring: { build: spring, base: 0.3 },
-  bamboo: { build: bamboo, base: 0.9 },
+  waterfall: { build: waterfall, base: 1 },
   foghorn: { build: foghorn, base: 1.75 },
   bell: { build: bell, base: 2.2 },
   sonar: { build: sonar, base: 1.5 },
@@ -111,7 +109,6 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   whale: { build: whale, base: 0.7 },
   sizzle: { build: sizzle, base: 1.05 },
   simmer: { build: simmer, base: 0.65 },
-  neon: { build: neon, base: 1.3 },
   tram: { build: tram, base: 0.6 },
   mist: { build: mist, base: 1.0 },
   knit: { build: knit, base: 1.0 },
@@ -122,7 +119,6 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   whisk: { build: whisk, base: 1.0 },
   quill: { build: quill, base: 1.0 },
   shell: { build: shell, base: 1.0 },
-  abacus: { build: abacus, base: 1.0 },
   drip: { build: drip, base: 1.0 },
   aurora: { build: aurora, base: 0.6 },
   icehole: { build: icehole, base: 0.65 },

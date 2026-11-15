@@ -1,12 +1,10 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, SphereGeometry, type Group, type PointLight, type Sprite } from 'three'
-import { isActive, useStore } from '../../state/store'
 import { TAU, smooth } from '../../math'
 import { Part, SPH, cyl, noRay, rbox } from '../parts'
-import { mood, reduceMotion, useSquash } from '../anim'
+import { mood, useSquash } from '../anim'
 import { glowTex } from '../textures'
-import { LIVE } from '../Static'
 import { A } from './materials'
 
 const AT: [number, number, number] = [0.2, 0, -2.05]
@@ -50,17 +48,10 @@ export function DraftLamp({ position, rotationY = 0 }: { position: [number, numb
   )
 }
 
-/** Le crayon qui bouge sur la feuille quand on écoute le dessin. */
+/** Le crayon posé sur la feuille. */
 function Pencil() {
-  const p = useRef<Group>(null!)
-  useFrame(({ clock }) => {
-    const on = isActive(useStore.getState(), 'pencil'), t = clock.elapsedTime
-    if (reduceMotion || !on) return
-    p.current.position.x = -0.1 + Math.sin(t * 3.1) * 0.12 + Math.sin(t * 11) * 0.02
-    p.current.position.z = 0.05 + Math.sin(t * 1.7) * 0.06
-  })
   return (
-    <group ref={p} userData={LIVE} position={[-0.1, 0.03, 0.05]} rotation={[0.9, 0.4, 0]}>
+    <group position={[-0.1, 0.03, 0.05]} rotation={[0.9, 0.4, 0]}>
       <Part geo={cyl(0.008, 0.008, 0.22, 6)} m={A.ochre} p={[0, 0.11, 0]} castShadow={false} />
       <Part m={A.cream} p={[0, -0.01, 0]} rotation-x={Math.PI} castShadow={false}>
         <coneGeometry args={[0.008, 0.03, 6]} />
@@ -71,8 +62,6 @@ function Pencil() {
 
 /** La table à dessin inclinée, son croquis d'immeuble, la règle, les crayons, et la lampe d'architecte. */
 export function DraftingTable() {
-  const g = useRef<Group>(null!)
-  useSquash('pencil', g)
   return (
     <group position={AT}>
       {/* le piètement : de chaque côté un chevalet en A (deux pieds qui s'écartent vers le sol, une entretoise), la tête sous le
@@ -90,7 +79,7 @@ export function DraftingTable() {
         </group>
       ))}
       <Part geo={rbox(1.15, 0.04, 0.04, 0.015)} m={A.oakDark} p={[0, 0.3, 0]} castShadow={false} />
-      <group ref={g} userData={{ id: 'pencil' }} position={[0, 1.0, 0]} rotation-x={TILT}>
+      <group position={[0, 1.0, 0]} rotation-x={TILT}>
         <Part geo={rbox(1.3, 0.04, 0.9, 0.02)} m={A.white} />
         <mesh material={A.sketch} position={[-0.05, 0.022, 0.02]} rotation-x={-Math.PI / 2} receiveShadow>
           <planeGeometry args={[0.84, 0.6]} />
