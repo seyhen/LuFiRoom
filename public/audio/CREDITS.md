@@ -188,3 +188,4 @@ Licence **CC0** (domaine public) : aucune mention obligatoire. Aperçu MP3 de Fr
 | `treehouse/birds` | blackbird-evening.wav | echobones | <https://freesound.org/people/echobones/sounds/521558/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
 | `cafe/street` | Soft ambience of street from interior terraced street Leeds, UK, Autumn | smellor123 | <https://freesound.org/people/smellor123/sounds/412012/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
 | `cafe/espresso` | Coffee machine pouring espresso.wav | greatsoundstube | <https://freesound.org/people/greatsoundstube/sounds/628845/> | CC0 | 34 s, mono | 2026-11-15 |
+| `lighthouse/waves` | 11ft waves breaking on sandy beach in the distance from the top of the cliff | chris_dagorne | <https://freesound.org/people/chris_dagorne/sounds/426074/> | CC0 | 60 s à partir de 0 s, stéréo | 2026-11-15 |

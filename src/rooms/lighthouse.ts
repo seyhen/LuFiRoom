@@ -34,6 +34,7 @@ export const lighthouse: Room = {
     ...WEATHER_LOOPS,
     wind: { src: 'audio/lighthouse/wind', gain: 0.65 },
     purr: { src: 'audio/lighthouse/purr', gain: 0.85 },
+    waves: { src: 'audio/lighthouse/waves', gain: 0.8 },
     fire: { src: 'audio/lighthouse/fire', gain: 0.8 },
     foghorn: { src: 'audio/lighthouse/foghorn', gain: 0.9 },
     quill: { src: 'audio/lighthouse/quill', gain: 0.8 },
