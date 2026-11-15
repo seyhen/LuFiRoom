@@ -36,6 +36,7 @@ import bonodori from './channels/bonodori'
 import windowpiano from './channels/windowpiano'
 import sax from './channels/sax'
 import accordion from './channels/accordion'
+import flute from './channels/flute'
 import foghorn from './channels/foghorn'
 import bell from './channels/bell'
 import sonar from './channels/sonar'
@@ -69,6 +70,9 @@ import wash from './channels/wash'
 import tumble from './channels/tumble'
 import rinse from './channels/rinse'
 import gutter from './channels/gutter'
+import guitar from './channels/guitar'
+import jellies from './channels/jellies'
+import koto from './channels/koto'
 
 // canal (bus Gain) ─┬─> master Gain 0.9 ─> volume général ─> compresseur ─> sortie
 // canal (bus Gain) ─┘
@@ -151,6 +155,10 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   tumble: { build: tumble, base: 1.0 },
   rinse: { build: rinse, base: 1.05 },
   gutter: { build: gutter, base: 1.15 },
+  guitar: { build: guitar, base: 1 },
+  jellies: { build: jellies, base: 1 },
+  flute: { build: flute, base: 2.8 },
+  koto: { build: koto, base: 3 }, // provisoire : synthèse, notes espacées
 }
 const ids = Object.keys(CHANNELS) as SoundId[]
 

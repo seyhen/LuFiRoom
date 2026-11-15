@@ -38,6 +38,7 @@ export const submarine: Room = {
     hull: { src: 'audio/submarine/hull', gain: 0.8 },
     engine: { src: 'audio/submarine/engine', gain: 0.8 },
     whale: { src: 'audio/submarine/whale', gain: 0.9 },
+    jellies: { src: 'audio/submarine/jellies', gain: 0.8 },
   },
   stations: ['minuit', 'brume', 'veillee'],
   playlist: PLAYLIST,
@@ -55,6 +56,8 @@ export const submarine: Room = {
     { id: 'lamp', target: 'night', label: 'Lampe de banquier · jour / nuit', anchor: [0.6, 1.25, -0.55] },
     { id: 'radio', target: 'radio', label: 'Orgue · lofi', anchor: [-2.4, 1.5, 0.5] },
     { id: 'shell', target: 'shell', label: 'Conque · la mer dedans', anchor: [-1.2, 1.0, 2.1] },
+    // hors du sous-marin : la grande méduse du courant, à droite (repère du monde) ; l'ancre est sous la cloche (un point blanc sur une cloche qui brille ne se voit pas)
+    { id: 'jellychoir', target: 'jellies', label: 'Méduses · le chœur du courant', anchor: [5.6, 1.85, -1.6] },
   ],
   sounds: [
     { id: 'radio', name: 'Orgue lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
@@ -64,6 +67,7 @@ export const submarine: Room = {
     { id: 'engine', name: 'Machines', chip: 'var(--c-engine)', volume: 0.5, sub: () => 'avant, lentement' },
     { id: 'shell', name: 'Conque', chip: 'var(--c-shell)', volume: 0.45, sub: () => 'la mer, dans le coquillage' },
     { id: 'whale', name: 'Baleine', chip: 'var(--c-whale)', volume: 0.5, sub: () => 'un chant au loin' },
+    { id: 'jellies', name: 'Méduses', chip: 'var(--c-jellies)', volume: 0.4, sub: () => 'un chœur de verre dans le courant' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'loin, à la surface' },
   ],
 }

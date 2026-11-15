@@ -43,6 +43,7 @@ export const treehouse: Room = {
     // le ruisseau et les cigales : enregistrements (voir public/audio/CREDITS.md)
     brook: { src: 'audio/treehouse/brook', gain: 0.7 },
     cicadas: { src: 'audio/treehouse/cicadas', gain: 0.6 },
+    // flute : synthétisée pour l'instant (src/audio/channels/flute.ts)
   },
   stations: ['rosee', 'petit-matin', 'soleil-bas', 'veillee'],
   playlist: PLAYLIST,
@@ -58,6 +59,7 @@ export const treehouse: Room = {
     { id: 'lamp', target: 'night', label: 'Lanternes en bocal · jour / nuit', anchor: [1.15, 2.3, -1.42] },
     { id: 'oak', target: 'wind', label: 'Le chêne · le vent dans les feuilles', anchor: [2.0, 4.7, -2.9] },
     { id: 'brook', target: 'brook', label: 'Ruisseau · l’eau en contrebas', anchor: [-2.0, -2.5, -7.8] },
+    { id: 'flautist', target: 'flute', label: 'Flûtiste · un air dans la forêt', anchor: [4.09, 0.27, -1.64] },
   ],
   sounds: [
     { id: 'radio', name: 'Banjo lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
@@ -65,6 +67,7 @@ export const treehouse: Room = {
     { id: 'wind', name: 'Vent', chip: 'var(--c-leaves)', volume: 0.55, sub: () => 'dans les feuilles du chêne' },
     { id: 'brook', name: 'Ruisseau', chip: 'var(--c-brook)', volume: 0.5, sub: () => 'l’eau sur les galets' },
     { id: 'cicadas', name: 'Cigales', chip: 'var(--c-cicadas)', volume: 0.35, sub: () => 'l’été dans le chêne' },
+    { id: 'flute', name: 'Flûtiste', chip: 'var(--c-flute)', volume: 0.4, sub: () => 'un air lent dans la forêt' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'dans les feuilles' },
   ],
 }

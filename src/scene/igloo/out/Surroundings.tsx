@@ -13,6 +13,7 @@ import { Ice, glacierGeo, pinnacleGeo, tableGeo } from './Glaciers'
 import { OutdoorPrecip } from '../../objects/OutdoorPrecip'
 import { igloo } from '../../../rooms/igloo'
 import { Penguin } from '../Penguin'
+import { GuitarCamp, Guitarist } from './Guitarist'
 
 // Le dehors de l'igloo : son île de neige est une banquise qui flotte sur une mer arctique. Autour, d'autres plaques de glace qui
 // dansent sur la houle, des icebergs au loin, un kayak tiré sur une plaque, deux manchots qui regardent l'eau.
@@ -64,7 +65,10 @@ function floeGeo(r: number, seed: number) {
 }
 
 /** Les plaques : [x, z, rayon, a un kayak / des manchots]. */
-const FLOES: [number, number, number][] = [[6.0, 2.6, 1.3], [3.4, 6.4, 0.9], [-5.6, 5.2, 1.1], [7.4, -2.0, 0.8], [-2.0, 7.6, 0.6], [5.4, 5.6, 0.45], [-7.0, 1.6, 0.6]]
+const FLOES: [number, number, number][] = [[6.0, 2.6, 1.3], [3.4, 6.4, 0.9], [-5.6, 5.2, 1.1], [6.5, -0.8, 1.05], [-2.0, 7.6, 0.6], [5.4, 5.6, 0.45], [-7.0, 1.6, 0.6]]
+
+/** Le guitariste de la plaque de droite : ses pieds sur la glace (repère de la plaque, qui tourne de 3 rad) et son cap, de face à la caméra. */
+const GUITAR = { at: [0.05, 0.26, 0.0] as [number, number, number], ry: Math.PI / 4 - 3 }
 
 /** Un anneau d'écume au pied de l'île : sa ligne d'eau est un cercle de 4,6 m (l'île est mise à l'échelle 1,15). */
 function ringGeo(r: number, w: number) {
@@ -78,7 +82,7 @@ function ringGeo(r: number, w: number) {
 const DAY = new Color(0x2f6a88), NIGHT = new Color(0x0f2236), STORM = new Color(0x4a5e6c), WHITE = new Color(0x8aa6ba)
 
 /** Une plaque qui danse sur la houle (et ce qu'on y a posé). */
-function Floe({ x, z, r, i, children }: { x: number; z: number; r: number; i: number; children?: ReactNode }) {
+function Floe({ x, z, r, i, children, live }: { x: number; z: number; r: number; i: number; children?: ReactNode; live?: ReactNode }) {
   const g = useRef<Group>(null!), ph = useRef(i * 1.7)
   const geo = useMemo(() => floeGeo(r, i + 3), [r, i])
   useFrame((_, dt) => {
@@ -93,6 +97,7 @@ function Floe({ x, z, r, i, children }: { x: number; z: number; r: number; i: nu
         <mesh geometry={geo} material={[M.floe, M.floeSide]} castShadow receiveShadow raycast={noRay} />
         {children}
       </Static>
+      {live}
     </group>
   )
 }
@@ -170,8 +175,9 @@ export function Surroundings() {
         ))}
       </Static>
       {FLOES.map(([x, z, r], i) => (
-        <Floe key={i} x={x} z={z} r={r} i={i}>
+        <Floe key={i} x={x} z={z} r={r} i={i} live={i === 3 && <Guitarist at={GUITAR.at} ry={GUITAR.ry} />}>
           {i === 0 && <Kayak />}
+          {i === 3 && <GuitarCamp at={GUITAR.at} ry={GUITAR.ry} />}
           {/* deux manchots sur la plaque de gauche, qui regardent l'eau */}
           {i === 2 && (
             <>

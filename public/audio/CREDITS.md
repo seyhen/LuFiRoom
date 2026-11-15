@@ -200,3 +200,5 @@ Licence **CC0** (domaine public) : aucune mention obligatoire. Aperçu MP3 de Fr
 | `cafe/handpan` | handpan recording.wav | soundguy103 | <https://freesound.org/people/soundguy103/sounds/642771/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
 | `market/bonodori` | Tokyo - Festival Drums and Flute. | manuke | <https://freesound.org/people/manuke/sounds/315888/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
 | `laundromat/windowpiano` | Piano improvisation | Bradovic | <https://freesound.org/people/Bradovic/sounds/171326/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `igloo/guitar` | Calm and thoughts.wav | Elmatute | <https://freesound.org/people/Elmatute/sounds/679746/> | CC0 | 60 s à partir de 2 s, mono | 2026-11-15 |
+| `submarine/jellies` | Resonating Ambient Drone with Distant Shimmering Voices | bassimat | <https://freesound.org/people/bassimat/sounds/875083/> | CC0 | 48 s à partir de 0 s, mono | 2026-11-15 |

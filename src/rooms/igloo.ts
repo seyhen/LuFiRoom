@@ -34,6 +34,7 @@ export const igloo: Room = {
     icehole: { src: 'audio/igloo/icehole', gain: 0.8 },
     stove: { src: 'audio/igloo/stove', gain: 0.8 },
     husky: { src: 'audio/igloo/husky', gain: 0.8 },
+    guitar: { src: 'audio/igloo/guitar', gain: 0.8 },
   },
   stations: ['minuit', 'brume', 'nuit-douce'],
   playlist: PLAYLIST,
@@ -50,6 +51,8 @@ export const igloo: Room = {
     { id: 'stove', target: 'stove', label: 'Réchaud · la casserole', anchor: [0.17, 0.5, -0.63] },
     { id: 'icehole', target: 'icehole', label: 'Trou de pêche · l’eau sous la glace', anchor: [2.3, 0.14, 0.86] },
     { id: 'husky', target: 'husky', label: 'Husky · il dort', anchor: [-1.3, 0.32, 0.3] },
+    // hors de l'igloo : le guitariste de la plaque de glace de droite (repère du monde, pas mis à l'échelle)
+    { id: 'guitarist', target: 'guitar', label: 'Guitariste · l’air de la banquise', anchor: [6.5, 0.3, -0.8] },
   ],
   sounds: [
     { id: 'radio', name: 'Radio à manivelle', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
@@ -57,6 +60,7 @@ export const igloo: Room = {
     { id: 'icehole', name: 'Trou de pêche', chip: 'var(--c-icehole)', volume: 0.55, sub: () => 'l’eau sous la glace' },
     { id: 'stove', name: 'Réchaud', chip: 'var(--c-stove)', volume: 0.45, sub: () => 'la neige qui fond' },
     { id: 'husky', name: 'Husky', chip: 'var(--c-husky)', volume: 0.5, sub: () => 'il dort près du réchaud' },
+    { id: 'guitar', name: 'Guitare', chip: 'var(--c-guitar)', volume: 0.4, sub: () => 'des accords lents sur la glace' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'contre la neige' },
   ],
 }

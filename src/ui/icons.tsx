@@ -54,6 +54,8 @@ export const soundIcons: Record<SoundId, ReactNode> = {
   bowl: svg(<><path d="M4 11h16a8 7 0 0 1-16 0z" /><path d="M8 6.5c1-1.2 3-1.2 4 0M12 4c1-1.2 3-1.2 4 0" /></>),
   sax: svg(<><path d="M7 3.5c2 0 3.5.8 3.5 2.6V16c0 2 1.2 3.5 3.2 3.5s3.3-1.5 3.3-3.5v-2.5" /><path d="M15.5 13.5h4.5l-1 3h-2.5z" /><path d="M10.5 8.5h2M10.5 11.5h2" /></>),
   accordion: svg(<><rect x="3" y="7" width="4" height="10" rx="1" /><rect x="17" y="7" width="4" height="10" rx="1" /><path d="M8.5 8v8M10.5 8.5v7M12.5 8.5v7M14.5 8v8" /></>),
+  koto: svg(<><rect x="2.5" y="9" width="19" height="6.5" rx="2.5" /><path d="M5 11.2h14M5 13.3h14" /><path d="M9.500 9.500v5.500M12.500 9.500v5.500M15.500 9.500v5.500" /></>),
+  flute: svg(<><path d="M3.500 17.500 18 7.500c1-.7 2.300.7 1.500 1.700L9 20.500c-.8.900-2.500.8-3.500-.2z" /><path d="M9.500 14.500h.01M12.500 12.500h.01M15.500 10.500h.01" /><path d="M18 3.500v2M21 5l-1.500 1.200" /></>),
   handpan: svg(<><ellipse cx="12" cy="13" rx="9" ry="4.5" /><ellipse cx="12" cy="12.4" rx="2" ry="1" /><path d="M6.5 11.5h.01M17.5 11.5h.01M9 9.8h.01M15 9.8h.01M9 14.8h.01M15 14.8h.01" /></>),
   bonodori: svg(<><ellipse cx="12" cy="8" rx="7" ry="2.6" /><path d="M5 8v8c0 1.5 3.1 2.6 7 2.6s7-1.1 7-2.6V8" /><path d="M12 3.5v-1M3 20h18" /></>),
   windowpiano: svg(<><rect x="3" y="7" width="18" height="11" rx="1.5" /><path d="M7.5 12v6M12 12v6M16.5 12v6M3 12h18" /></>),
@@ -71,6 +73,8 @@ export const soundIcons: Record<SoundId, ReactNode> = {
   cicadas: svg(<><path d="M12 6c-3 0-5 2-5 5v3c0 1.5 1 2.5 2.5 2.5h5c1.5 0 2.5-1 2.5-2.5v-3c0-3-2-5-5-5z" /><path d="M12 6V4M9 6 7 4.5M15 6l2-1.5" /><path d="M7 11 3.5 9.5M17 11l3.5-1.5" /><path d="M9.5 17.5 8 20M14.5 17.5 16 20" /></>),
   wash: svg(<><rect x="4.5" y="3" width="15" height="18" rx="2.6" /><path d="M4.5 7h15" /><circle cx="12" cy="14" r="4.3" /><path d="M9.3 15c1.2-.9 2.4-.9 3.6 0s1.9.7 2.6.2" /></>),
   rinse: svg(<><rect x="4.5" y="3" width="15" height="18" rx="2.6" /><circle cx="12" cy="13" r="5" /><path d="M8.4 13c1-.9 2-.9 3 0s2 .9 3.2 0" /><circle cx="9.5" cy="10.8" r=".5" /><circle cx="13.5" cy="15.6" r=".5" /></>),
+  guitar: svg(<><path d="M14.5 9.5 20 4M18.2 3.6l2.2 2.2" /><path d="M10.5 8.8c1.6-1.2 3.4.2 4 1.6s.4 2.6 1.4 3.4c1.6 1.6.8 4.6-1.7 5.8-2.6 1.2-5.8.6-7.4-1-1.4-1.4-1.4-3.2-.2-4.4 1-1 .8-2 1.4-3 .6-1 1.6-1.8 2.5-2.4z" /><circle cx="10.6" cy="14.4" r="1.3" /></>),
+  jellies: svg(<><path d="M5 11.5a7 6.5 0 0 1 14 0z" /><path d="M8 11.5c0 2.5-1 3.5-1 6M12 11.5v7M16 11.5c0 2.5 1 3.5 1 6" /></>),
   gutter: svg(<><path d="M8 2.5v11a2 2 0 0 0 2 2h4a2 2 0 0 1 2 2v1.5" /><path d="M5.5 2.5h5" /><path d="M14 19.5v1.8M17.5 18.8v2.5" /></>),
   tumble: svg(<><rect x="4.5" y="3" width="15" height="18" rx="2.6" /><circle cx="12" cy="13" r="5" /><path d="M10 11.5c1.4 1.4 2.6 1.4 4 0M10 14.5c1.4 1.4 2.6 1.4 4 0" /><circle cx="8" cy="5.5" r=".6" /></>),
 }

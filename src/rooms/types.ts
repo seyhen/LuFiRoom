@@ -32,6 +32,12 @@ export type SoundId =
   | 'frogs' | 'musicbox' | 'rainbarrel'
   // la laverie de nuit : le lave-linge, le sèche-linge, le rinçage, la gouttière
   | 'wash' | 'tumble' | 'rinse' | 'gutter'
+// la cabane perchée : le joueur de flûte du pont de corde
+  | 'flute'
+  // l'igloo : le guitariste de la banquise ; le sous-marin : les méduses qui chantent
+  | 'guitar' | 'jellies'
+  // l'onsen : la joueuse de koto de la terrasse
+  | 'koto'
 /** Un objet interactif de la scène. */
 export type ObjectId =
   | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
@@ -46,6 +52,9 @@ export type ObjectId =
   | 'pond' | 'musicbox' | 'barrel' | 'fountain' | 'owl'
   | 'handpan' | 'yagura' | 'pianowindow'
   | 'sax' | 'accordion'
+  | 'flautist'
+  | 'guitarist' | 'jellychoir'
+  | 'koto'
 /** Ce qu'un objet pilote : un son, ou le passage jour / nuit. */
 export type Target = SoundId | 'night'
 

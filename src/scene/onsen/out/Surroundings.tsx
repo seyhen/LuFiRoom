@@ -16,6 +16,7 @@ import { PATH, STREAM, groundColor, groundY, lineDist } from './ground'
 import { Bridge, Torii, Toro, toroGlowAt } from './Shrine'
 import { GlowPoints } from '../../objects/GlowPoints'
 import { BambooGrove, Maple, Pine } from './Trees'
+import { KotoPlayer } from './Koto'
 
 /** L'eau du ruisseau : un ruban le long du lit, un peu sous les berges ; la texture défile vers l'aval. */
 function streamGeo() {
@@ -113,6 +114,8 @@ export function Surroundings() {
           <Foliage key={i} v={i} p={[x, groundY(x, z) - 0.04, z]} s={[s, s * 0.6, s * 0.9]} m={N.shrub} style="clipped" shadow={false} />
         ))}
       </Static>
+      {/* devant, au bord du sentier : une joueuse de koto sur son tatami (interactive : `koto`) */}
+      <KotoPlayer at={[0.6, 6.0]} ry={0.5} />
       <GlowPoints points={GLOWS} color={0xffc070} size={0.85} level={() => N.glow.opacity} />
       <OutdoorPrecip ground={groundY} area={[-13, 13, -12, 12]} />
     </>

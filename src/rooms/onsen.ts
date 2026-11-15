@@ -38,6 +38,7 @@ export const onsen: Room = {
     birds: { src: 'audio/onsen/birds', gain: 0.9 },
     crickets: { src: 'audio/onsen/crickets', gain: 0.9 },
     whisk: { src: 'audio/onsen/whisk', gain: 0.8 },
+    // koto : synthétisé pour l'instant (src/audio/channels/koto.ts)
   },
   stations: ['rosee', 'minuit', 'brume'],
   playlist: PLAYLIST,
@@ -54,11 +55,14 @@ export const onsen: Room = {
     { id: 'radio', target: 'radio', label: 'Shamisen · lofi', anchor: [-2.45, 0.85, 2.0] },
     { id: 'lamp', target: 'night', label: 'Lanterne · jour / nuit', anchor: [2.78, 1.4, -0.55] },
     { id: 'whisk', target: 'whisk', label: 'Matcha · le fouet', anchor: [-0.69, 0.62, 1.95] },
+    // hors du bain : la joueuse de koto, sur son tatami au bord du sentier, devant
+    { id: 'koto', target: 'koto', label: 'Joueuse de koto · les cordes pincées', anchor: [0.9, 0.05, 6.1] },
   ],
   sounds: [
     { id: 'radio', name: 'Shamisen lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'spring', name: 'Source', chip: 'var(--c-spring)', volume: 0.65, sub: () => 'eau chaude qui coule' },
     { id: 'waterfall', name: 'Cascade', chip: 'var(--c-waterfall)', volume: 0.5, sub: () => 'l’eau de la montagne' },
+    { id: 'koto', name: 'Joueuse de koto', chip: 'var(--c-koto)', volume: 0.4, sub: () => 'des cordes pincées, doucement' },
     { id: 'whisk', name: 'Fouet à matcha', chip: 'var(--c-whisk)', volume: 0.45, sub: () => 'le bol de thé vert' },
     { id: 'chimes', name: 'Furin', chip: 'var(--c-chimes)', volume: 0.45, sub: () => 'clochette de verre' },
     { id: 'outside', name: 'Jardin', chip: 'var(--c-win)', volume: 0.65, sub: (s) => (s.night ? 'grillons' : 'oiseaux') },

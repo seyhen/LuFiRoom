@@ -154,6 +154,10 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite (
 | Atelier | accordéoniste en marinière sur le toit voisin (dehors), une valse, le soufflet qui respire | `accordion` |
 | Cabane | hibou sur son chicot, au bord du sentier (dehors de la cabane), la forêt de nuit | `owl` |
 | Phare | pêcheur qui rame au large (dehors du phare), les avirons dans l’eau calme | `oars` |
+| Cabane perchée | joueur de flûte debout sur le pont de corde (dehors), un air lent de pâtre (son synthétisé, faute d’enregistrement) | `flute` |
+| Igloo | guitariste en parka rouge sur une plaque de glace (dehors), une guitare nylon qui égrène des accords lents | `guitar` |
+| Sous-marin | la grande méduse du courant (dehors), tout le banc chante : une nappe de verre, lointaine | `jellies` |
+| Onsen | joueuse de koto à genoux sur un tatami, devant le sentier (dehors de l’onsen), des cordes pincées en gamme hirajoshi (son synthétisé, faute d’enregistrement CC0) | `koto` |
 
 Mets ce tableau à jour à chaque objet ajouté **et à chaque son retiré** : la liste réelle est `sounds` de chaque `src/rooms/<id>.ts` (`grep -n "id: '" src/rooms/*.ts`), pas ce tableau.
 
@@ -165,5 +169,6 @@ Mets ce tableau à jour à chaque objet ajouté **et à chaque son retiré** : l
 |---|---|---|
 | Moulin à café manuel (café) | moulure de grains | refusé par l'utilisateur : « pas agréable à écouter » — le grain abrasif qui broie fatigue (règle « frotte, râcle, broie » de l'étape 2) |
 | Verre de thé, livre (train), crayon (atelier), shishi-odoshi (onsen), néon et boulier (marché) | remuer, pages, crayon, bambou, bourdonnement, perles | aucun enregistrement CC0 doux et continu trouvé : objets devenus décor, remplacés par sablier, bol chantant, cascade (2026-11-15) |
+| Troupeau de vaches à cloches (train, dehors) | cloches de vache | tout le dehors du train défile (voie, pré, collines) : le hotspot est fixe et ne peut pas suivre l’objet ; seul un élément immobile convient, et il n’y en a pas dehors (2026-11-15) |
 
 Quand l'utilisateur refuse un objet ou un son, ajoute-le ici avec sa raison, et corrige la règle de l'étape 2 si la raison est générale.
