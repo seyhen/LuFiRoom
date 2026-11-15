@@ -8,7 +8,7 @@ import type { Channel, Kit } from '../engine'
  * tinte parfois quand la vapeur le soulève. Enregistré, ou synthétisé.
  */
 export default function simmer(kit: Kit, out: GainNode, { loops }: Room): Channel {
-  return kit.loopOrChannel(loops.simmer, out, () => {
+  return kit.grainsOr(loops.simmer, out, { len: [10, 18], fade: 1.5, rate: 0.03, level: 0.15 }, () => {
     const { ctx, gain, biq, osc, loop, noise } = kit
     const bus = gain(1)
     bus.connect(out)

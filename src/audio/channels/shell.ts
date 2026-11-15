@@ -7,7 +7,7 @@ import type { Kit } from '../engine'
  */
 export default function shell(kit: Kit, out: GainNode, { loops }: Room) {
   const { gain, biq, osc, loop, noise } = kit
-  return kit.loopOrChannel(loops.shell, out, () => {
+  return kit.grainsOr(loops.shell, out, { len: [4, 6], fade: 1, rate: 0.03, level: 0.15 }, () => {
     const am = gain(1), a = biq('bandpass', 420, 3.2), b = biq('bandpass', 760, 4)
     loop(noise.pink, 0).connect(a).connect(gain(0.9)).connect(am)
     loop(noise.pink, 2.7).connect(b).connect(gain(0.5)).connect(am)

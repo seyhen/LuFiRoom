@@ -9,7 +9,7 @@ import type { Channel, Kit } from '../engine'
  * ceux du fond marin et d'un banc de roches. Régulier comme une machine, c'est ce qui rassure. Enregistré, ou synthétisé.
  */
 export default function sonar(kit: Kit, out: GainNode, { loops }: Room): Channel {
-  return kit.loopOrChannel(loops.sonar, out, () => {
+  return kit.shotsOr(loops.sonar, out, { gap: [4, 10], rate: 0.04, level: 0.15 }, () => {
     const { ctx, gain, biq, osc } = kit
     const bus = gain(0.9)
     bus.connect(out)

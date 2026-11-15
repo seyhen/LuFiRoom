@@ -10,7 +10,7 @@ import type { Channel, Kit } from '../engine'
  * trente à quarante secondes. Enregistré, ou synthétisé.
  */
 export default function tram(kit: Kit, out: GainNode, { loops }: Room): Channel {
-  return kit.loopOrChannel(loops.tram, out, () => {
+  return kit.shotsOr(loops.tram, out, { gap: [8, 20], rate: 0.04, level: 0.15 }, () => {
     const { ctx, gain, biq, osc, noise } = kit
     const bus = gain(1)
     bus.connect(out)

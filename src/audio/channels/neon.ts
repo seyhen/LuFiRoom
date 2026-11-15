@@ -9,7 +9,7 @@ import type { Channel, Kit } from '../engine'
  * deux ou trois fois et revient. Enregistré, ou synthétisé.
  */
 export default function neon(kit: Kit, out: GainNode, { loops }: Room): Channel {
-  return kit.loopOrChannel(loops.neon, out, () => {
+  return kit.grainsOr(loops.neon, out, { len: [3, 5], fade: 0.8, rate: 0.02, level: 0.1 }, () => {
     const { ctx, gain, biq, osc, loop, noise } = kit
     const bus = gain(1)
     bus.connect(out)

@@ -12,7 +12,7 @@ export default function waves(kit: Kit, out: GainNode, { loops, id }: Room): Cha
   const rocks = id === 'lighthouse'
   return kit.loopOrChannel(loops.waves, out, () => {
     const { ctx, gain, biq, osc, loop, noise } = kit
-    const bus = gain(1.5)
+    const bus = gain(1) // 1,5 sortait à −26,5 dB au phare (cible −28 à −32)
     bus.connect(out)
     // Le large : un grondement qui respire très lentement.
     const sea = gain(0.32)

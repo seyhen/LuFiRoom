@@ -7,7 +7,7 @@ import type { Kit } from '../engine'
  */
 export default function watering(kit: Kit, out: GainNode, { loops }: Room) {
   const { gain, biq, osc, loop, noise } = kit
-  return kit.loopOrChannel(loops.watering, out, () => {
+  return kit.grainsOr(loops.watering, out, { len: [5, 8], fade: 1, rate: 0.03, level: 0.15 }, () => {
     const am = gain(1), bp = biq('bandpass', 2200, 0.6)
     loop(noise.white, 0).connect(bp).connect(gain(0.1)).connect(am)
     loop(noise.pink, 3).connect(biq('bandpass', 700, 0.8)).connect(gain(0.1)).connect(am)
