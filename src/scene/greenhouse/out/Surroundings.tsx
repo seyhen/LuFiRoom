@@ -13,6 +13,7 @@ import { GlowPoints } from '../../objects/GlowPoints'
 import { glowTex } from '../../textures'
 import { greenhouse } from '../../../rooms/greenhouse'
 import { C, Chateau } from './Chateau'
+import { Fountain } from './Fountain'
 
 // Le dehors de la serre : l'orangerie d'un château de campagne, un soir de pluie dans la brume. La serre est au bout du parc : des haies
 // taillées en boules et en murs, de grands arbres ronds, des allées de gravier mouillé, des lampadaires qui s'allument, une balustrade
@@ -123,6 +124,8 @@ export function Surroundings() {
       {lampHeads.map((p, i) => (
         <sprite key={i} position={[p[0], p[1] + GROUND, p[2]]} scale={1.6} material={M.glow} raycast={noRay} renderOrder={4} />
       ))}
+      {/* la fontaine du parc, à gauche : interactive (son `fountain`), donc hors du <Static> */}
+      <Fountain at={[-7.6, GROUND, 0.6]} />
       <GlowPoints points={lampHeads.map(([x, y, z]): V3 => [x, y + GROUND, z])} color={0xffd490} size={0.6} level={() => M.glow.opacity} />
       <OutdoorPrecip ground={GROUND} area={[-13, 13, -12, 12]} />
     </>

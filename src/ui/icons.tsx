@@ -52,6 +52,8 @@ export const soundIcons: Record<SoundId, ReactNode> = {
   icehole: svg(<><ellipse cx="12" cy="14" rx="8" ry="4" /><ellipse cx="12" cy="14" rx="4" ry="1.8" /><path d="M15.5 3.5v8.2" /><path d="M15.5 3.5 18 5" /></>),
   sand: svg(<><path d="M7 3.5h10M7 20.5h10" /><path d="M8 3.5c0 4 3 5.5 4 8.5-1 3-4 4.5-4 8.5M16 3.5c0 4-3 5.5-4 8.5 1 3 4 4.5 4 8.5" /></>),
   bowl: svg(<><path d="M4 11h16a8 7 0 0 1-16 0z" /><path d="M8 6.5c1-1.2 3-1.2 4 0M12 4c1-1.2 3-1.2 4 0" /></>),
+  fountain: svg(<><path d="M12 4v6" /><path d="M12 4c-1 2-3 3-5 5M12 4c1 2 3 3 5 5" /><path d="M6 12h12l-1.6 4H7.6z" /><path d="M5 20h14" /></>),
+  lapping: svg(<><path d="M3 17c2-1.6 4 1.6 6 0s4-1.6 6 0 4 1.6 6 0" /><path d="M6 13h12l-2 3H8z" /><path d="M12 13V5l4 6" /></>),
   waterfall: svg(<><path d="M4 5h16" /><path d="M8 5v12M12 5v14M16 5v10" /><path d="M6 20c2-1.5 4 1.5 6 0s4-1.5 6 0" /></>),
   stove: svg(<><path d="M6 10h12v6a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3z" /><path d="M9 7c0-1.2 1-1.4 1-2.6M13 7c0-1.2 1-1.4 1-2.6" /><path d="M4 10h16" /></>),
   husky: svg(<><path d="M4 16c0-3.5 3-6 7-6h3l3-3 1.5 3H20v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" /><path d="M16 11.5h.01" /></>),

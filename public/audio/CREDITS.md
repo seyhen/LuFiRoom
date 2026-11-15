@@ -187,3 +187,9 @@ Licence **CC0** (domaine public) : aucune mention obligatoire. Aperçu MP3 de Fr
 | `train/sand` | SAND POUR.wav | nicoproson | <https://freesound.org/people/nicoproson/sounds/627070/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
 | `atelier/bowl` | SingingBowl.wav | Monkay | <https://freesound.org/people/Monkay/sounds/48325/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
 | `onsen/waterfall` | Distant Waterfall 2 | Yoyodaman234 | <https://freesound.org/people/Yoyodaman234/sounds/348823/> | CC0 | 52 s à partir de 0 s, mono | 2026-11-15 |
+| `weather/drizzle` | Rain light 2 (rural) | jmbphilmes | <https://freesound.org/people/jmbphilmes/sounds/200273/> | CC0 | 60 s à partir de 8 s, mono | 2026-11-15 |
+| `weather/storm` | Rain heavy 2 (rural) | jmbphilmes | <https://freesound.org/people/jmbphilmes/sounds/200272/> | CC0 | 60 s à partir de 3 s, mono | 2026-11-15 |
+| `weather/snow` | Snow falling in the city | xkeril | <https://freesound.org/people/xkeril/sounds/610317/> | CC0 | 60 s à partir de 12 s, mono | 2026-11-15 |
+| `weather/blizzard` | Strong Winds inside house 01 | khenshom | <https://freesound.org/people/khenshom/sounds/623604/> | CC0 | 38 s à partir de 0 s, mono | 2026-11-15 |
+| `beach/lapping` | R23-36-Water Against Wooden Boat.wav | craigsmith | <https://freesound.org/people/craigsmith/sounds/480838/> | CC0 | 24 s à partir de 0 s, mono | 2026-11-15 |
+| `greenhouse/fountain` | Fountain_2.wav | skyko | <https://freesound.org/people/skyko/sounds/169254/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |

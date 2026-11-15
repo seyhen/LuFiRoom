@@ -6,5 +6,8 @@ import type { Loops } from './types'
  */
 export const WEATHER_LOOPS: Loops = {
   rain: { src: 'audio/cafe/rain', gain: 1 },
-  blizzard: { src: 'audio/cabin/wind', gain: 0.9 },
+  drizzle: { src: 'audio/weather/drizzle', gain: 0.8 },
+  storm: { src: 'audio/weather/storm', gain: 0.8 },
+  snow: { src: 'audio/weather/snow', gain: 0.8 },
+  blizzard: { src: 'audio/weather/blizzard', gain: 0.8 },
 }

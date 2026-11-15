@@ -1,7 +1,9 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { type Group } from 'three'
-import { reduceMotion } from '../anim'
+import { isActive, useStore } from '../../state/store'
+import { approach } from '../../math'
+import { reduceMotion, useSquash } from '../anim'
 import { LIVE, Static } from '../Static'
 import { cyl, rbox } from '../parts'
 import { Part } from './deco'
@@ -42,22 +44,28 @@ export function BeachedBoat({ at, ry }: { at: [number, number]; ry: number }) {
   )
 }
 
-/** La barque amarrée au ponton : elle se balance doucement sur l'eau (plus fort sous l'orage). */
+/**
+ * La barque au large, derrière le ponton : elle se balance doucement sur l'eau. Interactive (`skiff`) : le clapotis de l’eau contre la coque,
+ * et quand il joue, elle tangue un peu plus (l'amplitude monte et descend en douceur, la phase s'additionne image après image).
+ */
 export function FloatBoat({ at, ry }: { at: [number, number]; ry: number }) {
-  const g = useRef<Group>(null!)
-  useFrame(({ clock }) => {
-    const t = clock.elapsedTime
-    g.current.position.y = WATER - 0.08 + (reduceMotion ? 0 : Math.sin(t * 1.1) * 0.015)
-    g.current.rotation.z = reduceMotion ? 0 : Math.sin(t * 0.9 + 1) * 0.03
+  const g = useRef<Group>(null!), root = useRef<Group>(null!)
+  const rock = useRef({ amp: 0, phase: 0 })
+  useSquash('skiff', root)
+  useFrame(({ clock }, delta) => {
+    const t = clock.elapsedTime, dt = Math.min(delta, 0.05), R = rock.current
+    R.amp = approach(R.amp, isActive(useStore.getState(), 'skiff') && !reduceMotion ? 1 : 0, dt * 0.8)
+    R.phase += dt * 1.9
+    g.current.position.y = (reduceMotion ? 0 : Math.sin(t * 1.1) * 0.015 + Math.sin(R.phase) * 0.025 * R.amp)
+    g.current.rotation.z = reduceMotion ? 0 : Math.sin(t * 0.9 + 1) * 0.03 + Math.sin(R.phase + 1) * 0.07 * R.amp
     g.current.rotation.x = reduceMotion ? 0 : Math.sin(t * 0.7) * 0.02
   })
   return (
-    <group position={[at[0], WATER - 0.08, at[1]]} rotation-y={ry}>
-      <group ref={g} userData={LIVE} position={[0, 0, 0]}>
-        <Part geo={hullGeo(L * 0.85, W * 0.85, H, 0x2f6a86, 0xfbf1e2)} m={S.hullOuter} />
+    <group ref={root} position={[at[0], WATER - 0.08, at[1]]} rotation-y={ry} userData={{ id: 'skiff' }}>
+      <group ref={g} userData={LIVE}>
+        <Part geo={hullGeo(L * 0.85, W * 0.85, H, 0xf2c14e, 0xfbf1e2)} m={S.hullOuter} />
         <Static><group scale={0.85}><Gear W={W} /></group></Static>
       </group>
     </group>
   )
 }
-

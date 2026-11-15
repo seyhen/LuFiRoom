@@ -37,13 +37,14 @@ export const beach: Room = {
     waves: { src: 'audio/beach/waves', gain: 0.8 },
     rainstick: { src: 'audio/beach/rainstick', gain: 0.8 },
     purr: { src: 'audio/beach/purr', gain: 0.75 },
+    lapping: { src: 'audio/beach/lapping', gain: 0.8 },
   },
   stations: ['soleil-bas', 'rosee', 'petit-matin'],
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio',.55], ['waves',.4], ['rainstick',.25]] },
     read: { sounds: [['waves',.5], ['rainstick',.3], ['gulls',.25], ['chimes',.25]] },
-    sleep: { sounds: [['waves',.55], ['rainstick',.3], ['chimes',.2]], night: true },
+    sleep: { sounds: [['waves',.55], ['rainstick',.3], ['lapping',.2], ['chimes',.2]], night: true },
   },
   objects: [
     { id: 'window', target: 'waves', label: 'La mer · vagues', anchor: [1.9, 1.5, -3.0] },
@@ -53,6 +54,8 @@ export const beach: Room = {
     { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-2.35, 0.85, -0.4] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-1.25, 1.0, -2.55] },
     { id: 'rainstick', target: 'rainstick', label: 'Bâton de pluie · bascule', anchor: [-1.8, 2.35, -2.8] },
+    // hors du bungalow : la barque sur l’eau calme, au large
+    { id: 'skiff', target: 'lapping', label: 'Barque · clapotis', anchor: [-0.4, -0.4, -9.0] },
   ],
   sounds: [
     { id: 'radio', name: 'Ukulélé lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
@@ -60,6 +63,7 @@ export const beach: Room = {
     { id: 'gulls', name: 'Mouettes', chip: 'var(--c-gulls)', volume: 0.4, sub: () => 'au-dessus de la plage' },
     { id: 'chimes', name: 'Carillon', chip: 'var(--c-chimes)', volume: 0.45, sub: () => 'dans la brise' },
     { id: 'rainstick', name: 'Bâton de pluie', chip: 'var(--c-rainstick)', volume: 0.4, sub: () => 'les graines dans le bambou' },
+    { id: 'lapping', name: 'Clapotis', chip: 'var(--c-lapping)', volume: 0.4, sub: () => 'la barque sur l’eau calme' },
     { id: 'purr', name: 'Chat', chip: 'var(--c-cat)', volume: 0.7, sub: () => 'sieste au soleil' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'sur la terrasse' },
   ],

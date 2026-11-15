@@ -35,12 +35,13 @@ export const greenhouse: Room = {
     frogs: { src: 'audio/greenhouse/frogs', gain: 0.8 },
     musicbox: { src: 'audio/greenhouse/musicbox', gain: 0.8 },
     rainbarrel: { src: 'audio/greenhouse/rainbarrel', gain: 0.8 },
+    fountain: { src: 'audio/greenhouse/fountain', gain: 0.8 },
   },
   stations: ['rosee', 'pluie-fine', 'brume', 'petit-matin'],
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio', 0.5], ['rainbarrel', 0.3], ['rain', 0.35]] },
-    read: { sounds: [['musicbox', 0.3], ['frogs', 0.25], ['rain', 0.4]] },
+    read: { sounds: [['musicbox', 0.3], ['fountain', 0.25], ['rain', 0.4]] },
     sleep: { sounds: [['frogs', 0.4], ['rainbarrel', 0.3], ['musicbox', 0.2], ['rain', 0.4]], night: true },
   },
   objects: [
@@ -48,6 +49,8 @@ export const greenhouse: Room = {
     { id: 'pond', target: 'frogs', label: 'Bassin · les grenouilles', anchor: [1.3, 0.4, -1.3] },
     { id: 'musicbox', target: 'musicbox', label: 'Boîte à musique · la berceuse', anchor: [1.9, 0.95, 1.5] },
     { id: 'barrel', target: 'rainbarrel', label: 'Tonneau · l’eau de la gouttière', anchor: [-2.35, 1.0, -2.35] },
+    // hors de la serre : la fontaine du parc, à gauche
+    { id: 'fountain', target: 'fountain', label: 'Fontaine · le jet', anchor: [-7.6, 0.45, 0.6] },
     { id: 'lamp', target: 'night', label: 'Lanterne · jour / nuit', anchor: [0.2, 1.3, -0.2] },
   ],
   sounds: [
@@ -55,6 +58,7 @@ export const greenhouse: Room = {
     { id: 'frogs', name: 'Grenouilles', chip: 'var(--c-frogs)', volume: 0.45, sub: () => 'le chœur du bassin' },
     { id: 'musicbox', name: 'Boîte à musique', chip: 'var(--c-musicbox)', volume: 0.4, sub: () => 'une berceuse douce' },
     { id: 'rainbarrel', name: 'Tonneau', chip: 'var(--c-rainbarrel)', volume: 0.45, sub: () => 'l’eau de la gouttière' },
+    { id: 'fountain', name: 'Fontaine', chip: 'var(--c-fountain)', volume: 0.4, sub: () => 'le jet dans le parc' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'sur le verre' },
   ],
 }

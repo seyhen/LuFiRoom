@@ -187,8 +187,11 @@ html.leaving .hs { pointer-events: none }
 
 @media (max-width: 520px) {
   .pop-btn .lbl { display: none }
+  /* « Tout couper » sortait de l'écran à 390 px : le compte des sons suffit comme titre */
+  .dock-head .eyebrow { display: none }
   .dock-head { gap: 6px }
-  .head-end { gap: 0 }
+  .head-end { gap: 0; flex-shrink: 0 }
+  .count { min-width: 0; overflow: hidden; text-overflow: ellipsis }
   /* les menus s'ouvrent sur toute la largeur du mixeur, pas sous leur bouton (ils sortiraient de l'écran) */
   .dock-inner { position: relative }
   .pop { position: static }
@@ -243,7 +246,7 @@ html.night .quick .resume { color: #12102a }
 .sky-veil { background: linear-gradient(180deg, rgba(120, 130, 156, .42), rgba(150, 158, 180, .22) 70%, rgba(150, 158, 180, .1)) }
 .sky-veil.wet { opacity: 1 }
 .sky-veil.wet.dark { background: linear-gradient(180deg, rgba(84, 90, 118, .36), rgba(100, 106, 134, .3) 60%, rgba(120, 126, 150, .16)) }
-.sky-veil.snowy { opacity: 1; background: linear-gradient(180deg, rgba(236, 240, 250, .5), rgba(226, 232, 246, .28) 70%, rgba(226, 232, 246, .1)) }
+.sky-veil.snowy { opacity: 1; background: linear-gradient(180deg, rgba(236, 240, 250, .78), rgba(226, 232, 246, .58) 70%, rgba(226, 232, 246, .34)) }
 html.night .sky-veil.snowy { background: linear-gradient(180deg, rgba(150, 160, 200, .28), rgba(140, 150, 190, .14) 70%, transparent) }
 .sky-weather.on { opacity: 1 }
 

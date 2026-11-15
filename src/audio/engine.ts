@@ -27,6 +27,8 @@ import bowl from './channels/bowl'
 import kettle from './channels/kettle'
 import spring from './channels/spring'
 import waterfall from './channels/waterfall'
+import lapping from './channels/lapping'
+import fountain from './channels/fountain'
 import foghorn from './channels/foghorn'
 import bell from './channels/bell'
 import sonar from './channels/sonar'
@@ -100,6 +102,8 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   kettle: { build: kettle, base: 0.9 },
   spring: { build: spring, base: 0.3 },
   waterfall: { build: waterfall, base: 1 },
+  lapping: { build: lapping, base: 1 },
+  fountain: { build: fountain, base: 1.3 },
   foghorn: { build: foghorn, base: 1.75 },
   bell: { build: bell, base: 2.2 },
   sonar: { build: sonar, base: 1.5 },

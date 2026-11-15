@@ -19,6 +19,8 @@ const PI = Math.PI
 const DUSK_SUN = new Color(0xffa36e), DUSK_SKY = new Color(0xffc2b0)
 // La neige posée dehors (snowTop.ts) : blanche le jour, bleutée sous la lune.
 const SNOW_DAY = new Color(0xf4f7fb), SNOW_NIGHT = new Color(0xdde4f4)
+// La lumière d'un ciel de neige : blanche et un peu froide, le jour.
+const SNOW_SKY = new Color(0xe8eff9), SNOW_SUN = new Color(0xdfe9f6)
 
 /**
  * Ciel et soleil (ou lune) de la pièce. Avance aussi les transitions jour / nuit, pluie, neige et orage pour toute la scène : moins d'une seconde
@@ -66,13 +68,15 @@ export function Lights({ room }: { room: Room }) {
     SNOW.uUp.value.set(0, 1, 0).transformDirection(camera.matrixWorldInverse)
     // Au milieu d'un crépuscule (ou d'une aube) : le soleil se dore, le ciel rosit ; rien sous la mer.
     const gold = slow ? Math.sin(Math.PI * mood.night) * (1 - gray * 0.7) : 0
-    hemi.current.color.copy(col.sky[0]).lerp(col.sky[1], e).lerp(DUSK_SKY, gold * 0.35)
+    // Sous la neige, le ciel est couvert : la lumière perd sa dorure (sinon la neige blanche paraît jaune, dans la cabane perchée surtout).
+    const cool = smooth(mood.snow) * 0.65 * (1 - e)
+    hemi.current.color.copy(col.sky[0]).lerp(col.sky[1], e).lerp(DUSK_SKY, gold * 0.35).lerp(SNOW_SKY, cool)
     hemi.current.groundColor.copy(col.ground[0]).lerp(col.ground[1], e)
     // L'éclair éclaire un peu la pièce, comme par la fenêtre : un ciel un peu plus clair, sans toucher au soleil (ni aux ombres).
     // Sous la mer (`skyLife: false`), aucun éclair ne descend jusqu'au hublot : le tonnerre seul, très loin.
     const flash = room.skyLife === false ? 0 : life.flash
     hemi.current.intensity = (lerp(h.intensity[0], h.intensity[1], e) * (1 - gray * 0.12) + flash * 0.15) * PI
-    sun.current.color.copy(col.sun[0]).lerp(col.sun[1], e).lerp(DUSK_SUN, gold * 0.55)
+    sun.current.color.copy(col.sun[0]).lerp(col.sun[1], e).lerp(DUSK_SUN, gold * 0.55).lerp(SNOW_SUN, cool)
     // L'orage assombrit encore un peu le soleil : son ciel d'ardoise est plus lourd que celui d'une pluie.
     sun.current.intensity = lerp(u.intensity[0], u.intensity[1], e) * (1 - gray * 0.3 - smooth(mood.storm) * 0.1) * PI
   }, -1)

@@ -161,18 +161,38 @@ function Framing({ zoom = 1 }: { zoom?: number }) {
   const camera = useThree((s) => s.camera) as OrthographicCamera
   const { width, height } = useThree((s) => s.size)
   const { top, bottom } = useStore((s) => s.insets)
+  const frame = useRef<() => void>(() => {})
+  // Le zoom de la main (pincement, molette) repart à 1 à chaque pièce.
   useLayoutEffect(() => {
+    view.target = view.now = 1
+  }, [zoom])
+  useFrame((_, delta) => {
+    if (Math.abs(view.target - view.now) < 0.001) return
+    view.now += (view.target - view.now) * Math.min(1, Math.min(delta, 0.05) * 12)
+    frame.current()
+  })
+  useLayoutEffect(() => {
+    frame.current = () => {
     camera.position.copy(CAM_POS)
     camera.lookAt(LOOK)
-    const unit = Math.min(width / 10.4, Math.max(180, height - top - bottom) / 9.6) * zoom // pixels par unité
+    const unit = Math.min(width / 10.4, Math.max(180, height - top - bottom) / 9.6) * zoom * view.now // pixels par unité
     const vw = width / unit, vh = height / unit, shift = (bottom - top) / 2 / unit
     camera.left = -vw / 2
     camera.right = vw / 2
     camera.top = vh / 2 - shift
     camera.bottom = -vh / 2 - shift
     camera.updateProjectionMatrix()
+    }
+    frame.current()
   }, [camera, width, height, top, bottom, zoom])
   return null
+}
+
+/** Le zoom de la main : `target` (pincement, molette, double toucher) et `now` qui le rejoint en douceur. */
+const view = { target: 1, now: 1 }
+const ZOOM_MAX = 2.5
+const setZoom = (z: number) => {
+  view.target = clamp(z, 1, ZOOM_MAX)
 }
 
 /**
@@ -246,7 +266,27 @@ function useTapAndTurn(group: MutableRefObject<Group>, room: RoomData) {
       return null
     }
     let down: { x: number; y: number; from: number; moved: boolean; id: number } | null = null
+    // Pincement : deux doigts posés, le zoom suit l'écart entre eux ; le glisser (rotation) et le tap sont suspendus.
+    const touches = new Map<number, { x: number; y: number }>()
+    let pinch: { d: number; z: number } | null = null
+    let lastTap = 0
+    const spread = () => {
+      const [a, b] = [...touches.values()]
+      return Math.hypot(a.x - b.x, a.y - b.y)
+    }
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault()
+      setZoom(view.target * Math.exp(-e.deltaY * 0.0015))
+    }
     const onDown = (e: PointerEvent) => {
+      if (e.pointerType === 'touch') {
+        touches.set(e.pointerId, { x: e.clientX, y: e.clientY })
+        if (touches.size === 2) {
+          pinch = { d: spread() || 1, z: view.target }
+          down = null
+          return
+        }
+      }
       down = { x: e.clientX, y: e.clientY, from: turn.current.target, moved: false, id: e.pointerId }
       try {
         el.setPointerCapture(e.pointerId)
@@ -255,6 +295,8 @@ function useTapAndTurn(group: MutableRefObject<Group>, room: RoomData) {
       }
     }
     const onMove = (e: PointerEvent) => {
+      if (touches.has(e.pointerId)) touches.set(e.pointerId, { x: e.clientX, y: e.clientY })
+      if (pinch && touches.size === 2) return setZoom(pinch.z * (spread() / pinch.d))
       if (down && e.pointerId === down.id) {
         const dx = e.clientX - down.x, dy = e.clientY - down.y
         if (!down.moved && Math.hypot(dx, dy) > 8) down.moved = true
@@ -265,15 +307,22 @@ function useTapAndTurn(group: MutableRefObject<Group>, room: RoomData) {
       }
     }
     const onUp = (e: PointerEvent) => {
+      touches.delete(e.pointerId)
+      if (touches.size < 2) pinch = null
       if (!down || e.pointerId !== down.id) return
       if (!down.moved) {
         const id = pick(e.clientX, e.clientY)
         const obj = room.objects.find((o) => o.id === id)
         if (obj) useStore.getState().toggle(obj.target)
+        // Double toucher sur le fond : retour au cadrage de la pièce.
+        else if (e.timeStamp - lastTap < 300) setZoom(1)
+        lastTap = obj ? 0 : e.timeStamp
       }
       down = null
     }
-    const onCancel = () => {
+    const onCancel = (e: PointerEvent) => {
+      touches.delete(e.pointerId)
+      if (touches.size < 2) pinch = null
       down = null
     }
     const onLeave = () => {
@@ -284,7 +333,9 @@ function useTapAndTurn(group: MutableRefObject<Group>, room: RoomData) {
     el.addEventListener('pointerup', onUp)
     el.addEventListener('pointercancel', onCancel)
     el.addEventListener('pointerleave', onLeave)
+    el.addEventListener('wheel', onWheel, { passive: false })
     return () => {
+      el.removeEventListener('wheel', onWheel)
       el.removeEventListener('pointerdown', onDown)
       el.removeEventListener('pointermove', onMove)
       el.removeEventListener('pointerup', onUp)

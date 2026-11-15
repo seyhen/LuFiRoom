@@ -121,6 +121,7 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite (
 | Cabane | panier de tricot, aiguilles en bois | `knit` |
 | Café | manteau mouillé du portemanteau, qui s'égoutte sur le paillasson (un parapluie suspendu à un bras de laiton a été refusé : il flottait) | `drip` |
 | Plage | bâton de pluie en bambou, accroché au mur du fond (sur un pied au sol : refusé, « bizarre ») | `rainstick` |
+| Plage | barque au large (dehors du bungalow), le clapotis de l’eau contre la coque | `lapping` |
 | Train de nuit | jeu de cartes, une réussite | `cards` |
 | Toit-terrasse | arrosoir sur les aromates | `watering` |
 | Atelier | pinceau sur la toile du chevalet | `brush` |
@@ -145,6 +146,7 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite (
 | Serre | bassin aux nénuphars | `frogs` |
 | Serre | boîte à musique | `musicbox` |
 | Serre | tonneau d'eau de pluie | `rainbarrel` |
+| Serre | fontaine du parc (dehors de la serre), le jet qui retombe dans le bassin | `fountain` |
 
 Mets ce tableau à jour à chaque objet ajouté **et à chaque son retiré** : la liste réelle est `sounds` de chaque `src/rooms/<id>.ts` (`grep -n "id: '" src/rooms/*.ts`), pas ce tableau.
 

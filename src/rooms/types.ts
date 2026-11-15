@@ -12,6 +12,10 @@ export type SoundId =
   | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'drip'
   // le sablier du train, le bol chantant de l'atelier, la cascade de l'onsen
   | 'sand' | 'bowl' | 'waterfall'
+  // la plage : le clapotis de la barque au ponton
+  | 'lapping'
+  // la serre : la fontaine du parc
+  | 'fountain'
   // l'igloo : l'aurore, le trou de pêche, le réchaud, le husky
   | 'aurora' | 'icehole' | 'stove' | 'husky'
   // la cabane perchée : le ruisseau, les cigales (le vent et les oiseaux reprennent les sons de base)
@@ -27,11 +31,11 @@ export type ObjectId =
   | 'spring' | 'waterfall' | 'furin' | 'maple'
   | 'foghorn' | 'bell' | 'stove' | 'barometer' | 'sonar' | 'valve' | 'gauge' | 'telegraph' | 'wok' | 'pot' | 'tram'
   | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'drip'
-  | 'hourglass' | 'bowl'
+  | 'hourglass' | 'bowl' | 'skiff'
   | 'icewindow' | 'icehole' | 'husky'
   | 'birdhouse' | 'hammock' | 'oak' | 'brook' | 'lemonade'
   | 'washer' | 'dryer' | 'changer' | 'folding' | 'rinse' | 'gutter'
-  | 'pond' | 'musicbox' | 'barrel'
+  | 'pond' | 'musicbox' | 'barrel' | 'fountain'
 /** Ce qu'un objet pilote : un son, ou le passage jour / nuit. */
 export type Target = SoundId | 'night'
 
@@ -74,7 +78,7 @@ export interface Loop {
   gain: number
 }
 
-export type Loops = Partial<Record<Exclude<SoundId, 'radio' | 'outside'> | 'birds' | 'crickets' | 'garden' | 'blizzard', Loop>>
+export type Loops = Partial<Record<Exclude<SoundId, 'radio' | 'outside'> | 'birds' | 'crickets' | 'garden' | 'drizzle' | 'storm' | 'snow' | 'blizzard', Loop>>
 
 /** Une piste de la radio. */
 export interface Track {
