@@ -107,7 +107,6 @@ Pixabay Content License (exception accordée par le propriétaire, voir CLAUDE.m
 |---|---|---|---|
 | beach/gulls | Seagull - Sound Effect | u_up4clmd95a | 272695 |
 | beach/chimes (plage, onsen) | Wind Chimes Bells | SoundsForYou | 115747 |
-| train/rails | Inside the old train | freesound_community | 66350 |
 | train/tea | Stirring Cup | freesound_community | 31593 |
 | roof/city | City-Above-Far-Ambience-Car | CliffordJohnson | 479129 |
 | roof/pigeons | pigeon | freesound_community | 36137 |
@@ -121,7 +120,6 @@ Pixabay Content License (exception accordée par le propriétaire, voir CLAUDE.m
 | submarine/bubbles | Water Bubbles | Liecio | 257594 |
 | submarine/hull | Submarine | DominiqueLACAUD | 289985 |
 | submarine/engine | G45-24-Submarine Interior Engine Room | freesound_community | 59300 |
-| submarine/whale | Whale Sounds Ambient | Saturn-3-Music | 116194 |
 | market/sizzle | Frying in a pan | freesound_community | 6017 |
 | market/tram | Tram, transport, road, wheel noise, rails | SSPsurvival | 10342 |
 | market/simmer | Cauldron Boiling | Irhouen | 173607 |
@@ -170,3 +168,5 @@ Licence **CC0** (domaine public) : aucune mention obligatoire. Aperçu MP3 de Fr
 | `greenhouse/frogs` | FrogsAndCrickets_ExcerptB_JMA_24Bit_48k.wav | greysound | <https://freesound.org/people/greysound/sounds/32655/> | CC0 | 45 s à partir de 5 s, stéréo | 2026-11-15 |
 | `greenhouse/musicbox` | Music Box Lullaby Clip | AudioBitsAndBytes | <https://freesound.org/people/AudioBitsAndBytes/sounds/163644/> | CC0 | 45 s à partir de 0 s, mono | 2026-11-15 |
 | `greenhouse/rainbarrel` | Rain Gutter Dripping.wav | ProductionNow | <https://freesound.org/people/ProductionNow/sounds/232300/> | CC0 | 45 s à partir de 5 s, mono | 2026-11-15 |
+| `train/rails` | Riding Train interior recording | gecop | <https://freesound.org/people/gecop/sounds/525058/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `submarine/whale` | Diving with whales.wav | KEVOY | <https://freesound.org/people/KEVOY/sounds/82325/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
