@@ -25,12 +25,15 @@ const PAN_Y = 0.78, PAN_Z = 0.44
 function Handpan() {
   return (
     <group position={[0, PAN_Y, PAN_Z]}>
+      {/* la coque un peu plus grande et penchée vers le joueur, pour qu'on lise un handpan et non un tabouret */}
+      <group rotation-x={0.3} scale={1.15}>
       <Part geo={SPH} m={STEEL} scale={[0.29, 0.095, 0.29]} castShadow={false} />
       <Part geo={SPH} m={DIMPLE} p={[0, 0.082, 0]} scale={[0.075, 0.018, 0.075]} castShadow={false} />
       {Array.from({ length: 7 }, (_, i) => {
         const a = (i / 7) * Math.PI * 2 + 0.3
         return <Part key={i} geo={SPH} m={DIMPLE} p={[Math.cos(a) * 0.16, 0.063, Math.sin(a) * 0.16]} scale={[0.05, 0.014, 0.04]} rotation-y={-a} castShadow={false} />
       })}
+      </group>
       <Part geo={cyl(0.02, 0.02, PAN_Y - 0.08, 8)} m={IRON} p={[0, -0.09 - (PAN_Y - 0.08) / 2 + 0.01, 0]} castShadow={false} />
       {[0, 1, 2].map((i) => {
         const a = (i / 3) * Math.PI * 2 + 0.5
@@ -65,9 +68,9 @@ export function Handpanist({ at, ry }: { at: [number, number]; ry: number }) {
       hands={[[0.13, 0.92, PAN_Z], [-0.13, 0.92, PAN_Z + 0.02]]}
       head={(
         <>
-          <Part geo={SPH} m={WOOL} p={[0, 1.7, -0.02]} scale={[0.245, 0.13, 0.245]} castShadow={false} />
+          <Part geo={SPH} m={WOOL} p={[0, 1.74, -0.02]} scale={[0.245, 0.15, 0.245]} castShadow={false} />
           <Part geo={cyl(0.235, 0.235, 0.05, 16)} m={WOOL_LIGHT} p={[0, 1.66, -0.02]} castShadow={false} />
-          <Part geo={SPH} m={WOOL_LIGHT} p={[0, 1.83, -0.02]} scale={0.055} castShadow={false} />
+          <Part geo={SPH} m={WOOL_LIGHT} p={[0, 1.9, -0.02]} scale={0.055} castShadow={false} />
         </>
       )}
     >

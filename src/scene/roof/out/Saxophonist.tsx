@@ -70,7 +70,7 @@ export function Saxophonist({ at, ry }: { at: V3; ry: number }) {
         hands={[[0.055, 1.14, 0.385], [-0.055, 0.93, 0.385]]}
         head={(
           <>
-            <Part geo={SPH} m={CAP} p={[0, 1.74, -0.01]} scale={[0.245, 0.1, 0.245]} castShadow={false} />
+            <Part geo={SPH} m={CAP} p={[0, 1.77, -0.01]} scale={[0.245, 0.13, 0.245]} castShadow={false} />
             <Part geo={rbox(0.2, 0.025, 0.14, 0.012)} m={CAP} p={[0, 1.68, 0.22]} rotation-x={0.18} castShadow={false} />
           </>
         )}

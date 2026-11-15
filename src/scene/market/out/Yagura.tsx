@@ -7,6 +7,8 @@ import { reduceMotion, useSquash } from '../../anim'
 import { Busker, buskerMats } from '../../objects/Busker'
 import { Part, SPH, cyl, rbox, type V3 } from '../../parts'
 import { LIVE, Static } from '../../Static'
+import { far } from '../../materials'
+import { skyFade } from '../../outdoor'
 import { S } from './Stalls'
 import { F } from './Zakkyo'
 
@@ -15,6 +17,7 @@ import { F } from './Zakkyo'
 // `bonodori`), le tambourinaire (en happi indigo) se balance, le tambour respire et les lanternes se balancent à peine.
 
 const MATS = buskerMats(F, { shirt: 0x27358c, pants: 0xf2e8d2, hair: 0x1c1c24 })
+const ROOF = skyFade(far(0x3a3d52, { roughness: 0.8 }), F) // tuiles gris-bleu sombres : l'indigo des rideaux faisait un aplat bleu vif
 const DECK = 0.95
 const STRIPES = [-0.68, -0.34, 0, 0.34, 0.68]
 
@@ -40,11 +43,12 @@ function Taiko({ y }: { y: number }) {
   return (
     <group>
       <Part geo={cyl(0.31, 0.31, 0.44, 22)} m={S.woodPale} p={[0, y, 0]} rotation-x={Math.PI / 2} castShadow={false} />
-      {[-0.21, 0.21].map((z) => <Part key={z} geo={cyl(0.335, 0.335, 0.045, 22)} m={S.cream} p={[0, y, z * 1.04]} rotation-x={Math.PI / 2} castShadow={false} />)}
+      {/* le cerclage de bois (plus large que la peau) puis, en avant de lui, la peau : sinon le cerclage la cachait */}
       {[-0.245, 0.245].map((z) => <Part key={z} geo={cyl(0.345, 0.345, 0.03, 22)} m={S.wood} p={[0, y, z]} rotation-x={Math.PI / 2} castShadow={false} />)}
+      {[-0.27, 0.27].map((z) => <Part key={z} geo={cyl(0.3, 0.3, 0.02, 22)} m={S.cream} p={[0, y, z]} rotation-x={Math.PI / 2} castShadow={false} />)}
       {/* le tomoe rouge au milieu de la peau de devant */}
-      <Part geo={cyl(0.13, 0.13, 0.012, 14)} m={S.red} p={[0, y, 0.246]} rotation-x={Math.PI / 2} castShadow={false} />
-      <Part geo={cyl(0.05, 0.05, 0.016, 10)} m={S.cream} p={[0, y, 0.249]} rotation-x={Math.PI / 2} castShadow={false} />
+      <Part geo={cyl(0.13, 0.13, 0.012, 14)} m={S.red} p={[0, y, 0.284]} rotation-x={Math.PI / 2} castShadow={false} />
+      <Part geo={cyl(0.05, 0.05, 0.016, 10)} m={S.cream} p={[0, y, 0.292]} rotation-x={Math.PI / 2} castShadow={false} />
       {/* le support : deux pieds en X de chaque côté, une barre */}
       {[-0.22, 0.22].map((z) => (
         <group key={z}>
@@ -103,7 +107,7 @@ export function Yagura({ at, ry }: { at: V3; ry: number }) {
         <Part geo={rbox(0.04, 0.05, 1.76, 0.015)} m={S.wood} p={[-0.88, DECK + 0.42, 0]} castShadow={false} />
         <Part geo={rbox(0.04, 0.05, 1.76, 0.015)} m={S.wood} p={[0.88, DECK + 0.42, 0]} castShadow={false} />
         {/* le toit de tuiles sombres en pyramide, son poteau et la bannière rouge */}
-        <Part geo={cyl(0.1, 1.48, 0.5, 4)} m={S.indigo} p={[0, DECK + 1.8, 0]} rotation-y={Math.PI / 4} castShadow={false} />
+        <Part geo={cyl(0.1, 1.48, 0.5, 4)} m={ROOF} p={[0, DECK + 1.8, 0]} rotation-y={Math.PI / 4} castShadow={false} />
         <Part geo={cyl(0.02, 0.02, 0.75, 6)} m={S.wood} p={[0, DECK + 2.4, 0]} castShadow={false} />
         <Part geo={rbox(0.42, 0.26, 0.02, 0.01)} m={S.red} p={[0.23, DECK + 2.62, 0]} castShadow={false} />
         <Part geo={cyl(0.07, 0.07, 0.024, 12)} m={S.cream} p={[0.23, DECK + 2.62, 0]} rotation-x={Math.PI / 2} castShadow={false} />
@@ -119,14 +123,14 @@ export function Yagura({ at, ry }: { at: V3; ry: number }) {
       {/* le tambourinaire debout à côté du tambour, de profil vers lui, les baguettes sur la peau */}
       <Busker
         id="yagura"
-        at={[-0.58, DECK, 0.98]}
+        at={[-0.45, DECK, 1.02]}
         ry={1.25}
         mats={MATS}
-        scale={0.8}
-        hands={[[0.12, 1.36, 0.42], [-0.08, 1.2, 0.46]]}
+        scale={0.65}
+        hands={[[0.12, 1.25, 0.4], [-0.08, 1.13, 0.45]]}
         head={<Part geo={rbox(0.5, 0.05, 0.1, 0.02)} m={S.cream} p={[0, 1.7, 0.06]} castShadow={false} />}
       >
-        {[[0.12, 1.36, 0.42], [-0.08, 1.2, 0.46]].map(([x, y, z]) => <Part key={y} geo={rbox(0.02, 0.02, 0.26, 0.008)} m={S.woodPale} p={[x, y, z + 0.1]} castShadow={false} />)}
+        {[[0.12, 1.25, 0.4], [-0.08, 1.13, 0.45]].map(([x, y, z]) => <Part key={y} geo={rbox(0.02, 0.02, 0.26, 0.008)} m={S.woodPale} p={[x, y, z + 0.1]} castShadow={false} />)}
       </Busker>
     </group>
   )

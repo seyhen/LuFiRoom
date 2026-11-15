@@ -37,7 +37,7 @@ function Arm({ a, b, m, skin }: { a: V3; b: V3; m: MeshStandardMaterial; skin: M
   )
 }
 
-export function Busker({ id, at, ry, mats, hands, head, children, scale = 0.85 }: {
+export function Busker({ id, at, ry, mats, hands, head, children, scale = 1 }: {
   id: ObjectId
   at: V3
   ry: number
@@ -60,7 +60,8 @@ export function Busker({ id, at, ry, mats, hands, head, children, scale = 0.85 }
     upper.current.rotation.x = Math.sin(S.phase * 0.5 + 1) * 0.035 * S.amp
   })
   return (
-    <group ref={root} position={at} rotation-y={ry} scale={scale} userData={{ id }}>
+    <group ref={root} position={at} rotation-y={ry} userData={{ id }}>
+      <group scale={scale}>
       <Static>
         {/* les jambes et les chaussures : elles ne bougent pas */}
         {[-0.1, 0.1].map((x) => (
@@ -87,6 +88,7 @@ export function Busker({ id, at, ry, mats, hands, head, children, scale = 0.85 }
             {children}
           </group>
         </Static>
+      </group>
       </group>
     </group>
   )
