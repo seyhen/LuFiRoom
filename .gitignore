@@ -3,3 +3,8 @@ dist
 # sons sources avant encodage (lourds) : voir docs/ASSETS.md
 audio-src
 test-results
+
+# Clés et secrets locaux (jamais dans le dépôt)
+.env
+.env.*
+!.env.example
