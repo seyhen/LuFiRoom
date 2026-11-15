@@ -10,8 +10,8 @@ export type SoundId =
   | 'foghorn' | 'bell' | 'sonar' | 'bubbles' | 'hull' | 'engine' | 'whale' | 'sizzle' | 'simmer' | 'neon' | 'tram'
   // les nouveaux objets : diffuseur, tricot, bâton de pluie, cartes, arrosoir, pinceau, fouet, plume, conque, boulier
   | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'abacus' | 'drip'
-  // l'igloo : l'aurore, le trou de pêche, la couture, le cacao
-  | 'aurora' | 'icehole' | 'sew' | 'cocoa'
+  // l'igloo : l'aurore, le trou de pêche, le réchaud, le husky
+  | 'aurora' | 'icehole' | 'stove' | 'husky'
   // la cabane perchée : le ruisseau, les cigales (le vent et les oiseaux reprennent les sons de base)
   | 'brook' | 'cicadas'
   // la serre : le chœur de grenouilles du bassin, la boîte à musique, le tonneau d'eau de pluie
@@ -25,7 +25,7 @@ export type ObjectId =
   | 'spring' | 'bamboo' | 'furin' | 'maple'
   | 'foghorn' | 'bell' | 'stove' | 'barometer' | 'sonar' | 'valve' | 'gauge' | 'telegraph' | 'wok' | 'pot' | 'neon' | 'tram'
   | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'abacus' | 'drip'
-  | 'icewindow' | 'icehole' | 'mitten' | 'thermos'
+  | 'icewindow' | 'icehole' | 'husky'
   | 'birdhouse' | 'hammock' | 'oak' | 'brook' | 'lemonade'
   | 'washer' | 'dryer' | 'changer' | 'folding' | 'rinse' | 'gutter'
   | 'pond' | 'musicbox' | 'barrel'

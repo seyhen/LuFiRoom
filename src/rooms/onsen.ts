@@ -34,7 +34,8 @@ export const onsen: Room = {
     ...WEATHER_LOOPS,
     spring: { src: 'audio/onsen/spring', gain: 0.8 },
     chimes: { src: 'audio/beach/chimes', gain: 0.7 },
-    garden: { src: 'audio/onsen/outside', gain: 0.5 },
+    birds: { src: 'audio/onsen/birds', gain: 0.9 },
+    crickets: { src: 'audio/bedroom/crickets', gain: 0.9 }, // les grillons de la chambre : le jardin la nuit
     whisk: { src: 'audio/onsen/whisk', gain: 0.8 },
   },
   stations: ['rosee', 'minuit', 'brume'],

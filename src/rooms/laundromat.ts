@@ -35,6 +35,8 @@ export const laundromat: Room = {
     // le lave-linge et le sèche-linge : deux enregistrements doux et étouffés, gardés bas (voir public/audio/CREDITS.md)
     wash: { src: 'audio/laundromat/wash', gain: 0.5 },
     tumble: { src: 'audio/laundromat/tumble', gain: 0.5 },
+    rinse: { src: 'audio/laundromat/rinse', gain: 0.8 },
+    gutter: { src: 'audio/laundromat/gutter', gain: 0.8 },
   },
   stations: ['veillee', 'minuit', 'pluie-fine', 'nuit-douce'],
   playlist: PLAYLIST,

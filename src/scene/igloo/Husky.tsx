@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { CatmullRomCurve3, Color, Euler, Matrix4, Mesh, MeshBasicMaterial, Quaternion, Raycaster, SphereGeometry, TubeGeometry, Vector3, type BufferGeometry, type Group } from 'three'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { rand } from '../../math'
+import { isActive, useStore } from '../../state/store'
 import { blob, cone, ell, pair, type Blob } from '../blob'
 import { skin } from '../materials'
 import { Part, SPH, type V3 } from '../parts'
@@ -228,8 +229,11 @@ export function Husky({ position, ry = 0 }: { position: V3; ry?: number }) {
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05), k = st.current
     if (reduceMotion) return
-    k.ph += dt * 1.3
-    body.current.scale.set(1 + Math.sin(k.ph) * 0.015, 1 + Math.sin(k.ph) * 0.035, 1 + Math.sin(k.ph) * 0.015)
+    // quand son souffle joue (le husky est touché), il respire plus ample et plus lentement
+    const on = isActive(useStore.getState(), 'husky')
+    k.ph += dt * (on ? 0.9 : 1.3)
+    const amp = on ? 2 : 1
+    body.current.scale.set(1 + Math.sin(k.ph) * 0.015 * amp, 1 + Math.sin(k.ph) * 0.035 * amp, 1 + Math.sin(k.ph) * 0.015 * amp)
     // une oreille frémit : un petit battement amorti
     k.next -= dt
     if (k.next <= 0) {

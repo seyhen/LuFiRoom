@@ -10,7 +10,7 @@ import type { Channel, Kit } from '../engine'
  */
 export default function icehole(kit: Kit, out: GainNode, { loops }: Room): Channel {
   const { ctx, gain, biq, osc, loop, noise } = kit
-  return kit.loopOrChannel(loops.icehole, out, () => {
+  const rec = kit.loopOrChannel(loops.icehole, out, () => {
     // le clapotis : deux couches de bruit, chacune balancée par deux LFO lents qui ne retombent jamais en phase
     for (const [src, f, lvl, rates] of [
       [noise.brown, 420, 0.5, [0.31, 0.53]],
@@ -50,4 +50,12 @@ export default function icehole(kit: Kit, out: GainNode, { loops }: Room): Chann
       }
     }, 200)
   })
+  if (!loops.icehole) return rec
+  // Avec l'enregistrement (l'eau sous la glace, en continu), la scène garde ses ronds dans l'eau : un battement muet de loin en loin.
+  let next = 0
+  const rings = scheduled(ctx, (until) => {
+    if (next < ctx.currentTime) next = ctx.currentTime + rand(2, 6)
+    for (; next < until; next += rand(7, 16)) pulse(ctx, 'icehole', next)
+  }, 200)
+  return { start() { rec.start(); rings.start() }, stop() { rec.stop(); rings.stop() } }
 }

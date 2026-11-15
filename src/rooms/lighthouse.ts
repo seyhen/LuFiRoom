@@ -36,6 +36,7 @@ export const lighthouse: Room = {
     fire: { src: 'audio/lighthouse/fire', gain: 0.8 },
     foghorn: { src: 'audio/lighthouse/foghorn', gain: 0.9 },
     quill: { src: 'audio/lighthouse/quill', gain: 0.8 },
+    bell: { src: 'audio/lighthouse/bell', gain: 0.8 },
   },
   stations: ['minuit', 'veillee', 'pluie-fine'],
   playlist: PLAYLIST,

@@ -3,8 +3,7 @@ import { PLAYLIST } from './playlist'
 import type { Room } from './types'
 import { WEATHER_LOOPS } from './weather'
 
-// Le bivouac d'un explorateur dans un igloo, sous les aurores. Sons nouveaux (aurore, trou de pêche, couture, cacao) synthétisés
-// pour l'instant : leurs enregistrements se déclareront dans `loops` (docs/ASSETS.md), sources et licences dans public/audio/CREDITS.md.
+// Le bivouac d'un explorateur dans un igloo, sous les aurores. Sons : aurore, trou de pêche, réchaud, husky (enregistrements CC0 ; synthèse de repli). Déclarés dans `loops` (docs/ASSETS.md), sources et licences dans public/audio/CREDITS.md.
 
 export const igloo: Room = {
   id: 'igloo',
@@ -31,29 +30,33 @@ export const igloo: Room = {
   },
   loops: {
     ...WEATHER_LOOPS,
+    aurora: { src: 'audio/igloo/aurora', gain: 0.8 },
+    icehole: { src: 'audio/igloo/icehole', gain: 0.8 },
+    stove: { src: 'audio/igloo/stove', gain: 0.8 },
+    husky: { src: 'audio/igloo/husky', gain: 0.8 },
   },
   stations: ['minuit', 'brume', 'nuit-douce'],
   playlist: PLAYLIST,
   presets: {
-    work: { sounds: [['radio',.55], ['icehole',.3], ['cocoa',.25]] },
-    read: { sounds: [['sew',.35], ['icehole',.35], ['cocoa',.25], ['radio',.3]] },
-    sleep: { sounds: [['aurora',.5], ['icehole',.3]], night: true },
+    work: { sounds: [['radio',.55], ['icehole',.3], ['stove',.25]] },
+    read: { sounds: [['husky',.35], ['icehole',.3], ['stove',.25], ['radio',.3]] },
+    sleep: { sounds: [['aurora',.5], ['husky',.35], ['icehole',.3]], night: true },
   },
   // Les ancres sont à l'échelle de la scène (× 1,15, voir IGLOO_SCALE dans scene/igloo/IglooScene.tsx).
   objects: [
     { id: 'radio', target: 'radio', label: 'Radio à manivelle · lofi', anchor: [-2.7, 0.8, -0.99] },
     { id: 'icewindow', target: 'aurora', label: 'Fenêtre de glace · l’aurore', anchor: [-1.44, 1.29, -2.83] },
     { id: 'lamp', target: 'night', label: 'Lampe tempête · jour / nuit', anchor: [1.78, 0.9, -2.01] },
-    { id: 'thermos', target: 'cocoa', label: 'Thermos · le cacao', anchor: [0.63, 0.62, 1.67] },
+    { id: 'stove', target: 'stove', label: 'Réchaud · la casserole', anchor: [0.17, 0.5, -0.63] },
     { id: 'icehole', target: 'icehole', label: 'Trou de pêche · l’eau sous la glace', anchor: [2.3, 0.14, 0.86] },
-    { id: 'mitten', target: 'sew', label: 'Moufle · la couture', anchor: [-1.67, 0.57, 1.78] },
+    { id: 'husky', target: 'husky', label: 'Husky · il dort', anchor: [-1.3, 0.32, 0.3] },
   ],
   sounds: [
     { id: 'radio', name: 'Radio à manivelle', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'aurora', name: 'Aurore', chip: 'var(--c-aurora)', volume: 0.55, sub: () => 'le ciel qui chante' },
     { id: 'icehole', name: 'Trou de pêche', chip: 'var(--c-icehole)', volume: 0.55, sub: () => 'l’eau sous la glace' },
-    { id: 'sew', name: 'Couture', chip: 'var(--c-sew)', volume: 0.45, sub: () => 'l’aiguille dans la moufle' },
-    { id: 'cocoa', name: 'Cacao', chip: 'var(--c-cocoa)', volume: 0.5, sub: () => 'on se ressert' },
+    { id: 'stove', name: 'Réchaud', chip: 'var(--c-stove)', volume: 0.45, sub: () => 'la neige qui fond' },
+    { id: 'husky', name: 'Husky', chip: 'var(--c-husky)', volume: 0.5, sub: () => 'il dort près du réchaud' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'contre la neige' },
   ],
 }

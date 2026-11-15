@@ -51,8 +51,8 @@ import abacus from './channels/abacus'
 import drip from './channels/drip'
 import aurora from './channels/aurora'
 import icehole from './channels/icehole'
-import sew from './channels/sew'
-import cocoa from './channels/cocoa'
+import stove from './channels/stove'
+import husky from './channels/husky'
 import brook from './channels/brook'
 import cicadas from './channels/cicadas'
 import frogs from './channels/frogs'
@@ -124,10 +124,10 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   shell: { build: shell, base: 1.0 },
   abacus: { build: abacus, base: 1.0 },
   drip: { build: drip, base: 1.0 },
-  aurora: { build: aurora, base: 1.9 },
-  icehole: { build: icehole, base: 1.0 },
-  sew: { build: sew, base: 1.4 },
-  cocoa: { build: cocoa, base: 1.25 },
+  aurora: { build: aurora, base: 0.6 },
+  icehole: { build: icehole, base: 0.65 },
+  stove: { build: stove, base: 1 },
+  husky: { build: husky, base: 0.85 },
   brook: { build: brook, base: 1.05 },
   cicadas: { build: cicadas, base: 3.0 },
   frogs: { build: frogs, base: 1.8 },
@@ -135,8 +135,8 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   rainbarrel: { build: rainbarrel, base: 1.1 },
   wash: { build: wash, base: 1.0 },
   tumble: { build: tumble, base: 1.0 },
-  rinse: { build: rinse, base: 4.4 },
-  gutter: { build: gutter, base: 4.4 },
+  rinse: { build: rinse, base: 1.05 },
+  gutter: { build: gutter, base: 1.15 },
 }
 const ids = Object.keys(CHANNELS) as SoundId[]
 

@@ -170,3 +170,11 @@ Licence **CC0** (domaine public) : aucune mention obligatoire. Aperçu MP3 de Fr
 | `greenhouse/rainbarrel` | Rain Gutter Dripping.wav | ProductionNow | <https://freesound.org/people/ProductionNow/sounds/232300/> | CC0 | 45 s à partir de 5 s, mono | 2026-11-15 |
 | `train/rails` | Riding Train interior recording | gecop | <https://freesound.org/people/gecop/sounds/525058/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
 | `submarine/whale` | Diving with whales.wav | KEVOY | <https://freesound.org/people/KEVOY/sounds/82325/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `onsen/birds` | Early summer, czech wood outside the camp, early morning ambiance | J.Zazvurek | <https://freesound.org/people/J.Zazvurek/sounds/353311/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `lighthouse/bell` | S29-19 Bell buoy.wav | craigsmith | <https://freesound.org/people/craigsmith/sounds/675693/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `laundromat/gutter` | downspout-rainwater2.aif | alienistcog | <https://freesound.org/people/alienistcog/sounds/124976/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `laundromat/rinse` | BathFill.wav | 0XMUSEX0 | <https://freesound.org/people/0XMUSEX0/sounds/168651/> | CC0 | 46 s à partir de 0 s, mono | 2026-11-15 |
+| `igloo/aurora` | Space and time (music) | xkeril | <https://freesound.org/people/xkeril/sounds/789392/> | CC0 | 34 s à partir de 0 s, mono | 2026-11-15 |
+| `igloo/icehole` | icebergs 02 | rucisko | <https://freesound.org/people/rucisko/sounds/342447/> | CC0 | 41 s à partir de 0 s, mono | 2026-11-15 |
+| `igloo/stove` | 20 seconds of smokies boiling on a camp stove | SoundsLikeYukon | <https://freesound.org/people/SoundsLikeYukon/sounds/864615/> | CC0 | 33 s à partir de 0 s, mono | 2026-11-15 |
+| `igloo/husky` | ANIMAL_PUG_DOG_SLEEP_SNORE_INHALE_EXHALE_BREATH_H4N_NTG3_20120527.wav | samueljustice00 | <https://freesound.org/people/samueljustice00/sounds/156597/> | CC0 | 60 s à partir de 8 s, mono | 2026-11-15 |
