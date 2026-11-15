@@ -126,8 +126,11 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite (
 | Atelier | pinceau sur la toile du chevalet | `brush` |
 | Onsen | bol et fouet à matcha | `whisk` |
 | Phare | plume d'oie et encrier, le journal de bord | `quill` |
-| Sous-marin | grand coquillage qu'on porte à l'oreille | `shell` |
-| Marché de nuit | boulier du marchand | `abacus` |
+| Sous-marin | grand coquillage qu'on porte à l'oreille (son synthétisé, faute d'enregistrement) | `shell` |
+| Marché de nuit | (néon et boulier retirés : devenus décor, leurs sons n'existent plus) | — |
+| Train de nuit | sablier de laiton sur la tablette (le sable coule, il se retourne) | `sand` |
+| Atelier | bol chantant sur son zafu, ronds de lumière | `bowl` |
+| Onsen | cascade en deux étages (à la place du shishi-odoshi) | `waterfall` |
 | Igloo | fenêtre de glace sur l'aurore boréale (le ciel qui chante) | `aurora` |
 | Igloo | trou de pêche dans la glace (clapotis, bulles) | `icehole` |
 | Igloo | moufle qu'on coud sur un billot | `sew` |
@@ -152,5 +155,6 @@ Mets ce tableau à jour à chaque objet ajouté **et à chaque son retiré** : l
 | Objet | Son | Raison |
 |---|---|---|
 | Moulin à café manuel (café) | moulure de grains | refusé par l'utilisateur : « pas agréable à écouter » — le grain abrasif qui broie fatigue (règle « frotte, râcle, broie » de l'étape 2) |
+| Verre de thé, livre (train), crayon (atelier), shishi-odoshi (onsen), néon et boulier (marché) | remuer, pages, crayon, bambou, bourdonnement, perles | aucun enregistrement CC0 doux et continu trouvé : objets devenus décor, remplacés par sablier, bol chantant, cascade (2026-11-15) |
 
 Quand l'utilisateur refuse un objet ou un son, ajoute-le ici avec sa raison, et corrige la règle de l'étape 2 si la raison est générale.
