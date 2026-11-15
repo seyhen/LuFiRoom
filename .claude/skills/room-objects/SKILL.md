@@ -74,7 +74,7 @@ Familles de sons qui marchent pour l'étude et le sommeil : **eau** (filet, vers
 - **Un souvenir ne se pose pas sur un pied de sol.** Un bâton de pluie, une conque ou un instrument d'ornement s'accroche au mur ou se pose sur un meuble ; un support de bois planté au milieu du tapis fait « jouet ». Le geste (basculer, tourner) se fait autour d'un pivot réel.
 - **Les plantes se soignent comme le reste** : pot assez grand pour la plante, tiges qui ondulent (`Vines`, brique partagée), feuilles serrées et de tailles variées ; trois ficelles droites avec trois feuilles se lisent « moches ».
 
-Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite, en fond, à voix basse. Si une seule seconde du son (un raclement, un grincement, un cliquetis métallique, un souffle humain) te ferait baisser le volume, écarte l'objet. Mieux : fais écouter un extrait à l'utilisateur avant de construire.
+Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite (l'appli tourne des heures), en fond, à voix basse, et demande-toi quel moment on finirait par attendre. Si une seule seconde du son (un raclement, un grincement, un cliquetis métallique, un souffle humain) te ferait baisser le volume, écarte l'objet. Mieux : fais écouter un extrait à l'utilisateur avant de construire.
 
 ## Étape 3 — Concevoir l'objet
 
@@ -93,11 +93,12 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite, 
 ## Étape 4 — Le son
 
 1. **Enregistrement d'abord** (le synthétique sonne faux sur les gestes humains). Sources : CC0, ou Pixabay (exception accordée, voir CLAUDE.md) ; propose 2 ou 3 pistes de recherche à l'utilisateur (mots-clés anglais), il choisit par capture. Note la source dans `public/audio/CREDITS.md`.
-2. **Préparer** : 20 à 60 s sans évènement marquant, mono si la source est petite (un objet), dans `audio-src/<pièce>/<son>.wav`, puis `npm run audio` (−20 LUFS, Opus + MP3).
+2. **Préparer** : sans évènement marquant, durée et canaux selon le type de son (skill `source-sounds`, « La boucle juste » : 45 à 60 s pour une grande texture, 30 à 45 s mono pour un objet, un nombre entier de périodes pour un son rythmé), dans `audio-src/<pièce>/<son>.wav`, puis `npm run audio` (−20 LUFS, Opus + MP3). Freesound : `npm run source` fait la recherche et la préparation.
 3. **Déclarer** dans `loops` de la pièce : `{ src: 'audio/<pièce>/<son>', gain: 0.8 }`.
 4. **Canal** `src/audio/channels/<son>.ts`, enregistré dans `CHANNELS` (`src/audio/engine.ts`), avec la bonne lecture :
-   - geste irrégulier ou court qu'on entendrait boucler (aiguilles, pinceau, cartes) → `kit.grainsOr` (segments tirés au hasard) ;
-   - fond continu (eau, souffle) → `kit.loopOrChannel` ;
+   - geste irrégulier ou court qu'on entendrait boucler (aiguilles, pinceau, cartes, arrosoir, bouilloire) → `kit.grainsOr` (segments tirés au hasard) ;
+   - fond continu (eau, souffle) de 30 s ou plus, sans alerte d'`analyze-sound.cjs` → `kit.loopOrChannel` ; **un fichier plus court ne se joue jamais en boucle simple** ;
+   - son rythmé (rails, horloge, sonar) → `kit.loopOrChannel` seulement s'il est coupé sur un nombre entier de périodes, sinon `kit.shotsOr` d'un temps isolé (le fondu de 2 s fait trébucher un rythme) ;
    - évènement espacé (un versement, un tir) → `kit.shotsOr` avec un `gap` de plusieurs secondes.
    Toujours une synthèse de repli dans le dernier argument (un bruit filtré qui évoque le son suffit).
 5. **Niveaux** (pont `window.__lofi.audio`, voir `audit-room` étape 1.5) : fond continu −28 à −32 dB RMS, geste ponctuel ≈ −10 dB de crête ; règle `base` dans `CHANNELS`. Écoute ensuite **avec les autres sons de la pièce** : le nouveau ne doit pas les couvrir.
@@ -106,7 +107,7 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite, 
 
 - `npx tsc --noEmit -p .`, `npm run build`, console vide.
 - Objet en gros plan, jour et nuit (défauts de CLAUDE.md), son allumé : l'animation se voit, le bouton est sur l'objet.
-- Le son tourne 5 minutes sans lasser : pas de motif qui revient à l'identique, pas de clic aux raccords.
+- Le son tourne 20 minutes, avec les autres sons de la pièce, sans lasser : pas de moment qu'on attend, pas de rythme qui trébuche, pas de clic aux raccords.
 - Inventaire relancé (étape 1) : l'identifiant est unique.
 - Fond et dehors (étape 1 ter) : capture plein écran, rien de vide derrière la pièce, dehors du même lieu.
 - Carte relancée (étape 1 bis) : les objets interactifs couvrent la pièce, aucune grappe sans raison écrite, les boutons ne se touchent pas.

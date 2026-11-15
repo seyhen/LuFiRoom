@@ -160,3 +160,13 @@ Pixabay Content License (accord du propriétaire du projet), téléchargés depu
 | `laundromat/tumble` | Dryer Hum | freesound_community | 63149 |
 | `treehouse/brook` | Location Stream 1 | freesound_community | 23371 |
 | `treehouse/cicadas` | Cicadas chirping at night | freesound_community | 54307 |
+
+## Sons Freesound (CC0, récupérés par `npm run source`)
+
+Licence **CC0** (domaine public) : aucune mention obligatoire. Aperçu MP3 de Freesound, coupé, ramené à −20 LUFS par `npm run audio`.
+
+| Fichier | Titre | Auteur | Source | Licence | Retouches | Ajouté le |
+|---|---|---|---|---|---|---|
+| `greenhouse/frogs` | FrogsAndCrickets_ExcerptB_JMA_24Bit_48k.wav | greysound | <https://freesound.org/people/greysound/sounds/32655/> | CC0 | 45 s à partir de 5 s, stéréo | 2026-11-15 |
+| `greenhouse/musicbox` | Music Box Lullaby Clip | AudioBitsAndBytes | <https://freesound.org/people/AudioBitsAndBytes/sounds/163644/> | CC0 | 45 s à partir de 0 s, mono | 2026-11-15 |
+| `greenhouse/rainbarrel` | Rain Gutter Dripping.wav | ProductionNow | <https://freesound.org/people/ProductionNow/sounds/232300/> | CC0 | 45 s à partir de 5 s, mono | 2026-11-15 |

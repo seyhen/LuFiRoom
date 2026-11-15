@@ -32,6 +32,9 @@ export const greenhouse: Room = {
   },
   loops: {
     ...WEATHER_LOOPS,
+    frogs: { src: 'audio/greenhouse/frogs', gain: 0.8 },
+    musicbox: { src: 'audio/greenhouse/musicbox', gain: 0.8 },
+    rainbarrel: { src: 'audio/greenhouse/rainbarrel', gain: 0.8 },
   },
   stations: ['rosee', 'pluie-fine', 'brume', 'petit-matin'],
   playlist: PLAYLIST,

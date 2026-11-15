@@ -13,7 +13,7 @@ const STEP = 0.62 // la durée d'une note, en secondes
  * léger écho. La mélodie boucle, et chaque note fait avancer le cylindre dans la scène (`pulse`). Rien d'aigu : tout sous 3 kHz.
  */
 export default function musicbox(kit: Kit, out: GainNode, { loops }: Room): Channel {
-  return kit.loopOrChannel(loops.musicbox, out, () => {
+  const rec = kit.loopOrChannel(loops.musicbox, out, () => {
     const { ctx, gain, biq, osc } = kit
     const dry = gain(1), wet = ctx.createDelay(1), fb = gain(0.35)
     wet.delayTime.value = 0.34
@@ -49,4 +49,13 @@ export default function musicbox(kit: Kit, out: GainNode, { loops }: Room): Chan
       }
     }, 150)
   })
+  if (!loops.musicbox) return rec
+  // Avec l'enregistrement, la scène n'a plus les notes de la synthèse : on bat la mesure à pas régulier pour que le cylindre
+  // avance et que la danseuse s'incline (approximatif : ce n'est pas calé sur chaque note du fichier).
+  let nextBeat = 0
+  const beat = scheduled(kit.ctx, (until) => {
+    if (nextBeat < kit.ctx.currentTime) nextBeat = kit.ctx.currentTime + 0.1
+    for (; nextBeat < until; nextBeat += STEP) pulse(kit.ctx, 'musicbox', nextBeat)
+  }, 150)
+  return { start() { rec.start(); beat.start() }, stop() { rec.stop(); beat.stop() } }
 }

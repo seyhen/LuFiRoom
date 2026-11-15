@@ -14,12 +14,31 @@ Le parcours complet, tel qu'il a marché sur une cinquantaine de sons. L'utilisa
 **Mode B — candidats classés (par défaut quand l'utilisateur veut aller vite, ou ne choisit pas).** L'agent de téléchargement fait le tri, l'utilisateur ne tranche qu'entre 1 ou 2 finalistes.
 
 1. L'agent ouvre la recherche (2 formulations par son) et relève pour chaque ligne : titre, auteur, durée, mots-clés, **nombre de likes** (Pixabay) ou **de téléchargements et note** (Freesound), forme d'onde.
-2. Il retient **3 à 5 candidats** en classant d'abord par **pertinence** (les mots-clés du titre et des tags correspondent au son voulu ; durée entre 15 et 90 s ; forme d'onde régulière, sans pic isolé énorme, sans grand vide), puis par **popularité** (le plus de likes ou de téléchargements) à pertinence comparable. Un son très aimé mais hors sujet (musique, voix, autre objet) est écarté.
+2. Il retient **3 à 5 candidats** en classant d'abord par **pertinence** (les mots-clés du titre et des tags correspondent au son voulu ; durée de 15 à 120 s, coupée ensuite selon « La boucle juste » plus bas ; forme d'onde régulière, sans pic isolé énorme, sans grand vide), puis par **popularité** (le plus de likes ou de téléchargements) à pertinence comparable. Un son très aimé mais hors sujet (musique, voix, autre objet) est écarté.
 3. Il télécharge les candidats (étape 2), sans les convertir encore.
 4. Mesure : `node .claude/skills/source-sounds/analyze-sound.cjs [--geste] <mp3…>` (`--geste` pour un geste ou un évènement espacé : cartes, pinceau, goutte ; sans l'option pour un fond continu). Le script écarte les sons stridents, à coups isolés ou troués, et affiche durée, sonie, aigus, silence. **Il ne juge pas le plaisir d'écoute.**
 5. Il classe : aucune alerte d'abord, puis pertinence, puis popularité. Rapport à l'utilisateur : **1 ou 2 finalistes par son**, avec titre, auteur, durée, likes, chiffres de l'analyse et capture de la ligne, et le candidat écarté avec la raison. L'utilisateur confirme (c'est lui qui entend). Ensuite seulement : conversion et suite.
 
 Dans les deux modes, un son que l'utilisateur refuse va dans « Idées écartées » de `room-objects`.
+
+**Freesound sans navigateur** : `npm run source -- search <pièce/son> "<mots>"` fait les points 1 à 4 (CC0, 15 à 120 s, les plus téléchargés, mesures) ; `npm run source -- pick <pièce/son> <id>` coupe, prépare le WAV et écrit le crédit (`docs/ASSETS.md`). Pixabay reste au navigateur (pas d'API pour les sons).
+
+## La boucle juste (une écoute de plusieurs heures)
+
+L'appli tourne des heures en fond : ce qui fait remarquer une boucle, c'est **un moment reconnaissable qui revient**, pas sa durée. Une texture régulière ne s'entend pas boucler même à 30 s ; une prise avec un coup marquant s'entend revenir même à 5 min.
+
+| Le son | Durée du fichier | Canaux | Lecture |
+|---|---|---|---|
+| grande texture (pluie, vent, vagues, rue, brouhaha, ville) | **45 à 60 s** | stéréo si l'espace s'entend, sinon mono | `loopOrChannel` |
+| texture d'un objet (ventilo, feu, ruisseau, machine, frémissement) | **30 à 45 s** | mono | `loopOrChannel` |
+| **son rythmé** (rails, horloge, sonar, balancier, ressac très régulier) | coupé sur **un nombre entier de périodes** (mesure la période, coupe sur un temps) | mono | `loopOrChannel` seulement si la coupe tombe sur le temps ; sinon un temps isolé rejoué par `shotsOr` avec le `gap` de la période (le fondu de 2 s fait trébucher un rythme coupé au hasard) |
+| geste (cartes, pinceau, aiguilles, clavier, arrosoir, bouilloire, cuillère) | ce qu'on trouve, 8 à 60 s | mono | `grainsOr` : jamais en boucle simple |
+| évènement espacé (corne, goutte, pigeon, ping) | court | mono | `shotsOr` avec un `gap` irrégulier |
+
+- **Un fichier de moins de 30 s ne se joue pas en boucle simple** : grains ou évènements.
+- **Une boucle simple doit passer `analyze-sound.cjs` sans alerte** : niveau irrégulier (LRA au-dessus de 10 à surveiller, 15 = alerte), coup isolé, strident. Sinon : grains, autre passage du fichier, ou autre prise.
+- **60 s au plus** : une boucle décodée reste en mémoire (≈ 190 Ko/s en mono, 380 en stéréo).
+- **Test d'écoute : 20 minutes, en fond, avec les autres sons de la pièce.** Question à se poser : « quel moment finit-on par attendre ? ». S'il y en a un, il n'a pas sa place dans une boucle.
 
 ## Sources (libres de droits)
 
@@ -42,7 +61,7 @@ Délègue à un agent en arrière-plan (`Agent`, `general-purpose`) avec un prom
 - repérer la ligne au titre, à l'auteur **et** à la durée (pas forcément la 1re) ; bouton de téléchargement à x≈1382, y≈372 / 438 / 506 / 577 pour les lignes 1 à 4 (écran 1488×812) ;
 - un clic par page, puis **6 à 10 s d'attente** (fenêtre « Nice one! », fichier en retard ; si l'onglet se fige, refaire un zoom puis recliquer) ; vérifier l'arrivée dans `Téléchargements` (`ls -t`) : `<auteur>-<titre>-<id>.mp3` ;
 - **retours d'expérience (2026-11-07)** : la taille de la fenêtre change d'une session à l'autre (1316×921, 1528×784…) : fais un screenshot après chaque navigation et calcule les coordonnées dessus, ne réutilise pas celles d'avant. Pour fermer la fenêtre « Nice one! », utilise la touche `Escape` (un clic à coordonnée fixe finit parfois sur un lien et change de page). Un téléchargement peut se perdre en silence : après chaque lot, `ls -t ~/Downloads | head` et reclique ce qui manque. Pour un son « doux », cherche avec `soft`, `gentle`, `muffled`, `hum`, `low` : le bon candidat remonte dans les 5 premières lignes, visibles sans défiler. Range les candidats par son dans `Téléchargements/candidats/<son>/` avant l'analyse ;
-- préparer : `ffmpeg -y -i <mp3> -ss <début> -t 60 -ac 1 -ar 48000 audio-src/<pièce>/<son>.wav` (mono pour un objet, stéréo `-ac 2` pour une grande ambiance ; 60 s au plus : un son décodé reste en mémoire) ; copier le mp3 dans `Téléchargements/pixabay-sources/` ;
+- préparer : `ffmpeg -y -i <mp3> -ss <début> -t 60 -ac 1 -ar 48000 audio-src/<pièce>/<son>.wav` (durée et canaux : « La boucle juste » ; 60 s au plus : un son décodé reste en mémoire) ; copier le mp3 dans `Téléchargements/pixabay-sources/` ;
 - **ne pas lancer `npm run audio`** si un autre agent travaille dans le dépôt ; rapporter le nom exact du mp3 (son id Pixabay sert aux crédits) et la durée du WAV.
 
 La musique de la radio est l'exception : morceaux entiers, stéréo, copiés tels quels (`audio-src/radio/<slug>.m4a`), lus en flux (pas de limite de 60 s).
@@ -55,7 +74,8 @@ La musique de la radio est l'exception : morceaux entiers, stéréo, copiés tel
 
 | Le son | Lecture | Réglages de départ |
 |---|---|---|
-| fond continu sans motif (pluie, vent, eau, souffle, moteur) | `kit.loopOrChannel` | — |
+| fond continu sans motif (pluie, vent, eau, souffle, moteur), fichier de 30 s ou plus sans alerte | `kit.loopOrChannel` | — |
+| son rythmé (rails, horloge, sonar) | `kit.loopOrChannel` si coupé sur un nombre entier de périodes, sinon `kit.shotsOr` d'un temps isolé | `gap` = la période |
 | geste qui reviendrait à l'identique en boucle, ou fichier court (< 15 s) | `kit.grainsOr` | `len` 1/3 à 1/2 de la durée, `fade` 0,4 à 1,5 s, `rate` 0,02 à 0,07, `level` 0,15 à 0,2 |
 | évènement espacé (corne, pigeon, goutte) | `kit.shotsOr` | `gap` de quelques secondes à 30 s, `rate` 0,04 à 0,08 |
 | morceau de musique | `playlist` de la pièce (`src/rooms/playlist.ts`), avec `bpm` et `beat` mesurés | — |

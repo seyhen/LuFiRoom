@@ -87,9 +87,23 @@ Pas de ffmpeg pour les générer (seulement pour l'encodage), des graines fixes 
 Ils sont en repo mais **pas branchés** : aucune pièce ne les déclare, donc l'app ne les télécharge pas. Pour en utiliser un, par exemple comme enregistrement de `fan` :
 `loops: { fan: { src: 'audio/noise/brown', gain: 0.6 } }` (le brun est le plus proche du ventilo ; à régler à l'oreille).
 
+## Sourcer un son sur Freesound (automatique)
+
+`scripts/source-sound.mjs` cherche, mesure et prépare un son CC0 sans passer par le navigateur. Il lit `FREESOUND_API_KEY` dans `.env` (ignoré par git ; clé gratuite sur freesound.org/apiv2/apply).
+
+```
+npm run source -- search greenhouse/frogs "frogs night pond" [--geste]   # 5 candidats CC0 (15 à 120 s, les plus téléchargés) : liens + mesures
+npm run source -- pick greenhouse/frogs 32655 [--start 5] [--len 60] [--stereo]   # WAV dans audio-src/, ligne dans CREDITS.md
+npm run audio                                                            # puis loops, canal, niveau : skill source-sounds, étapes 3 et 4
+```
+
+- CC0 seulement : `pick` refuse tout autre son. L'aperçu MP3 est utilisé (l'original demande une connexion OAuth2) : suffisant pour un fond.
+- Le script ne juge pas le plaisir d'écoute : écoute les liens avant de choisir.
+- **Pixabay n'a pas d'API pour les sons** et interdit les requêtes automatisées : il reste en repli, à la main ou avec Claude dans Chrome (skill `source-sounds`, étape 2).
+
 ## Où trouver les sons
 
-Je n'ai pas pu parcourir ces sites depuis l'environnement où je travaille (réseau fermé) : rien de ci-dessous n'est vérifié, **c'est à toi de contrôler la licence de chaque fichier avant de l'ajouter**.
+**Règle** : contrôle la licence de chaque fichier avant de l'ajouter.
 
 **Règle** : CC0 ou licence achetée qui autorise l'usage commercial. Écarte « CC BY » (il faudrait créditer dans l'app : à décider avant), tout « NC » (non commercial), « ND », et les mentions vagues (« libre de droits », « gratuit pour usage personnel ») qui ne disent pas ce qu'on peut faire.
 Plusieurs banques de sons « gratuites » ont une licence propre qui exclut la revente du fichier seul ou limite l'usage commercial : lis-la, ne te fie pas au mot « gratuit ».
