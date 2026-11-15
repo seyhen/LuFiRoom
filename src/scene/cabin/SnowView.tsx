@@ -112,14 +112,14 @@ export function SnowView() {
     // La pluie : de la neige fondue, plus fine, qui tombe plus vite. La tempête de neige : poussée de côté, à toute allure.
     const sleet = smooth(mood.rain), wo = whiteout({ n: 0, r: 0, s: smooth(mood.snow), st: 0 })
     const wind = (gust.current + wo * 1.4) * (1.1 + Math.sin(t * 0.9) * 0.5)
-    const fall = (1 + gust.current * 0.6) * (1 + sleet * 1.6 + wo * 1.2), size = 1 - sleet * 0.4
+    const fall = (1 + gust.current * 0.6) * (1 + sleet * 3.5 + wo * 1.2), size = 1 - sleet * 0.55
     flakes.forEach((f, i) => {
       f.y -= f.v * dt * fall
       f.x += (Math.sin(t * 0.8 + f.ph) * 0.12 * (1 - sleet) - wind) * dt
       if (f.y < WIN.y0 - 0.25) spawn(f, false)
       if (f.x < X0) f.x = X1
       dummy.position.set(f.x, f.y, f.z)
-      dummy.scale.set(f.s * size * (1 + wo * 0.6), f.s * (size + sleet * 0.5), f.s * size)
+      dummy.scale.set(f.s * size * (1 + wo * 0.6), f.s * (size + sleet * 3.2), f.s * size)
       dummy.updateMatrix()
       ref.current.setMatrixAt(i, dummy.matrix)
     })

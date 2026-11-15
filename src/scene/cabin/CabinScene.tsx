@@ -1,5 +1,7 @@
 import { Static } from '../Static'
 import { Snowfall } from '../Floaters'
+import { OutdoorPrecip } from '../objects/OutdoorPrecip'
+import { snowY } from './out/ground'
 import { Window } from '../objects/Window'
 import { Lamp } from '../objects/Lamp'
 import { Cat } from '../objects/Cat'
@@ -70,6 +72,8 @@ export function CabinScene() {
       <Surroundings />
       <SnowView />
       <Snowfall />
+      {/* la pluie : de vrais traits, qui s'arrêtent sur la neige (les flocons de Snowfall s'effacent quand il pleut) ; aucun tracé sans pluie */}
+      <OutdoorPrecip ground={snowY} rain={420} snow={0} area={[-8, 8, -8, 8]} tint={[0x7f97b8, 0xa9bbe6]} />
       <Window />
       <Candles items={WINDOW_CANDLES} />
       <Fireplace />
