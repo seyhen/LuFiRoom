@@ -39,6 +39,7 @@ export const cafe: Room = {
     rain: { src: 'audio/cafe/rain', gain: 0.8 },
     fire: { src: 'audio/cafe/fire', gain: 0.8 },
     drip: { src: 'audio/cafe/drip', gain: 0.8 },
+    handpan: { src: 'audio/cafe/handpan', gain: 0.8 },
   },
   stations: ['pluie-fine', 'soleil-bas', 'brume', 'veillee'],
   playlist: PLAYLIST,
@@ -54,6 +55,8 @@ export const cafe: Room = {
     { id: 'guests', target: 'murmur', label: 'Clients · conversations', anchor: [2.2, 1.25, -2.2] },
     { id: 'fireplace', target: 'fire', label: 'Cheminée · feu', anchor: [-2.45, 1.0, 0] },
     { id: 'books', target: 'pages', label: 'Bibliothèque · pages', anchor: [-2.55, 2.6, 1.85] },
+    // hors du café : le joueur de handpan, sur le trottoir de devant
+    { id: 'handpan', target: 'handpan', label: 'Joueur de handpan · l’air de la rue', anchor: [-0.7, 0.2, 4.55] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-0.11, 1.0, -0.67] },
     { id: 'drip', target: 'drip', label: 'Manteau mouillé · gouttes', anchor: [2.97, 1.45, 1.08] },
   ],
@@ -65,6 +68,7 @@ export const cafe: Room = {
     { id: 'murmur', name: 'Brouhaha', chip: 'var(--c-murmur)', volume: 0.5, sub: () => 'conversations' },
     { id: 'espresso', name: 'Expresso', chip: 'var(--c-espresso)', volume: 0.5, sub: () => 'vapeur et tasses' },
     { id: 'drip', name: 'Gouttes', chip: 'var(--c-drip)', volume: 0.45, sub: () => 'le manteau qui s’égoutte' },
+    { id: 'handpan', name: 'Joueur de handpan', chip: 'var(--c-handpan)', volume: 0.4, sub: () => 'des notes rondes sous l’auvent' },
     { id: 'pages', name: 'Pages', chip: 'var(--c-pages)', volume: 0.55, sub: () => 'bibliothèque, tic-tac' },
   ],
 }

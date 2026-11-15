@@ -10,7 +10,7 @@ import { SEA } from './Sea'
 
 const tube = (pts: V3[], r: number) => new TubeGeometry(new CatmullRomCurve3(pts.map((p) => new Vector3(...p))), 30, r, 6, false)
 /** La coque de la barque : un bol allongé, ouvert (on voit le dedans), bord épais. */
-const HULL = new LatheGeometry([[0, 0], [0.45, 0.04], [0.82, 0.18], [0.98, 0.38], [1, 0.46], [0.95, 0.47], [0.78, 0.22], [0.42, 0.1], [0, 0.07]].map(([r, y]) => new Vector2(r, y)), 28)
+export const HULL = new LatheGeometry([[0, 0], [0.45, 0.04], [0.82, 0.18], [0.98, 0.38], [1, 0.46], [0.95, 0.47], [0.78, 0.22], [0.42, 0.1], [0, 0.07]].map(([r, y]) => new Vector2(r, y)), 28)
 
 /**
  * Le ponton du gardien, contre la face +x du socle (côté caméra, entre la pièce et le phare) : son centre et son orientation. Le

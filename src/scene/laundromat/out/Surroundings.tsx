@@ -17,6 +17,7 @@ import { OutdoorPrecip } from '../../objects/OutdoorPrecip'
 import { laundromat } from '../../../rooms/laundromat'
 import { Block } from '../../atelier/out/Haussmann'
 import { P } from '../../atelier/out/materials'
+import { PianoWindow } from './PianoWindow'
 
 // Le dehors de la laverie : le coin de rue d'une ville française, la nuit. Le trottoir fait le tour (la vitrine donne sur la rue,
 // derrière), une rue de côté à droite avec son passage piéton, le réverbère du coin et sa flaque de lumière, une borne à incendie,
@@ -325,6 +326,8 @@ export function Surroundings() {
           </group>
         ))}
       </Static>
+      {/* la fenêtre au piano de l'immeuble d'en face : interactive (son windowpiano), donc hors du <Static> */}
+      <PianoWindow at={[5.8, 1.68, -8.15]} />
       <sprite position={[5.95, SIDEWALK + 3.35, -4.6]} scale={1.4} material={M.glow} raycast={noRay} renderOrder={4} />
       <mesh position={[5.95, SIDEWALK + 0.01, -4.6]} rotation-x={-Math.PI / 2} material={M.pool} renderOrder={3} raycast={noRay}><planeGeometry args={[3.6, 3.6]} /></mesh>
       {/* les flaques de la chaussée (celles qui portent un reflet sont allongées dans le sens de la raie : l'axe de l'écran est la diagonale) */}

@@ -28,7 +28,14 @@ import kettle from './channels/kettle'
 import spring from './channels/spring'
 import waterfall from './channels/waterfall'
 import lapping from './channels/lapping'
+import oars from './channels/oars'
 import fountain from './channels/fountain'
+import owl from './channels/owl'
+import handpan from './channels/handpan'
+import bonodori from './channels/bonodori'
+import windowpiano from './channels/windowpiano'
+import sax from './channels/sax'
+import accordion from './channels/accordion'
 import foghorn from './channels/foghorn'
 import bell from './channels/bell'
 import sonar from './channels/sonar'
@@ -103,7 +110,14 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   spring: { build: spring, base: 0.3 },
   waterfall: { build: waterfall, base: 1 },
   lapping: { build: lapping, base: 1 },
+  oars: { build: oars, base: 1.25 },
   fountain: { build: fountain, base: 1.3 },
+  owl: { build: owl, base: 0.38 },
+  handpan: { build: handpan, base: 0.9 },
+  bonodori: { build: bonodori, base: 1 },
+  windowpiano: { build: windowpiano, base: 0.8 },
+  sax: { build: sax, base: 1 },
+  accordion: { build: accordion, base: 1 },
   foghorn: { build: foghorn, base: 1.75 },
   bell: { build: bell, base: 2.2 },
   sonar: { build: sonar, base: 1.5 },

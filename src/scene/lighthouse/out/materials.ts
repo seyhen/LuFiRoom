@@ -139,6 +139,10 @@ export const S = {
   rockFar: [outFar(cliff(0x8794a6)), outFar(cliff(0x7886a0)), outFar(cliff(0x94a0b2))],
   grassFar: outFar(farMoss(0x6da15c)),
   weedFar: outFar(farMoss(0x4f7a5c)),
+  // le pêcheur qui rame : ciré jaune, peau, bottes
+  slicker: out(far(0xf2c14e, { roughness: 0.55, clearcoat: 0.4 })),
+  skin: out(far(0xe8b898, { roughness: 0.6 })),
+  boot: out(far(0x3a4250, { roughness: 0.5, clearcoat: 0.4 })),
   sail: out(far(0xfbf6ee, { roughness: 0.8, side: DoubleSide })),
   sailRed: out(far(0xe2564a, { roughness: 0.8, side: DoubleSide })),
   /** La lanterne du ponton : elle s'allume le soir pour qu'on voie encore le ponton et la barque dans l'ombre du socle. */

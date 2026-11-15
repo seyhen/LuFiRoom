@@ -4,6 +4,7 @@ import { StreetProps } from './StreetProps'
 import { StreetWeather } from './StreetWeather'
 import { GutterCat } from './GutterCat'
 import { Terrace } from './Terrace'
+import { Handpanist } from './Handpanist'
 import { CURB, RD, SW } from './streetKit'
 
 /** Où la neige s'arrête : le trottoir (devant et à droite), les toits des maisons voisines, sinon la chaussée. */
@@ -26,6 +27,8 @@ export function Surroundings() {
     <>
       <StreetGround />
       <StreetWeather />
+      {/* le joueur de handpan du trottoir de devant : interactif, donc hors du <Static> de la salle */}
+      <Handpanist at={[-0.9, 4.4]} ry={Math.PI / 4} />
       {/* la neige du dehors (la pluie a ses filets à elle dans StreetWeather) : aucun tracé quand il ne neige pas */}
       <OutdoorPrecip ground={snowGround} rain={0} snow={130} area={SNOW_AREA} />
     </>

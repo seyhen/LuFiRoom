@@ -13,6 +13,7 @@ import { O } from './materials'
 import { snowY } from './ground'
 import { Snowfield } from './Snowfield'
 import { Woodshed } from './Woodshed'
+import { Owl } from './Owl'
 import { Bench, Fence, LampPost, Shovel, Sled, Snowman } from './Yard'
 
 const fir = (x: number, z: number, h: number, w = 1, tiers = 4): Fir => ({ p: [x, snowY(x, z) - 0.05, z], h, w, tiers })
@@ -91,6 +92,8 @@ export function Surroundings() {
         <Shovel x={3.95} z={2.9} ry={Math.PI / 4} />
       </Static>
       <LanternLight x={5.45} z={1.7} />
+      {/* le hibou sur son chicot, au bord du sentier : interactif (son `owl`), donc hors du <Static> */}
+      <Owl at={[7.4, 2.6]} />
     </>
   )
 }

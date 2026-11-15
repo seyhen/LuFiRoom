@@ -10,6 +10,7 @@ import { O } from './materials'
 import { Block, FireEscape, type BlockProps } from './Buildings'
 import { DistantTowers, T } from './Distant'
 import { SteamStack, WoodTank } from './NycGear'
+import { Saxophonist } from './Saxophonist'
 import { AirCon, Billboard, Bulkhead, Chimney, Dish, PigeonCoop, RoofGarden, Skylight, Turbine } from './RoofGear'
 
 /** Les voisins : à droite (plus bas d'un étage), devant à droite (plus bas encore), à gauche devant. */
@@ -90,6 +91,8 @@ export function Surroundings() {
         <PigeonCoop p={[-7.5, LEFT.top, 5.8]} />
       </Static>
       <Billboard p={[-6.2, LEFT.top, 3.8]} />
+      {/* le toit de droite : un saxophoniste, son étui ouvert (interactif : `sax`) */}
+      <Saxophonist at={[4.75, RIGHT.top + 0.02, -1.65]} ry={0.8} />
       <OutdoorPrecip ground={rainGround} area={[-13, 13, -10, 12]} />
     </>
   )

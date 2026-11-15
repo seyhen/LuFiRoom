@@ -147,6 +147,13 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite (
 | Serre | boîte à musique | `musicbox` |
 | Serre | tonneau d'eau de pluie | `rainbarrel` |
 | Serre | fontaine du parc (dehors de la serre), le jet qui retombe dans le bassin | `fountain` |
+| Café | joueur de handpan sur le trottoir de devant, son étui ouvert (dehors du café) | `handpan` |
+| Marché de nuit | yagura de la fête bon-odori au bout de la rue, taiko et lanternes (tambour et flûte, au loin) | `bonodori` |
+| Laverie de nuit | fenêtre éclairée de l'immeuble d'en face, un piano droit et quelqu'un qui joue | `windowpiano` |
+| Toit-terrasse | saxophoniste sur le toit d’en face (dehors), un air lent de saxo alto | `sax` |
+| Atelier | accordéoniste en marinière sur le toit voisin (dehors), une valse, le soufflet qui respire | `accordion` |
+| Cabane | hibou sur son chicot, au bord du sentier (dehors de la cabane), la forêt de nuit | `owl` |
+| Phare | pêcheur qui rame au large (dehors du phare), les avirons dans l’eau calme | `oars` |
 
 Mets ce tableau à jour à chaque objet ajouté **et à chaque son retiré** : la liste réelle est `sounds` de chaque `src/rooms/<id>.ts` (`grep -n "id: '" src/rooms/*.ts`), pas ce tableau.
 

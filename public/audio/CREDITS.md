@@ -193,3 +193,10 @@ Licence **CC0** (domaine public) : aucune mention obligatoire. Aperçu MP3 de Fr
 | `weather/blizzard` | Strong Winds inside house 01 | khenshom | <https://freesound.org/people/khenshom/sounds/623604/> | CC0 | 38 s à partir de 0 s, mono | 2026-11-15 |
 | `beach/lapping` | R23-36-Water Against Wooden Boat.wav | craigsmith | <https://freesound.org/people/craigsmith/sounds/480838/> | CC0 | 24 s à partir de 0 s, mono | 2026-11-15 |
 | `greenhouse/fountain` | Fountain_2.wav | skyko | <https://freesound.org/people/skyko/sounds/169254/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `roof/sax` | alto saxophone solo | iluppai | <https://freesound.org/people/iluppai/sounds/180451/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `atelier/accordion` | Accordion | lepolainyann | <https://freesound.org/people/lepolainyann/sounds/149091/> | CC0 | 50 s à partir de 0 s, mono | 2026-11-15 |
+| `lighthouse/oars` | Paddles rowing on a calm water stream | brunoboselli | <https://freesound.org/people/brunoboselli/sounds/249707/> | CC0 | 39 s à partir de 0 s, mono | 2026-11-15 |
+| `cabin/owl` | night_forest_owl.WAV | thom_cookes | <https://freesound.org/people/thom_cookes/sounds/475376/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `cafe/handpan` | handpan recording.wav | soundguy103 | <https://freesound.org/people/soundguy103/sounds/642771/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `market/bonodori` | Tokyo - Festival Drums and Flute. | manuke | <https://freesound.org/people/manuke/sounds/315888/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
+| `laundromat/windowpiano` | Piano improvisation | Bradovic | <https://freesound.org/people/Bradovic/sounds/171326/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |

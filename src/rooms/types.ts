@@ -14,8 +14,16 @@ export type SoundId =
   | 'sand' | 'bowl' | 'waterfall'
   // la plage : le clapotis de la barque au ponton
   | 'lapping'
+  // le phare : le pêcheur qui rame au large
+  | 'oars'
   // la serre : la fontaine du parc
   | 'fountain'
+  // la cabane : le hibou du chicot, la forêt de nuit
+  | 'owl'
+  // le toit-terrasse : le saxophoniste du toit d'en face ; l'atelier : l'accordéoniste du toit voisin
+  | 'sax' | 'accordion'
+  // le café : le joueur de handpan de la rue ; le marché : la danse bon-odori au loin ; la laverie : le piano de la fenêtre d'en face
+  | 'handpan' | 'bonodori' | 'windowpiano'
   // l'igloo : l'aurore, le trou de pêche, le réchaud, le husky
   | 'aurora' | 'icehole' | 'stove' | 'husky'
   // la cabane perchée : le ruisseau, les cigales (le vent et les oiseaux reprennent les sons de base)
@@ -31,11 +39,13 @@ export type ObjectId =
   | 'spring' | 'waterfall' | 'furin' | 'maple'
   | 'foghorn' | 'bell' | 'stove' | 'barometer' | 'sonar' | 'valve' | 'gauge' | 'telegraph' | 'wok' | 'pot' | 'tram'
   | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'drip'
-  | 'hourglass' | 'bowl' | 'skiff'
+  | 'hourglass' | 'bowl' | 'skiff' | 'rowboat'
   | 'icewindow' | 'icehole' | 'husky'
   | 'birdhouse' | 'hammock' | 'oak' | 'brook' | 'lemonade'
   | 'washer' | 'dryer' | 'changer' | 'folding' | 'rinse' | 'gutter'
-  | 'pond' | 'musicbox' | 'barrel' | 'fountain'
+  | 'pond' | 'musicbox' | 'barrel' | 'fountain' | 'owl'
+  | 'handpan' | 'yagura' | 'pianowindow'
+  | 'sax' | 'accordion'
 /** Ce qu'un objet pilote : un son, ou le passage jour / nuit. */
 export type Target = SoundId | 'night'
 

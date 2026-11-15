@@ -34,6 +34,7 @@ export const market: Room = {
     sizzle: { src: 'audio/market/sizzle', gain: 0.8 },
     simmer: { src: 'audio/market/simmer', gain: 0.8 },
     tram: { src: 'audio/market/tram', gain: 0.8 },
+    bonodori: { src: 'audio/market/bonodori', gain: 0.8 },
   },
   stations: ['pluie-fine', 'bureau', 'soleil-bas'],
   playlist: PLAYLIST,
@@ -46,6 +47,8 @@ export const market: Room = {
     { id: 'tram', target: 'tram', label: 'Baie · le tram', anchor: [1.4, 2.95, -2.9] },
     { id: 'wok', target: 'sizzle', label: 'Wok · ça saute', anchor: [0.24, 1.28, -0.87] },
     { id: 'pot', target: 'simmer', label: 'Marmite · bouillon', anchor: [1.42, 1.28, -0.85] },
+    // hors du marché : la tour de la fête bon-odori, au loin
+    { id: 'yagura', target: 'bonodori', label: 'Yagura · la danse bon-odori', anchor: [7.77, 1.15, 2.57] },
     { id: 'lamp', target: 'night', label: 'Lanterne · jour / nuit', anchor: [1.4, 2.36, -0.73] },
     { id: 'radio', target: 'radio', label: 'Télé · lofi', anchor: [-2.3, 0.95, 2.75] },
   ],
@@ -54,6 +57,7 @@ export const market: Room = {
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.7, sub: () => 'sur la bâche' },
     { id: 'sizzle', name: 'Wok', chip: 'var(--c-sizzle)', volume: 0.5, sub: () => 'ça saute à feu vif' },
     { id: 'simmer', name: 'Marmite', chip: 'var(--c-simmer)', volume: 0.5, sub: () => 'le bouillon qui frémit' },
+    { id: 'bonodori', name: 'Bon-odori', chip: 'var(--c-bonodori)', volume: 0.35, sub: () => 'tambour et flûte, au loin' },
     { id: 'tram', name: 'Tram', chip: 'var(--c-tram)', volume: 0.5, sub: () => 'au bout du boulevard' },
   ],
 }

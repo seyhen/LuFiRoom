@@ -9,6 +9,7 @@ import { FOAMS, SEA, Sea } from './Sea'
 import { Lighthouse } from './Tower'
 import { BellBuoy, Landing } from './Landing'
 import { Headlands } from './Headlands'
+import { Rowboat } from './Rowboat'
 
 /** Les mouettes qui tournent autour du phare et au large. */
 const SOAR = [
@@ -36,6 +37,7 @@ export function Surroundings() {
       <Lighthouse />
       <Landing />
       <BellBuoy x={-7.4} z={3.4} />
+      <Rowboat />
       <Soarers list={SOAR} />
       <OutdoorPrecip ground={SEA} area={[-13, 13, -12, 12]} top={6.6} />
     </>

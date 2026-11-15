@@ -37,6 +37,7 @@ export const laundromat: Room = {
     tumble: { src: 'audio/laundromat/tumble', gain: 0.5 },
     rinse: { src: 'audio/laundromat/rinse', gain: 0.8 },
     gutter: { src: 'audio/laundromat/gutter', gain: 0.8 },
+    windowpiano: { src: 'audio/laundromat/windowpiano', gain: 0.8 },
   },
   stations: ['veillee', 'minuit', 'pluie-fine', 'nuit-douce'],
   playlist: PLAYLIST,
@@ -51,6 +52,8 @@ export const laundromat: Room = {
     { id: 'dryer', target: 'tumble', label: 'Sèche-linge · le linge chaud', anchor: [-2.2, 1.35, -2.5] },
     { id: 'rinse', target: 'rinse', label: 'Lave-linge · le rinçage', anchor: [-2.2, 0.55, -1.45] },
     { id: 'gutter', target: 'gutter', label: 'Gouttière · l’eau du tuyau', anchor: [-1.0, 1.9, -2.9] },
+    // hors de la laverie : le piano de la fenêtre éclairée, de l'autre côté de la rue
+    { id: 'pianowindow', target: 'windowpiano', label: 'Fenêtre d’en face · le piano', anchor: [5.8, 1.55, -8.0] },
     { id: 'lamp', target: 'night', label: 'Lampe du comptoir · jour / nuit', anchor: [2.5, 1.25, 1.55] },
   ],
   sounds: [
@@ -59,6 +62,7 @@ export const laundromat: Room = {
     { id: 'tumble', name: 'Sèche-linge', chip: 'var(--c-tumble)', volume: 0.5, sub: () => 'le linge chaud qui retombe' },
     { id: 'rinse', name: 'Rinçage', chip: 'var(--c-rinse)', volume: 0.5, sub: () => 'le clapotis dans le tambour' },
     { id: 'gutter', name: 'Gouttière', chip: 'var(--c-gutter)', volume: 0.5, sub: () => 'l’eau de pluie dans le tuyau' },
+    { id: 'windowpiano', name: 'Piano de la fenêtre', chip: 'var(--c-windowpiano)', volume: 0.4, sub: () => 'un air lent dans la nuit' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'contre la vitrine' },
   ],
 }

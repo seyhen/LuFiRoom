@@ -15,6 +15,7 @@ import { GlowPoints } from '../../objects/GlowPoints'
 import { market } from '../../../rooms/market'
 import { F as ZF, Z, Zakkyo } from './Zakkyo'
 import { S as SM, STALLS, Stall, stallLanterns } from './Stalls'
+import { Yagura } from './Yagura'
 
 // Le dehors du marché de nuit : la rue continue. Une chaussée mouillée et ses rails de tram devant, les petits immeubles japonais de béton (zakkyo) voisins
 // à gauche et derrière, leurs enseignes verticales en kanji (ラーメン, カラオケ, 餃子, 居酒屋…) qui s'allument le soir, des
@@ -172,6 +173,8 @@ export function Surroundings() {
         <Scooter p={[4.6, WALK, -3.7]} ry={0.2} />
         {STALLS.map((st, i) => <Stall key={i} {...st} />)}
       </Static>
+      {/* la yagura de la fête bon-odori, au bout de la rue (interactive : son bonodori), donc hors du <Static> */}
+      <Yagura at={[7.4, ROAD, 2.2]} ry={Math.PI / 4} />
       <Batch geo={SPH} m={M.lantern} items={lanterns} />
       <Batch geo={SPH} m={M.dark} items={caps} />
       <GlowPoints points={glowPts} color={0xff7a50} size={0.7} level={() => M.glow.opacity} />

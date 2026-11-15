@@ -35,6 +35,7 @@ export const atelier: Room = {
     kettle: { src: 'audio/atelier/kettle', gain: 0.6 },
     rain: { src: 'audio/atelier/rain', gain: 1 },
     brush: { src: 'audio/atelier/brush', gain: 0.8 },
+    accordion: { src: 'audio/atelier/accordion', gain: 0.8 },
   },
   stations: ['bureau', 'rosee', 'pluie-fine', 'brume'],
   playlist: PLAYLIST,
@@ -50,6 +51,8 @@ export const atelier: Room = {
     { id: 'kettle', target: 'kettle', label: 'Bouilloire · thé', anchor: [-2.6, 1.3, 0.95] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-2.68, 1.3, -1.9] },
     { id: 'brush', target: 'brush', label: 'Chevalet · le pinceau', anchor: [2.4, 1.25, -0.8] },
+    // hors de l'atelier : l'accordéoniste du toit voisin, à droite
+    { id: 'accordion', target: 'accordion', label: 'Accordéoniste · la valse', anchor: [5.0, 0.2, -2.0] },
   ],
   sounds: [
     { id: 'radio', name: 'Vinyle lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
@@ -57,6 +60,7 @@ export const atelier: Room = {
     { id: 'bowl', name: 'Bol chantant', chip: 'var(--c-bowl)', volume: 0.45, sub: () => 'une note qui vibre' },
     { id: 'brush', name: 'Pinceau', chip: 'var(--c-brush)', volume: 0.45, sub: () => 'sur la toile' },
     { id: 'keys', name: 'Clavier', chip: 'var(--c-keys)', volume: 0.45, sub: () => 'quelqu’un écrit' },
+    { id: 'accordion', name: 'Accordéoniste', chip: 'var(--c-accordion)', volume: 0.4, sub: () => 'une valse sur les toits' },
     { id: 'kettle', name: 'Bouilloire', chip: 'var(--c-kettle)', volume: 0.5, sub: () => 'une tasse de thé' },
   ],
 }
