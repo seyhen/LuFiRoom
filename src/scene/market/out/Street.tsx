@@ -63,8 +63,8 @@ function Paint() {
       {([[3.0, 9.0], [-5.2, 11.4], [8.6, 2.4]] as const).map(([x, z]) => (
         <group key={`${x}${z}`} position={[x, y, z]}>
           <Part geo={cyl(0.42, 0.42, 0.024, 24)} m={S.iron} castShadow={false} />
-          <Part geo={cyl(0.3, 0.3, 0.03, 24)} m={S.grate} castShadow={false} />
-          <Part geo={cyl(0.14, 0.14, 0.034, 6)} m={S.iron} castShadow={false} />
+          <Part geo={cyl(0.3, 0.3, 0.03, 24)} m={S.grate} p={[0, 0.008, 0]} castShadow={false} />
+          <Part geo={cyl(0.14, 0.14, 0.034, 6)} m={S.iron} p={[0, 0.018, 0]} castShadow={false} />
         </group>
       ))}
     </>

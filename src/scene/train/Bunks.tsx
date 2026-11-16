@@ -52,7 +52,7 @@ function Book() {
           <group key={s} position={[s * 0.15, 0.015, 0]} rotation-z={s * 0.07}>
             <Part geo={rbox(0.3, 0.03, 0.42, 0.012)} m={T.velvet} />
             <Part geo={rbox(0.27, 0.026, 0.38, 0.008)} m={T.cream} p={[0, 0.028, 0]} castShadow={false} />
-            <Part m={T.pageText} p={[0, 0.0425, 0]} rotation-x={-Math.PI / 2} castShadow={false}>
+            <Part m={T.pageText} p={[0, 0.0465, 0]} rotation-x={-Math.PI / 2} castShadow={false}>
               <planeGeometry args={[0.25, 0.36]} />
             </Part>
           </group>
@@ -94,7 +94,7 @@ function BerthLamp({ y }: { y: number }) {
 export function Bunks() {
   return (
     <>
-      <Part geo={rbox(0.96, 0.4, LEN, 0.04)} m={T.mahoganyDark} p={[X, 0.2, ZM]} />
+      <Part geo={rbox(0.94, 0.4, LEN - 0.02, 0.04)} m={T.mahoganyDark} p={[X, 0.2, ZM]} />
       {[-1.9, -0.95].map((z) => (
         <Part key={z} geo={cyl(0.03, 0.03, 0.02, 10)} m={T.brass} p={[X + 0.49, 0.22, z]} rotation-z={Math.PI / 2} castShadow={false} />
       ))}

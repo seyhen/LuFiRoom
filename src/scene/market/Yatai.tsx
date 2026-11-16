@@ -40,9 +40,9 @@ function Bowl({ position, rotation = 0 }: { position: V3; rotation?: number }) {
     <group position={position} rotation-y={rotation} scale={1.35}>
       <Part geo={cyl(0.15, 0.085, 0.11, 24)} m={K.bowl} p={[0, 0.055, 0]} />
       <Part geo={cyl(0.058, 0.07, 0.014, 18)} m={K.red} p={[0, 0.007, 0]} castShadow={false} />
-      <Part geo={cyl(0.152, 0.152, 0.018, 24)} m={K.red} p={[0, 0.1, 0]} castShadow={false} />
+      <Part geo={cyl(0.152, 0.152, 0.018, 24)} m={K.red} p={[0, 0.103, 0]} castShadow={false} />
       <Part geo={cyl(0.1, 0.1, 0.005, 24)} m={K.cream} p={[0, 0.05, 0]} rotation-z={0} castShadow={false} />
-      <Part geo={cyl(0.134, 0.134, 0.01, 24)} m={K.broth} p={[0, 0.108, 0]} castShadow={false} />
+      <Part geo={cyl(0.134, 0.134, 0.01, 24)} m={K.broth} p={[0, 0.112, 0]} castShadow={false} />
       {/* le nid de nouilles : une masse jaune pâle et des mèches qui retombent */}
       <Part geo={SPH} m={K.noodle} scale={[0.1, 0.045, 0.095]} p={[0.0, 0.118, 0.0]} castShadow={false} />
       {[0, 1, 2, 3, 4, 5].map((i) => {

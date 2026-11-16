@@ -15,7 +15,7 @@ import { GROUND, SPEED } from './Line'
 
 const P = 60 // la crête est périodique sur 60 m
 const Z0 = -15, Z1 = -19.5
-const F = { c: [0, 0] as [number, number], r0: 12, r1: 27, sx: 2.4, sz: 0.85 }
+const F = { c: [0, 0] as [number, number], r0: 14, r1: 30, sx: 2.4, sz: 1 }
 const M = {
   ridge: skyFade(far(0xffffff, { roughness: 0.9, vertexColors: true }), F),
   steel: skyFade(far(0x6d7886, { roughness: 0.5 }), F),
@@ -30,7 +30,7 @@ function rise(x: number, z: number) {
   return 2.6 + hillW(x) * 1.1 + Math.pow(t, 0.8) * (0.2 + peak * 1.1)
 }
 
-const GRASS = new Color(0x7fae72), ROCK = new Color(0x8b9db4), SNOW = new Color(0xeef3fb)
+const GRASS = new Color(0x6a9f66), ROCK = new Color(0x7488a8), SNOW = new Color(0xe8eff9)
 function ridgeGeo() {
   const NX = 180, NZ = 8, pos: number[] = [], col: number[] = [], idx: number[] = []
   const c = new Color()

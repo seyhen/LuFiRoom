@@ -35,13 +35,14 @@ const M = {
   soil: skyFade(far(0x6b5040, { roughness: 0.95 }), F),
   trunk: skyFade(far(0x6a5040, { roughness: 0.85 }), F),
   stone: skyFade(far(0xd8cfba, { roughness: 0.75 }), F),
+  lantern: skyFade(far(0xfff0c8, { roughness: 0.4, emissive: 0xffc870, emissiveIntensity: 0.1 }), F),
   iron: skyFade(far(0x26332e, { roughness: 0.45, clearcoat: 0.5 }), F),
   glow: new SpriteMaterial({ map: glowTex, color: 0xffd490, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }),
 }
 
 /** [x, z, échelle, forme (0 chêne, 1 peuplier), teinte] : peu d'arbres, sur les côtés (ni devant la pièce, ni devant le château, ni derrière la crête de la serre). */
 const TREES: [number, number, number, number, number][] = [
-  [-9.6, -1.0, 1.0, 0, 3], [-10.8, -5.6, 1.15, 0, 0], [-9.4, -9.0, 1.0, 1, 4], [10.8, -0.4, 0.9, 0, 1],
+  [-9.6, -1.0, 1.0, 0, 3], [-10.8, -5.6, 1.15, 0, 0], [-9.6, -10.4, 0.85, 1, 4], [10.8, -0.4, 0.9, 0, 1],
 ]
 /** Les massifs : [x, z, largeur, profondeur, fleurs 0 à 2] ; bancs : [x, z, sens] ; urnes : [x, z]. */
 const BEDS: [number, number, number, number, number][] = [[9.1, 2.6, 2.2, 1.4, 0], [-8.6, 4.8, 2.0, 1.3, 1], [-0.6, -9.4, 1.8, 1.8, 2]]
@@ -50,7 +51,7 @@ const URNS: [number, number][] = [[6.7, -2.6], [-7.4, -3.0]]
 
 /** Les haies : [x, z, longueur, sens] ; boules de buis : [x, z, rayon]. */
 const HEDGES: [number, number, number, 'x' | 'z'][] = [[-3.6, -5.6, 5.4, 'x'], [5.0, -4.9, 4.4, 'x'], [-5.2, 1.6, 4.6, 'z'], [-5.2, -2.8, 3.0, 'z'], [5.8, 1.6, 3.4, 'z']]
-const BALLS: [number, number, number][] = [[-3.5, -4.4, 0.42], [-1.2, -4.4, 0.42], [3.4, -4.1, 0.42], [-4.4, 3.8, 0.4], [4.6, 4.6, 0.4], [4.6, -1.2, 0.36], [-7.2, 3.6, 0.5], [7.0, 3.4, 0.5]]
+const BALLS: [number, number, number][] = [[-3.5, -4.1, 0.42], [-1.2, -4.1, 0.42], [3.4, -3.8, 0.42], [-4.4, 3.8, 0.4], [4.6, 4.6, 0.4], [4.6, -1.2, 0.36], [-7.2, 3.6, 0.5], [7.0, 3.4, 0.5]]
 const LAMPS: V3[] = [[-3.6, 0, 3.3], [4.8, 0, 3.2], [-2.4, 0, -3.8], [4.6, 0, -3.6]]
 
 function Evening() {
@@ -58,12 +59,13 @@ function Evening() {
     const n = smooth(mood.night), k = Math.min(1, n + mood.rain * 0.25)
     C.glass.emissiveIntensity = 0.04 + n * 0.95 // les fenêtres du château s'allument le soir
     M.glow.opacity = k * 0.8
+    M.lantern.emissiveIntensity = 0.1 + k * 1.1 // les lanternes s'allument (le soir, ou sous la pluie)
   })
   return null
 }
 
 export function Surroundings() {
-  const lampHeads: V3[] = LAMPS.map(([x, , z]) => [x, 2.1, z])
+  const lampHeads: V3[] = LAMPS.map(([x, , z]) => [x, 2.5, z]) // la lanterne est à GROUND + 2,5
   return (
     <>
       <SkyFadeClock room={greenhouse} />
@@ -86,6 +88,7 @@ export function Surroundings() {
           </group>
         ))}
         <Part geo={rbox(6.4, 0.1, 0.22, 0.03)} m={M.stone} p={[4.2, GROUND + 0.78, -7.4]} castShadow={false} />
+        <Part geo={rbox(6.4, 0.1, 0.26, 0.03)} m={M.stone} p={[4.2, GROUND + 0.05, -7.4]} castShadow={false} />
         {/* les haies taillées en mur, les boules de buis, les arbres */}
         {HEDGES.map(([x, z, len, dir], i) => {
           // une haie : un cœur bas et, par-dessus, une rangée de buis ronds de tailles un peu différentes (pas un boudin lisse)
@@ -110,14 +113,15 @@ export function Surroundings() {
           // un tronc court et épais, puis des masses de feuillage de tailles et de teintes différentes (jamais un champignon)
           const th = (kind ? 1.0 : 1.2) * k
           const blobs: [number, number, number, number, number][] = kind
-            ? [[0, 0.5, 0, 0.9, 0], [0.12, 1.4, -0.1, 0.78, 1], [-0.1, 2.2, 0.1, 0.6, 2], [0, 2.9, 0, 0.4, 3]] // peuplier : colonne
+            ? [[0, 0.3, 0, 0.7, 0], [0.06, 1.2, -0.04, 0.66, 1], [-0.05, 1.85, 0.05, 0.6, 2], [0.04, 2.5, 0, 0.5, 3], [0, 3.1, 0, 0.36, 4], [0, 3.55, 0, 0.2, 1]] // peuplier : une colonne étroite et haute (pas un cairn de boules)
             : [[0, 0.7, 0, 1.15, 0], [0.85, 0.35, 0.3, 0.72, 1], [-0.8, 0.5, -0.35, 0.78, 2], [0.2, 1.45, -0.55, 0.62, 3], [-0.25, 1.35, 0.7, 0.56, 4]]
           return (
             <group key={i}>
-              <Part geo={cyl(0.2 * k, 0.36 * k, th, 8)} m={M.trunk} p={[x, GROUND + th / 2, z]} castShadow={false} />
+              <Part geo={cyl(0.2 * k, 0.36 * k, th, 12)} m={M.trunk} p={[x, GROUND + th / 2, z]} castShadow={false} />
+              {!kind && <Part geo={cyl(0.28 * k, 0.4 * k, 0.16 * k, 12)} m={M.trunk} p={[x, GROUND + 0.08 * k, z]} castShadow={false} />}
               {!kind && <Part geo={cyl(0.08 * k, 0.13 * k, 0.8 * k, 6)} m={M.trunk} p={[x + 0.2 * k, GROUND + th + 0.15 * k, z]} rotation-z={-0.55} castShadow={false} />}
               {blobs.map(([dx, dy, dz, r, c], j) => (
-                <Foliage key={j} v={i * 5 + j} p={[x + dx * k, GROUND + th + dy * k, z + dz * k]} s={[r * k, r * k * (kind ? 0.95 : 0.8), r * k]} m={M.tree[(t + c) % 5]} ry={i + j} shadow={false} />
+                <Foliage key={j} v={i * 5 + j} p={[x + dx * k, GROUND + th + dy * k, z + dz * k]} s={[r * k, r * k * (kind ? 1.35 : 0.8), r * k]} m={M.tree[(t + c) % 5]} ry={i + j} shadow={false} />
               ))}
             </group>
           )
@@ -127,9 +131,9 @@ export function Surroundings() {
           <group key={i}>
             <Part geo={rbox(w, 0.16, d, 0.06)} m={M.stone} p={[x, GROUND + 0.08, z]} castShadow={false} />
             <Part geo={rbox(w - 0.22, 0.04, d - 0.22, 0.015)} m={M.soil} p={[x, GROUND + 0.17, z]} castShadow={false} />
-            {Array.from({ length: Math.min(12, Math.max(3, Math.round(w * d * 1.6))) }, (_, k) => {
-              const u = ((k * 0.618 + i * 0.3) % 1) - 0.5, v = ((k * 0.382 + 0.17) % 1) - 0.5
-              return <Foliage key={k} v={k + i} p={[x + u * (w - 0.5), GROUND + 0.2, z + v * (d - 0.5)]} s={[0.26, 0.22, 0.26]} ry={k} m={[M.bloomA, M.bloomB, M.bloomC][(k + f) % 3]} style="clipped" shadow={false} />
+            {Array.from({ length: Math.min(22, Math.max(8, Math.round(w * d * 5))) }, (_, k) => {
+              const u = ((k * 0.7549 + i * 0.3) % 1) - 0.5, v = ((k * 0.5698 + 0.17) % 1) - 0.5 // suite R2 : une 2D bien répartie (la précédente tombait sur une diagonale)
+              return <Foliage key={k} v={k + i} p={[x + u * (w - 0.5), GROUND + 0.2, z + v * (d - 0.5)]} s={[0.19, 0.16, 0.19]} ry={k} m={[M.bloomA, M.bloomB, M.bloomC, M.hedgeLight][(k + f) % 4]} style="clipped" shadow={false} />
             })}
           </group>
         ))}
@@ -140,6 +144,7 @@ export function Surroundings() {
             <Part geo={rbox(0.14, 0.4, 0.4, 0.04)} m={M.stone} p={[-0.62, 0.2, 0]} castShadow={false} />
             <Part geo={rbox(0.14, 0.4, 0.4, 0.04)} m={M.stone} p={[0.62, 0.2, 0]} castShadow={false} />
             <Part geo={rbox(1.4, 0.34, 0.08, 0.03)} m={M.stone} p={[0, 0.7, -0.2]} castShadow={false} />
+            {[-0.6, 0.6].map((dx) => <Part key={dx} geo={rbox(0.1, 0.22, 0.06, 0.02)} m={M.stone} p={[dx, 0.52, -0.2]} castShadow={false} />)}
           </group>
         ))}
         {/* les urnes de pierre sur leur socle, une touffe dedans */}
@@ -156,7 +161,7 @@ export function Surroundings() {
           <group key={i} position={[x, GROUND, z]}>
             <Part geo={cyl(0.07, 0.1, 0.18, 10)} m={M.iron} p={[0, 0.09, 0]} castShadow={false} />
             <Part geo={cyl(0.03, 0.045, 2.2, 8)} m={M.iron} p={[0, 1.2, 0]} castShadow={false} />
-            <Part geo={rbox(0.2, 0.28, 0.2, 0.05)} m={M.stone} p={[0, 2.5, 0]} castShadow={false} />
+            <Part geo={rbox(0.2, 0.28, 0.2, 0.05)} m={M.lantern} p={[0, 2.5, 0]} castShadow={false} />
             <Part geo={cyl(0.02, 0.14, 0.12, 4)} m={M.iron} p={[0, 2.7, 0]} castShadow={false} />
           </group>
         ))}

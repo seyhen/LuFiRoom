@@ -39,7 +39,7 @@ export function Surroundings() {
       <BellBuoy x={-7.4} z={3.4} />
       <Rowboat />
       <Soarers list={SOAR} />
-      <OutdoorPrecip ground={SEA} area={[-13, 13, -12, 12]} top={6.6} />
+      <OutdoorPrecip ground={SEA} area={[-13, 13, -12, 12]} top={6.6} covered />
     </>
   )
 }

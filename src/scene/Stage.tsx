@@ -30,6 +30,7 @@ export function Stage({ hotspotLayer }: { hotspotLayer: Layer }) {
       key={epoch}
       className="scene"
       style={{ position: 'fixed', inset: 0 }}
+      resize={{ offsetSize: true }} // `.leaving .scene` met un scale(.97) : sans cela le canvas se mesure à 97 % et garde cette taille
       role="img"
       aria-label={t(room.description)}
       orthographic

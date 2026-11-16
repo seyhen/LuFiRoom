@@ -48,8 +48,9 @@ function Jelly({ x, y, z, s, c, ph, choir }: { x: number; y: number; z: number; 
     halo.current.quaternion.copy(camera.quaternion) // le halo fait toujours face à la caméra (un plan, pas un sprite : `skyFade` ne s'applique pas aux sprites)
     const pulse = 1 + Math.sin(p * 2.2) * (0.07 + a * 0.05)
     bell.current.scale.set(pulse, 1 / pulse, pulse)
-    D.jelly[c].opacity = 0.15 + n * 0.4 + a * 0.1
-    D.jellyGlow[c].opacity = 0.08 + n * 0.55 + a * 0.15
+    // additif sur un fond de jour clair : à 0,15 la cloche rose virait au blanc pur (la grande du chœur aussi) ; le jour, très pâle
+    D.jelly[c].opacity = 0.06 + n * 0.49 + a * 0.04
+    D.jellyGlow[c].opacity = 0.03 + n * 0.6 + a * 0.06
     halo.current.scale.setScalar(3.2 * (1 + a * 0.18 * (0.5 + 0.5 * Math.sin(p * 2.2))))
   })
   return (

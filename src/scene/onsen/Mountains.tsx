@@ -4,7 +4,7 @@ import { AdditiveBlending, Color, LatheGeometry, Vector2, type Sprite, type Spri
 import { smooth } from '../../math'
 import { Part, SPH, noRay } from '../parts'
 import { LIVE } from '../Static'
-import { clearOf, hex, rgb, seeded, weathered, whiteout } from '../paint'
+import { clearOf, hex, mix, rgb, seeded, weathered, whiteout } from '../paint'
 import { snowTop } from '../snowTop'
 import { skyFade } from '../outdoor'
 import { Foliage } from '../nature/Foliage'
@@ -60,6 +60,7 @@ O.mountains.slice(1).forEach((m) => skyFade(snowTop(m, 1, -0.1, 0.35), { c: [0, 
 O.forest.forEach((m) => snowTop(m, 0.85, 0.4, 0.8))
 snowTop(O.forestPine, 0.85, 0.3, 0.7)
 const tmp = new Color()
+const RAIN_HAZE = hex('#cdb9c4')
 
 /** Une montagne : profil tourné, base large, flancs creusés, sommet arrondi (rien de pointu). Base y = 0, sommet y = 1. */
 const mountainGeo = (() => {
@@ -83,7 +84,9 @@ export function Mountains() {
     // les rangs : jour → nuit, puis assombris par l'orage, effacés dans le blanc par la tempête de neige (le second plus loin)
     O.mountains.slice(1).forEach((m, i) => {
       tmp.copy(DAY[i]).lerp(NIGHT[i], n)
-      m.color.setStyle(rgb(weathered(hex('#' + tmp.getHexString()), w, 0.5 + i * 0.4)))
+      // sous la pluie et l'orage : moins d'ardoise (le ciel reste rose) et un fondu vers la brume rose, pour que les crêtes ne tranchent pas
+      const wet = Math.max(w.r, w.st) * (1 - n)
+      m.color.setStyle(rgb(mix(weathered(hex('#' + tmp.getHexString()), { ...w, st: w.st * 0.35 }, 0.3 + i * 0.3), RAIN_HAZE, wet * 0.4)))
     })
     O.moon.opacity = n * clearOf(w) ** 2
     if (halo.current) (halo.current.material as SpriteMaterial).opacity = O.moon.opacity * 0.45

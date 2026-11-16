@@ -41,7 +41,7 @@ export function Surroundings() {
       <Line />
       <Peaks />
       <Hills />
-      <OutdoorPrecip ground={rainGround} area={AREA} />
+      <OutdoorPrecip ground={rainGround} area={AREA} covered />
     </>
   )
 }

@@ -58,7 +58,7 @@ const ROCKS: [number, number, number, number][] = [
 ]
 
 /** Les halos des trois lanternes. */
-const GLOWS = [toroGlowAt(-4.3, 5.4), toroGlowAt(-2.2, 5.4), toroGlowAt(3.9, -1.6, 0.8), toroGlowAt(2.7, 5.9)]
+const GLOWS = [toroGlowAt(-5.7, 5.4), toroGlowAt(-2.2, 5.4), toroGlowAt(3.9, -1.6, 0.8), toroGlowAt(2.7, 5.9)]
 /** La lueur chaude sur le sol devant la maison (les lanternes et les shoji), de nuit seulement. */
 const pool = new MeshBasicMaterial({ map: glowTex, color: 0xffb860, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -2 })
 
@@ -68,7 +68,7 @@ function Tick() {
     const k = Math.min(1, smooth(mood.night) + mood.rain * 0.2)
     N.paper.emissiveIntensity = 0.1 + k * 1.6
     N.glow.opacity = k * 0.85
-    pool.opacity = k * 0.7
+    pool.opacity = k * 0.95
     if (!reduceMotion) stream.offset.y = (stream.offset.y - Math.min(dt, 0.05) * (0.35 + mood.storm * 0.4)) % 1
   })
   return null
@@ -103,7 +103,7 @@ export function Surroundings() {
         <Pine x={-7.4} z={2.0} s={1.1} />
         <Pine x={8.2} z={1.6} s={1.0} lean={-1} />
         <Torii x={-3.1} z={6.7} ry={0} />
-        <Toro x={-4.3} z={5.4} />
+        <Toro x={-5.7} z={5.4} />
         <Toro x={-2.2} z={5.4} />
         <Toro x={3.9} z={-1.6} s={0.8} />
         <Toro x={2.7} z={5.9} />

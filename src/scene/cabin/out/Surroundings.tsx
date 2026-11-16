@@ -45,6 +45,8 @@ function farForest(): Fir[] {
     const x = Math.cos(a) * d, z = Math.sin(a) * d, h = 2.5 + r() * 1.3
     out.push({ p: [x, snowY(x, z) - 0.05, z], h, w: 0.95 + r() * 0.25, tiers: 3 })
   }
+  // deux petits sapins devant à gauche, dans le coin bas du dehors qui restait de la neige nue (à 1440 px, (100, 650) et (145, 730))
+  for (const [x, z, h] of [[-4.9, 12.1, 2.1], [-2.2, 13.6, 1.7]]) out.push({ p: [x, snowY(x, z) - 0.05, z], h, w: 1, tiers: 3 })
   return out
 }
 const FAR_FOREST = farForest()

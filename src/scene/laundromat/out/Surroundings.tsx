@@ -205,7 +205,7 @@ function PlaneTree({ x, z }: { x: number; z: number }) {
     [3, -1.75, 2.0, -0.25, 0.4, 0.34, 0.38], [4, 0.6, 3.05, 0.4, 0.38, 0.34, 0.34], [5, -0.7, 2.0, -0.95, 0.4, 0.36, 0.36],
   ]
   return (
-    <group position={[x, SIDEWALK, z]}>
+    <group position={[x, SIDEWALK, z]} scale={0.78}>
       {ground(M.grate, 1.0, 1.0, 1, [0, 0.012, 0])}
       <Part geo={cyl(0.27, 0.36, 0.2, 14)} m={M.bark} p={[0, 0.1, 0]} castShadow={false} />
       <Part geo={cyl(0.2, 0.27, 1.25, 14)} m={M.bark} p={[0, 0.8, 0]} castShadow={false} />
@@ -288,7 +288,7 @@ export function Surroundings() {
         <Crosswalk />
         <Markings />
         <Gutter />
-        <PlaneTree x={5.4} z={-3.1} />
+        <PlaneTree x={5.0} z={0.2} />
         <Scooter x={3.2} z={5.2} />
         {/* l'immeuble voisin à gauche, sa boutique éclairée au rez-de-chaussée ; l'immeuble d'en face, de l'autre côté de la rue */}
         <Block x0={-9.6} x1={-3.8} z0={-3.6} z1={3.4} wall={3.2} top={4.9} s={1} shift={0.25} dormers={[3, 3]} lowBalcony={false} />

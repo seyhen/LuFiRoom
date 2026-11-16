@@ -61,7 +61,7 @@ const D2 = mats(F2)
 const ISLETS: [number, number, number, number][] = [[-14.6, -2.5, 1.7, 0.55], [-13.6, 4.2, 1.2, 0.4], [-12.6, -8.2, 1.4, 0.45], [-4.4, -14.8, 1.8, 0.6], [4.6, -14.2, 1.2, 0.4], [12.4, -10.6, 1.5, 0.5], [-10.8, -10.4, 1.6, 0.5], [-8.2, -16.2, 1.6, 0.5]]
 
 /** Le grand large, pour les coins du haut des grands écrans (à 17 à 19 du centre, fondu de `D2`) : une pointe rocheuse, des îlots, deux voiliers. */
-const FAR_ISLETS: [number, number, number, number][] = [[-6.2, -18.4, 2.6, 1.0], [-1.2, -17.6, 1.3, 0.45], [3.0, -15.0, 1.2, 0.4], [-17.6, -2.6, 2.2, 0.9], [-16.4, 2.0, 1.4, 0.5]]
+const FAR_ISLETS: [number, number, number, number][] = [[-5.0, -20.5, 2.6, 1.0], [-1.2, -17.6, 1.3, 0.45], [3.0, -15.0, 1.2, 0.4], [-17.6, -2.6, 2.2, 0.9], [-16.4, 2.0, 1.4, 0.5]]
 const SAILS: [number, number, number, number][] = [[-8.5, -10.6, 0.9, 0.3], [2.2, -13.6, 0.75, 1.1]]
 
 const SAIL = (() => {

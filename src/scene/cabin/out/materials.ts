@@ -44,7 +44,7 @@ knitScarf.repeat.set(4, 1)
 const out = <T extends Parameters<typeof skyFade>[0]>(m: T, r0 = 7.2, r1 = 12.5) => skyFade(m, { c: [0, 0], r0, r1 })
 
 /** Le dehors lointain des grands écrans (les coins du haut sont à 13 à 18 du centre) : fondu large, teintes pâles. */
-const wide = <T extends Parameters<typeof skyFade>[0]>(m: T) => out(m, 9.5, 17.5)
+const wide = <T extends Parameters<typeof skyFade>[0]>(m: T) => out(m, 10.8, 19)
 
 export const O = {
   // la neige de la clairière va plus loin que le reste : elle porte les sapins lointains

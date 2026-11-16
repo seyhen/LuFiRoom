@@ -52,8 +52,8 @@ function Taiko({ y }: { y: number }) {
       {/* le support : deux pieds en X de chaque côté, une barre */}
       {[-0.22, 0.22].map((z) => (
         <group key={z}>
-          <Part geo={rbox(0.05, 0.62, 0.05, 0.015)} m={S.wood} p={[0.36, y - 0.3, z]} rotation-z={0.26} castShadow={false} />
-          <Part geo={rbox(0.05, 0.62, 0.05, 0.015)} m={S.wood} p={[-0.36, y - 0.3, z]} rotation-z={-0.26} castShadow={false} />
+          <Part geo={rbox(0.05, 0.8, 0.05, 0.015)} m={S.wood} p={[0.36, y - 0.388, z]} rotation-z={0.26} castShadow={false} />
+          <Part geo={rbox(0.05, 0.8, 0.05, 0.015)} m={S.wood} p={[-0.36, y - 0.388, z]} rotation-z={-0.26} castShadow={false} />
         </group>
       ))}
       <Part geo={rbox(0.9, 0.05, 0.05, 0.015)} m={S.wood} p={[0, y - 0.5, 0.22]} castShadow={false} />
@@ -115,10 +115,15 @@ export function Yagura({ at, ry }: { at: V3; ry: number }) {
       </Static>
       {/* les lanternes sous le toit : elles se balancent à peine quand le tambour joue */}
       <group position={[0, 0, 0]} ref={lamps} userData={LIVE}>
-        {EAVE.map((p, i) => <Chochin key={i} p={[p[0], DECK + 1.52, p[2]]} />)}
+        {/* <Static> imbriqué : les lanternes ne bougent pas entre elles, seul leur groupe se balance */}
+        <Static>
+          {EAVE.map((p, i) => <Chochin key={i} p={[p[0], DECK + 1.52, p[2]]} />)}
+        </Static>
       </group>
       <group ref={drum} position={[0, DECK + 0.78, 0.52]} userData={LIVE}>
-        <Taiko y={0} />
+        <Static>
+          <Taiko y={0} />
+        </Static>
       </group>
       {/* le tambourinaire debout à côté du tambour, de profil vers lui, les baguettes sur la peau */}
       <Busker

@@ -257,11 +257,29 @@ function Pub() {
   )
 }
 
+/** Derrière le pub : deux maisons hautes qui dépassent sa mansarde et ferment le ciel en haut à droite (390 px), pâles dans la brume. */
+function BehindPub() {
+  return (
+    <group>
+      <B s={[5.4, 11.2, 2.6]} p={[8.2, SW + 5.6, -11.3]} m={S.brick} uv={2} r={0.05} />
+      <B s={[5.7, 0.2, 2.9]} p={[8.2, SW + 11.3, -11.3]} m={K.stone} r={0.05} />
+      <B s={[5.2, 1.2, 2.4]} p={[8.2, SW + 12, -11.3]} m={S.slate} uv={1.6} along="z" r={0.04} />
+      <B s={[4.4, 9.6, 2.4]} p={[13.6, SW + 4.8, -10.6]} m={S.sand} uv={2} r={0.05} />
+      <B s={[4.7, 0.2, 2.7]} p={[13.6, SW + 9.7, -10.6]} m={K.stone} r={0.05} />
+      <Chimney at={[7.0, SW + 11.3, -11.3]} w={0.8} h={1.2} d={0.5} pots={2} />
+      {[[6.4, 3.4], [8.2, 3.4], [10.0, 3.4], [6.4, 6.2], [8.2, 6.2], [10.0, 6.2], [6.4, 9.0], [10.0, 9.0]].map(([x, h], i) => (
+        <SimpleWin key={i} at={[x, SW + h, -10.0]} lit={i % 3 === 0 ? 1 : -1} />
+      ))}
+    </group>
+  )
+}
+
 export function Terrace() {
   return (
     <>
       <Bookbinder />
       <Pub />
+      <BehindPub />
       {/* les maisons qui continuent la rue, à gauche et à droite : plus basses, plus pâles */}
       <Neighbour x0={-16.0} x1={L.x0} zF={L.zF} floors={2} mat={S.brick} lit={[-1, -1, 0, -1, -1]} />
       <Neighbour x0={R.x1} x1={15.2} zF={R.zF} floors={1} mat={S.sand} lit={[-1, 1, 0]} roofZ={0} />

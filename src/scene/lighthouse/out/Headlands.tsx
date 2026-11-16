@@ -11,15 +11,16 @@ import { SEA, ringGeo } from './Sea'
 
 /** Une falaise : une base large, un second étage plus étroit et décalé, un dessus d'herbe rase, un éboulis dans l'eau. */
 /** L'écume au pied d'une falaise : sans elle la roche se fond dans la brume et semble flotter au-dessus de l'eau. */
-function CliffFoam({ p, w, i, far }: { p: [number, number]; w: number; i: number; far: boolean }) {
+type Plane = 'near' | 'far' | 'veil'
+function CliffFoam({ p, w, i, plane }: { p: [number, number]; w: number; i: number; plane: Plane }) {
   const g = useMemo(() => ringGeo(w * 0.8, 0.3 + w * 0.12, i * 2.3 + 1), [w, i])
   useEffect(() => () => g.dispose(), [g])
-  return <mesh geometry={g} position={[p[0], SEA + 0.02, p[1]]} material={far ? S.foamFar : S.foam} renderOrder={3} raycast={noRay} />
+  return <mesh geometry={g} position={[p[0], SEA + 0.02, p[1]]} material={plane === 'veil' ? S.foamVeil : plane === 'far' ? S.foamFar : S.foam} renderOrder={3} raycast={noRay} />
 }
 
-function Cliff({ p, w, h, ry = 0, v = 0, far = false }: { p: [number, number]; w: number; h: number; ry?: number; v?: number; far?: boolean }) {
+function Cliff({ p, w, h, ry = 0, v = 0, plane = 'near' }: { p: [number, number]; w: number; h: number; ry?: number; v?: number; plane?: Plane }) {
   const [x, z] = p
-  const rock = far ? S.rockFar : S.rock, grass = far ? S.grassFar : S.grass, weed = far ? S.weedFar : S.weed
+  const rock = { near: S.rock, far: S.rockFar, veil: S.rockVeil }[plane], grass = { near: S.grass, far: S.grassFar, veil: S.grassVeil }[plane], weed = { near: S.weed, far: S.weedFar, veil: S.weedVeil }[plane]
   return (
     <group position={[x, SEA, z]} rotation-y={ry}>
       <Rock v={v} p={[0, -0.6, 0]} s={[w, h * 0.62, w * 0.9]} m={rock[v % 3]} shadow={false} />
@@ -44,6 +45,12 @@ const FAR_CLIFFS: [number, number, number, number, number, number][] = [
   [-6.0, -12.8, 2.0, 3.6, 2.4, 0],
   [0.4, -14.4, 2.2, 3.8, 0.2, 7],
   [12.6, -10.2, 2.0, 3.4, 2.8, 4],
+]
+
+/** Le tout dernier plan, à 18 du centre : un cap à gauche et un à droite, pour les coins du haut d'un grand écran (fondu `veil`). */
+const VEIL_CLIFFS: [number, number, number, number, number, number][] = [
+  [-16.6, -1.2, 1.8, 3.2, 0.9, 2],
+  [0.2, -16.8, 2.0, 3.6, 2.1, 6],
 ]
 
 /** La voile triangulaire, dans le plan (x, y) : bord d'attaque vertical, bord de fuite en biais. */
@@ -71,10 +78,11 @@ export function Headlands() {
     <>
       <Static>
         {CLIFFS.map(([x, z, w, h, ry, v], i) => <Cliff key={i} p={[x, z]} w={w} h={h} ry={ry} v={v} />)}
-        {FAR_CLIFFS.map(([x, z, w, h, ry, v], i) => <Cliff key={`f${i}`} p={[x, z]} w={w} h={h} ry={ry} v={v} far />)}
+        {FAR_CLIFFS.map(([x, z, w, h, ry, v], i) => <Cliff key={`f${i}`} p={[x, z]} w={w} h={h} ry={ry} v={v} plane="far" />)}
+        {VEIL_CLIFFS.map(([x, z, w, h, ry, v], i) => <Cliff key={`v${i}`} p={[x, z]} w={w} h={h} ry={ry} v={v} plane="veil" />)}
         <Sailboat p={[-7.6, SEA + 0.02, 1.4]} ry={0.5} />
       </Static>
-      {[...CLIFFS, ...FAR_CLIFFS].map(([x, z, w], i) => <CliffFoam key={i} p={[x, z]} w={w} i={i} far={i >= CLIFFS.length} />)}
+      {[...CLIFFS, ...FAR_CLIFFS, ...VEIL_CLIFFS].map(([x, z, w], i) => <CliffFoam key={i} p={[x, z]} w={w} i={i} plane={i < CLIFFS.length ? 'near' : i < CLIFFS.length + FAR_CLIFFS.length ? 'far' : 'veil'} />)}
     </>
   )
 }
