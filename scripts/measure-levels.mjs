@@ -53,9 +53,23 @@ try {
   const jobs = await page.evaluate(async ({ onlyIds, onlyRooms }) => {
     const { rooms } = await import('/src/rooms/index.ts')
     // `rec` : gain de l'enregistrement qui joue à la place de la synthèse (boucle de la fiche, ou pistes de la radio), sinon null.
+    // `outside` suit les `loops` réels : oiseaux (jour) et grillons (nuit) ne comptent que s'ils sont déclarés tous les deux, un par
+    // jour / nuit (deux lignes) ; le jardin de l'onsen (`garden`) coule sous la synthèse des oiseaux (`extra` : ajouté en puissance).
     return rooms
       .filter((r) => !onlyRooms || onlyRooms.includes(r.id))
-      .flatMap((r) => r.sounds.filter((s) => !onlyIds || onlyIds.includes(s.id)).map((s) => ({ room: r.id, id: s.id, rec: s.id === 'radio' ? (r.playlist.length ? 2.2 : null) : (r.loops[s.id]?.gain ?? null) })))
+      .flatMap((r) =>
+        r.sounds
+          .filter((s) => !onlyIds || onlyIds.includes(s.id))
+          .flatMap((s) => {
+            if (s.id === 'outside' && r.loops.birds && r.loops.crickets)
+              return [
+                { room: r.id, id: s.id, tag: 'jour', rec: r.loops.birds.gain },
+                { room: r.id, id: s.id, tag: 'nuit', rec: r.loops.crickets.gain },
+              ]
+            if (s.id === 'outside' && r.loops.garden) return [{ room: r.id, id: s.id, rec: null, extra: r.loops.garden.gain }]
+            return [{ room: r.id, id: s.id, rec: s.id === 'radio' ? (r.playlist.length ? 2.2 : null) : (r.loops[s.id]?.gain ?? null) }]
+          }),
+      )
   }, { onlyIds, onlyRooms })
   if (!jobs.length) throw new Error('Aucun canal à mesurer (--ids / --rooms).')
   log(`${jobs.length} canaux, ${seconds} s chacun…`)
@@ -78,8 +92,10 @@ try {
       // Niveau réel : un enregistrement sort à -20 LUFS (npm run audio) × son gain de boucle ; sinon, c'est la synthèse mesurée.
       r.rec = job.rec
       r.level = job.rec === null ? r.lufsDef : REC_LUFS + 20 * Math.log10(job.rec * r.gainDef)
+      if (job.extra) r.level = 10 * Math.log10(10 ** (r.lufsDef / 10) + 10 ** ((REC_LUFS + 20 * Math.log10(job.extra * r.gainDef)) / 10))
+      r.name = job.tag ? `${job.room}/${job.id} ${job.tag}` : `${job.room}/${job.id}`
       rows.push(r)
-      log(`  ${String(++n).padStart(3)}/${jobs.length}  ${job.room}/${job.id}  ${r.level.toFixed(1)} LUFS ${job.rec === null ? 'synthèse' : 'enreg.'}  (${((performance.now() - t0) / 1000).toFixed(1)} s)`)
+      log(`  ${String(++n).padStart(3)}/${jobs.length}  ${r.name}  ${r.level.toFixed(1)} LUFS ${job.rec === null ? 'synthèse' : 'enreg.'}  (${((performance.now() - t0) / 1000).toFixed(1)} s)`)
     } catch (e) {
       failures.push(`${job.room}/${job.id} : ${String(e.message ?? e).split('\n')[0]}`)
       n++
@@ -106,7 +122,7 @@ if (json) {
   for (const r of rows) {
     const flag = Math.abs(r.dev) > FLAGRANT ? ' !!' : Math.abs(r.dev) > WARN ? ' !' : ''
     console.log(
-      `${(r.room + '/' + r.id).padEnd(26)}${(r.rec === null ? 'synthèse' : 'enreg.').padEnd(9)}${f(r.base, 2).padStart(5)} ${f(r.volume, 2).padStart(7)} ${f(r.lufsDef).padStart(7)} ${f(r.lufsMean + 20 * Math.log10(r.gainDef)).padStart(5)} ${f(20 * Math.log10(r.peak)).padStart(9)} dB ${f(r.level).padStart(7)} ${(r.dev > 0 ? '+' : '') + f(r.dev)}${flag}`,
+      `${r.name.padEnd(26)}${(r.rec === null ? 'synthèse' : 'enreg.').padEnd(9)}${f(r.base, 2).padStart(5)} ${f(r.volume, 2).padStart(7)} ${f(r.lufsDef).padStart(7)} ${f(r.lufsMean + 20 * Math.log10(r.gainDef)).padStart(5)} ${f(20 * Math.log10(r.peak)).padStart(9)} dB ${f(r.level).padStart(7)} ${(r.dev > 0 ? '+' : '') + f(r.dev)}${flag}`,
     )
   }
   console.log(`\nMédiane des niveaux par défaut : ${f(med)} LUFS (${rows.length} canaux).`)
@@ -114,7 +130,7 @@ if (json) {
   console.log(`\nÀ plus de ±${WARN} dB de la médiane : ${off.length ? '' : 'aucun'}`)
   for (const r of off) {
     const fix = Math.abs(r.dev) > FLAGRANT ? `  FLAGRANT : base ${f(r.base, 2)} → ${f(r.base * 10 ** (-r.dev / 20), 2)} pour revenir à la médiane` : ''
-    console.log(`  ${(r.room + '/' + r.id).padEnd(26)} ${(r.rec === null ? 'synthèse' : 'enreg.').padEnd(9)} ${(r.dev > 0 ? '+' : '') + f(r.dev)} dB${fix}`)
+    console.log(`  ${r.name.padEnd(26)} ${(r.rec === null ? 'synthèse' : 'enreg.').padEnd(9)} ${(r.dev > 0 ? '+' : '') + f(r.dev)} dB${fix}`)
   }
   if (failures.length) console.log(`\nNon mesurés :\n${failures.map((x) => '  ' + x).join('\n')}`)
 }

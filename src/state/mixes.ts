@@ -108,7 +108,8 @@ export const PUBLIC_SITE_URL = 'https://lufiroom.an-alexcore.workers.dev'
 
 // Lien de partage : ?room=cabin&mix=fire.70,rain.60&night=1&station=veillee&weather=snow&v=2   (son.volume en % de curseur, jour = 0, nuit = 1 ; sans v=2 : ancien lien, volumes en amplitude)
 
-export function mixToUrl(m: Mix) {
+/** Les paramètres du lien de partage (partie pure de `mixToUrl`, testée dans tests/). */
+export function mixQuery(m: Mix) {
   const q = new URLSearchParams({
     room: m.room,
     mix: m.on.map((id) => `${id}.${Math.round((m.vol[id] ?? 0.7) * 100)}`).join(','),
@@ -121,6 +122,11 @@ export function mixToUrl(m: Mix) {
     q.set('noise', m.noise.color)
     q.set('tilt', String(Math.round(m.noise.tilt * 100)))
   }
+  return q
+}
+
+export function mixToUrl(m: Mix) {
+  const q = mixQuery(m)
   // Dans l'app native, location.origin vaut https://localhost ou capacitor://localhost : on partage l'adresse publique du site.
   const origin = Capacitor.isNativePlatform() ? PUBLIC_SITE_URL : location.origin
   return `${origin}${import.meta.env.BASE_URL}?${q}`
