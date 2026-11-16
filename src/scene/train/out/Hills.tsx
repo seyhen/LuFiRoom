@@ -29,7 +29,7 @@ function hillGeo() {
   }
   for (let j = 0; j < NZ; j++) for (let i = 0; i < NX; i++) {
     const a = j * (NX + 1) + i, b = a + NX + 1
-    idx.push(a, b, a + 1, a + 1, b, b + 1)
+    idx.push(a, a + 1, b, a + 1, b + 1, b)
   }
   const g = new BufferGeometry()
   g.setAttribute('position', new Float32BufferAttribute(pos, 3))

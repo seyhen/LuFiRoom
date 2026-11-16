@@ -36,6 +36,9 @@ const at = (t: number, dy = 0, dz = 0): V3 => [A[0] + (B[0] - A[0]) * t, A[1] + 
 const lanternGlass = gummy(0xfff2cc, { roughness: 0.15, clearcoat: 1, emissive: 0xffc070, emissiveIntensity: 0.1 })
 const glow = new SpriteMaterial({ map: glowTex, color: 0xffcf80, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending })
 const pennant = gummy(0xd8794e, { roughness: 0.6, side: 2 })
+/** Le toit de la vigie : les bardeaux de la cabane, avec leur propre lueur de lune (de nuit il tombait au noir). */
+const nestRoof = T.shingles.clone()
+nestRoof.emissiveMap = T.shingles.map; nestRoof.emissive.setHex(0xffb690); nestRoof.emissiveIntensity = 0
 
 /** Le pont de corde : des planches sur deux cordes porteuses, deux mains courantes, des suspentes, trois bocaux-lanternes. */
 function RopeBridge() {
@@ -99,7 +102,7 @@ function Nest() {
       <Part geo={new TorusGeometry(r - 0.06, 0.035, 6, 32, Math.PI * 1.65)} m={T.beam} p={[x, y + 0.62, z]} rotation={[Math.PI / 2, 0, Math.PI * 1.17]} castShadow={false} />
       {/* le toit pointu de bardeaux et son mât */}
       <Part geo={cyl(0.08, 0.08, 1.7, 8)} m={T.beam} p={[x + 0.55, y + 0.85, z - 0.55]} castShadow={false} />
-      <Part geo={cyl(0.02, r + 0.25, 0.85, 12)} m={T.shingles} p={[x, y + 2.05, z]} />
+      <Part geo={cyl(0.02, r + 0.25, 0.85, 12)} m={nestRoof} p={[x, y + 2.05, z]} />
       <Part geo={SPH} m={T.ridge} p={[x, y + 2.5, z]} scale={0.07} castShadow={false} />
       <Part geo={cyl(0.012, 0.012, 0.5, 5)} m={T.iron} p={[x, y + 2.75, z]} castShadow={false} />
       <Part geo={rbox(0.3, 0.16, 0.01, 0.005)} m={pennant} p={[x + 0.16, y + 2.9, z]} castShadow={false} />
@@ -147,6 +150,7 @@ export function Surroundings() {
     const k = Math.min(1, smooth(mood.night) + mood.rain * 0.2)
     lanternGlass.emissiveIntensity = 0.1 + k * 1.8
     glow.opacity = k * 0.8
+    nestRoof.emissiveIntensity = smooth(mood.night) * 0.42
   })
   return (
     <>

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { BufferGeometry, Float32BufferAttribute } from 'three'
+import { AdditiveBlending, BufferGeometry, Float32BufferAttribute, MeshBasicMaterial } from 'three'
+import { glowTex } from '../../textures'
 import { smooth } from '../../../math'
 import { mood, reduceMotion } from '../../anim'
 import { Static } from '../../Static'
@@ -57,7 +58,9 @@ const ROCKS: [number, number, number, number][] = [
 ]
 
 /** Les halos des trois lanternes. */
-const GLOWS = [toroGlowAt(-4.3, 5.4), toroGlowAt(-2.2, 5.4), toroGlowAt(3.9, -1.6, 0.8)]
+const GLOWS = [toroGlowAt(-4.3, 5.4), toroGlowAt(-2.2, 5.4), toroGlowAt(3.9, -1.6, 0.8), toroGlowAt(2.7, 5.9)]
+/** La lueur chaude sur le sol devant la maison (les lanternes et les shoji), de nuit seulement. */
+const pool = new MeshBasicMaterial({ map: glowTex, color: 0xffb860, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -2 })
 
 /** Le soir, les lanternes s'allument ; l'eau du ruisseau file vers l'aval. */
 function Tick() {
@@ -65,6 +68,7 @@ function Tick() {
     const k = Math.min(1, smooth(mood.night) + mood.rain * 0.2)
     N.paper.emissiveIntensity = 0.1 + k * 1.6
     N.glow.opacity = k * 0.85
+    pool.opacity = k * 0.7
     if (!reduceMotion) stream.offset.y = (stream.offset.y - Math.min(dt, 0.05) * (0.35 + mood.storm * 0.4)) % 1
   })
   return null
@@ -102,6 +106,7 @@ export function Surroundings() {
         <Toro x={-4.3} z={5.4} />
         <Toro x={-2.2} z={5.4} />
         <Toro x={3.9} z={-1.6} s={0.8} />
+        <Toro x={2.7} z={5.9} />
         <Bridge x={5.1} z={2.8} ry={-0.343} />
         {steps.map(([x, z], i) => (
           <Rock key={i} v={FLAT_ROCKS[i % 2]} p={[x, groundY(x, z) - 0.04, z]} s={[0.26, 0.1, 0.22]} ry={i * 1.3} m={N.rock} shadow={false} />
@@ -116,6 +121,8 @@ export function Surroundings() {
       </Static>
       {/* devant, au bord du sentier : une joueuse de koto sur son tatami (interactive : `koto`) */}
       <KotoPlayer at={[0.6, 6.0]} ry={0.5} />
+      <mesh position={[0.5, groundY(0.5, 4.8) + 0.05, 4.8]} rotation-x={-Math.PI / 2} material={pool} renderOrder={2} raycast={noRay}><planeGeometry args={[7, 3.6]} /></mesh>
+      <mesh position={[2.7, groundY(2.7, 5.9) + 0.05, 5.9]} rotation-x={-Math.PI / 2} material={pool} renderOrder={2} raycast={noRay}><planeGeometry args={[3.4, 3.4]} /></mesh>
       <GlowPoints points={GLOWS} color={0xffc070} size={0.85} level={() => N.glow.opacity} />
       <OutdoorPrecip ground={groundY} area={[-13, 13, -12, 12]} />
     </>

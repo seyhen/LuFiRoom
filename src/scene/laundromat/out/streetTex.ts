@@ -121,8 +121,8 @@ export const treeGrateTex = canvasTex(256, 256, (x) => {
  */
 export const barkTex = canvasTex(256, 256, (x) => {
   const r = seeded(17)
-  x.fillStyle = '#78725e'; x.fillRect(0, 0, 256, 256)
-  const tones = ['#cdc4aa', '#bdb799', '#adb08f', '#d2cbb0', '#9ca083', '#c2b890']
+  x.fillStyle = '#6f6a58'; x.fillRect(0, 0, 256, 256)
+  const tones = ['#bdb79c', '#b2ae94', '#a9ad90', '#c0baa0', '#a0a487', '#b6ae93']
   for (let i = 0; i < 70; i++) {
     const cx = r() * 256, cy = r() * 256, rx = 12 + r() * 22, ry = 9 + r() * 16, rot = (r() - 0.5) * 0.7, n = 7 + ((r() * 3) | 0)
     const pts = Array.from({ length: n }, (_, k) => { const a = (k / n) * TAU, j = 0.72 + r() * 0.5; return [Math.cos(a) * rx * j, Math.sin(a) * ry * j] as const })
@@ -131,7 +131,7 @@ export const barkTex = canvasTex(256, 256, (x) => {
       x.save(); x.translate(cx + ox, cy + oy); x.rotate(rot)
       x.beginPath(); pts.forEach(([px, py], k) => (k ? x.lineTo(px, py) : x.moveTo(px, py))); x.closePath()
       x.fillStyle = fill; x.fill()
-      x.lineWidth = 2.5; x.strokeStyle = 'rgba(52,48,36,.38)'; x.stroke()
+      x.lineWidth = 2.5; x.strokeStyle = 'rgba(52,48,36,.26)'; x.stroke()
       x.fillStyle = 'rgba(255,255,255,.14)'; x.beginPath(); x.ellipse(-rx * 0.18, -ry * 0.25, rx * 0.5, ry * 0.22, 0, 0, TAU); x.fill()
       x.restore()
     }
@@ -173,7 +173,8 @@ export const wetTex = canvasTex(128, 128, (x) => {
   for (let k = 0; k <= 72; k++) { const a = (k / 72) * TAU, R = at(a) * 58; const px = 64 + Math.cos(a) * R, py = 64 + Math.sin(a) * R * 0.95; k ? x.lineTo(px, py) : x.moveTo(px, py) }
   x.closePath()
   const g = x.createRadialGradient(54, 52, 4, 64, 64, 62)
-  g.addColorStop(0, '#f2f6fa'); g.addColorStop(1, '#bcc8d4')
+  g.addColorStop(0, '#f2f6fa'); g.addColorStop(0.7, '#c4cfda'); g.addColorStop(1, '#7c8896')
   x.fillStyle = g; x.fill()
-  x.lineWidth = 3.5; x.strokeStyle = '#ffffff'; x.stroke()
+  // pas de liseré blanc : une flaque a un bord mouillé plus sombre, pas un contour d'autocollant
+  x.lineWidth = 5; x.strokeStyle = 'rgba(90,102,116,.55)'; x.stroke()
 })

@@ -22,16 +22,18 @@ const branch = (pts: V3[], r0: number, r1: number) => {
   return g
 }
 
-/** Un érable du Japon : tronc qui se divise, trois ou quatre masses de feuillage rouge, orange et vermillon. */
+/** Un érable du Japon : un tronc qui se divise en quatre charpentières, cinq coussins de feuillage étagés, rouges, orange et vermillon. */
 export function Maple({ x, z, s = 1, seed = 1 }: { x: number; z: number; s?: number; seed?: number }) {
   const g = groundY(x, z)
   const r = useMemo(() => seeded(seed), [seed])
   const limbs = useMemo(() => [
-    branch([[0, 0, 0], [0.05, 0.6, 0.02], [0.1, 1.1, 0.0]], 0.13, 0.08),
-    branch([[0.08, 0.9, 0], [0.45, 1.35, 0.15], [0.7, 1.6, 0.25]], 0.07, 0.03),
-    branch([[0.06, 0.95, 0], [-0.35, 1.4, -0.1], [-0.6, 1.65, -0.2]], 0.07, 0.03),
+    branch([[0, 0, 0], [0.08, 0.8, 0.02], [0.14, 1.5, 0]], 0.15, 0.09),
+    branch([[0.12, 1.2, 0], [0.55, 1.55, 0.2], [0.95, 1.75, 0.3]], 0.08, 0.035),
+    branch([[0.1, 1.3, 0], [-0.4, 1.7, -0.15], [-0.85, 1.9, -0.25]], 0.08, 0.035),
+    branch([[0.14, 1.45, 0], [0.2, 1.9, -0.4], [0.1, 2.25, -0.5]], 0.06, 0.03),
   ], [])
-  const crowns: [V3, V3, number][] = [[[0.1, 1.75, 0], [0.75, 0.55, 0.7], 0], [[0.65, 1.62, 0.25], [0.55, 0.42, 0.5], 1], [[-0.55, 1.65, -0.2], [0.55, 0.45, 0.5], 2], [[0.0, 2.12, 0.05], [0.45, 0.35, 0.42], 1]]
+  // des coussins étagés (niwaki) qui laissent voir les charpentières, plus larges que hauts : un érable, pas une sucette
+  const crowns: [V3, V3, number][] = [[[0.95, 1.8, 0.3], [0.62, 0.3, 0.55], 0], [[-0.85, 1.95, -0.25], [0.58, 0.28, 0.5], 2], [[0.12, 2.35, -0.05], [0.7, 0.32, 0.62], 1], [[0.15, 2.28, -0.5], [0.5, 0.26, 0.42], 0], [[0.5, 2.0, 0.5], [0.45, 0.25, 0.4], 2]]
   return (
     <group position={[x, g, z]} scale={s}>
       {limbs.map((l, i) => <Part key={i} geo={l} m={N.bark} />)}

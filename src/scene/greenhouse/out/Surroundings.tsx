@@ -28,18 +28,26 @@ const M = {
   gravel: skyFade(far(0xb9ae98, { roughness: 0.85, clearcoat: 0.08 }), F),
   hedge: skyFade(farFoliage(0x3f7a4e), F),
   hedgeLight: skyFade(farFoliage(0x5e9a58), F),
-  tree: [skyFade(farFoliage(0x4f8a52), F), skyFade(farFoliage(0x6aa458), F), skyFade(farFoliage(0x3a7048), F)],
+  tree: [skyFade(farFoliage(0x4f8a52), F), skyFade(farFoliage(0x6aa458), F), skyFade(farFoliage(0x3a7048), F), skyFade(farFoliage(0x8bb85a), F), skyFade(farFoliage(0x2f6244), F)],
+  bloomA: skyFade(farFoliage(0xe39ab0), F),
+  bloomB: skyFade(farFoliage(0xf2dc8a), F),
+  bloomC: skyFade(farFoliage(0xf4efe4), F),
+  soil: skyFade(far(0x6b5040, { roughness: 0.95 }), F),
   trunk: skyFade(far(0x6a5040, { roughness: 0.85 }), F),
   stone: skyFade(far(0xd8cfba, { roughness: 0.75 }), F),
   iron: skyFade(far(0x26332e, { roughness: 0.45, clearcoat: 0.5 }), F),
   glow: new SpriteMaterial({ map: glowTex, color: 0xffd490, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }),
 }
 
-/** [x, z, rayon du houppier, hauteur du tronc, teinte, forme] : de grands arbres ronds, que sur les côtés du fond (un volume devant cacherait la pièce). */
-const TREES: [number, number, number, number, number, number][] = [
-  [-6.4, -4.8, 1.35, 2.2, 0, 1], [-9.6, -1.0, 1.25, 1.9, 1, 2], [-5.4, -8.6, 1.6, 2.6, 2, 3], [-2.0, -9.6, 1.5, 2.3, 0, 4], [2.6, -9.0, 1.7, 2.7, 1, 1],
-  [6.8, -6.2, 1.35, 2.1, 2, 2], [9.2, -3.2, 1.25, 1.9, 0, 5], [5.6, -9.4, 1.5, 2.5, 0, 2], [9.4, -7.6, 1.5, 2.4, 1, 3], [-9.6, -6.0, 1.5, 2.4, 2, 4],
+/** [x, z, échelle, forme (0 chêne, 1 peuplier), teinte] : peu d'arbres, sur les côtés (ni devant la pièce, ni devant le château, ni derrière la crête de la serre). */
+const TREES: [number, number, number, number, number][] = [
+  [-9.6, -1.0, 1.0, 0, 3], [-10.8, -5.6, 1.15, 0, 0], [-9.4, -9.0, 1.0, 1, 4], [10.8, -0.4, 0.9, 0, 1],
 ]
+/** Les massifs : [x, z, largeur, profondeur, fleurs 0 à 2] ; bancs : [x, z, sens] ; urnes : [x, z]. */
+const BEDS: [number, number, number, number, number][] = [[9.1, 2.6, 2.2, 1.4, 0], [-8.6, 4.8, 2.0, 1.3, 1], [-0.6, -9.4, 1.8, 1.8, 2]]
+const BENCHES: [number, number, 'x' | 'z'][] = [[0.9, -6.4, 'x'], [8.6, -2.8, 'z']]
+const URNS: [number, number][] = [[6.7, -2.6], [-7.4, -3.0]]
+
 /** Les haies : [x, z, longueur, sens] ; boules de buis : [x, z, rayon]. */
 const HEDGES: [number, number, number, 'x' | 'z'][] = [[-3.6, -5.6, 5.4, 'x'], [5.0, -4.9, 4.4, 'x'], [-5.2, 1.6, 4.6, 'z'], [-5.2, -2.8, 3.0, 'z'], [5.8, 1.6, 3.4, 'z']]
 const BALLS: [number, number, number][] = [[-3.5, -4.4, 0.42], [-1.2, -4.4, 0.42], [3.4, -4.1, 0.42], [-4.4, 3.8, 0.4], [4.6, 4.6, 0.4], [4.6, -1.2, 0.36], [-7.2, 3.6, 0.5], [7.0, 3.4, 0.5]]
@@ -98,15 +106,49 @@ export function Surroundings() {
             <Foliage v={i} p={[x, GROUND + 0.2, z]} s={[r, r, r]} m={M.hedgeLight} style="clipped" shadow={false} />
           </group>
         ))}
-        {TREES.map(([x, z, r, th, t, v], i) => (
+        {TREES.map(([x, z, k, kind, t], i) => {
+          // un tronc court et épais, puis des masses de feuillage de tailles et de teintes différentes (jamais un champignon)
+          const th = (kind ? 1.0 : 1.2) * k
+          const blobs: [number, number, number, number, number][] = kind
+            ? [[0, 0.5, 0, 0.9, 0], [0.12, 1.4, -0.1, 0.78, 1], [-0.1, 2.2, 0.1, 0.6, 2], [0, 2.9, 0, 0.4, 3]] // peuplier : colonne
+            : [[0, 0.7, 0, 1.15, 0], [0.85, 0.35, 0.3, 0.72, 1], [-0.8, 0.5, -0.35, 0.78, 2], [0.2, 1.45, -0.55, 0.62, 3], [-0.25, 1.35, 0.7, 0.56, 4]]
+          return (
+            <group key={i}>
+              <Part geo={cyl(0.2 * k, 0.36 * k, th, 8)} m={M.trunk} p={[x, GROUND + th / 2, z]} castShadow={false} />
+              {!kind && <Part geo={cyl(0.08 * k, 0.13 * k, 0.8 * k, 6)} m={M.trunk} p={[x + 0.2 * k, GROUND + th + 0.15 * k, z]} rotation-z={-0.55} castShadow={false} />}
+              {blobs.map(([dx, dy, dz, r, c], j) => (
+                <Foliage key={j} v={i * 5 + j} p={[x + dx * k, GROUND + th + dy * k, z + dz * k]} s={[r * k, r * k * (kind ? 0.95 : 0.8), r * k]} m={M.tree[(t + c) % 5]} ry={i + j} shadow={false} />
+              ))}
+            </group>
+          )
+        })}
+        {/* les massifs de fleurs : une bordure de pierre, de la terre, des touffes roses, jaunes et crème */}
+        {BEDS.map(([x, z, w, d, f], i) => (
           <group key={i}>
-            <Part geo={cyl(0.16, 0.3, th, 8)} m={M.trunk} p={[x, GROUND + th / 2, z]} castShadow={false} />
-            {/* deux maîtresses branches qui montent vers les masses de feuillage : le houppier ne pose plus sur un bâton */}
-            <Part geo={cyl(0.07, 0.11, r * 0.6, 6)} m={M.trunk} p={[x - r * 0.2, GROUND + th + r * 0.2, z + r * 0.1]} rotation-z={0.55} castShadow={false} />
-            <Part geo={cyl(0.06, 0.1, r * 0.55, 6)} m={M.trunk} p={[x + r * 0.22, GROUND + th + r * 0.18, z - r * 0.08]} rotation-z={-0.6} castShadow={false} />
-            <Foliage v={v} p={[x, GROUND + th - 0.35, z]} s={[r, r * 0.8, r]} m={M.tree[t % 3]} ry={i} shadow={false} />
-            <Foliage v={v + 2} p={[x + r * 0.55, GROUND + th - 0.1, z - r * 0.25]} s={[r * 0.62, r * 0.55, r * 0.62]} m={M.tree[(t + 1) % 3]} ry={i + 1} shadow={false} />
-            <Foliage v={v + 4} p={[x - r * 0.5, GROUND + th, z + r * 0.2]} s={[r * 0.55, r * 0.5, r * 0.55]} m={M.tree[(t + 2) % 3]} ry={i + 2} shadow={false} />
+            <Part geo={rbox(w, 0.16, d, 0.06)} m={M.stone} p={[x, GROUND + 0.08, z]} castShadow={false} />
+            <Part geo={rbox(w - 0.22, 0.04, d - 0.22, 0.015)} m={M.soil} p={[x, GROUND + 0.17, z]} castShadow={false} />
+            {Array.from({ length: Math.min(12, Math.max(3, Math.round(w * d * 1.6))) }, (_, k) => {
+              const u = ((k * 0.618 + i * 0.3) % 1) - 0.5, v = ((k * 0.382 + 0.17) % 1) - 0.5
+              return <Foliage key={k} v={k + i} p={[x + u * (w - 0.5), GROUND + 0.2, z + v * (d - 0.5)]} s={[0.26, 0.22, 0.26]} ry={k} m={[M.bloomA, M.bloomB, M.bloomC][(k + f) % 3]} style="clipped" shadow={false} />
+            })}
+          </group>
+        ))}
+        {/* les bancs de pierre, le dossier côté fond */}
+        {BENCHES.map(([x, z, dir], i) => (
+          <group key={i} position={[x, GROUND, z]} rotation-y={dir === 'x' ? 0 : Math.PI / 2}>
+            <Part geo={rbox(1.5, 0.1, 0.46, 0.04)} m={M.stone} p={[0, 0.42, 0]} castShadow={false} />
+            <Part geo={rbox(0.14, 0.4, 0.4, 0.04)} m={M.stone} p={[-0.62, 0.2, 0]} castShadow={false} />
+            <Part geo={rbox(0.14, 0.4, 0.4, 0.04)} m={M.stone} p={[0.62, 0.2, 0]} castShadow={false} />
+            <Part geo={rbox(1.4, 0.34, 0.08, 0.03)} m={M.stone} p={[0, 0.7, -0.2]} castShadow={false} />
+          </group>
+        ))}
+        {/* les urnes de pierre sur leur socle, une touffe dedans */}
+        {URNS.map(([x, z], i) => (
+          <group key={i} position={[x, GROUND, z]}>
+            <Part geo={rbox(0.5, 0.3, 0.5, 0.05)} m={M.stone} p={[0, 0.15, 0]} castShadow={false} />
+            <Part geo={cyl(0.12, 0.24, 0.34, 14)} m={M.stone} p={[0, 0.47, 0]} castShadow={false} />
+            <Part geo={cyl(0.3, 0.14, 0.2, 14)} m={M.stone} p={[0, 0.74, 0]} castShadow={false} />
+            <Foliage v={i} p={[0, 0.84, 0]} s={[0.3, 0.26, 0.3]} m={i ? M.bloomA : M.hedgeLight} style="clipped" shadow={false} />
           </group>
         ))}
         {/* les lampadaires de fonte : colonne, lanterne vitrée, chapeau */}

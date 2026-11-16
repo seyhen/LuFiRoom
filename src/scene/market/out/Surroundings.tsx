@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { AdditiveBlending, CatmullRomCurve3, CircleGeometry, MeshBasicMaterial, PlaneGeometry, SpriteMaterial, TorusGeometry, TubeGeometry, Vector3 } from 'three'
+import { AdditiveBlending, CatmullRomCurve3, PlaneGeometry, SpriteMaterial, TorusGeometry, TubeGeometry, Vector3 } from 'three'
 import { smooth } from '../../../math'
 import { mood } from '../../anim'
 import { Static } from '../../Static'
@@ -16,15 +16,13 @@ import { market } from '../../../rooms/market'
 import { F as ZF, Z, Zakkyo } from './Zakkyo'
 import { S as SM, STALLS, Stall, stallLanterns } from './Stalls'
 import { Yagura } from './Yagura'
+import { Street, StreetPuddles } from './Street'
 
 // Le dehors du marché de nuit : la rue continue. Une chaussée mouillée et ses rails de tram devant, les petits immeubles japonais de béton (zakkyo) voisins
 // à gauche et derrière, leurs enseignes verticales en kanji (ラーメン, カラオケ, 餃子, 居酒屋…) qui s'allument le soir, des
 // guirlandes de lanternes rouges tendues au-dessus de la rue, un scooter garé, l'étal voisin avec sa table et ses tabourets.
 
 const ROAD = -0.42, WALK = -0.3
-const DISC = new CircleGeometry(1, 24)
-/** Les flaques où se reflètent les néons (un seul tracé). */
-const PUDDLES: Item[] = [[1.5, 5.2, 1.2, 0.5], [-2.0, 7.0, 0.9, 0.4], [5.6, 2.4, 0.5, 1.0]].map(([x, z, a, b]) => ({ p: [x, ROAD + 0.01, z], s: [a, b, 1], r: [-Math.PI / 2, 0, 0] }))
 const F = ZF
 const tube = (pts: V3[], r: number) => new TubeGeometry(new CatmullRomCurve3(pts.map((p) => new Vector3(...p))), 40, r, 6, false)
 
@@ -74,7 +72,6 @@ const M = {
   stool: skyFade(far(0xe04a5a, { roughness: 0.4, clearcoat: 0.6 }), F),
   umbrella: skyFade(snowTop(far(0xf4c040, { roughness: 0.6, side: 2 }), 1, 0.4, 0.8), F),
   glow: new SpriteMaterial({ map: glowTex, color: 0xff7a50, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }),
-  puddle: new MeshBasicMaterial({ color: 0xff7ac8, transparent: true, opacity: 0.18, depthWrite: false, blending: AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -2 }),
 }
 
 /** Les guirlandes de lanternes, tendues le long des façades voisines (jamais devant la pièce) : [départ, arrivée]. */
@@ -125,7 +122,6 @@ function Evening() {
     SM.sign.emissiveIntensity = 0.4 + k * 1.1
     SM.coals.emissiveIntensity = 0.5 + k * 0.9
     M.glow.opacity = k * 0.7
-    M.puddle.opacity = (0.1 + k * 0.25) * Math.max(0.4, mood.rain)
     for (const m of Z.facade) m.emissiveIntensity = 0.04 + n * 0.9
     for (const m of Z.shop) m.emissiveIntensity = 0.3 + k * 0.9
   })
@@ -146,8 +142,6 @@ export function Surroundings() {
       <SkyFadeClock room={market} />
       <Evening />
       <mesh position={[0, ROAD, 0]} rotation-x={-Math.PI / 2} material={M.road} receiveShadow raycast={noRay}><planeGeometry args={[34, 34]} /></mesh>
-      {/* des flaques où se reflètent les néons */}
-      <Batch geo={DISC} m={M.puddle} items={PUDDLES} />
       <Static>
         {/* le trottoir le long des immeubles, les rails du tram dans la chaussée */}
         <Part geo={rbox(1.6, 0.12, 5.8, 0.04)} m={M.walk} p={[-3.05, WALK - 0.06, 6.65]} castShadow={false} />
@@ -172,9 +166,11 @@ export function Surroundings() {
         {wires.map((g, i) => <Part key={i} geo={g} m={M.dark} castShadow={false} />)}
         <Scooter p={[4.6, WALK, -3.7]} ry={0.2} />
         {STALLS.map((st, i) => <Stall key={i} {...st} />)}
+        <Street />
       </Static>
       {/* la yagura de la fête bon-odori, au bout de la rue (interactive : son bonodori), donc hors du <Static> */}
       <Yagura at={[7.4, ROAD, 2.2]} ry={Math.PI / 4} />
+      <StreetPuddles />
       <Batch geo={SPH} m={M.lantern} items={lanterns} />
       <Batch geo={SPH} m={M.dark} items={caps} />
       <GlowPoints points={glowPts} color={0xff7a50} size={0.7} level={() => M.glow.opacity} />

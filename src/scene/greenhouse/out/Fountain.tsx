@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { MeshBasicMaterial, Object3D, TorusGeometry, type Group, type InstancedMesh, type Mesh } from 'three'
 import { approach, TAU } from '../../../math'
 import { isActive, useStore } from '../../../state/store'
-import { reduceMotion, useSquash } from '../../anim'
+import { mood, reduceMotion, useSquash } from '../../anim'
 import { LIVE } from '../../Static'
 import { Part, SPH, cyl, noRay } from '../../parts'
 import { far } from '../../materials'
@@ -12,9 +12,9 @@ import { skyFade } from '../../outdoor'
 // La fontaine du parc, à gauche de la serre : un bassin rond de pierre, un pied, une vasque, un jet qui retombe en gouttes.
 // Interactive (`fountain`) : touchée, le jet jaillit et l'eau murmure (le son `fountain`). Éteinte, le bassin reste plein et calme.
 const F = { c: [0, 0] as [number, number], r0: 9, r1: 16.5 }
-const STONE = skyFade(far(0xd8cfba, { roughness: 0.75 }), F)
+const STONE = skyFade(far(0xd8cfba, { roughness: 0.75, emissive: 0x9aa8c0, emissiveIntensity: 0 }), F)
 const MOSS = skyFade(far(0x7fa070, { roughness: 0.9 }), F)
-const WATER = skyFade(far(0x86bfcc, { roughness: 0.2, clearcoat: 0.6 }), F)
+const WATER = skyFade(far(0x86bfcc, { roughness: 0.2, clearcoat: 0.6, emissive: 0x5aa8c0, emissiveIntensity: 0 }), F)
 const SPRAY = new MeshBasicMaterial({ color: 0xe6f7ff, transparent: true, opacity: 0.6, depthWrite: false })
 const RIM = new TorusGeometry(0.82, 0.13, 10, 28)
 const BOWL_RIM = new TorusGeometry(0.4, 0.06, 8, 20)
@@ -29,6 +29,8 @@ export function Fountain({ at }: { at: [number, number, number] }) {
   useSquash('fountain', root)
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05), S = s.current
+    STONE.emissiveIntensity = mood.night * 0.22 // de nuit la pierre et l'eau gardent un peu de clarté (la fontaine ne se ternit pas)
+    WATER.emissiveIntensity = mood.night * 0.35
     S.amp = approach(S.amp, isActive(useStore.getState(), 'fountain') && !reduceMotion ? 1 : 0, dt * 1.2)
     const a = S.amp
     // le jet : une colonne qui monte ; les gouttes retombent en arcs autour (la phase s'additionne image après image)

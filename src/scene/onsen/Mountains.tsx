@@ -33,7 +33,7 @@ const PEAKS: [number, number, number, number][][] = [
   // le second, plus loin et plus pâle, entre les sommets du premier
   [[-11.5, 9.5, 2.0, 4], [-6, 19, 2.2, 4], [6, 19, 2.2, 4], [10.5, 11, 3.2, 4]],
   // le troisième, très loin et très pâle : il remplit les coins du haut d'un écran large, entre et au-dessus des deux autres
-  [[-14.5, 15, 3.4, 4.4], [-9, 22, 3.0, 4.2], [0, 26, 2.8, 4.6], [9.5, 22, 3.2, 4.2], [15, 15, 3.6, 4.4]],
+  [[-14.5, 15, 3.4, 4.4], [-9, 22, 3.0, 4.2], [0, 26, 2.8, 4.6], [9.5, 22, 3.2, 4.2], [15, 15, 3.6, 4.4], [13, 25, 3.8, 4.4], [-13, 26, 3.4, 4.4], [5, 29, 3.2, 4.6]],
 ]
 /** Le pied des montagnes (sous le sol du dehors, qui s'efface dans le ciel à cette distance). */
 const BASE = 0.2
@@ -52,7 +52,7 @@ const moonAt = ([sx, sy]: number[]): [number, number, number] => {
 const MISTS = ([[-7, 12, 2.6], [0, 14, 3.0], [7, 12, 2.6]] as const).map(([s, k, y]) => { const [x, z] = toWorld(s, k); return [x, y, z] as const })
 const mists: SpriteMaterial[] = []
 // Les deux rangs : bleu-vert puis bleu lavande le jour, nuit d'encre le soir.
-const DAY = [0x9aa0b4, 0xbab6cc].map((c) => new Color(c)), NIGHT = [0x262c48, 0x323c64].map((c) => new Color(c))
+const DAY = [0x7f93aa, 0xa0a6c4].map((c) => new Color(c)), NIGHT = [0x262c48, 0x323c64].map((c) => new Color(c))
 // Sous la neige, les montagnes blanchissent sur leurs pentes douces et leurs cimes, la lisière est poudrée sur le dessus des houppiers.
 // Loin, elles se fondent dans le ciel : un voile de brume avec la distance, et leur pied se perd dans le blanc du ciel au-dessus de la
 // forêt (pas de bord net là où le sol du dehors s'efface).

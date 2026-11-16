@@ -26,7 +26,9 @@ html.dusk .sky-night { transition: opacity 40s cubic-bezier(.45, 0, .55, 1) }
   padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 0; pointer-events: none }
 .brand { min-width: 0 }
 .brand h1 { margin: 0; font: 800 clamp(26px, 5.2vw, 36px)/1 var(--font-display); letter-spacing: .01em; color: var(--ink); text-wrap: balance }
-.brand p { margin: 7px 0 0; font-size: 13px; line-height: 1.35; color: var(--ink-soft); max-width: 31ch }
+.brand p { margin: 7px 0 0; font-size: 13px; line-height: 1.35; color: var(--ink-soft); max-width: 31ch;
+  /* lisible sur les décors clairs ou chargés (château d'eau, immeubles) : halo de la couleur du panneau */
+  text-shadow: 0 0 3px var(--bg), 0 0 8px var(--bg), 0 0 14px var(--bg) }
 .tools { display: flex; gap: 8px; pointer-events: auto; flex: none }
 .clock, .mode { height: 42px; border-radius: 15px; border: 1px solid var(--line); background: var(--panel);
   -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: var(--shadow); color: var(--ink) }
@@ -171,7 +173,7 @@ html.night .shared .go { color: #12102a }
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 6px, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(90deg, transparent, #000 6px, #000 calc(100% - 24px), transparent); padding-right: 24px }
 .rooms::-webkit-scrollbar { display: none }
 /* un espace après la dernière puce : elle peut défiler jusqu'au bord gauche, sans qu'un bout de la précédente reste collé au bouton « toutes les pièces » */
-.rooms::after { content: ""; flex: none; width: 40% }
+.rooms::after { content: ""; flex: none; width: 50% }
 .room { flex: none; height: 32px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--ink);
   -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); font: 800 13px/1 var(--font-body); cursor: pointer;
   transition: background-color .25s, color .25s, border-color .25s }
@@ -186,6 +188,10 @@ html.leaving .mix { opacity: 0 }
 html.leaving .hs { pointer-events: none }
 
 @media (max-width: 520px) {
+  /* hotspots : point plus petit (10 px), zone tactile de 44 px */
+  .hs { width: 44px; height: 44px; margin: -22px 0 0 -22px }
+  .hs::before { inset: 17px }
+  .hs::after { inset: 15px }
   .pop-btn .lbl { display: none }
   /* « Tout couper » sortait de l'écran à 390 px : le compte des sons suffit comme titre */
   .dock-head .eyebrow { display: none }

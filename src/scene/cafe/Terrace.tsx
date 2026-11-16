@@ -38,11 +38,11 @@ export function Win({ at, face = 'z', w = 0.8, h = 1.5, lit = -1, curtain = fals
 function SimpleWin({ at, lit }: { at: V3; lit: number }) {
   return (
     <group position={at}>
-      <Box s={[0.8, 1.4, 0.05]} p={[0, 0, 0.025]} m={lit < 0 ? K.navy : S.lit[lit].m} />
-      <Box s={[0.95, 0.09, 0.2]} p={[0, -0.75, 0.1]} m={K.stone} />
-      <Box s={[0.95, 0.12, 0.14]} p={[0, 0.76, 0.07]} m={K.stone} />
-      <Box s={[0.05, 1.4, 0.08]} p={[0, 0, 0.06]} m={K.stone} />
-      <Box s={[0.8, 0.05, 0.08]} p={[0, 0.05, 0.06]} m={K.stone} />
+      <Box s={[0.8, 1.4, 0.05]} p={[0, 0, 0.025]} m={lit < 0 ? S.void : S.lit[lit].m} />
+      <Box s={[0.95, 0.09, 0.2]} p={[0, -0.75, 0.1]} m={S.navy} />
+      <Box s={[0.95, 0.12, 0.14]} p={[0, 0.76, 0.07]} m={S.navy} />
+      <Box s={[0.05, 1.4, 0.08]} p={[0, 0, 0.06]} m={S.navy} />
+      <Box s={[0.8, 0.05, 0.08]} p={[0, 0.05, 0.06]} m={S.navy} />
     </group>
   )
 }
@@ -129,7 +129,7 @@ function Bookbinder() {
       {[0, 1, 2, 3].map((k) => (
         <B key={k} s={[6.94 - k * 1.5, 0.44, 0.38]} p={[LC, rel(6.94 + k * 0.42), zF - 0.16]} m={S.sand} uv={2} r={0.05} />
       ))}
-      <group position={[LC, rel(7.45), zF + 0.02]}>
+      <group position={[LC, rel(7.45), zF + 0.1]}>
         <Part geo={cyl(0.3, 0.3, 0.04, 20)} m={S.lit[2].m} rotation-x={Math.PI / 2} castShadow={false} raycast={noRay} />
         <Part m={K.stone} castShadow={false} raycast={noRay}>
           <torusGeometry args={[0.32, 0.055, 8, 22]} />
@@ -263,8 +263,8 @@ export function Terrace() {
       <Bookbinder />
       <Pub />
       {/* les maisons qui continuent la rue, à gauche et à droite : plus basses, plus pâles */}
-      <Neighbour x0={-16.0} x1={L.x0} zF={L.zF} floors={2} mat={S.brick} lit={[0, -1, 1, -1, 2]} />
-      <Neighbour x0={R.x1} x1={15.2} zF={-3.0} floors={1} mat={S.sand} lit={[-1, 1, 0]} roofZ={0} />
+      <Neighbour x0={-16.0} x1={L.x0} zF={L.zF} floors={2} mat={S.brick} lit={[-1, -1, 0, -1, -1]} />
+      <Neighbour x0={R.x1} x1={15.2} zF={R.zF} floors={1} mat={S.sand} lit={[-1, 1, 0]} roofZ={0} />
     </>
   )
 }

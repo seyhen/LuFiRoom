@@ -100,7 +100,8 @@ export function skyFade<T extends Material>(m: T, o: FadeOpts = {}): T {
           vec2 d_ = (vSkyP.xz - vec2(${f(c[0])}, ${f(c[1])})) / vec2(${f(sx)}, ${f(sz)});
           // Le fondu ne démarre pas en ligne droite : la puissance 1,6 garde le décor franc près de la pièce (les immeubles du café, les sapins
           // du train n'étaient plus que des silhouettes laiteuses) et le fait disparaître vite à la bordure, où il rejoint toujours le ciel (k = 1).
-          float k_ = pow(smoothstep(${f(r0)}, ${f(r1)}, length(d_)), 1.6);
+          // 2,0 (et non 1,6) : au milieu du fondu un volume garde 25 % de brume au lieu de 33 %, donc sa teinte de jour (revue graphique 2026-11-16).
+          float k_ = pow(smoothstep(${f(r0)}, ${f(r1)}, length(d_)), 2.0);
           k_ = max(k_, smoothstep(${f(y0)}, ${f(y1)}, vSkyP.y));
           k_ = max(k_, smoothstep(${f(below)}, ${f(below - 1.2)}, vSkyP.y));
           ${additive ? '' : `// La nuit, le dehors reçoit la lune : un voile froid et un peu de gain, pour que les volumes se lisent au lieu de tomber au bleu uni

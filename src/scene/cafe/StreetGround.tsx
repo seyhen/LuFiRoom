@@ -3,7 +3,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { BoxGeometry, BufferGeometry, CylinderGeometry, Float32BufferAttribute, RepeatWrapping } from 'three'
 import { Batch, Part, cyl, noRay, type Item, type V3 } from '../parts'
 import { K } from './materials'
-import { B, CURB, RD, SW } from './streetKit'
+import { B, CURB, PUBWALK, RD, SW } from './streetKit'
 import { S } from './streetMaterials'
 import { gutter } from './StreetWeather'
 import { cobbleTex } from './streetTex'
@@ -62,7 +62,7 @@ export function StreetGround() {
     const gr = r + 0.19 // le caniveau suit la bordure, 0,19 en dehors
     const front0 = Array.from({ length: 16 }, (_, i): [number, number] => [CURB.x0 + 0.4 + (i / 15) * (cx - CURB.x0 - 0.4), front + 0.19])
     const a = [...front0, ...arc(Math.PI / 2, Math.PI / 4, gr, 4)]
-    const right0 = Array.from({ length: 12 }, (_, i): [number, number] => [right + 0.19, CURB.zBack + 0.1 + (i / 11) * (cz - CURB.zBack - 0.1)])
+    const right0 = Array.from({ length: 12 }, (_, i): [number, number] => [right + 0.19, PUBWALK.z1 + 0.1 + (i / 11) * (cz - PUBWALK.z1 - 0.1)])
     const b = [...right0, ...arc(0, Math.PI / 4, gr, 4)]
     // les bouts s'amincissent : on les termine par un point confondu
     return [mergeGeometries([ribbon(a, 0.2, RD + 0.012), ribbon(b, 0.2, RD + 0.012)])]
@@ -87,7 +87,9 @@ export function StreetGroundStatic() {
       const a = (k * Math.PI) / 2
       out.push({ p: [cx + Math.cos(Math.PI / 2 - a) * (r - 0.09), SW + 0.005, cz + Math.sin(Math.PI / 2 - a) * (r - 0.09)], s: [1, 1, 1], r: [0, a, 0] })
     }
-    for (let z = CURB.zBack + 0.3; z < cz - 0.1; z += L) out.push({ p: [right - 0.09, SW + 0.005, z], s: [1, 1, 1], r: [0, Math.PI / 2, 0] })
+    for (let z = PUBWALK.z1 + 0.3; z < cz - 0.1; z += L) out.push({ p: [right - 0.09, SW + 0.005, z], s: [1, 1, 1], r: [0, Math.PI / 2, 0] })
+    // la bordure du trottoir du pub
+    for (let x = right + 0.4; x < PUBWALK.x1 - 0.2; x += L) out.push({ p: [x, SW + 0.005, PUBWALK.z1 - 0.09], s: [1, 1, 1], c: undefined })
     return out
   }, [])
 
@@ -95,8 +97,10 @@ export function StreetGroundStatic() {
   const lines: { p: V3; s: V3 }[] = [
     { p: [(CURB.x0 + 3.9) / 2, RD + 0.006, front + 0.55], s: [3.9 - CURB.x0, 0.012, 0.06] },
     { p: [(CURB.x0 + 3.9) / 2, RD + 0.006, front + 0.66], s: [3.9 - CURB.x0, 0.012, 0.06] },
-    { p: [right + 0.55, RD + 0.006, (CURB.zBack + 3.9) / 2], s: [0.06, 0.012, 3.9 - CURB.zBack] },
-    { p: [right + 0.66, RD + 0.006, (CURB.zBack + 3.9) / 2], s: [0.06, 0.012, 3.9 - CURB.zBack] },
+    { p: [right + 0.55, RD + 0.006, (PUBWALK.z1 + 3.9) / 2], s: [0.06, 0.012, 3.9 - PUBWALK.z1] },
+    { p: [right + 0.66, RD + 0.006, (PUBWALK.z1 + 3.9) / 2], s: [0.06, 0.012, 3.9 - PUBWALK.z1] },
+    { p: [(right + 0.55 + PUBWALK.x1) / 2, RD + 0.006, PUBWALK.z1 + 0.55], s: [PUBWALK.x1 - right - 0.55, 0.012, 0.06] },
+    { p: [(right + 0.55 + PUBWALK.x1) / 2, RD + 0.006, PUBWALK.z1 + 0.66], s: [PUBWALK.x1 - right - 0.55, 0.012, 0.06] },
   ]
   return (
     <>
@@ -108,6 +112,7 @@ export function StreetGroundStatic() {
       <B s={[cx - CURB.x0, SLAB_H, front - 3.3]} p={[(CURB.x0 + cx) / 2, slabY, (3.3 + front) / 2]} m={S.flag} r={0.04} uv={2.4} />
       <B s={[right - 3.3, SLAB_H, 3.3 - CURB.zBack]} p={[(3.3 + right) / 2, slabY, (CURB.zBack + 3.3) / 2]} m={S.flag} r={0.04} uv={2.4} />
       <B s={[right - cx, SLAB_H, cz - 3.3]} p={[(cx + right) / 2, slabY, (3.3 + cz) / 2]} m={S.flag} r={0.04} uv={2.4} />
+      <B s={[PUBWALK.x1 - right, SLAB_H, PUBWALK.z1 - CURB.zBack]} p={[(right + PUBWALK.x1) / 2, slabY, (CURB.zBack + PUBWALK.z1) / 2]} m={S.flag} r={0.04} uv={2.4} />
       <Part geo={cornerGeo} m={S.flag} p={[cx, slabY, cz]} castShadow={false} raycast={noRay} />
       {/* la bordure */}
       <Batch geo={rbs} m={K.base} items={kerb} />

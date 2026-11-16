@@ -7,8 +7,10 @@ import { Part, cyl, noRay, orient, rbox, worldUV, type V3 } from '../parts'
 /** Le dessus du trottoir, le dessus de la chaussée (le caniveau y court) : le socle du café plonge dans le trottoir. */
 export const SW = -0.6
 export const RD = -0.74
-/** Le trottoir de devant (x de -11,2 à 4,1, z de 3,3 à 5) et celui de droite (x de 3,3 à 5, z de -3,8 à 3,3) ; leur angle est arrondi (rayon 0,9). */
-export const CURB = { front: 5.0, right: 5.0, cx: 4.1, cz: 4.1, r: 0.9, x0: -11.2, zBack: -3.8 }
+/** Le trottoir de devant (x de -16 à 4,1, z de 3,3 à 5) et celui de droite (x de 3,3 à 5, z de -3,8 à 3,3) ; leur angle est arrondi (rayon 0,9). */
+export const CURB = { front: 5.0, right: 5.0, cx: 4.1, cz: 4.1, r: 0.9, x0: -16, zBack: -3.8 }
+/** Le trottoir du pub et de sa voisine : x de 5 à 15,2, z de -3,8 à -2,3 (les façades de droite ne posent plus sur la chaussée). */
+export const PUBWALK = { x1: 15.2, z1: -2.3 }
 
 type MeshProps = Omit<ThreeElements['mesh'], 'position' | 'rotation' | 'material' | 'geometry'>
 
