@@ -54,7 +54,7 @@ export const cabin: Room = {
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [1.55, 0.92, -0.73] },
     { id: 'knit', target: 'knit', label: 'Panier de tricot · les aiguilles', anchor: [-0.2, 0.5, 1.6] },
     // hors de la cabane : le hibou sur son chicot, au bord du sentier
-    { id: 'owl', target: 'owl', label: 'Hibou · la forêt de nuit', anchor: [7.4, 1.3, 2.6] },
+    { id: 'owl', target: 'owl', label: 'Hibou · la forêt de nuit', anchor: [7.4, 1.75, 2.6] },
   ],
   sounds: [
     { id: 'fire', name: 'Feu de bois', chip: 'var(--c-fire)', volume: 0.7, sub: (s) => (s.on.fire ? 'ça crépite' : 'cheminée') },

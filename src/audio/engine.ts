@@ -113,14 +113,14 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   kettle: { build: kettle, base: 0.9 },
   spring: { build: spring, base: 0.3 },
   waterfall: { build: waterfall, base: 1 },
-  lapping: { build: lapping, base: 1 },
+  lapping: { build: lapping, base: 0.85 },
   oars: { build: oars, base: 1.25 },
   fountain: { build: fountain, base: 1.3 },
-  owl: { build: owl, base: 0.38 },
+  owl: { build: owl, base: 0.46 },
   handpan: { build: handpan, base: 0.9 },
   bonodori: { build: bonodori, base: 1 },
   windowpiano: { build: windowpiano, base: 0.8 },
-  sax: { build: sax, base: 1 },
+  sax: { build: sax, base: 1.4 },
   accordion: { build: accordion, base: 1 },
   foghorn: { build: foghorn, base: 1.75 },
   bell: { build: bell, base: 2.2 },
@@ -156,9 +156,9 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   rinse: { build: rinse, base: 1.05 },
   gutter: { build: gutter, base: 1.15 },
   guitar: { build: guitar, base: 1 },
-  jellies: { build: jellies, base: 1 },
-  flute: { build: flute, base: 2.8 },
-  koto: { build: koto, base: 3 }, // provisoire : synthèse, notes espacées
+  jellies: { build: jellies, base: 1.1 },
+  flute: { build: flute, base: 3.2 },
+  koto: { build: koto, base: 2.6 }, // provisoire : synthèse, notes espacées
 }
 const ids = Object.keys(CHANNELS) as SoundId[]
 

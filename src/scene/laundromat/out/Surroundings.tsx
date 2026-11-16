@@ -327,7 +327,7 @@ export function Surroundings() {
         ))}
       </Static>
       {/* la fenêtre au piano de l'immeuble d'en face : interactive (son windowpiano), donc hors du <Static> */}
-      <PianoWindow at={[5.8, 1.68, -8.15]} />
+      <PianoWindow at={[-3.2, 1.68, -10.35]} />
       <sprite position={[5.95, SIDEWALK + 3.35, -4.6]} scale={1.4} material={M.glow} raycast={noRay} renderOrder={4} />
       <mesh position={[5.95, SIDEWALK + 0.01, -4.6]} rotation-x={-Math.PI / 2} material={M.pool} renderOrder={3} raycast={noRay}><planeGeometry args={[3.6, 3.6]} /></mesh>
       {/* les flaques de la chaussée (celles qui portent un reflet sont allongées dans le sens de la raie : l'axe de l'écran est la diagonale) */}

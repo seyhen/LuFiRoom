@@ -58,7 +58,7 @@ export const lighthouse: Room = {
     { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-0.75, 0.32, 0.62] },
     { id: 'radio', target: 'radio', label: 'Concertina · lofi', anchor: [2.45, 1.05, 0.07] },
     { id: 'quill', target: 'quill', label: 'Journal de bord · la plume', anchor: [-0.48, 0.82, 2.47] },
-    { id: 'rowboat', target: 'oars', label: 'Pêcheur · les avirons', anchor: [1.5, -1.85, -7.0] },
+    { id: 'rowboat', target: 'oars', label: 'Pêcheur · les avirons', anchor: [0.6, -1.85, -7.0] },
   ],
   sounds: [
     { id: 'radio', name: 'Concertina lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },

@@ -52,7 +52,7 @@ export const atelier: Room = {
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-2.68, 1.3, -1.9] },
     { id: 'brush', target: 'brush', label: 'Chevalet · le pinceau', anchor: [2.4, 1.25, -0.8] },
     // hors de l'atelier : l'accordéoniste du toit voisin, à droite
-    { id: 'accordion', target: 'accordion', label: 'Accordéoniste · la valse', anchor: [5.0, 0.2, -2.0] },
+    { id: 'accordion', target: 'accordion', label: 'Accordéoniste · la valse', anchor: [5.0, 0.85, -0.7] },
   ],
   sounds: [
     { id: 'radio', name: 'Vinyle lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },

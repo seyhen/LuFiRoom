@@ -51,7 +51,7 @@ export function Fountain({ at }: { at: [number, number, number] }) {
       <Part geo={cyl(1.1, 1.15, 0.1, 28)} m={STONE} p={[0, 0.05, 0]} castShadow={false} />
       <Part geo={cyl(0.95, 0.98, 0.34, 28)} m={STONE} p={[0, 0.27, 0]} castShadow={false} />
       <Part geo={RIM} m={STONE} p={[0, 0.44, 0]} rotation-x={Math.PI / 2} castShadow={false} />
-      <Part geo={cyl(0.8, 0.8, 0.02, 28)} m={WATER} p={[0, 0.4, 0]} castShadow={false} />
+      <Part geo={cyl(0.8, 0.8, 0.02, 28)} m={WATER} p={[0, 0.455, 0]} castShadow={false} />
       {/* la mousse sur le bourrelet, côté ombre */}
       <Part geo={cyl(0.18, 0.2, 0.04, 8)} m={MOSS} p={[-0.6, 0.575, -0.55]} castShadow={false} />
       {/* le pied, la vasque, son rebord, le bouton du haut */}

@@ -37,7 +37,7 @@ const M = {
 
 /** [x, z, rayon du houppier, hauteur du tronc, teinte, forme] : de grands arbres ronds, que sur les côtés du fond (un volume devant cacherait la pièce). */
 const TREES: [number, number, number, number, number, number][] = [
-  [-6.4, -4.8, 1.35, 2.2, 0, 1], [-9.0, -1.8, 1.25, 1.9, 1, 2], [-5.4, -8.6, 1.6, 2.6, 2, 3], [-2.0, -9.6, 1.5, 2.3, 0, 4], [2.6, -9.0, 1.7, 2.7, 1, 1],
+  [-6.4, -4.8, 1.35, 2.2, 0, 1], [-9.6, -1.0, 1.25, 1.9, 1, 2], [-5.4, -8.6, 1.6, 2.6, 2, 3], [-2.0, -9.6, 1.5, 2.3, 0, 4], [2.6, -9.0, 1.7, 2.7, 1, 1],
   [6.8, -6.2, 1.35, 2.1, 2, 2], [9.2, -3.2, 1.25, 1.9, 0, 5], [5.6, -9.4, 1.5, 2.5, 0, 2], [9.4, -7.6, 1.5, 2.4, 1, 3], [-9.6, -6.0, 1.5, 2.4, 2, 4],
 ]
 /** Les haies : [x, z, longueur, sens] ; boules de buis : [x, z, rayon]. */
@@ -125,7 +125,7 @@ export function Surroundings() {
         <sprite key={i} position={[p[0], p[1] + GROUND, p[2]]} scale={1.6} material={M.glow} raycast={noRay} renderOrder={4} />
       ))}
       {/* la fontaine du parc, à gauche : interactive (son `fountain`), donc hors du <Static> */}
-      <Fountain at={[-7.6, GROUND, 0.6]} />
+      <Fountain at={[-7.2, GROUND, 0.0]} />
       <GlowPoints points={lampHeads.map(([x, y, z]): V3 => [x, y + GROUND, z])} color={0xffd490} size={0.6} level={() => M.glow.opacity} />
       <OutdoorPrecip ground={GROUND} area={[-13, 13, -12, 12]} />
     </>

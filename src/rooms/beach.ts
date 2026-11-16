@@ -55,7 +55,7 @@ export const beach: Room = {
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-1.25, 1.0, -2.55] },
     { id: 'rainstick', target: 'rainstick', label: 'Bâton de pluie · bascule', anchor: [-1.8, 2.35, -2.8] },
     // hors du bungalow : la barque sur l’eau calme, au large
-    { id: 'skiff', target: 'lapping', label: 'Barque · clapotis', anchor: [-0.4, -0.4, -9.0] },
+    { id: 'skiff', target: 'lapping', label: 'Barque · clapotis', anchor: [-1.2, -0.4, -9.0] },
   ],
   sounds: [
     { id: 'radio', name: 'Ukulélé lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },

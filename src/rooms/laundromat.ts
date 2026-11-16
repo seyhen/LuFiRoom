@@ -53,7 +53,7 @@ export const laundromat: Room = {
     { id: 'rinse', target: 'rinse', label: 'Lave-linge · le rinçage', anchor: [-2.2, 0.55, -1.45] },
     { id: 'gutter', target: 'gutter', label: 'Gouttière · l’eau du tuyau', anchor: [-1.0, 1.9, -2.9] },
     // hors de la laverie : le piano de la fenêtre éclairée, de l'autre côté de la rue
-    { id: 'pianowindow', target: 'windowpiano', label: 'Fenêtre d’en face · le piano', anchor: [5.8, 1.55, -8.0] },
+    { id: 'pianowindow', target: 'windowpiano', label: 'Fenêtre d’en face · le piano', anchor: [-3.2, 1.55, -10.2] },
     { id: 'lamp', target: 'night', label: 'Lampe du comptoir · jour / nuit', anchor: [2.5, 1.25, 1.55] },
   ],
   sounds: [

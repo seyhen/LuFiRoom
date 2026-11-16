@@ -50,7 +50,7 @@ export const greenhouse: Room = {
     { id: 'musicbox', target: 'musicbox', label: 'Boîte à musique · la berceuse', anchor: [1.9, 0.95, 1.5] },
     { id: 'barrel', target: 'rainbarrel', label: 'Tonneau · l’eau de la gouttière', anchor: [-2.35, 1.0, -2.35] },
     // hors de la serre : la fontaine du parc, à gauche
-    { id: 'fountain', target: 'fountain', label: 'Fontaine · le jet', anchor: [-7.6, 0.45, 0.6] },
+    { id: 'fountain', target: 'fountain', label: 'Fontaine · le jet', anchor: [-7.2, 0.45, 0.0] },
     { id: 'lamp', target: 'night', label: 'Lanterne · jour / nuit', anchor: [0.2, 1.3, -0.2] },
   ],
   sounds: [

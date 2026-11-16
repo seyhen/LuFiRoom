@@ -46,7 +46,7 @@ export function Surroundings() {
       <SkyFadeClock room={beach} />
       <Terrain />
       <Soarers list={SOAR} />
-      <FloatBoat at={[-0.4, -9.0]} ry={0.5} />
+      <FloatBoat at={[-1.2, -9.0]} ry={0.5} />
       {/* la pluie et la neige autour du bungalow (jamais dedans) : aucun tracé par beau temps */}
       <OutdoorPrecip ground={rainGround} area={PRECIP_AREA} />
     </>

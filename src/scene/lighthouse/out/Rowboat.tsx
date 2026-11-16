@@ -11,7 +11,7 @@ import { SEA } from './Sea'
 import { HULL } from './Landing'
 
 /** Où est la barque : au large, devant le phare, côté caméra (x, z) et son cap. */
-export const ROWBOAT = { x: 1.5, z: -7.0, ry: 0.3 }
+export const ROWBOAT = { x: 0.6, z: -7.0, ry: 0.3 }
 
 const PIVOT_Z = 0.42, SHOULDER: [number, number, number] = [0, 0.3, -0.28], GRIP = 0.34
 const up = new Vector3(0, 1, 0), d = new Vector3(), q = new Quaternion()
