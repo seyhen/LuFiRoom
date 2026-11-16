@@ -115,6 +115,11 @@ export interface Room {
    * Le dehors n'utilise ses enregistrements que si les oiseaux (jour) et les grillons (nuit) sont là.
    */
   loops: Loops
+  /**
+   * Réglages propres à la pièce de ses sons synthétisés, par son (ex. `purr: { pitch: 0.88, tone: 520 }`) : les nombres que lit
+   * le canal (src/audio/tune.ts) ; sans eux, il garde ses valeurs par défaut. N'agit pas sur les enregistrements.
+   */
+  tune?: Partial<Record<SoundId, Record<string, number>>>
   /** Les stations de la radio générative de la pièce (identifiants de src/audio/stations.ts), dans l'ordre : la première est celle d'une première visite. Toutes par défaut. */
   stations?: string[]
   /** Pistes de la radio, jouées dans un ordre mélangé. Sans piste, la radio joue sa musique générative. */

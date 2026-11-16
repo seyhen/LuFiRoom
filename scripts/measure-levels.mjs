@@ -9,7 +9,9 @@
 // à son niveau par défaut (volume de la fiche × gain de base × master 0,9). « synth. » = sa sonie intégrée (portes -70 LUFS et -10 LU,
 // les 2 premières secondes écartées) ; « moy. » = sans porte (un son à évènements rares y paraît plus faible).
 // Mais la plupart des sons jouent un enregistrement (déclaré dans `loops`, ou les pistes de la radio), et c'est pour lui que `base`
-// est réglé : son niveau vaut alors -20 LUFS (cible de npm run audio) × gain de la boucle × niveau par défaut. La colonne « niveau »
+// est réglé : son niveau vaut alors la sonie réelle du fichier (ffmpeg ; -20 LUFS, cible de npm run audio, si ffmpeg manque) × gain
+// de la boucle × niveau par défaut. `outside` suit les boucles réelles : une ligne « jour » (oiseaux) et une « nuit » (grillons),
+// et le filet d'eau du jardin (`garden`, onsen) s'ajoute en puissance à la synthèse des oiseaux. La colonne « niveau »
 // est celle qu'on entend (enregistrement si la pièce en a un, sinon synthèse) : c'est elle qu'on compare à la médiane.
 // La liste finale donne les canaux à plus de ±3 dB de la médiane, et ceux à plus de ±6 dB (écart flagrant, à corriger dans `base`
 // de src/audio/engine.ts). Rien n'est corrigé tout seul.
@@ -17,6 +19,8 @@
 
 import { chromium } from 'playwright'
 import { createServer } from 'vite'
+import { spawnSync } from 'node:child_process'
+import { existsSync } from 'node:fs'
 
 const args = process.argv.slice(2)
 const opt = (name, fallback) => {
@@ -26,6 +30,22 @@ const opt = (name, fallback) => {
 const list = (v) => (v ? v.split(',').map((s) => s.trim()).filter(Boolean) : null)
 const onlyIds = list(opt('ids')), onlyRooms = list(opt('rooms')), seconds = Number(opt('seconds', 20)) || 20, json = args.includes('--json')
 const WARN = 3, FLAGRANT = 6, REC_LUFS = -20
+// Sonie réelle d'un fichier de public/ (ffmpeg, ebur128), mémorisée ; -20 (cible de npm run audio) si ffmpeg ou le fichier manque.
+const fileCache = new Map()
+const fileLufs = (src) => {
+  if (!src) return REC_LUFS
+  if (!fileCache.has(src)) {
+    const file = ['webm', 'mp3'].map((e) => `public/${src}.${e}`).find(existsSync)
+    let v = REC_LUFS
+    if (file) {
+      const r = spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-i', file, '-af', 'ebur128', '-f', 'null', '-'], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
+      const m = Number(/I:\s+(-?[\d.]+) LUFS/.exec(r.stderr?.slice(r.stderr.lastIndexOf('Summary:')) ?? '')?.[1])
+      if (Number.isFinite(m)) v = m
+    }
+    fileCache.set(src, v)
+  }
+  return fileCache.get(src)
+}
 const log = (...a) => (json ? console.error(...a) : console.log(...a))
 
 let server = null, url = process.env.LOFI_URL
@@ -63,11 +83,11 @@ try {
           .flatMap((s) => {
             if (s.id === 'outside' && r.loops.birds && r.loops.crickets)
               return [
-                { room: r.id, id: s.id, tag: 'jour', rec: r.loops.birds.gain },
-                { room: r.id, id: s.id, tag: 'nuit', rec: r.loops.crickets.gain },
+                { room: r.id, id: s.id, tag: 'jour', rec: r.loops.birds.gain, src: r.loops.birds.src },
+                { room: r.id, id: s.id, tag: 'nuit', rec: r.loops.crickets.gain, src: r.loops.crickets.src },
               ]
-            if (s.id === 'outside' && r.loops.garden) return [{ room: r.id, id: s.id, rec: null, extra: r.loops.garden.gain }]
-            return [{ room: r.id, id: s.id, rec: s.id === 'radio' ? (r.playlist.length ? 2.2 : null) : (r.loops[s.id]?.gain ?? null) }]
+            if (s.id === 'outside' && r.loops.garden) return [{ room: r.id, id: s.id, rec: null, extra: r.loops.garden.gain, extraSrc: r.loops.garden.src }]
+            return [{ room: r.id, id: s.id, rec: s.id === 'radio' ? (r.playlist.length ? 2.2 : null) : (r.loops[s.id]?.gain ?? null), src: r.loops[s.id]?.src }]
           }),
       )
   }, { onlyIds, onlyRooms })
@@ -91,8 +111,8 @@ try {
       }, { ...job, seconds })
       // Niveau réel : un enregistrement sort à -20 LUFS (npm run audio) × son gain de boucle ; sinon, c'est la synthèse mesurée.
       r.rec = job.rec
-      r.level = job.rec === null ? r.lufsDef : REC_LUFS + 20 * Math.log10(job.rec * r.gainDef)
-      if (job.extra) r.level = 10 * Math.log10(10 ** (r.lufsDef / 10) + 10 ** ((REC_LUFS + 20 * Math.log10(job.extra * r.gainDef)) / 10))
+      r.level = job.rec === null ? r.lufsDef : fileLufs(job.src) + 20 * Math.log10(job.rec * r.gainDef)
+      if (job.extra) r.level = 10 * Math.log10(10 ** (r.lufsDef / 10) + 10 ** ((fileLufs(job.extraSrc) + 20 * Math.log10(job.extra * r.gainDef)) / 10))
       r.name = job.tag ? `${job.room}/${job.id} ${job.tag}` : `${job.room}/${job.id}`
       rows.push(r)
       log(`  ${String(++n).padStart(3)}/${jobs.length}  ${r.name}  ${r.level.toFixed(1)} LUFS ${job.rec === null ? 'synthèse' : 'enreg.'}  (${((performance.now() - t0) / 1000).toFixed(1)} s)`)

@@ -36,7 +36,7 @@ export const submarine: Room = {
     sonar: { src: 'audio/submarine/sonar', gain: 0.8 },
     bubbles: { src: 'audio/submarine/bubbles', gain: 0.8 },
     hull: { src: 'audio/submarine/hull', gain: 0.8 },
-    engine: { src: 'audio/submarine/engine', gain: 0.8 },
+    engine: { src: 'audio/submarine/engine', gain: 0.95 },
     whale: { src: 'audio/submarine/whale', gain: 0.9 },
     shell: { src: 'audio/submarine/shell', gain: 0.8 },
   },

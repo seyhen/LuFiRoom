@@ -31,10 +31,10 @@ export const atelier: Room = {
   loops: {
     ...WEATHER_LOOPS,
     pencil: { src: 'audio/atelier/pencil', gain: 0.8 },
-    keys: { src: 'audio/atelier/keys', gain: 0.6 },
-    kettle: { src: 'audio/atelier/kettle', gain: 0.6 },
+    keys: { src: 'audio/atelier/keys', gain: 0.97 },
+    kettle: { src: 'audio/atelier/kettle', gain: 0.8 },
     rain: { src: 'audio/atelier/rain', gain: 1 },
-    brush: { src: 'audio/atelier/brush', gain: 0.8 },
+    brush: { src: 'audio/atelier/brush', gain: 0.95 },
   },
   stations: ['bureau', 'rosee', 'pluie-fine', 'brume'],
   playlist: PLAYLIST,

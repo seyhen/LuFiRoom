@@ -41,6 +41,8 @@ export const cafe: Room = {
     drip: { src: 'audio/cafe/drip', gain: 0.8 },
   },
   stations: ['pluie-fine', 'soleil-bas', 'brume', 'veillee'],
+  // la cheminée du café : un feu de salon plus doux (voix de repli, docs/SOUNDS.md)
+  tune: { fire: { roar: 0.42, hollow: 380, flame: 0.04, crackle: 0.75 } },
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio',.5], ['murmur',.4], ['rain',.35], ['espresso',.2]] },

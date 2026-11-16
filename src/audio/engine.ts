@@ -92,7 +92,7 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   espresso: { build: espresso, base: 0.9 },
   pages: { build: pages, base: 1.3 },
   waves: { build: waves, base: 0.78 },
-  gulls: { build: gulls, base: 0.65 },
+  gulls: { build: gulls, base: 1.17 },
   chimes: { build: chimes, base: 1.2 },
   rails: { build: rails, base: 0.45 },
   tea: { build: tea, base: 0.9 },
@@ -101,8 +101,8 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   keys: { build: keys, base: 0.9 },
   pencil: { build: pencil, base: 0.9 },
   kettle: { build: kettle, base: 0.9 },
-  spring: { build: spring, base: 0.3 },
-  bamboo: { build: bamboo, base: 0.9 },
+  spring: { build: spring, base: 0.74 }, // 0,3 avant la mesure du fichier réel (2026-11-16) : -9,8 dB sous la médiane
+  bamboo: { build: bamboo, base: 1.5 },
   foghorn: { build: foghorn, base: 1.75 },
   bell: { build: bell, base: 2.2 },
   sonar: { build: sonar, base: 1.5 },
@@ -126,18 +126,18 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   abacus: { build: abacus, base: 1.0 },
   drip: { build: drip, base: 1.0 },
   aurora: { build: aurora, base: 1.9 },
-  icehole: { build: icehole, base: 1.0 },
+  icehole: { build: icehole, base: 0.74 },
   sew: { build: sew, base: 1.4 },
-  cocoa: { build: cocoa, base: 1.25 },
+  cocoa: { build: cocoa, base: 1.98 },
   brook: { build: brook, base: 4.2 },
   cicadas: { build: cicadas, base: 3.0 },
-  frogs: { build: frogs, base: 2.6 }, // 3,5 avant la chaîne de sortie plus douce : l’ancien compresseur en retenait ~2,5 dB sur ce son (mesure A/B)
+  frogs: { build: frogs, base: 0.75 }, // 2,6 avant la mesure du 2026-11-16 (+12,8 dB au-dessus de la médiane, audio:levels) ; 3,5 avant la chaîne de sortie plus douce
   musicbox: { build: musicbox, base: 2.5 },
-  rainbarrel: { build: rainbarrel, base: 3.0 },
+  rainbarrel: { build: rainbarrel, base: 3.8 },
   wash: { build: wash, base: 1.0 },
   tumble: { build: tumble, base: 1.0 },
-  rinse: { build: rinse, base: 1.4 },
-  gutter: { build: gutter, base: 1.4 },
+  rinse: { build: rinse, base: 2.76 },
+  gutter: { build: gutter, base: 3.25 },
   noise: { build: noise, base: 0.5 }, // sonie (pondérée A) du rose à 0,4 : celle du ventilateur et de la pluie par défaut ; couleurs égalisées dans public/noise-worklet.js
 }
 const ids = Object.keys(CHANNELS) as SoundId[]

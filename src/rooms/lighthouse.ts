@@ -33,11 +33,17 @@ export const lighthouse: Room = {
   loops: {
     ...WEATHER_LOOPS,
     wind: { src: 'audio/roof/wind', gain: 0.9 },
-    fire: { src: 'audio/lighthouse/fire', gain: 0.8 },
-    foghorn: { src: 'audio/lighthouse/foghorn', gain: 0.9 },
+    fire: { src: 'audio/lighthouse/fire', gain: 1.36 },
+    foghorn: { src: 'audio/lighthouse/foghorn', gain: 0.65 },
     quill: { src: 'audio/lighthouse/quill', gain: 0.8 },
   },
   stations: ['minuit', 'veillee', 'pluie-fine'],
+  // voix de repli propres au phare (docs/SOUNDS.md) : un vieux matou grave, la houle sur la roche, un poêle de fonte creux
+  tune: {
+    purr: { pitch: 0.88, tone: 520, body: 125, bout: 1.3, rest: 0.8, level: 0.8 },
+    waves: { level: 0.65 },
+    fire: { roar: 0.8, hollow: 300, flame: 0.03, crackle: 0.55 },
+  },
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio',.55], ['waves',.4], ['quill',.35]] },

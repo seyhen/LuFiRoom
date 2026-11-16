@@ -39,6 +39,8 @@ export const roof: Room = {
     watering: { src: 'audio/roof/watering', gain: 0.8 },
   },
   stations: ['soleil-bas', 'nuit-douce', 'bureau', 'rosee'],
+  // le braséro en plein air : un grondement léger, plus de flammes et de craquements (voix de repli, docs/SOUNDS.md)
+  tune: { fire: { roar: 0.3, hollow: 520, flame: 0.09, crackle: 1.1 } },
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio',.6], ['city',.35], ['wind',.2]] },

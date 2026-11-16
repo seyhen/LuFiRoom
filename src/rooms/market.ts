@@ -32,9 +32,9 @@ export const market: Room = {
   loops: {
     ...WEATHER_LOOPS,
     sizzle: { src: 'audio/market/sizzle', gain: 0.8 },
-    simmer: { src: 'audio/market/simmer', gain: 0.8 },
+    simmer: { src: 'audio/market/simmer', gain: 1.08 },
     neon: { src: 'audio/market/neon', gain: 0.8 },
-    tram: { src: 'audio/market/tram', gain: 0.8 },
+    tram: { src: 'audio/market/tram', gain: 1.13 },
     abacus: { src: 'audio/market/abacus', gain: 0.8 },
   },
   stations: ['pluie-fine', 'bureau', 'soleil-bas'],

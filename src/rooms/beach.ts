@@ -38,6 +38,8 @@ export const beach: Room = {
     rainstick: { src: 'audio/beach/rainstick', gain: 0.8 },
   },
   stations: ['soleil-bas', 'rosee', 'petit-matin'],
+  // le chat roux de la plage : jeune, léger et vif (la voix de repli du ronron ; l'enregistrement, lui, ne change pas)
+  tune: { purr: { pitch: 1.12, tone: 900, body: 215, bout: 0.8, rest: 0.7, level: 0.62 } },
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio',.55], ['waves',.4], ['rainstick',.25]] },

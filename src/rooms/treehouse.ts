@@ -41,10 +41,12 @@ export const treehouse: Room = {
     birds: { src: 'audio/bedroom/birds', gain: 0.16 },
     crickets: { src: 'audio/bedroom/crickets', gain: 0.25 },
     // le ruisseau et les cigales : enregistrements (voir public/audio/CREDITS.md)
-    brook: { src: 'audio/treehouse/brook', gain: 0.7 },
+    brook: { src: 'audio/treehouse/brook', gain: 0.27 },
     cicadas: { src: 'audio/treehouse/cicadas', gain: 0.6 },
   },
   stations: ['rosee', 'petit-matin', 'soleil-bas', 'veillee'],
+  // le vent dans le feuillage : un frissonnement plus aigu, sans sifflement ni grondement (voix de repli, docs/SOUNDS.md)
+  tune: { wind: { pitch: 1.5, whistle: 0, rumble: 0.2 } },
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio', 0.55], ['wind', 0.3], ['brook', 0.3]] },

@@ -98,8 +98,8 @@ export function fireBuffer(ctx: BaseAudioContext, sec = 9) {
   return normalize(buf, 0.8)
 }
 
-/** Ronron : 2 cycles de 2.7 s (inspiration à 27 Hz, pause, expiration à 23.5 Hz). */
-export function purrBuffer(ctx: BaseAudioContext) {
+/** Ronron : 2 cycles de 2.7 s (inspiration à 27 Hz, pause, expiration à 23.5 Hz) ; `pitch` multiplie ces fréquences (un chat plus grave ou plus vif). */
+export function purrBuffer(ctx: BaseAudioContext, pitch = 1) {
   const sr = ctx.sampleRate, cyc = 2.7, N = Math.floor(cyc * 2 * sr), buf = ctx.createBuffer(2, N, sr)
   for (let c = 0; c < 2; c++) {
     const d = buf.getChannelData(c)
@@ -114,7 +114,7 @@ export function purrBuffer(ctx: BaseAudioContext) {
         env = Math.sin((Math.PI * (p - 0.47)) / 0.46)
         rate = 23.5
       }
-      ph += rate / sr
+      ph += (rate * pitch) / sr
       const pulse = Math.pow(0.5 + 0.5 * Math.sin(TAU * ph), 3)
       lp += (Math.random() * 2 - 1 - lp) * 0.06
       lp2 += (lp - lp2) * 0.08
