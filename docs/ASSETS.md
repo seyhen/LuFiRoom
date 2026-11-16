@@ -82,10 +82,7 @@ Les pistes de la radio ne sont téléchargées qu'à l'écoute et ne comptent pa
 
 ## Bruits colorés
 
-`npm run noises` calcule cinq bruits (blanc, rose, brun, bleu, violet : 20 s, stéréo, deux canaux indépendants) dans `audio-src/noise/`, puis `npm run audio` les encode dans `public/audio/noise/`.
-Pas de ffmpeg pour les générer (seulement pour l'encodage), des graines fixes : les fichiers sont les mêmes à chaque exécution. Pentes vérifiées sur les fichiers encodés : 0, -3, -5.7, +3 et +5.9 dB par octave (WebM) ; niveau constant à ±0.5 dB.
-Ils sont en repo mais **pas branchés** : aucune pièce ne les déclare, donc l'app ne les télécharge pas. Pour en utiliser un, par exemple comme enregistrement de `fan` :
-`loops: { fan: { src: 'audio/noise/brown', gain: 0.6 } }` (le brun est le plus proche du ventilo ; à régler à l'oreille).
+Ils ne sont pas des fichiers : la carte « Bruit » (blanc, rose, brun, vert) est générée en direct par `public/noise-worklet.js` (repli : `src/audio/noiseGen.ts`). Voir `docs/NOISE.md`.
 
 ## Où trouver les sons
 

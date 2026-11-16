@@ -1,6 +1,6 @@
 # Licences audio : état avant publication sur les stores
 
-Revue du 2026-11-16 de `public/audio/` (87 fichiers : 54 enregistrements hors radio, 5 bruits calculés, 28 morceaux de radio).
+Revue du 2026-11-16 de `public/audio/` (82 fichiers : 54 enregistrements hors radio, 28 morceaux de radio ; les bruits colorés ne sont plus des fichiers).
 Source des faits : `public/audio/CREDITS.md`. **Rien ici n'a été vérifié en ligne** (pas de réseau) : ce qui n'est pas dans CREDITS.md est marqué « à vérifier ». Ce document n'est pas un avis juridique ; les textes de licence sont à relire sur les pages officielles au moment de la publication.
 
 Contrôle automatique : `node .claude/skills/release-check/check-credits.cjs` (échoue sur un fichier sans ligne, une ligne sans fichier, une licence vide ou hors liste blanche, une source vide ; avertit pour « à confirmer », « freesound_community » et Pixabay).
@@ -9,7 +9,7 @@ Contrôle automatique : `node .claude/skills/release-check/check-credits.cjs` (�
 
 | Groupe | Fichiers | Statut | Action |
 |---|---|---|---|
-| Bruits calculés (`noise/*`) | 5 | **Sûr** : générés par `scripts/make-noises.mjs`, aucune source extérieure | rien |
+| Bruits colorés | 0 fichier | **Sûr** : générés en direct par `public/noise-worklet.js` (2026-11-16, les cinq fichiers `noise/*` sont supprimés), aucune source extérieure | rien |
 | Pops d'interface et stations génératives de la radio | aucun fichier | **Sûr** : synthétisés dans le navigateur | rien |
 | Pixabay, auteur propre à Pixabay (voir plus bas) | 26 | **Exception accordée** (Pixabay Content License) ; risque « standalone » à mesurer | garder les preuves ; décider de la stratégie (§ c) |
 | Pixabay, compte `freesound_community` ou « (Freesound) » | 28 | **À confirmer** : licence d'origine inconnue | retrouver l'id Freesound, vérifier CC0, sinon remplacer (§ b) |
@@ -21,7 +21,7 @@ Les nombres sont ceux du script (liste des 54 : 26 + 28) ; recompte-les avec lui
 
 - Toutes les boucles enregistrées sont déclarées **Pixabay Content License** (<https://pixabay.com/service/license-summary/>), exception accordée par le propriétaire (2026-10-02, étendue le 2026-10-17, 2026-10-24 et 2026-11-07). Ce n'est **pas** du CC0 : la règle de CLAUDE.md (« CC0 ou achetée ») n'est pas respectée à la lettre, c'est une dérogation.
 - Les fichiers ont été téléchargés à la main dans le navigateur du propriétaire (certains « via l'extension Claude à sa demande expresse », c'est écrit dans CREDITS.md). Les sources d'origine et une copie du texte de licence sont censées être dans `Téléchargements/pixabay-sources/` : **à vérifier qu'elles y sont toujours** et à copier ailleurs (sauvegarde).
-- Les bruits colorés (`noise/*`) : calculés, appartiennent au projet. La note de CREDITS.md « pas encore déclarés dans une pièce » est peut-être périmée (`docs/NOISE.md` : à vérifier) ; elle n'a pas été retouchée.
+- Les bruits colorés : calculés en direct (`public/noise-worklet.js`), appartiennent au projet. Les anciens fichiers `noise/*` n'existent plus ; les lignes de CREDITS.md qui les citent sont à retirer.
 
 ### Pixabay, auteurs propres à Pixabay (26 fichiers)
 

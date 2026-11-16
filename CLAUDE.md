@@ -38,13 +38,15 @@ src/
   state/noise.ts            # la carte « Bruit » : couleur et tonalité, retenues et partagées avec les ambiances (voir docs/NOISE.md)
   state/weather.ts          # la météo : les choix, ce qu'on voit et entend (voir docs/WEATHER.md)
   state/daylight.ts         # le jour et la nuit qui suivent l'heure, et la règle de la main (voir docs/ROOMS.md)
-  rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen, lighthouse, submarine, market, igloo, treehouse, laundromat, greenhouse), index.ts, weather.ts (enregistrements de la météo partagés)
+  state/focus.ts            # le minuteur de concentration 25/5 ou 50/10
+  math.ts, motion.ts        # petits utilitaires (maths, prefers-reduced-motion)
+  rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen, lighthouse, submarine, market, igloo, treehouse, laundromat, greenhouse), index.ts, playlist.ts (les morceaux de la radio), weather.ts (enregistrements de la météo partagés)
   scene/
     Stage.tsx               # <Canvas>, caméra iso, lumières, cadrage, rotation au drag
     scenes.ts               # associe chaque pièce à sa scène 3D ; ajouter une pièce : docs/ROOMS.md
     <pièce>/out/            # le décor du dehors de chaque pièce (Surroundings.tsx) : forêt, rue, mer, toits… (bedroom/sky pour la chambre ; voir docs/ROOMS.md, « Le dehors d'une pièce »)
     bedroom/, cabin/, cafe/, beach/, train/, roof/, atelier/, onsen/, lighthouse/, submarine/, market/, igloo/, treehouse/, laundromat/, greenhouse/   # la scène de chaque pièce, un fichier par objet, ses matériaux et ses textures
-    objects/                # objets partagés entre pièces : Window, Radio, Lamp, Cat, FairyLights, Candles, Candle, Steam, Flames, ScrollLayer, Garment, ViewFlakes, FlashVeil, OutdoorPrecip, GlowPoints
+    objects/                # objets partagés entre pièces : Window, Radio, Lamp, Cat, FairyLights, Candles, Candle, Steam, Flames, ScrollLayer, Garment, ViewFlakes, FlashVeil, FlyBy (oiseau de loin qui passe), OutdoorPrecip, GlowPoints, useBeat, beads
     nature/                 # pierres, feuillages, feuilles, fougères, plantes retombantes, rosettes, sapins : formes et matériaux partagés
     parts.tsx, Static.tsx   # briques (Part, Batch, rbox, cyl, worldUV, orient) ; <Static> regroupe le décor immobile en peu de tracés
     paint.ts, walls.ts      # vues peintes qui suivent le jour / la nuit et la météo, murs percés
@@ -54,6 +56,9 @@ src/
     Floaters.tsx            # neige autour de la cabane, poussières de la chambre
     life.ts                 # les petits évènements rares (useEvery), la lueur des éclairs
     Hotspot.tsx             # bouton DOM projeté sur un objet 3D (drei <Html>)
+    Lights.tsx, textures.ts # lumières jour / nuit et ombres ; `makeCanvas` et textures peintes
+    blob.ts                 # les créatures d'une seule peau (chats, manchots, poissons…)
+    stats.ts                # compteurs de dessin, chargés seulement avec `?stats`
   audio/
     engine.ts               # AudioContext, master, compresseur, un bus par son
     buffers.ts              # bruits en boucle sans couture, gouttes, crépitement, ronron
@@ -61,12 +66,14 @@ src/
     session.ts              # Media Session : titre, pause / lecture depuis l'écran verrouillé
     stations.ts             # les stations de la radio générative (accords, rythmes, timbres) ; chaque pièce choisit les siennes
     events.ts               # canal d'évènements ponctuels (tasse qui tinte, page qui se tourne)
+    noiseGen.ts             # repli de la carte « Bruit » sans AudioWorklet (mêmes formules que public/noise-worklet.js)
     thunder.ts              # le tonnerre de l'orage (dans le bus de la pluie ou de la tempête)
     channels/               # un canal par son : radio.ts, tracks.ts (pistes lofi), rain.ts, noise.ts (bruit blanc, rose, brun, vert ; public/noise-worklet.js), fan.ts, purr.ts, outside.ts, waves.ts, rails.ts…
-  ui/                       # TopBar, WeatherPicker (sélecteur de météo), WeatherSky (pluie et neige dans le ciel du fond), SkyLife (étoile filante, oiseau, éclair, crépuscule derrière la pièce), RoomPicker, Mixer, MixerCard, SleepTimer, MixesMenu, SharedMix, InstallButton, splash.ts (écran de chargement, HTML dans index.html)
-  styles/tokens.css
+  ui/                       # TopBar, WeatherPicker (sélecteur de météo), WeatherSky (pluie et neige dans le ciel du fond), SkyLife (étoile filante, oiseau, éclair, crépuscule derrière la pièce), RoomPicker, Mixer, MixerCard, SleepTimer, FocusTimer (minuteur de concentration), QuickStart (puces Travailler / Lire / Dormir), StationButton (changer de station), MasterVolume, NoiseControls (couleur et tonalité de la carte « Bruit »), MixesMenu, SharedMix, InstallButton, icons.tsx, splash.ts (écran de chargement, HTML dans index.html)
+  styles/tokens.css, app.css
+tests/                      # npm run test:unit : tests unitaires des fonctions pures (node --test)
+public/noise-worklet.js    # AudioWorklet des bruits blanc, rose, brun, vert (voir docs/NOISE.md)
 scripts/encode-audio.mjs    # npm run audio : sources → Opus/WebM + MP3 dans public/audio/
-scripts/make-noises.mjs     # npm run noises : bruits colorés calculés
 scripts/check-stations.mjs  # npm run stations : vérifie la musique des stations (accords, notes, rythmes)
 scripts/check-audio.mjs     # npm run audio:check : crêtes, sonie et paires webm + mp3 de public/audio/
 scripts/measure-levels.mjs  # npm run audio:levels : sonie de chaque canal (rendu hors ligne dans Chromium), écarts à la médiane ; `--ids`, `--rooms`, `--seconds`, `--json`
@@ -165,13 +172,18 @@ npm run dev       # serveur local
 npm run build     # doit passer sans erreur TS avant chaque commit
 npm run preview
 npm run audio     # encode audio-src/ vers public/audio/ (ffmpeg requis, voir docs/ASSETS.md)
-npm run noises    # calcule les bruits colorés
 npm run stations  # vérifie la musique des stations de la radio
+npm run test:unit # tests unitaires (node --test, sans dépendance) des fonctions pures : tests/*.test.mjs, moins d'une seconde
 npm run audio:check  # vérifie les crêtes (max -0,5 dBTP) et la sonie des sons de public/audio/ (ffmpeg requis)
-npm test          # build + stations + test de fumée (tout ce que la CI vérifie, sauf audio:check)
+npm test          # test:unit + build + stations + test de fumée (tout ce que la CI vérifie, sauf audio:check)
 npm run test:smoke   # test de fumée seul, sur le dist/ déjà construit
 npm run mobile:sync  # construit et copie le site dans les apps Android et iOS (voir docs/MOBILE.md)
 ```
+
+Tests unitaires (`tests/`, `node --test`, Node ≥ 22, pas de vitest) : ambiances et liens de partage (`state/mixes.ts`, courbe des volumes), bruit, météo, jour / nuit, repli du bruit (`audio/noiseGen.ts`, pentes spectrales), aides des stations.
+`tests/register.mjs` résout les imports sans extension de `src/` ; `tests/setup.mjs` simule `localStorage` et `document` (le strict minimum). Un module testé ne doit pas toucher à three, au DOM ni à `import.meta.env` au chargement : sinon extrais la partie pure (comme `mixQuery` dans `mixes.ts`).
+Nouveau test : `tests/<sujet>.test.mjs`, importe les sources avec leur extension `.ts`. La théorie musicale des stations reste dans `npm run stations`. Le rendu et les sons restent au test de fumée.
+Pour vérifier qu'un test mord : casse une règle à la main (la √ de `sliderOf`), il doit rougir.
 
 Le test de fumée (`scripts/smoke.mjs`) sert `dist/` avec `vite preview` et ouvre chaque pièce dans Chromium sans écran (WebGL logiciel),
 en 390 px tactile puis en 1440 px : la pièce se charge, le canvas dessine, un `<button>` avec `aria-label` et `aria-pressed` par objet,

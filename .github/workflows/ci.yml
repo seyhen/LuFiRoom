@@ -1,5 +1,5 @@
 # Vérifications à chaque push et à chaque pull request : build TypeScript, musique des stations, test de fumée dans Chromium
-# (les onze pièces, téléphone et ordinateur), et contrôle des fichiers son. Voir la section « Commandes » de CLAUDE.md.
+# (les quinze pièces, téléphone et ordinateur), et contrôle des fichiers son. Voir la section « Commandes » de CLAUDE.md.
 name: CI
 
 on:
@@ -33,6 +33,16 @@ jobs:
       - name: Build (tsc + vite)
         run: npm run build
 
+      # Sans ffmpeg ni navigateur : traductions manquantes, puis crédits de chaque son.
+      - name: Traductions (check-i18n)
+        run: node .claude/skills/release-check/check-i18n.cjs
+
+      - name: Crédits des sons (check-credits)
+        run: node .claude/skills/release-check/check-credits.cjs
+
+      - name: Tests unitaires
+        run: npm run test:unit
+
       - name: Musique des stations
         run: npm run stations
 
@@ -40,7 +50,7 @@ jobs:
       - name: Chromium pour Playwright
         run: npx playwright install --with-deps chromium
 
-      - name: Test de fumée (onze pièces, 390 px et ordinateur)
+      - name: Test de fumée (quinze pièces, 390 px et ordinateur)
         run: npm run test:smoke
 
       - name: Captures des pièces en échec

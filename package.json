@@ -1,5 +1,5 @@
 {
-  "name": "chambre-lofi",
+  "name": "lufiroom",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,7 +10,6 @@
     "audio": "node scripts/encode-audio.mjs",
     "audio:check": "node scripts/check-audio.mjs",
     "audio:levels": "node scripts/measure-levels.mjs",
-    "noises": "node scripts/make-noises.mjs",
     "stations": "node scripts/check-stations.mjs",
     "test": "npm run test:unit && npm run build && npm run stations && npm run test:smoke",
     "test:unit": "node --test --experimental-strip-types --import ./tests/register.mjs --import ./tests/setup.mjs \"tests/*.test.mjs\"",
