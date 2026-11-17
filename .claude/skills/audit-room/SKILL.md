@@ -65,7 +65,7 @@ Lance-les tous, note les chiffres.
 
 1. **Types et build** : `npx tsc --noEmit -p .` puis `npm run build`. Zéro erreur.
 2. **Console** : `list_console_messages` (erreurs et avertissements) après avoir allumé **tous** les sons de la pièce, la nuit. Rien.
-3. **Appels de dessin** (budget : les pièces existantes font 150 à 290 ; au-delà de ~320 on explique pourquoi). Vite fait : `__lofi.three().gl.info.render.calls` (une passe). Les chiffres de `docs/ROOMS.md` comptent toutes les passes (ombres comprises) : pour les comparer, colle dans `evaluate_script` :
+3. **Appels de dessin** (budget par pièce dans le tableau de `docs/ROOMS.md` : les pièces existantes font 190 à 370 en desktop, toutes passes ; au-delà du budget de la pièce (ou de ~300 pour une pièce nouvelle) on explique pourquoi). Vite fait : `__lofi.three().gl.info.render.calls` (une passe). Les chiffres de `docs/ROOMS.md` comptent toutes les passes (ombres comprises) : pour les comparer, colle dans `evaluate_script` :
 
 ```js
 async () => {

@@ -68,7 +68,28 @@ Outils pour le décor :
 Chaque maillage coûte un appel de dessin, deux s'il porte une ombre. Une pièce riche en petits objets (le café en compte des centaines) se dessine vite trop lentement sur un téléphone.
 Enveloppe le décor dans `<Static>` (`src/scene/Static.tsx`) : une fois monté, il fusionne les maillages immobiles qui partagent un matériau (le café passe de 816 à 274 appels par image).
 Il laisse de côté les objets interactifs (`userData.id`) et ce qui est marqué `userData={LIVE}` (une flamme, une aiguille d'horloge, un chien qui respire, un plan qui défile), avec leurs enfants. Une géométrie qu'on déforme à chaque image (un voilage, du linge) doit rester dans un objet interactif ou être marquée `LIVE`.
-Repères mesurés (appels de dessin par image, toutes passes, nuit, 390 px, décor du dehors compris, 2026-11-07) : chambre 232, cabane 315, café 315, plage 266, train 261, toit 314, atelier 201, onsen 274, phare 296, sous-marin 306, marché 311 (une autre mesure en trouve jusqu'à 337 : à remesurer), igloo 313, cabane perchée 254, laverie de nuit 307. Un sprite compte aussi : chaque particule de vapeur vivante est un appel de dessin, donc espace les émetteurs (`every` de `Steam` à 1 s ou plus pour un détail, 0,5 s pour la vedette). Un personnage ou un objet qui bouge se découpe : imbrique un `<Static>` dans son groupe `LIVE` pour fusionner ce qui ne bouge pas (voir `market/Chef.tsx`). Surveille aussi les triangles (300 à 370 milliers par image pour la plupart des pièces) : une forme de la nature coûte de 1 000 à 1 600 triangles, deux fois avec l'ombre. Pour fusionner l'intérieur d'un objet interactif, place un autre `<Static>` dans son groupe, comme la cheminée du café.
+Budget de dessin par pièce, mesuré le 2026-11-16 : appels de dessin par image au repos (tous les sons coupés), **toutes passes (ombres comprises), nuit, desktop 1440 × 900**, décor du dehors compris, en WebGL logiciel (SwiftShader), moyenne sur 20 images ; méthode de l'étape 1.3 de `.claude/skills/audit-room/SKILL.md` (compteur sur `drawElements` et `drawArrays`). Le budget est la mesure plus une petite marge (arrondi à la dizaine au-dessus) : une pièce retouchée ne le dépasse pas sans explication. `__lofi.three().gl.info.render.calls` (une seule passe) donne un chiffre plus bas, de 164 à 311 ; ne compare pas les deux.
+
+| Pièce | Mesure | Budget |
+|---|---|---|
+| Chambre | 235 | 250 |
+| Cabane | 319 | 330 |
+| Café | 316 | 330 |
+| Plage | 284 | 300 |
+| Train de nuit | 259 | 270 |
+| Toit-terrasse | 330 | 340 |
+| Atelier | 248 | 260 |
+| Onsen | 275 | 290 |
+| Phare | 329 | 340 |
+| Sous-marin | 330 | 340 |
+| Marché de nuit | 369 | 380 |
+| Igloo | 328 | 340 |
+| Cabane perchée | 269 | 280 |
+| Laverie de nuit | 349 | 360 |
+| Serre | 190 | 200 |
+
+Au-dessus de 300 (à ramener sous 300 quand on retouche la pièce : espacer les `Steam`, fusionner dans des `<Static>` imbriqués) : cabane, café, toit-terrasse, phare, sous-marin, marché de nuit, igloo, laverie de nuit. Le marché de nuit (369) est le plus chargé, la serre (190) la plus légère.
+Un sprite compte aussi : chaque particule de vapeur vivante est un appel de dessin, donc espace les émetteurs (`every` de `Steam` à 1 s ou plus pour un détail, 0,5 s pour la vedette). Un personnage ou un objet qui bouge se découpe : imbrique un `<Static>` dans son groupe `LIVE` pour fusionner ce qui ne bouge pas (voir `market/Chef.tsx`). Surveille aussi les triangles (300 à 370 milliers par image pour la plupart des pièces) : une forme de la nature coûte de 1 000 à 1 600 triangles, deux fois avec l'ombre. Pour fusionner l'intérieur d'un objet interactif, place un autre `<Static>` dans son groupe, comme la cheminée du café.
 Garde aussi au plus trois lumières ponctuelles par pièce : les bougies et les petites lampes se contentent d'un halo (sprite), sans lumière. Garde-en une pour la source chaude du soir (le lampadaire de l'atelier, la bougie de la plage) : c'est elle qui fait le cocon la nuit, avec un sol d'hémisphère tiède plutôt que bleu.
 Les boîtes arrondies (`rbox`) n'affichent que le centre d'une texture : pour un tapis, un paillasson ou un parquet qu'on veut voir à sa taille (le chevron du café), pose la texture sur un plan.
 

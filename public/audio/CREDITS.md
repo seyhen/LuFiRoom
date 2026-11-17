@@ -42,18 +42,9 @@ Toutes viennent de Pixabay, sous la **Pixabay Content License** (<https://pixaba
 | `atelier/kettle` | eau qui bout, « Boiling Water Sound » | freesound_community | id 62556 sur Pixabay (recherche « boiling water sound ») | entier (16 s), mono | 2026-10-17 |
 | `beach/waves` | vagues, « Ocean Waves » | RMultimediaEU | id 250310 sur Pixabay (recherche « ocean waves rmultimediaeu ») | 45 s à partir de 0 s, stéréo | 2026-10-17 |
 
-## Bruits colorés (calculés, pas enregistrés)
+## Bruit (carte « Bruit »)
 
-Générés par `scripts/make-noises.mjs` (`npm run noises`, puis `npm run audio`) : aucune source extérieure, aucune licence à respecter, les fichiers appartiennent au projet.
-Pas encore déclarés dans une pièce (voir `docs/ASSETS.md`).
-
-| Fichier | Contenu | Pente | Durée |
-|---|---|---|---|
-| `noise/white` | bruit blanc | 0 dB / octave | 20 s, stéréo |
-| `noise/pink` | bruit rose | -3 dB / octave | 20 s, stéréo |
-| `noise/brown` | bruit brun | -6 dB / octave | 20 s, stéréo |
-| `noise/blue` | bruit bleu | +3 dB / octave | 20 s, stéréo |
-| `noise/violet` | bruit violet | +6 dB / octave | 20 s, stéréo |
+Le bruit blanc, rose, brun et vert est généré en direct par `public/noise-worklet.js` (repli : `src/audio/noiseGen.ts`) : aucun fichier, aucune source extérieure, aucune licence à respecter. Voir `docs/NOISE.md`.
 
 ## Radio lofi
 
