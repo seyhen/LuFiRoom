@@ -4,7 +4,7 @@ import { AdditiveBlending, Color, LatheGeometry, Vector2, type Sprite, type Spri
 import { smooth } from '../../math'
 import { Part, SPH, noRay } from '../parts'
 import { LIVE } from '../Static'
-import { clearOf, hex, rgb, seeded, weathered, whiteout } from '../paint'
+import { clearOf, hex, mix, rgb, seeded, weathered, whiteout } from '../paint'
 import { snowTop } from '../snowTop'
 import { skyFade } from '../outdoor'
 import { Foliage } from '../nature/Foliage'
@@ -33,7 +33,7 @@ const PEAKS: [number, number, number, number][][] = [
   // le second, plus loin et plus pâle, entre les sommets du premier
   [[-11.5, 9.5, 2.0, 4], [-6, 19, 2.2, 4], [6, 19, 2.2, 4], [10.5, 11, 3.2, 4]],
   // le troisième, très loin et très pâle : il remplit les coins du haut d'un écran large, entre et au-dessus des deux autres
-  [[-14.5, 15, 3.4, 4.4], [-9, 22, 3.0, 4.2], [0, 26, 2.8, 4.6], [9.5, 22, 3.2, 4.2], [15, 15, 3.6, 4.4]],
+  [[-14.5, 15, 3.4, 4.4], [-9, 22, 3.0, 4.2], [0, 26, 2.8, 4.6], [9.5, 22, 3.2, 4.2], [15, 15, 3.6, 4.4], [13, 25, 3.8, 4.4], [-13, 26, 3.4, 4.4], [5, 29, 3.2, 4.6]],
 ]
 /** Le pied des montagnes (sous le sol du dehors, qui s'efface dans le ciel à cette distance). */
 const BASE = 0.2
@@ -52,7 +52,7 @@ const moonAt = ([sx, sy]: number[]): [number, number, number] => {
 const MISTS = ([[-7, 12, 2.6], [0, 14, 3.0], [7, 12, 2.6]] as const).map(([s, k, y]) => { const [x, z] = toWorld(s, k); return [x, y, z] as const })
 const mists: SpriteMaterial[] = []
 // Les deux rangs : bleu-vert puis bleu lavande le jour, nuit d'encre le soir.
-const DAY = [0x9aa0b4, 0xbab6cc].map((c) => new Color(c)), NIGHT = [0x262c48, 0x323c64].map((c) => new Color(c))
+const DAY = [0x7f93aa, 0xa0a6c4].map((c) => new Color(c)), NIGHT = [0x262c48, 0x323c64].map((c) => new Color(c))
 // Sous la neige, les montagnes blanchissent sur leurs pentes douces et leurs cimes, la lisière est poudrée sur le dessus des houppiers.
 // Loin, elles se fondent dans le ciel : un voile de brume avec la distance, et leur pied se perd dans le blanc du ciel au-dessus de la
 // forêt (pas de bord net là où le sol du dehors s'efface).
@@ -60,6 +60,7 @@ O.mountains.slice(1).forEach((m) => skyFade(snowTop(m, 1, -0.1, 0.35), { c: [0, 
 O.forest.forEach((m) => snowTop(m, 0.85, 0.4, 0.8))
 snowTop(O.forestPine, 0.85, 0.3, 0.7)
 const tmp = new Color()
+const RAIN_HAZE = hex('#cdb9c4')
 
 /** Une montagne : profil tourné, base large, flancs creusés, sommet arrondi (rien de pointu). Base y = 0, sommet y = 1. */
 const mountainGeo = (() => {
@@ -83,7 +84,9 @@ export function Mountains() {
     // les rangs : jour → nuit, puis assombris par l'orage, effacés dans le blanc par la tempête de neige (le second plus loin)
     O.mountains.slice(1).forEach((m, i) => {
       tmp.copy(DAY[i]).lerp(NIGHT[i], n)
-      m.color.setStyle(rgb(weathered(hex('#' + tmp.getHexString()), w, 0.5 + i * 0.4)))
+      // sous la pluie et l'orage : moins d'ardoise (le ciel reste rose) et un fondu vers la brume rose, pour que les crêtes ne tranchent pas
+      const wet = Math.max(w.r, w.st) * (1 - n)
+      m.color.setStyle(rgb(mix(weathered(hex('#' + tmp.getHexString()), { ...w, st: w.st * 0.35 }, 0.3 + i * 0.3), RAIN_HAZE, wet * 0.4)))
     })
     O.moon.opacity = n * clearOf(w) ** 2
     if (halo.current) (halo.current.material as SpriteMaterial).opacity = O.moon.opacity * 0.45

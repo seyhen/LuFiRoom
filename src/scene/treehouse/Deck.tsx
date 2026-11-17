@@ -133,7 +133,7 @@ export function Deck() {
         return (
           <group key={`${a}${c}`} position={[(a + b) / 2, y + ROOF.t / 2, z]} rotation-x={slope}>
             <Part geo={rb(w, ROOF.t, l, 0.03)} m={T.plank} />
-            <mesh material={T.shingles} position={[0, ROOF.t / 2 + 0.004, 0]} rotation-x={-Math.PI / 2} receiveShadow castShadow>
+            <mesh material={T.shingles} position={[0, ROOF.t / 2 + 0.008, 0]} rotation-x={-Math.PI / 2} receiveShadow castShadow>
               <planeGeometry args={[w - 0.02, l - 0.02]} />
             </mesh>
           </group>

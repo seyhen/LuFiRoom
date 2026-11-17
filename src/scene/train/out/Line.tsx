@@ -136,6 +136,29 @@ function Chalet() {
   )
 }
 
+/** La cabane du cantonnier, devant la voie : socle de pierre, planches, porte, petite fenêtre qui s'allume, toit à deux pans, cheminée, pile de bûches. */
+function Keeper() {
+  const W = 1.7, D = 1.3, H = 1.1
+  return (
+    <group position={[14.2, GROUND, 11.0]} rotation-y={0.12}>
+      <Part geo={rbox(W + 0.1, 0.22, D + 0.1, 0.05)} m={R.stone} p={[0, 0.11, 0]} />
+      <Part geo={rbox(W, H, D, 0.05)} m={R.wood} p={[0, 0.22 + H / 2, 0]} />
+      <Part geo={rbox(0.42, 0.78, 0.05, 0.03)} m={R.chaletRoof} p={[0.35, 0.22 + 0.39, D / 2 + 0.02]} />
+      <mesh position={[-0.42, 0.22 + 0.62, D / 2 + 0.012]} material={R.chalet} raycast={noRay}>
+        <planeGeometry args={[0.4, 0.4]} />
+      </mesh>
+      {[-1, 1].map((s) => (
+        <group key={s} position={[0, 0.22 + H + 0.26, s * D * 0.27]} rotation-x={s * 0.62}>
+          <Part geo={rbox(W + 0.36, 0.09, D * 0.66, 0.03)} m={R.chaletRoof} />
+        </group>
+      ))}
+      <Part geo={rbox(W - 0.1, 0.4, D * 0.42, 0.04)} m={R.wood} p={[0, 0.22 + H + 0.12, 0]} />
+      <Part geo={rbox(0.22, 0.5, 0.22, 0.04)} m={R.stone} p={[-0.5, 0.22 + H + 0.62, -0.2]} />
+      {Array.from({ length: 5 }, (_, i) => <Part key={i} geo={cyl(0.06, 0.06, 0.42, 9)} m={R.trunk} p={[W / 2 + 0.15, 0.3 + Math.floor(i / 3) * 0.11, -0.25 + (i % 3) * 0.13]} rotation-z={Math.PI / 2} castShadow={false} />)}
+    </group>
+  )
+}
+
 /** Ce qui défile sur un motif de P mètres : poteaux, clôture, signal, chalet, bosquets, rochers. */
 function Tile() {
   const ws = useMemo(wires, [])
@@ -152,6 +175,15 @@ function Tile() {
       ))}
       <Signal />
       <Chalet />
+      <Keeper />
+      {/* devant la voie, les buissons et les rochers du talus : le bas gauche de l'écran n'est plus un pré nu */}
+      <Foliage v={2} p={[2.6, GROUND, 10.2]} s={[0.6, 0.45, 0.55]} m={R.bush} shadow={false} />
+      <Foliage v={5} p={[3.4, GROUND, 10.7]} s={[0.4, 0.32, 0.38]} m={R.bush} shadow={false} />
+      <Foliage v={6} p={[7.6, GROUND, 11.4]} s={[0.7, 0.5, 0.62]} m={R.bush} shadow={false} />
+      <Foliage v={7} p={[18.6, GROUND, 10.4]} s={[0.55, 0.42, 0.5]} m={R.bush} shadow={false} />
+      <Foliage v={8} p={[22.2, GROUND, 11.8]} s={[0.45, 0.35, 0.42]} m={R.bush} shadow={false} />
+      <Rock v={3} p={[10.2, GROUND - 0.05, 10.6]} s={[0.45, 0.32, 0.4]} m={R.rock} shadow={false} />
+      <Rock v={4} p={[20.4, GROUND - 0.05, 12.2]} s={[0.35, 0.26, 0.32]} m={R.rock} shadow={false} />
       <Foliage v={1} p={[9.0, GROUND, 6.0]} s={[0.55, 0.42, 0.5]} m={R.bush} shadow={false} />
       <Foliage v={3} p={[20.5, GROUND, 5.6]} s={[0.4, 0.32, 0.38]} m={R.bush} shadow={false} />
       <Foliage v={4} p={[5.4, GROUND, -5.1]} s={[0.7, 0.5, 0.6]} m={R.bush} shadow={false} />

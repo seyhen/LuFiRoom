@@ -32,10 +32,14 @@ export const lighthouse: Room = {
   },
   loops: {
     ...WEATHER_LOOPS,
-    wind: { src: 'audio/roof/wind', gain: 0.9 },
-    fire: { src: 'audio/lighthouse/fire', gain: 1.36 },
-    foghorn: { src: 'audio/lighthouse/foghorn', gain: 0.65 },
+    wind: { src: 'audio/lighthouse/wind', gain: 0.65 },
+    purr: { src: 'audio/lighthouse/purr', gain: 0.85 },
+    waves: { src: 'audio/lighthouse/waves', gain: 0.8 },
+    fire: { src: 'audio/lighthouse/fire', gain: 0.8 },
+    foghorn: { src: 'audio/lighthouse/foghorn', gain: 0.9 },
     quill: { src: 'audio/lighthouse/quill', gain: 0.8 },
+    bell: { src: 'audio/lighthouse/bell', gain: 0.8 },
+    oars: { src: 'audio/lighthouse/oars', gain: 0.8 },
   },
   stations: ['minuit', 'veillee', 'pluie-fine'],
   // voix de repli propres au phare (docs/SOUNDS.md) : un vieux matou grave, la houle sur la roche, un poêle de fonte creux
@@ -60,6 +64,7 @@ export const lighthouse: Room = {
     { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-0.75, 0.32, 0.62] },
     { id: 'radio', target: 'radio', label: 'Concertina · lofi', anchor: [2.45, 1.05, 0.07] },
     { id: 'quill', target: 'quill', label: 'Journal de bord · la plume', anchor: [-0.48, 0.82, 2.47] },
+    { id: 'rowboat', target: 'oars', label: 'Pêcheur · les avirons', anchor: [0.6, -1.85, -7.0] },
   ],
   sounds: [
     { id: 'radio', name: 'Concertina lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
@@ -69,6 +74,7 @@ export const lighthouse: Room = {
     { id: 'bell', name: 'Cloche de bouée', chip: 'var(--c-bell)', volume: 0.45, sub: () => 'balancée par la houle' },
     { id: 'fire', name: 'Poêle', chip: 'var(--c-fire)', volume: 0.5, sub: () => 'la fonte qui chauffe' },
     { id: 'quill', name: 'Plume d’oie', chip: 'var(--c-quill)', volume: 0.5, sub: () => 'le journal de bord' },
+    { id: 'oars', name: 'Avirons', chip: 'var(--c-oars)', volume: 0.5, sub: () => 'un pêcheur rame au large' },
     { id: 'purr', name: 'Ronron', chip: 'var(--c-cat)', volume: 0.5, sub: () => 'le chat du phare' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'contre la pierre' },
     { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },

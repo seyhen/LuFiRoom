@@ -1,13 +1,13 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, type Group, type Mesh, type PointLight, type Sprite } from 'three'
-import { isActive, useStore } from '../../state/store'
 import { TAU, smooth } from '../../math'
 import { Part, SPH, cyl, noRay, rbox } from '../parts'
 import { mood, reduceMotion, useSquash } from '../anim'
 import { glowTex } from '../textures'
 import { Steam } from '../objects/Steam'
 import { LIVE } from '../Static'
+import { Hourglass } from './Hourglass'
 import { T } from './materials'
 import { Leaf } from '../nature/Leaf'
 import { Vessel, innerR } from '../igloo/Vessel'
@@ -48,18 +48,16 @@ function TableLamp() {
   )
 }
 
-/** Le verre de thé dans son porte-verre ciselé : la cuillère tremble avec le train, et il fume quand on l'écoute. */
+/** Le verre de thé dans son porte-verre ciselé (du décor) : il fume, et la cuillère tremble avec le train. */
 function TeaGlass() {
-  const g = useRef<Group>(null!), spoon = useRef<Mesh>(null!), on = useRef(false)
-  useSquash('tea', g)
+  const spoon = useRef<Mesh>(null!), on = useRef(true)
   useFrame(({ clock }) => {
-    on.current = isActive(useStore.getState(), 'tea')
     if (reduceMotion) return
-    const t = clock.elapsedTime, k = on.current ? 1 : 0.3
+    const t = clock.elapsedTime, k = 0.3
     spoon.current.rotation.z = 0.18 + Math.sin(t * 23) * 0.04 * k + Math.sin(t * 7.1) * 0.03 * k
   })
   return (
-    <group ref={g} userData={{ id: 'tea' }} position={[0.75, TOP, Z + 0.05]}>
+    <group position={[0.75, TOP, Z + 0.05]}>
       {/* plus gros que nature, pour qu'on le reconnaisse : soucoupe, porte-verre de laiton, verre en tulipe plein de thé, cuillère courte */}
       <group scale={1.4}>
         <Part geo={cyl(0.1, 0.1, 0.012, 22)} m={T.brass} p={[0, 0.006, 0]} castShadow={false} />
@@ -103,6 +101,8 @@ export function Table() {
       ))}
       <TableLamp />
       <TeaGlass />
+      {/* le sablier, plus loin sur la tablette, entre le thé et le bord */}
+      <Hourglass position={[1.78, TOP, Z + 0.04]} />
       {/* le croissant sur son assiette */}
       {/* l'assiette de porcelaine à liseré bleu (sur la nappe de lin elle se confondait) */}
       <Part geo={cyl(0.13, 0.1, 0.014, 26)} m={T.plate} p={[1.3, TOP + 0.012, Z + 0.06]} castShadow={false} />

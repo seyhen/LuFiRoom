@@ -4,7 +4,7 @@ import type { Room } from './types'
 import { WEATHER_LOOPS } from './weather'
 
 // Un atelier sous les toits de Paris. Les enregistrements sont à déclarer dans `loops`
-// (keys, pencil, kettle, rain) et `playlist` (docs/ASSETS.md) ; sources et licences : public/audio/CREDITS.md.
+// (keys, bowl, kettle, rain) et `playlist` (docs/ASSETS.md) ; sources et licences : public/audio/CREDITS.md.
 
 export const atelier: Room = {
   id: 'atelier',
@@ -30,11 +30,12 @@ export const atelier: Room = {
   },
   loops: {
     ...WEATHER_LOOPS,
-    pencil: { src: 'audio/atelier/pencil', gain: 0.8 },
-    keys: { src: 'audio/atelier/keys', gain: 0.97 },
-    kettle: { src: 'audio/atelier/kettle', gain: 0.8 },
+    bowl: { src: 'audio/atelier/bowl', gain: 0.8 },
+    keys: { src: 'audio/atelier/keys', gain: 0.6 },
+    kettle: { src: 'audio/atelier/kettle', gain: 0.6 },
     rain: { src: 'audio/atelier/rain', gain: 1 },
-    brush: { src: 'audio/atelier/brush', gain: 0.95 },
+    brush: { src: 'audio/atelier/brush', gain: 0.8 },
+    accordion: { src: 'audio/atelier/accordion', gain: 0.8 },
   },
   stations: ['bureau', 'rosee', 'pluie-fine', 'brume'],
   playlist: PLAYLIST,
@@ -45,19 +46,22 @@ export const atelier: Room = {
   },
   objects: [
     { id: 'radio', target: 'radio', label: 'Tourne-disque · lofi', anchor: [2.3, 0.85, -2.6] },
-    { id: 'pencil', target: 'pencil', label: 'Table à dessin · crayon', anchor: [0.1, 1.12, -2.0] },
+    { id: 'bowl', target: 'bowl', label: 'Bol chantant · la note', anchor: [0.05, 0.3, 0.6] },
     { id: 'keyboard', target: 'keys', label: 'Clavier · on écrit', anchor: [-2.4, 0.86, -1.05] },
     { id: 'kettle', target: 'kettle', label: 'Bouilloire · thé', anchor: [-2.6, 1.3, 0.95] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-2.68, 1.3, -1.9] },
     { id: 'brush', target: 'brush', label: 'Chevalet · le pinceau', anchor: [2.4, 1.25, -0.8] },
+    // hors de l'atelier : l'accordéoniste du toit voisin, à droite
+    { id: 'accordion', target: 'accordion', label: 'Accordéoniste · la valse', anchor: [5.0, 0.85, -0.7] },
   ],
   sounds: [
     { id: 'radio', name: 'Vinyle lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.7, sub: () => 'sur la verrière' },
     { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
-    { id: 'pencil', name: 'Crayon', chip: 'var(--c-pencil)', volume: 0.5, sub: () => 'sur le papier' },
+    { id: 'bowl', name: 'Bol chantant', chip: 'var(--c-bowl)', volume: 0.45, sub: () => 'une note qui vibre' },
     { id: 'brush', name: 'Pinceau', chip: 'var(--c-brush)', volume: 0.45, sub: () => 'sur la toile' },
     { id: 'keys', name: 'Clavier', chip: 'var(--c-keys)', volume: 0.45, sub: () => 'quelqu’un écrit' },
+    { id: 'accordion', name: 'Accordéoniste', chip: 'var(--c-accordion)', volume: 0.4, sub: () => 'une valse sur les toits' },
     { id: 'kettle', name: 'Bouilloire', chip: 'var(--c-kettle)', volume: 0.5, sub: () => 'une tasse de thé' },
   ],
 }

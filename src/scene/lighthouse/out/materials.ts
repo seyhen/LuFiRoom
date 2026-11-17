@@ -26,7 +26,7 @@ const swellTex = canvasTex(256, 256, (x) => {
   }
 }, [1, 1])
 swellTex.wrapS = swellTex.wrapT = RepeatWrapping
-swellTex.repeat.set(7, 7)
+swellTex.repeat.set(14, 14)
 
 /** L'écume au pied des rochers : un anneau blanc, plein dedans, effiloché dehors (u le long de l'anneau, v vers le large). */
 const foamTex = canvasTex(256, 64, (x) => {
@@ -103,6 +103,10 @@ const out = <T extends MeshStandardMaterial>(m: T, snow: [number, number?, numbe
 const F2 = { c: [0, 0] as [number, number], r0: 9.5, r1: 17.5 }
 const outFar = <T extends MeshStandardMaterial>(m: T, snow: [number, number?, number?] = [0.9, 0.4, 0.8]) => skyFade(snowTop(m, ...snow), F2)
 
+// Le tout dernier plan (coins du haut des grands écrans, à 18 du centre) : encore plus large et plus pâle.
+const F3 = { c: [0, 0] as [number, number], r0: 12.5, r1: 23 }
+const outVeil = <T extends MeshStandardMaterial>(m: T, snow: [number, number?, number?] = [0.9, 0.4, 0.8]) => skyFade(snowTop(m, ...snow), F3)
+
 const cliff = (c: number) => farStone(c, { map: strataTex })
 
 export const swell = swellTex
@@ -139,6 +143,14 @@ export const S = {
   rockFar: [outFar(cliff(0x8794a6)), outFar(cliff(0x7886a0)), outFar(cliff(0x94a0b2))],
   grassFar: outFar(farMoss(0x6da15c)),
   weedFar: outFar(farMoss(0x4f7a5c)),
+  rockVeil: [outVeil(cliff(0x94a0b2)), outVeil(cliff(0x8794a6)), outVeil(cliff(0x9fa9ba))],
+  grassVeil: outVeil(farMoss(0x6da15c)),
+  weedVeil: outVeil(farMoss(0x4f7a5c)),
+  foamVeil: skyFade(new MeshBasicMaterial({ map: foamTex, transparent: true, opacity: 0.9, depthWrite: false, side: DoubleSide }), F3),
+  // le pêcheur qui rame : ciré jaune, peau, bottes
+  slicker: out(far(0xf2c14e, { roughness: 0.55, clearcoat: 0.4 })),
+  skin: out(far(0xe8b898, { roughness: 0.6 })),
+  boot: out(far(0x3a4250, { roughness: 0.5, clearcoat: 0.4 })),
   sail: out(far(0xfbf6ee, { roughness: 0.8, side: DoubleSide })),
   sailRed: out(far(0xe2564a, { roughness: 0.8, side: DoubleSide })),
   /** La lanterne du ponton : elle s'allume le soir pour qu'on voie encore le ponton et la barque dans l'ombre du socle. */

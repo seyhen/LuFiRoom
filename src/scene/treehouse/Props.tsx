@@ -218,7 +218,7 @@ export function Boots({ position, ry = 0 }: { position: V3; ry?: number }) {
         <Part geo={rb(0.25, 0.025, 0.13, 0.012)} m={T.soil} p={[0.06, 0.012, 0]} castShadow={false} />
         <Part geo={cyl(0.06, 0.06, 0.01, 14)} m={T.iron} p={[0, 0.37, 0]} castShadow={false} />
       </group>
-      <group position={[0.1, 0.06, 0.24]} rotation={[Math.PI / 2, 0, 0.5]}>
+      <group position={[0.1, 0.06, 0.3]} rotation={[Math.PI / 2, 0, 0.5]}>
         <Part geo={rb(0.11, 0.34, 0.12, 0.05)} m={T.cushion2} p={[0, 0.15, 0]} />
         <Part geo={rb(0.24, 0.1, 0.12, 0.05)} m={T.cushion2} p={[0.06, 0.0, 0]} />
         <Part geo={rb(0.25, 0.025, 0.13, 0.012)} m={T.soil} p={[0.06, -0.04, 0]} castShadow={false} />

@@ -37,7 +37,7 @@ export function LuggageRack() {
       <Suitcase p={[0.35, 0.14, 0]} size={[0.5, 0.25, 0.3]} m={T.teal} rot={-0.08} />
       <group position={[1.05, 0.17, 0]}>
         <Part geo={cyl(0.2, 0.2, 0.32, 24)} m={T.cream} />
-        <Part geo={cyl(0.205, 0.205, 0.05, 24)} m={T.velvet} p={[0, 0.14, 0]} castShadow={false} />
+        <Part geo={cyl(0.205, 0.205, 0.05, 24)} m={T.velvet} p={[0, 0.15, 0]} castShadow={false} />
         <Part m={T.velvet} p={[0, 0.2, 0]} castShadow={false}>
           <torusGeometry args={[0.07, 0.01, 6, 12, Math.PI]} />
         </Part>

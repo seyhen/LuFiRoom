@@ -2,6 +2,7 @@ import { useLayoutEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, ExtrudeGeometry, Shape, Vector3, type Group, type Mesh } from 'three'
 import { TAU } from '../../math'
+import { isActive, useStore } from '../../state/store'
 import { Part, SPH, cyl, noRay, rbox, type V3 } from '../parts'
 import { LIVE } from '../Static'
 import { reduceMotion, useParticles } from '../anim'
@@ -123,16 +124,16 @@ export function Rugs() {
 export function Stove({ position }: { position: V3 }) {
   const steam = useParticles(), since = useRef(0), flame = useRef<Mesh>(null!), ph = useRef(0)
   useFrame((_, delta) => {
-    const dt = Math.min(delta, 0.05)
+    const dt = Math.min(delta, 0.05), on = isActive(useStore.getState(), 'stove') // le son joue : le gaz souffle plus fort, plus de vapeur
     if (!reduceMotion) {
       ph.current += dt * 9
       since.current += dt
-      if (since.current > 1.3) {
+      if (since.current > (on ? 0.55 : 1.3)) {
         since.current = 0
         steam.emit(mistTex, position[0] + rand(-0.05, 0.05), position[1] + 0.48, position[2] + rand(-0.04, 0.04), { size: 0.3, life: 3, vy: 0.16, sway: 0.04, grow: 1.4, peak: 0.35, soft: true })
       }
     }
-    flame.current.scale.y = 1 + Math.sin(ph.current) * 0.15
+    flame.current.scale.y = (on ? 1.5 : 1) + Math.sin(ph.current) * (on ? 0.25 : 0.15)
   })
   return (
     <>

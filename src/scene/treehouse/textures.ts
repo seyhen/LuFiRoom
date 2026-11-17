@@ -1,6 +1,6 @@
 import { TAU } from '../../math'
 import { canvasTex, rr, seeded } from '../paint'
-import { brookPts, groundUV } from './layout'
+import { GROUND, brookPts, groundUV } from './layout'
 
 // Textures de la cabane perchée : planches blondes du plancher, écorce du chêne, bardeaux terracotta moussus, la toile rayée du
 // hamac, le tapis tressé, le sol de la forêt en contrebas et son ruisseau, la page du carnet, les étiquettes.
@@ -154,17 +154,29 @@ export const forestFloorTex = canvasTex(1024, 1024, (x) => {
   }
   x.lineCap = 'round'; x.lineJoin = 'round'
   const pts = brookPts(60).map(([wx, wz]) => groundUV(wx, wz).map((v) => v * W))
+  // la berge s'estompe avant le bord du sol (sinon elle se coupe net devant les collines) : un tronçon après l'autre, de plus en plus transparent
+  const wfade = (i: number) => {
+    const [wx, wz] = brookPts(60)[i], d = Math.hypot(wx - GROUND.x, wz - GROUND.z)
+    return Math.max(0, Math.min(1, (8.4 - d) / 2.2))
+  }
   const path = (w: number, col: string) => {
     x.strokeStyle = col; x.lineWidth = w
-    x.beginPath(); pts.forEach(([px, py], i) => (i ? x.lineTo(px, py) : x.moveTo(px, py))); x.stroke()
+    for (let i = 1; i < pts.length; i++) {
+      x.globalAlpha = Math.min(wfade(i - 1), wfade(i))
+      if (x.globalAlpha <= 0) continue
+      x.beginPath(); x.moveTo(pts[i - 1][0], pts[i - 1][1]); x.lineTo(pts[i][0], pts[i][1]); x.stroke()
+    }
+    x.globalAlpha = 1
   }
   path(64, 'rgba(40,54,32,.9)')
   path(46, 'rgba(160,148,116,.9)')
   for (let i = 0; i < 300; i++) {
-    const [px, py] = pts[(r() * pts.length) | 0], a = r() * TAU, d = 18 + r() * 12
+    const k = (r() * pts.length) | 0, [px, py] = pts[k], a = r() * TAU, d = 18 + r() * 12
     x.fillStyle = `rgba(${190 + r() * 40},${182 + r() * 40},${160 + r() * 30},.85)`
+    x.globalAlpha = wfade(k)
     x.beginPath(); x.ellipse(px + Math.cos(a) * d, py + Math.sin(a) * d, 3 + r() * 5, 2 + r() * 3, a, 0, TAU); x.fill()
   }
+  x.globalAlpha = 1
 })
 
 /** Le bord du sol de la forêt, qui s'efface dans le ciel : opaque au centre, transparent sur le pourtour. */

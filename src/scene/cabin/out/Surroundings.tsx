@@ -13,7 +13,9 @@ import { O } from './materials'
 import { snowY } from './ground'
 import { Snowfield } from './Snowfield'
 import { Woodshed } from './Woodshed'
+import { Owl } from './Owl'
 import { Bench, Fence, LampPost, Shovel, Sled, Snowman } from './Yard'
+import { Clearing } from './Clearing'
 
 const fir = (x: number, z: number, h: number, w = 1, tiers = 4): Fir => ({ p: [x, snowY(x, z) - 0.05, z], h, w, tiers })
 
@@ -24,7 +26,8 @@ const FOREST: Fir[] = [
   // derrière le mur de gauche
   fir(-5.0, -2.2, 5.0, 1, 5), fir(-5.7, 0.4, 4.3), fir(-5.1, 2.6, 3.6), fir(-7.2, -0.9, 4.6), fir(-6.8, -3.8, 5.2, 0.9, 5), fir(-4.7, -4.9, 3.4),
   // à droite, derrière l'abri et autour de la mare (aucun ne déborde sur la glace : la mare reste visible)
-  fir(9.0, -2.4, 3.2), fir(9.6, -6.6, 4.0), fir(6.0, -7.8, 3.4),
+  // (le sapin de (9,6 ; -6,6), à 11,6 du centre, était dans la bande du fondu : un fantôme pâle à droite de la mare ; la forêt lointaine le remplace)
+  fir(9.0, -2.4, 3.2), fir(6.0, -7.8, 3.4),
   // devant à gauche, petits sapins près de la barrière
   fir(-6.6, 5.6, 2.2, 1.05, 3), fir(-2.5, 8.9, 1.6, 1.1, 3), fir(-8.2, 3.4, 2.8),
   // devant à droite, au bout du sentier
@@ -42,6 +45,8 @@ function farForest(): Fir[] {
     const x = Math.cos(a) * d, z = Math.sin(a) * d, h = 2.5 + r() * 1.3
     out.push({ p: [x, snowY(x, z) - 0.05, z], h, w: 0.95 + r() * 0.25, tiers: 3 })
   }
+  // deux petits sapins devant à gauche, dans le coin bas du dehors qui restait de la neige nue (à 1440 px, (100, 650) et (145, 730))
+  for (const [x, z, h] of [[-4.9, 12.1, 2.1], [-2.2, 13.6, 1.7]]) out.push({ p: [x, snowY(x, z) - 0.05, z], h, w: 1, tiers: 3 })
   return out
 }
 const FAR_FOREST = farForest()
@@ -89,8 +94,11 @@ export function Surroundings() {
         {/* devant, au milieu de la clairière : le banc tourné vers nous, la pelle plantée près du sentier */}
         <Bench x={2.3} z={5.4} />
         <Shovel x={3.95} z={2.9} ry={Math.PI / 4} />
+        <Clearing />
       </Static>
       <LanternLight x={5.45} z={1.7} />
+      {/* le hibou sur son chicot, au bord du sentier : interactif (son `owl`), donc hors du <Static> */}
+      <Owl at={[7.4, 2.6]} />
     </>
   )
 }

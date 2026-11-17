@@ -5,13 +5,27 @@
 /** Un son du mixeur. Le moteur a un canal par identifiant (src/audio/engine.ts). */
 export type SoundId =
   | 'radio' | 'rain' | 'fan' | 'purr' | 'outside' | 'fire' | 'wind' | 'street' | 'murmur' | 'espresso' | 'pages'
-  | 'waves' | 'gulls' | 'chimes' | 'rails' | 'tea' | 'city' | 'pigeons' | 'keys' | 'pencil' | 'kettle' | 'spring' | 'bamboo'
+  | 'waves' | 'gulls' | 'chimes' | 'rails' | 'city' | 'pigeons' | 'keys' | 'kettle' | 'spring'
   // le phare, le sous-marin, le marché de nuit
-  | 'foghorn' | 'bell' | 'sonar' | 'bubbles' | 'hull' | 'engine' | 'whale' | 'sizzle' | 'simmer' | 'neon' | 'tram'
-  // les nouveaux objets : diffuseur, tricot, bâton de pluie, cartes, arrosoir, pinceau, fouet, plume, conque, boulier
-  | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'abacus' | 'drip'
-  // l'igloo : l'aurore, le trou de pêche, la couture, le cacao
-  | 'aurora' | 'icehole' | 'sew' | 'cocoa'
+  | 'foghorn' | 'bell' | 'sonar' | 'bubbles' | 'hull' | 'engine' | 'whale' | 'sizzle' | 'simmer' | 'tram'
+  // les nouveaux objets : diffuseur, tricot, bâton de pluie, cartes, arrosoir, pinceau, fouet, plume, conque
+  | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'drip'
+  // le sablier du train, le bol chantant de l'atelier, la cascade de l'onsen
+  | 'sand' | 'bowl' | 'waterfall'
+  // la plage : le clapotis de la barque au ponton
+  | 'lapping'
+  // le phare : le pêcheur qui rame au large
+  | 'oars'
+  // la serre : la fontaine du parc
+  | 'fountain'
+  // la cabane : le hibou du chicot, la forêt de nuit
+  | 'owl'
+  // le toit-terrasse : le saxophoniste du toit d'en face ; l'atelier : l'accordéoniste du toit voisin
+  | 'sax' | 'accordion'
+  // le café : le joueur de handpan de la rue ; le marché : la danse bon-odori au loin ; la laverie : le piano de la fenêtre d'en face
+  | 'handpan' | 'bonodori' | 'windowpiano'
+  // l'igloo : l'aurore, le trou de pêche, le réchaud, le husky
+  | 'aurora' | 'icehole' | 'stove' | 'husky'
   // la cabane perchée : le ruisseau, les cigales (le vent et les oiseaux reprennent les sons de base)
   | 'brook' | 'cicadas'
   // la serre : le chœur de grenouilles du bassin, la boîte à musique, le tonneau d'eau de pluie
@@ -20,17 +34,29 @@ export type SoundId =
   | 'wash' | 'tumble' | 'rinse' | 'gutter'
   // la carte « Bruit » (blanc, rose, brun, vert), dans toutes les pièces, sans objet 3D : voir docs/NOISE.md
   | 'noise'
+// la cabane perchée : le joueur de flûte du pont de corde
+  | 'flute'
+  // l'igloo : le guitariste de la banquise ; le sous-marin : les méduses qui chantent
+  | 'guitar' | 'jellies'
+  // l'onsen : la joueuse de koto de la terrasse
+  | 'koto'
 /** Un objet interactif de la scène. */
 export type ObjectId =
   | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
-  | 'gull' | 'chimes' | 'tea' | 'book' | 'brazier' | 'pigeons' | 'city' | 'laundry' | 'keyboard' | 'pencil' | 'kettle'
-  | 'spring' | 'bamboo' | 'furin' | 'maple'
-  | 'foghorn' | 'bell' | 'stove' | 'barometer' | 'sonar' | 'valve' | 'gauge' | 'telegraph' | 'wok' | 'pot' | 'neon' | 'tram'
-  | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'abacus' | 'drip'
-  | 'icewindow' | 'icehole' | 'mitten' | 'thermos'
+  | 'gull' | 'chimes' | 'brazier' | 'pigeons' | 'city' | 'laundry' | 'keyboard' | 'kettle'
+  | 'spring' | 'waterfall' | 'furin' | 'maple'
+  | 'foghorn' | 'bell' | 'stove' | 'barometer' | 'sonar' | 'valve' | 'gauge' | 'telegraph' | 'wok' | 'pot' | 'tram'
+  | 'mist' | 'knit' | 'rainstick' | 'cards' | 'watering' | 'brush' | 'whisk' | 'quill' | 'shell' | 'drip'
+  | 'hourglass' | 'bowl' | 'skiff' | 'rowboat'
+  | 'icewindow' | 'icehole' | 'husky'
   | 'birdhouse' | 'hammock' | 'oak' | 'brook' | 'lemonade'
   | 'washer' | 'dryer' | 'changer' | 'folding' | 'rinse' | 'gutter'
-  | 'pond' | 'musicbox' | 'barrel'
+  | 'pond' | 'musicbox' | 'barrel' | 'fountain' | 'owl'
+  | 'handpan' | 'yagura' | 'pianowindow'
+  | 'sax' | 'accordion'
+  | 'flautist'
+  | 'guitarist' | 'jellychoir'
+  | 'koto'
 /** Ce qu'un objet pilote : un son, ou le passage jour / nuit. */
 export type Target = SoundId | 'night'
 
@@ -73,7 +99,7 @@ export interface Loop {
   gain: number
 }
 
-export type Loops = Partial<Record<Exclude<SoundId, 'radio' | 'outside'> | 'birds' | 'crickets' | 'garden' | 'blizzard', Loop>>
+export type Loops = Partial<Record<Exclude<SoundId, 'radio' | 'outside'> | 'birds' | 'crickets' | 'garden' | 'drizzle' | 'storm' | 'snow' | 'blizzard', Loop>>
 
 /** Une piste de la radio. */
 export interface Track {

@@ -46,14 +46,15 @@ export function Sea() {
     S.swell.opacity = 0.45 + st * 0.45 - n * 0.15
     S.foam.opacity = (reduceMotion ? 0.55 : 0.48 + 0.14 * Math.sin(clock.elapsedTime * 1.1)) * (1 - n * 0.3) + st * 0.1
     S.foamFar.opacity = S.foam.opacity
+    S.foamVeil.opacity = S.foam.opacity
   })
   return (
     <>
       <mesh position={[0, SEA, 0]} rotation-x={-Math.PI / 2} material={S.sea} receiveShadow raycast={noRay}>
-        <planeGeometry args={[34, 34]} />
+        <planeGeometry args={[70, 70]} />
       </mesh>
       <mesh position={[0, SEA + 0.01, 0]} rotation-x={-Math.PI / 2} material={S.swell} renderOrder={2} raycast={noRay}>
-        <planeGeometry args={[34, 34]} />
+        <planeGeometry args={[70, 70]} />
       </mesh>
       {FOAMS.map(([x, z], i) => <mesh key={i} geometry={rings[i]} position={[x, SEA + 0.02, z]} material={S.foam} renderOrder={3} raycast={noRay} />)}
     </>

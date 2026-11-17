@@ -17,6 +17,7 @@ import { OutdoorPrecip } from '../../objects/OutdoorPrecip'
 import { laundromat } from '../../../rooms/laundromat'
 import { Block } from '../../atelier/out/Haussmann'
 import { P } from '../../atelier/out/materials'
+import { PianoWindow } from './PianoWindow'
 
 // Le dehors de la laverie : le coin de rue d'une ville française, la nuit. Le trottoir fait le tour (la vitrine donne sur la rue,
 // derrière), une rue de côté à droite avec son passage piéton, le réverbère du coin et sa flaque de lumière, une borne à incendie,
@@ -27,6 +28,8 @@ const SIDEWALK = -0.2, ROAD = -0.34
 const F = { c: [0, 0] as [number, number], r0: 7.5, r1: 12.5 }
 
 const PUDDLE_NIGHT = new Color(0x86a2bc)
+/** Les flaques de la chaussée : [x, hauteur, z, largeur, profondeur, rotation] (celles qui portent un reflet de nuit sont allongées dans le sens de la raie : l'axe de l'écran est la diagonale). */
+const PUDDLES = [[8.6, ROAD + 0.014, 5.9, 2.4, 1.5, 0.4], [9.4, ROAD + 0.03, 0.2, 2.2, 3.6, Math.PI / 4], [-2.6, ROAD + 0.018, 7.9, 1.7, 3.0, Math.PI / 4], [-6.4, ROAD + 0.02, 8.1, 1.5, 2.6, Math.PI / 4], [8.0, ROAD + 0.02, -7.2, 2.6, 1.6, 0.1]] as const
 roadTex.repeat.set(5, 5)
 roadTex.wrapS = roadTex.wrapT = 1000
 
@@ -93,6 +96,8 @@ const M = {
   streak: new MeshBasicMaterial({ map: reflectTex, color: 0xffd49a, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -3 }),
   streakCool: new MeshBasicMaterial({ map: reflectTex, color: 0xb8dcff, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -3 }),
   streakShop: new MeshBasicMaterial({ map: reflectTex, color: 0xffcf8a, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -3 }),
+  // le jour, le ciel et les façades se reflètent dans les flaques : une raie claire par flaque
+  streakSky: new MeshBasicMaterial({ map: reflectTex, color: 0xeaf3ff, transparent: true, opacity: 0.4, depthWrite: false, blending: AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -3 }),
   spill: new MeshBasicMaterial({ map: glowTex, color: 0x9cc8f0, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -1 }),
   pool: new MeshBasicMaterial({ map: glowTex, color: 0xffc888, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -2 }),
   glow: new SpriteMaterial({ map: glowTex, color: 0xffd090, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }),
@@ -189,21 +194,21 @@ function Limb({ a, b, rt, rb, m }: { a: [number, number, number]; b: [number, nu
  * houppier de neuf masses de tailles et de hauteurs inégales, avec des jours entre elles où l'on voit les branches. Grille de fonte au pied.
  */
 function PlaneTree({ x, z }: { x: number; z: number }) {
-  const FORK: [number, number, number] = [0, 1.45, 0]
-  // bout de chaque charpentière : [x, y, z]
-  const tips: [number, number, number][] = [[0.95, 2.25, 0.3], [-0.9, 2.3, 0.45], [0.3, 2.35, -0.6], [-0.15, 2.85, 0.1], [0.75, 2.2, -0.2], [-0.65, 2.25, -0.35]]
-  // masses de feuillage : [forme, x, bas, z, demi-largeur, hauteur, demi-profondeur], plus petites et plus écartées : les charpentières se voient dans les jours
+  const FORK: [number, number, number] = [0, 1.3, 0]
+  // bout de chaque charpentière : [x, y, z] ; elles partent loin sur les côtés, la couronne est plus large que haute (un parasol, pas une boule)
+  const tips: [number, number, number][] = [[1.25, 2.0, 0.35], [-1.2, 2.05, 0.5], [0.4, 2.1, -0.8], [0.0, 2.5, 0.1], [1.7, 1.95, -0.25], [-1.7, 1.95, -0.25]]
+  // masses de feuillage : [forme, x, bas, z, demi-largeur, hauteur, demi-profondeur], de tailles et de hauteurs inégales : les charpentières se voient dans les jours
   const masses: [number, number, number, number, number, number, number][] = [
-    [0, 1.0, 2.3, 0.35, 0.52, 0.55, 0.48], [1, -0.95, 2.35, 0.5, 0.5, 0.52, 0.5], [2, 0.35, 2.4, -0.62, 0.5, 0.5, 0.42],
-    [3, -0.1, 2.95, 0.1, 0.55, 0.58, 0.5], [4, 0.85, 2.85, -0.25, 0.4, 0.42, 0.38], [5, -0.75, 2.85, -0.3, 0.42, 0.44, 0.4],
-    [0, 0.25, 2.2, 0.85, 0.38, 0.4, 0.36], [1, -0.4, 3.35, -0.1, 0.34, 0.36, 0.32], [2, 0.5, 3.3, 0.35, 0.3, 0.34, 0.3],
-    [3, -0.55, 2.25, -0.55, 0.36, 0.4, 0.34],
+    [0, 1.25, 2.1, 0.4, 0.62, 0.5, 0.55], [1, -1.2, 2.15, 0.55, 0.6, 0.5, 0.55], [2, 0.4, 2.25, -0.85, 0.6, 0.48, 0.5],
+    [3, -0.05, 2.65, 0.1, 0.7, 0.55, 0.62], [4, 1.0, 2.7, -0.4, 0.5, 0.42, 0.45], [5, -0.9, 2.65, -0.45, 0.5, 0.44, 0.45],
+    [0, 0.3, 2.0, 1.0, 0.45, 0.4, 0.42], [1, -0.5, 3.1, -0.2, 0.42, 0.38, 0.38], [2, 1.75, 2.0, -0.25, 0.4, 0.34, 0.38],
+    [3, -1.75, 2.0, -0.25, 0.4, 0.34, 0.38], [4, 0.6, 3.05, 0.4, 0.38, 0.34, 0.34], [5, -0.7, 2.0, -0.95, 0.4, 0.36, 0.36],
   ]
   return (
-    <group position={[x, SIDEWALK, z]}>
+    <group position={[x, SIDEWALK, z]} scale={0.78}>
       {ground(M.grate, 1.0, 1.0, 1, [0, 0.012, 0])}
       <Part geo={cyl(0.27, 0.36, 0.2, 14)} m={M.bark} p={[0, 0.1, 0]} castShadow={false} />
-      <Part geo={cyl(0.2, 0.27, 1.4, 14)} m={M.bark} p={[0, 0.88, 0]} castShadow={false} />
+      <Part geo={cyl(0.2, 0.27, 1.25, 14)} m={M.bark} p={[0, 0.8, 0]} castShadow={false} />
       <Part geo={SPH} m={M.bark} p={[0.2, 0.7, 0.12]} scale={[0.1, 0.13, 0.1]} castShadow={false} />
       <Part geo={SPH} m={M.bark} p={FORK} scale={[0.25, 0.2, 0.25]} castShadow={false} />
       {tips.map((t, i) => (
@@ -258,7 +263,9 @@ function Evening() {
     // de nuit, le sol mouillé et les marquages se détachent de l'asphalte : l'eau prend le ciel, la peinture blanche accroche la lumière
     M.puddle.emissiveIntensity = k * 0.3
     M.stripe.emissiveIntensity = k * 0.16
-    M.puddle.color.setHex(0x93aec2).lerp(PUDDLE_NIGHT, k)
+    M.puddle.color.setHex(0x6c8092).lerp(PUDDLE_NIGHT, k)
+    M.puddle.opacity = 0.62 + k * 0.13
+    M.streakSky.opacity = (1 - k) * 0.5
     for (const m of P.facade) m.emissiveIntensity = 0.04 + n * 0.55
     P.dormerGlass.emissiveIntensity = n * 1.3
   })
@@ -281,7 +288,7 @@ export function Surroundings() {
         <Crosswalk />
         <Markings />
         <Gutter />
-        <PlaneTree x={5.4} z={-3.1} />
+        <PlaneTree x={5.0} z={0.2} />
         <Scooter x={3.2} z={5.2} />
         {/* l'immeuble voisin à gauche, sa boutique éclairée au rez-de-chaussée ; l'immeuble d'en face, de l'autre côté de la rue */}
         <Block x0={-9.6} x1={-3.8} z0={-3.6} z1={3.4} wall={3.2} top={4.9} s={1} shift={0.25} dormers={[3, 3]} lowBalcony={false} />
@@ -325,11 +332,19 @@ export function Surroundings() {
           </group>
         ))}
       </Static>
+      {/* la fenêtre au piano de l'immeuble d'en face : interactive (son windowpiano), donc hors du <Static> */}
+      <PianoWindow at={[-3.2, 1.68, -10.35]} />
       <sprite position={[5.95, SIDEWALK + 3.35, -4.6]} scale={1.4} material={M.glow} raycast={noRay} renderOrder={4} />
       <mesh position={[5.95, SIDEWALK + 0.01, -4.6]} rotation-x={-Math.PI / 2} material={M.pool} renderOrder={3} raycast={noRay}><planeGeometry args={[3.6, 3.6]} /></mesh>
+      {/* la vitrine du fleuriste étale sa lueur chaude sur le trottoir : un peu de chaleur contre le bleu de la laverie */}
+      <mesh position={[-6.7, SIDEWALK + 0.02, 4.7]} rotation-x={-Math.PI / 2} material={M.pool} renderOrder={3} raycast={noRay}><planeGeometry args={[5.4, 2.8]} /></mesh>
       {/* les flaques de la chaussée (celles qui portent un reflet sont allongées dans le sens de la raie : l'axe de l'écran est la diagonale) */}
-      {([[8.6, ROAD + 0.014, 5.9, 2.4, 1.5, 0.4], [9.4, ROAD + 0.03, 0.2, 2.2, 3.6, Math.PI / 4], [-2.6, ROAD + 0.018, 7.9, 1.7, 3.0, Math.PI / 4], [-6.4, ROAD + 0.02, 8.1, 1.5, 2.6, Math.PI / 4], [8.0, ROAD + 0.02, -7.2, 2.6, 1.6, 0.1]] as const).map(([px, py, pz, w, d, ry], i) => (
-        <mesh key={i} material={M.puddle} position={[px, py, pz]} rotation={[-Math.PI / 2, 0, ry]} raycast={noRay}><planeGeometry args={[w, d]} /></mesh>
+      {PUDDLES.map(([px, py, pz, w, d, ry], i) => (
+        <group key={i}>
+          <mesh material={M.puddle} position={[px, py, pz]} rotation={[-Math.PI / 2, 0, ry]} raycast={noRay}><planeGeometry args={[w, d]} /></mesh>
+          {/* le reflet du ciel de jour dans l'eau : une raie claire, verticale à l'écran */}
+          <mesh material={M.streakSky} position={[px, py + 0.012, pz]} rotation={[-Math.PI / 2, 0, Math.PI / 4]} renderOrder={3} raycast={noRay}><planeGeometry args={[Math.min(w, d) * 0.42, Math.min(2.4, Math.max(w, d) * 0.8)]} /></mesh>
+        </group>
       ))}
       {/* le reflet du réverbère (dans la flaque de la rue de droite), celui de la vitrine de la laverie, celui de la boutique voisine */}
       <mesh material={M.streak} position={[9.4, ROAD + 0.05, 0.2]} rotation={[-Math.PI / 2, 0, Math.PI / 4]} renderOrder={3} raycast={noRay}><planeGeometry args={[0.95, 3.2]} /></mesh>

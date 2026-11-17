@@ -1,10 +1,5 @@
-import { useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
-import type { Group } from 'three'
-import { isActive, useStore } from '../../state/store'
 import { Part, SPH, cyl, rbox } from '../parts'
-import { useSquash } from '../anim'
-import { LIVE, Static } from '../Static'
+import { Static } from '../Static'
 import { T } from './materials'
 
 const X = -2.5, Z0 = -2.85, Z1 = -0.45, ZM = (Z0 + Z1) / 2, LEN = Z1 - Z0
@@ -45,28 +40,19 @@ function Berth({ y, top }: { y: number; top?: boolean }) {
 
 /**
  * Le livre ouvert sur le plaid de la couchette du bas, grand comme un vrai in-quarto, et ses lunettes de lecture à côté : couvertures de
- * cuir bordeaux, dos, blocs de pages à texte, et une page qui se tourne quand on l'écoute. Il pose sur le plaid (dessus à 0,68).
+ * cuir bordeaux, dos, blocs de pages à texte, (du décor : il n'a plus de son). Il pose sur le plaid (dessus à 0,68).
  */
 const BOOK_Y = 0.692
 function Book() {
-  const g = useRef<Group>(null!), page = useRef<Group>(null!), flip = useRef(0)
-  useSquash('book', g)
-  useFrame((_, delta) => {
-    const on = isActive(useStore.getState(), 'book')
-    // la phase avance image après image : un tour de page en 1 s, toutes les 4 s tant que le son joue
-    flip.current = on ? (flip.current + Math.min(delta, 0.05) / 4) % 1 : 0
-    const ph = flip.current / 0.3
-    page.current.rotation.z = 0.075 + (ph < 1 ? Math.sin(ph * Math.PI) * 2.55 : 0)
-  })
   return (
-    <group ref={g} userData={{ id: 'book' }} position={[X + 0.08, BOOK_Y, -1.68]} rotation-y={0.25}>
+    <group position={[X + 0.08, BOOK_Y, -1.68]} rotation-y={0.25}>
       <Static>
         {/* les deux moitiés : couverture, bloc de pages, texte ; elles remontent vers l'extérieur, le dos est au creux */}
         {[-1, 1].map((s) => (
           <group key={s} position={[s * 0.15, 0.015, 0]} rotation-z={s * 0.07}>
             <Part geo={rbox(0.3, 0.03, 0.42, 0.012)} m={T.velvet} />
             <Part geo={rbox(0.27, 0.026, 0.38, 0.008)} m={T.cream} p={[0, 0.028, 0]} castShadow={false} />
-            <Part m={T.pageText} p={[0, 0.0425, 0]} rotation-x={-Math.PI / 2} castShadow={false}>
+            <Part m={T.pageText} p={[0, 0.0465, 0]} rotation-x={-Math.PI / 2} castShadow={false}>
               <planeGeometry args={[0.25, 0.36]} />
             </Part>
           </group>
@@ -86,7 +72,7 @@ function Book() {
         </group>
       </Static>
       {/* la page qui se tourne : elle pivote sur le dos du livre */}
-      <group ref={page} userData={LIVE} position={[0, 0.047, 0]} rotation-z={0.075}>
+      <group position={[0, 0.047, 0]} rotation-z={0.075}>
         <Part geo={rbox(0.27, 0.004, 0.37, 0.002)} m={T.pageText} p={[0.14, 0.004, 0]} castShadow={false} />
       </group>
     </group>
@@ -108,7 +94,7 @@ function BerthLamp({ y }: { y: number }) {
 export function Bunks() {
   return (
     <>
-      <Part geo={rbox(0.96, 0.4, LEN, 0.04)} m={T.mahoganyDark} p={[X, 0.2, ZM]} />
+      <Part geo={rbox(0.94, 0.4, LEN - 0.02, 0.04)} m={T.mahoganyDark} p={[X, 0.2, ZM]} />
       {[-1.9, -0.95].map((z) => (
         <Part key={z} geo={cyl(0.03, 0.03, 0.02, 10)} m={T.brass} p={[X + 0.49, 0.22, z]} rotation-z={Math.PI / 2} castShadow={false} />
       ))}

@@ -28,7 +28,7 @@ const snowMat = new MeshBasicMaterial({ color: 0xffffff, transparent: true, opac
 
 /**
  * La neige qui tombe autour de la cabane, comme dans une boule à neige. Le vent (la fenêtre ouverte) et la tempête de neige la
- * poussent de côté ; sous la pluie, c'est de la neige fondue.
+ * poussent de côté ; sous la pluie, elle s'efface et laisse la place aux traits de pluie de la scène.
  */
 export function Snowfall() {
   const ref = useRef<InstancedMesh>(null!), gust = useRef(0)
@@ -36,9 +36,10 @@ export function Snowfall() {
   useFrame(({ clock }, delta) => {
     const dt = reduceMotion ? 0 : Math.min(delta, 0.05), t = clock.elapsedTime
     gust.current += ((isActive(useStore.getState(), 'window') ? 1 : 0) - gust.current) * Math.min(1, dt * 1.2)
-    // Comme derrière la fenêtre : neige fondue sous la pluie (plus fine, plus rapide), poussée de côté par la tempête de neige.
+    // Sous la pluie, les flocons s'effacent (de vrais traits de pluie tombent à leur place, voir OutdoorPrecip) ; la tempête de neige
+    // les pousse de côté.
     const sleet = smooth(mood.rain), wo = whiteout({ n: 0, r: 0, s: smooth(mood.snow), st: 0 })
-    const wind = (gust.current + wo * 1.3) * (0.9 + Math.sin(t * 0.8) * 0.4), fall = 1 + sleet * 1.6 + wo * 1.1, size = 1 - sleet * 0.4
+    const wind = (gust.current + wo * 1.3) * (0.9 + Math.sin(t * 0.8) * 0.4), fall = 1 + wo * 1.1, size = 1
     flakes.forEach((f, i) => {
       f.y -= f.v * dt * fall
       f.x += (Math.sin(t * 0.6 + f.ph) * 0.14 * (1 - sleet) - wind) * dt
@@ -54,7 +55,8 @@ export function Snowfall() {
         k *= 1 - Math.min(1, Math.max(0, m / 0.6))
       }
       dummy.position.set(f.x, f.y, f.z)
-      dummy.scale.set(f.s * k * size, f.s * k * (size + sleet * 0.5), f.s * k * size)
+      const kk = k * (1 - sleet)
+      dummy.scale.set(f.s * kk * size, f.s * kk * size, f.s * kk * size)
       dummy.updateMatrix()
       ref.current.setMatrixAt(i, dummy.matrix)
     })

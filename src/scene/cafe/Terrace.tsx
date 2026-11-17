@@ -38,11 +38,11 @@ export function Win({ at, face = 'z', w = 0.8, h = 1.5, lit = -1, curtain = fals
 function SimpleWin({ at, lit }: { at: V3; lit: number }) {
   return (
     <group position={at}>
-      <Box s={[0.8, 1.4, 0.05]} p={[0, 0, 0.025]} m={lit < 0 ? K.navy : S.lit[lit].m} />
-      <Box s={[0.95, 0.09, 0.2]} p={[0, -0.75, 0.1]} m={K.stone} />
-      <Box s={[0.95, 0.12, 0.14]} p={[0, 0.76, 0.07]} m={K.stone} />
-      <Box s={[0.05, 1.4, 0.08]} p={[0, 0, 0.06]} m={K.stone} />
-      <Box s={[0.8, 0.05, 0.08]} p={[0, 0.05, 0.06]} m={K.stone} />
+      <Box s={[0.8, 1.4, 0.05]} p={[0, 0, 0.025]} m={lit < 0 ? S.void : S.lit[lit].m} />
+      <Box s={[0.95, 0.09, 0.2]} p={[0, -0.75, 0.1]} m={S.navy} />
+      <Box s={[0.95, 0.12, 0.14]} p={[0, 0.76, 0.07]} m={S.navy} />
+      <Box s={[0.05, 1.4, 0.08]} p={[0, 0, 0.06]} m={S.navy} />
+      <Box s={[0.8, 0.05, 0.08]} p={[0, 0.05, 0.06]} m={S.navy} />
     </group>
   )
 }
@@ -129,7 +129,7 @@ function Bookbinder() {
       {[0, 1, 2, 3].map((k) => (
         <B key={k} s={[6.94 - k * 1.5, 0.44, 0.38]} p={[LC, rel(6.94 + k * 0.42), zF - 0.16]} m={S.sand} uv={2} r={0.05} />
       ))}
-      <group position={[LC, rel(7.45), zF + 0.02]}>
+      <group position={[LC, rel(7.45), zF + 0.1]}>
         <Part geo={cyl(0.3, 0.3, 0.04, 20)} m={S.lit[2].m} rotation-x={Math.PI / 2} castShadow={false} raycast={noRay} />
         <Part m={K.stone} castShadow={false} raycast={noRay}>
           <torusGeometry args={[0.32, 0.055, 8, 22]} />
@@ -257,14 +257,32 @@ function Pub() {
   )
 }
 
+/** Derrière le pub : deux maisons hautes qui dépassent sa mansarde et ferment le ciel en haut à droite (390 px), pâles dans la brume. */
+function BehindPub() {
+  return (
+    <group>
+      <B s={[5.4, 11.2, 2.6]} p={[8.2, SW + 5.6, -11.3]} m={S.brick} uv={2} r={0.05} />
+      <B s={[5.7, 0.2, 2.9]} p={[8.2, SW + 11.3, -11.3]} m={K.stone} r={0.05} />
+      <B s={[5.2, 1.2, 2.4]} p={[8.2, SW + 12, -11.3]} m={S.slate} uv={1.6} along="z" r={0.04} />
+      <B s={[4.4, 9.6, 2.4]} p={[13.6, SW + 4.8, -10.6]} m={S.sand} uv={2} r={0.05} />
+      <B s={[4.7, 0.2, 2.7]} p={[13.6, SW + 9.7, -10.6]} m={K.stone} r={0.05} />
+      <Chimney at={[7.0, SW + 11.3, -11.3]} w={0.8} h={1.2} d={0.5} pots={2} />
+      {[[6.4, 3.4], [8.2, 3.4], [10.0, 3.4], [6.4, 6.2], [8.2, 6.2], [10.0, 6.2], [6.4, 9.0], [10.0, 9.0]].map(([x, h], i) => (
+        <SimpleWin key={i} at={[x, SW + h, -10.0]} lit={i % 3 === 0 ? 1 : -1} />
+      ))}
+    </group>
+  )
+}
+
 export function Terrace() {
   return (
     <>
       <Bookbinder />
       <Pub />
+      <BehindPub />
       {/* les maisons qui continuent la rue, à gauche et à droite : plus basses, plus pâles */}
-      <Neighbour x0={-16.0} x1={L.x0} zF={L.zF} floors={2} mat={S.brick} lit={[0, -1, 1, -1, 2]} />
-      <Neighbour x0={R.x1} x1={15.2} zF={-3.0} floors={1} mat={S.sand} lit={[-1, 1, 0]} roofZ={0} />
+      <Neighbour x0={-16.0} x1={L.x0} zF={L.zF} floors={2} mat={S.brick} lit={[-1, -1, 0, -1, -1]} />
+      <Neighbour x0={R.x1} x1={15.2} zF={R.zF} floors={1} mat={S.sand} lit={[-1, 1, 0]} roofZ={0} />
     </>
   )
 }

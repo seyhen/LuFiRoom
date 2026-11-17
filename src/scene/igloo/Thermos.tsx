@@ -1,10 +1,8 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type { Group, Mesh } from 'three'
-import { isActive, useStore } from '../../state/store'
-import { approach, clamp, lerp, smooth } from '../../math'
+import { clamp, lerp, smooth } from '../../math'
 import { Part, SPH, cyl, rbox, type V3 } from '../parts'
-import { reduceMotion, useSquash } from '../anim'
 import { Static } from '../Static'
 import { Steam } from '../objects/Steam'
 import { I } from './materials'
@@ -12,8 +10,7 @@ import { Vessel } from './Vessel'
 
 const TOP = 0.32 // le dessus de la caisse
 const MUG = { x: 0.12, z: 0.04 }
-// le geste, en secondes, calé sur le son (channels/cocoa.ts) : lever, verser, reposer (le « toc » tombe à la fin)
-const LIFT = 0.8, FLOW = 2.4, DOWN = 0.6
+const LIFT = 0.8, FLOW = 2.4, DOWN = 0.6 // le geste, en secondes : lever, verser, reposer (au repos : t grand)
 
 /**
  * Le thermos de cacao, sur une petite caisse de bois au devant de la pièce, à côté d'un quart émaillé blanc cerclé de bleu.
@@ -22,17 +19,10 @@ const LIFT = 0.8, FLOW = 2.4, DOWN = 0.6
  */
 export function Thermos({ position }: { position: V3 }) {
   const g = useRef<Group>(null!), flask = useRef<Group>(null!), stream = useRef<Mesh>(null!), level = useRef<Group>(null!)
-  const st = useRef({ seen: useStore.getState().pulses.cocoa ?? 0, t: 99, fill: 0.75, on: 0 })
-  useSquash('thermos', g)
+  const st = useRef({ t: 99, fill: 0.75, on: 0 })
   useFrame((_, delta) => {
-    const dt = Math.min(delta, 0.05), s = st.current, store = useStore.getState(), on = isActive(store, 'thermos')
-    const n = store.pulses.cocoa ?? 0
-    if (n !== s.seen) {
-      s.seen = n
-      if (on && !reduceMotion) s.t = 0
-    }
+    const dt = Math.min(delta, 0.05), s = st.current
     s.t += dt
-    s.on = approach(s.on, on ? 1 : 0, dt)
     const t = s.t, end = LIFT + FLOW
     const k = smooth(clamp(t / LIFT, 0, 1)) * (1 - smooth(clamp((t - end) / DOWN, 0, 1)))
     flask.current.position.set(lerp(-0.12, MUG.x - 0.13, k), TOP + 0.135 + 0.26 * k, lerp(-0.02, MUG.z, k))
@@ -45,7 +35,7 @@ export function Thermos({ position }: { position: V3 }) {
     level.current.position.y = TOP + 0.025 + 0.09 * s.fill
   })
   return (
-    <group ref={g} userData={{ id: 'thermos' }} position={position} rotation-y={-0.5} scale={1.3}>
+    <group ref={g} position={position} rotation-y={-0.5} scale={1.3}>
       <Static>
         {/* la caisse : ses planches, ses tasseaux, son pochoir */}
         <Part geo={rbox(0.62, TOP - 0.02, 0.44, 0.03)} m={I.crate} p={[0, (TOP - 0.02) / 2, 0]} />

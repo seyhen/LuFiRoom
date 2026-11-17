@@ -1,10 +1,8 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Color, Quaternion, Vector3, type Group, type Mesh } from 'three'
-import { isActive, useStore } from '../../state/store'
 import { clamp, lerp, smooth } from '../../math'
 import { Part, SPH, cyl, rbox, type V3 } from '../parts'
-import { reduceMotion, useSquash } from '../anim'
 import { Static } from '../Static'
 import { I } from './materials'
 import { blob, cone, ell } from '../blob'
@@ -36,23 +34,13 @@ const UP = new Vector3(0, 1, 0), q = new Quaternion(), a = new Vector3(), b = ne
 
 /**
  * La moufle qu'on coud, posée sur un billot couvert d'une peau de mouton, au devant à gauche, près de l'entrée : une moufle de cuir
- * fauve à manchette de fourrure grise, la bobine de fil à côté. Quand le son joue, à chaque point qu'on entend (le compteur
- * `pulses.sew`), l'aiguille pique dans le bord, ressort et tire le fil en arc, puis avance d'un point. À l'arrêt, elle reste plantée.
+ * fauve à manchette de fourrure grise, la bobine de fil à côté. Décor : l'aiguille reste plantée dans le cuir, le fil tendu (la couture n'a plus de son : l'igloo a le réchaud et le husky).
  */
 export function Mitten({ position }: { position: V3 }) {
   const g = useRef<Group>(null!), needle = useRef<Group>(null!), thread = useRef<Mesh>(null!)
-  const st = useRef({ seen: useStore.getState().pulses.sew ?? 0, t: 9, i: 2 })
-  useSquash('mitten', g)
+  const st = useRef({ t: 9, i: 2 })
   useFrame((_, delta) => {
-    const dt = Math.min(delta, 0.05), s = st.current, store = useStore.getState(), on = isActive(store, 'mitten')
-    const n = store.pulses.sew ?? 0
-    if (n !== s.seen) {
-      s.seen = n
-      if (on && !reduceMotion) {
-        s.t = 0
-        s.i = (s.i + 1) % STITCHES.length
-      }
-    }
+    const dt = Math.min(delta, 0.05), s = st.current
     s.t += dt
     const [px, py, pz] = STITCHES[s.i]
     // 0 → 0,15 s : l'aiguille plonge ; 0,15 → 1 s : elle ressort et monte en arc, le fil se tend ; puis elle attend, levée
@@ -71,7 +59,7 @@ export function Mitten({ position }: { position: V3 }) {
     thread.current.scale.set(1, Math.max(0.001, len), 1)
   })
   return (
-    <group ref={g} userData={{ id: 'mitten' }} position={position}>
+    <group ref={g} position={position}>
       <Static>
         {/* le billot de bois, ses cernes sur le dessus, et la peau de mouton qui le couvre en débordant */}
         <Part geo={cyl(0.25, 0.27, SEAT - 0.06, 24)} m={I.wood} p={[0, (SEAT - 0.06) / 2, 0]} />

@@ -40,8 +40,8 @@ export function outside<T extends Material>(m: T, snow?: [k?: number, from?: num
       .replace(
         '#include <dithering_fragment>',
         `float mistD_ = length(vMistP.xz - vec2(-0.5, 0.3));
-        float mistA_ = uMistK * (smoothstep(6.5, 14.0, mistD_) * 0.9 + smoothstep(6.0, 11.5, vMistP.y) * 0.45);
-        gl_FragColor.rgb = mix(gl_FragColor.rgb, uMist, clamp(mistA_, 0.0, 0.95));
+        float mistA_ = uMistK * (smoothstep(9.0, 16.0, mistD_) * 0.9 + smoothstep(7.0, 12.5, vMistP.y) * 0.4);
+        gl_FragColor.rgb = mix(gl_FragColor.rgb, uMist, clamp(mistA_, 0.0, 0.62));
         #include <dithering_fragment>`,
       )
   }
@@ -145,6 +145,6 @@ export function tickStreetMaterials() {
   }
   S.dark.emissiveIntensity = 0.05 + (1 - n) * 0.12
   // la brume : la couleur du ciel du fond (jour clair, jour de pluie un peu plus sombre, nuit bleue)
-  MIST.uMist.value.set(0xc3ccd6).lerp(a.set(0xaab4c2), w * 0.6).lerp(a.set(0x1a2040), n)
+  MIST.uMist.value.set(0xcfcfd6).lerp(a.set(0xaab4c2), w * 0.6).lerp(a.set(0x1a2040), n)
   MIST.uMistK.value = 1 + mood.snow * 0.2
 }

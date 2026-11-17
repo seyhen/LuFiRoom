@@ -4,7 +4,7 @@ import type { Room } from './types'
 import { WEATHER_LOOPS } from './weather'
 
 // Une ruelle de marché de nuit sous la pluie. Les enregistrements sont à déclarer dans `loops`
-// (rain, sizzle, simmer, neon, tram) et `playlist` (docs/ASSETS.md) ; sans eux, tout est synthétisé.
+// (rain, sizzle, simmer, tram) et `playlist` (docs/ASSETS.md) ; sans eux, tout est synthétisé.
 
 export const market: Room = {
   id: 'market',
@@ -32,26 +32,25 @@ export const market: Room = {
   loops: {
     ...WEATHER_LOOPS,
     sizzle: { src: 'audio/market/sizzle', gain: 0.8 },
-    simmer: { src: 'audio/market/simmer', gain: 1.08 },
-    neon: { src: 'audio/market/neon', gain: 0.8 },
-    tram: { src: 'audio/market/tram', gain: 1.13 },
-    abacus: { src: 'audio/market/abacus', gain: 0.8 },
+    simmer: { src: 'audio/market/simmer', gain: 0.8 },
+    tram: { src: 'audio/market/tram', gain: 0.8 },
+    bonodori: { src: 'audio/market/bonodori', gain: 0.8 },
   },
   stations: ['pluie-fine', 'bureau', 'soleil-bas'],
   playlist: PLAYLIST,
   presets: {
-    work: { sounds: [['radio',.55], ['rain',.4], ['abacus',.25]] },
-    read: { sounds: [['rain',.5], ['simmer',.3], ['abacus',.2], ['radio',.3]] },
-    sleep: { sounds: [['rain',.6], ['neon',.2]], night: true },
+    work: { sounds: [['radio',.55], ['rain',.4], ['simmer',.25]] },
+    read: { sounds: [['rain',.5], ['simmer',.3], ['sizzle',.2], ['radio',.3]] },
+    sleep: { sounds: [['rain',.6], ['simmer',.2]], night: true },
   },
   objects: [
     { id: 'tram', target: 'tram', label: 'Baie · le tram', anchor: [1.4, 2.95, -2.9] },
-    { id: 'neon', target: 'neon', label: 'Enseigne · néon', anchor: [-1.45, 2.5, -2.55] },
     { id: 'wok', target: 'sizzle', label: 'Wok · ça saute', anchor: [0.24, 1.28, -0.87] },
     { id: 'pot', target: 'simmer', label: 'Marmite · bouillon', anchor: [1.42, 1.28, -0.85] },
+    // hors du marché : la tour de la fête bon-odori, au loin
+    { id: 'yagura', target: 'bonodori', label: 'Yagura · la danse bon-odori', anchor: [7.77, 1.15, 2.57] },
     { id: 'lamp', target: 'night', label: 'Lanterne · jour / nuit', anchor: [1.4, 2.36, -0.73] },
     { id: 'radio', target: 'radio', label: 'Télé · lofi', anchor: [-2.3, 0.95, 2.75] },
-    { id: 'abacus', target: 'abacus', label: 'Boulier · les comptes', anchor: [0.83, 0.85, 2.02] },
   ],
   sounds: [
     { id: 'radio', name: 'Télé lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
@@ -59,8 +58,7 @@ export const market: Room = {
     { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
     { id: 'sizzle', name: 'Wok', chip: 'var(--c-sizzle)', volume: 0.5, sub: () => 'ça saute à feu vif' },
     { id: 'simmer', name: 'Marmite', chip: 'var(--c-simmer)', volume: 0.5, sub: () => 'le bouillon qui frémit' },
-    { id: 'neon', name: 'Néon', chip: 'var(--c-neon)', volume: 0.4, sub: () => 'un bourdonnement rose' },
-    { id: 'abacus', name: 'Boulier', chip: 'var(--c-abacus)', volume: 0.45, sub: () => 'les perles de bois' },
+    { id: 'bonodori', name: 'Bon-odori', chip: 'var(--c-bonodori)', volume: 0.35, sub: () => 'tambour et flûte, au loin' },
     { id: 'tram', name: 'Tram', chip: 'var(--c-tram)', volume: 0.5, sub: () => 'au bout du boulevard' },
   ],
 }

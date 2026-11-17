@@ -81,7 +81,7 @@ export function LogDesk() {
         <Part geo={rbox(0.62, 0.03, 0.4, 0.012)} m={L.leatherDark} p={[-0.03, TOP + 0.015, 0.02]} rotation-y={-0.06} />
         <group position={[-0.03, 0, 0.02]} rotation-y={-0.06}>
           {/* le signet : un ruban rouge posé sur la page, qui pend au bord du journal */}
-          <Part geo={rbox(0.012, 0.003, 0.105, 0.001)} m={L.red} p={[-0.004, PAGE + 0.0025, 0.1275]} castShadow={false} />
+          <Part geo={rbox(0.012, 0.003, 0.105, 0.001)} m={L.red} p={[-0.004, PAGE + 0.0055, 0.1275]} castShadow={false} />
           <Part geo={rbox(0.014, 0.027, 0.004, 0.001)} m={L.red} p={[-0.004, PAGE - 0.011, 0.182]} castShadow={false} />
           <Part geo={rbox(0.014, 0.003, 0.034, 0.001)} m={L.red} p={[-0.004, TOP + 0.0315, 0.197]} castShadow={false} />
           {/* une tache d'encre au coin de la page de droite */}

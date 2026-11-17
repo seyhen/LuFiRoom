@@ -63,7 +63,7 @@ for (const file of walk(SRC)) {
   const out = report(
     run('ffmpeg', [
       '-hide_banner', '-nostats', '-y', '-i', file, '-map_metadata', '-1',
-      '-filter_complex', `[0:a]loudnorm=${target}:${measured}:linear=true:print_format=json,aresample=48000,asplit=2[a][b]`,
+      '-filter_complex', `[0:a]loudnorm=${target}:${measured}:linear=true:print_format=json,alimiter=limit=0.66:level=disabled,aresample=48000,asplit=2[a][b]`,
       '-map', '[a]', '-c:a', 'libopus', '-b:a', channels > 1 ? '96k' : '64k', webm,
       '-map', '[b]', '-c:a', 'libmp3lame', '-q:a', '5', mp3,
     ]).stderr,

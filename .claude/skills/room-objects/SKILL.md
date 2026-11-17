@@ -74,7 +74,7 @@ Familles de sons qui marchent pour l'étude et le sommeil : **eau** (filet, vers
 - **Un souvenir ne se pose pas sur un pied de sol.** Un bâton de pluie, une conque ou un instrument d'ornement s'accroche au mur ou se pose sur un meuble ; un support de bois planté au milieu du tapis fait « jouet ». Le geste (basculer, tourner) se fait autour d'un pivot réel.
 - **Les plantes se soignent comme le reste** : pot assez grand pour la plante, tiges qui ondulent (`Vines`, brique partagée), feuilles serrées et de tailles variées ; trois ficelles droites avec trois feuilles se lisent « moches ».
 
-Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite, en fond, à voix basse. Si une seule seconde du son (un raclement, un grincement, un cliquetis métallique, un souffle humain) te ferait baisser le volume, écarte l'objet. Mieux : fais écouter un extrait à l'utilisateur avant de construire.
+Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite (l'appli tourne des heures), en fond, à voix basse, et demande-toi quel moment on finirait par attendre. Si une seule seconde du son (un raclement, un grincement, un cliquetis métallique, un souffle humain) te ferait baisser le volume, écarte l'objet. Mieux : fais écouter un extrait à l'utilisateur avant de construire.
 
 ## Étape 3 — Concevoir l'objet
 
@@ -93,11 +93,12 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite, 
 ## Étape 4 — Le son
 
 1. **Enregistrement d'abord** (le synthétique sonne faux sur les gestes humains). Sources : CC0, ou Pixabay (exception accordée, voir CLAUDE.md) ; propose 2 ou 3 pistes de recherche à l'utilisateur (mots-clés anglais), il choisit par capture. Note la source dans `public/audio/CREDITS.md`.
-2. **Préparer** : 20 à 60 s sans évènement marquant, mono si la source est petite (un objet), dans `audio-src/<pièce>/<son>.wav`, puis `npm run audio` (−20 LUFS, Opus + MP3).
+2. **Préparer** : sans évènement marquant, durée et canaux selon le type de son (skill `source-sounds`, « La boucle juste » : 45 à 60 s pour une grande texture, 30 à 45 s mono pour un objet, un nombre entier de périodes pour un son rythmé), dans `audio-src/<pièce>/<son>.wav`, puis `npm run audio` (−20 LUFS, Opus + MP3). Freesound : `npm run source` fait la recherche et la préparation.
 3. **Déclarer** dans `loops` de la pièce : `{ src: 'audio/<pièce>/<son>', gain: 0.8 }`.
 4. **Canal** `src/audio/channels/<son>.ts`, enregistré dans `CHANNELS` (`src/audio/engine.ts`), avec la bonne lecture :
-   - geste irrégulier ou court qu'on entendrait boucler (aiguilles, pinceau, cartes) → `kit.grainsOr` (segments tirés au hasard) ;
-   - fond continu (eau, souffle) → `kit.loopOrChannel` ;
+   - geste irrégulier ou court qu'on entendrait boucler (aiguilles, pinceau, cartes, arrosoir, bouilloire) → `kit.grainsOr` (segments tirés au hasard) ;
+   - fond continu (eau, souffle) de 30 s ou plus, sans alerte d'`analyze-sound.cjs` → `kit.loopOrChannel` ; **un fichier plus court ne se joue jamais en boucle simple** ;
+   - son rythmé (rails, horloge, sonar) → `kit.loopOrChannel` seulement s'il est coupé sur un nombre entier de périodes, sinon `kit.shotsOr` d'un temps isolé (le fondu de 2 s fait trébucher un rythme) ;
    - évènement espacé (un versement, un tir) → `kit.shotsOr` avec un `gap` de plusieurs secondes.
    Toujours une synthèse de repli dans le dernier argument (un bruit filtré qui évoque le son suffit).
 5. **Niveaux** (pont `window.__lofi.audio`, voir `audit-room` étape 1.5) : fond continu −28 à −32 dB RMS, geste ponctuel ≈ −10 dB de crête ; règle `base` dans `CHANNELS`. Lance aussi `npm run audio:levels --rooms <pièce>` : il rend chaque canal hors ligne et donne sa sonie ; un canal à plus de ±3 dB de la médiane (−26,9 LUFS au 2026-11-13) est à revoir, et chaque son synthétisé de repli doit sonner du même niveau que ses voisins (les repères : `brook`, `frogs`, `rainbarrel`, `cicadas` étaient 5 à 15 dB trop hauts parce que réglés sans mesure). Écoute ensuite **avec les autres sons de la pièce** : le nouveau ne doit pas les couvrir. La chaîne de sortie (liant doux, passe-haut 25 Hz, limiteur −3 dB) est commune à tous les sons : n'ajoute pas de compresseur dans un canal pour « tenir » un évènement fort, baisse son `base`.
@@ -106,7 +107,7 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite, 
 
 - `npx tsc --noEmit -p .`, `npm run build`, console vide.
 - Objet en gros plan, jour et nuit (défauts de CLAUDE.md), son allumé : l'animation se voit, le bouton est sur l'objet.
-- Le son tourne 5 minutes sans lasser : pas de motif qui revient à l'identique, pas de clic aux raccords.
+- Le son tourne 20 minutes, avec les autres sons de la pièce, sans lasser : pas de moment qu'on attend, pas de rythme qui trébuche, pas de clic aux raccords.
 - Inventaire relancé (étape 1) : l'identifiant est unique.
 - Fond et dehors (étape 1 ter) : capture plein écran, rien de vide derrière la pièce, dehors du même lieu.
 - Carte relancée (étape 1 bis) : les objets interactifs couvrent la pièce, aucune grappe sans raison écrite, les boutons ne se touchent pas.
@@ -120,13 +121,17 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite, 
 | Cabane | panier de tricot, aiguilles en bois | `knit` |
 | Café | manteau mouillé du portemanteau, qui s'égoutte sur le paillasson (un parapluie suspendu à un bras de laiton a été refusé : il flottait) | `drip` |
 | Plage | bâton de pluie en bambou, accroché au mur du fond (sur un pied au sol : refusé, « bizarre ») | `rainstick` |
+| Plage | barque au large (dehors du bungalow), le clapotis de l’eau contre la coque | `lapping` |
 | Train de nuit | jeu de cartes, une réussite | `cards` |
 | Toit-terrasse | arrosoir sur les aromates | `watering` |
 | Atelier | pinceau sur la toile du chevalet | `brush` |
 | Onsen | bol et fouet à matcha | `whisk` |
 | Phare | plume d'oie et encrier, le journal de bord | `quill` |
-| Sous-marin | grand coquillage qu'on porte à l'oreille | `shell` |
-| Marché de nuit | boulier du marchand | `abacus` |
+| Sous-marin | grand coquillage qu'on porte à l'oreille (son synthétisé, faute d'enregistrement) | `shell` |
+| Marché de nuit | (néon et boulier retirés : devenus décor, leurs sons n'existent plus) | — |
+| Train de nuit | sablier de laiton sur la tablette (le sable coule, il se retourne) | `sand` |
+| Atelier | bol chantant sur son zafu, ronds de lumière | `bowl` |
+| Onsen | cascade en deux étages (à la place du shishi-odoshi) | `waterfall` |
 | Igloo | fenêtre de glace sur l'aurore boréale (le ciel qui chante) | `aurora` |
 | Igloo | trou de pêche dans la glace (clapotis, bulles) | `icehole` |
 | Igloo | moufle qu'on coud sur un billot | `sew` |
@@ -141,6 +146,18 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite, 
 | Serre | bassin aux nénuphars | `frogs` |
 | Serre | boîte à musique | `musicbox` |
 | Serre | tonneau d'eau de pluie | `rainbarrel` |
+| Serre | fontaine du parc (dehors de la serre), le jet qui retombe dans le bassin | `fountain` |
+| Café | joueur de handpan sur le trottoir de devant, son étui ouvert (dehors du café) | `handpan` |
+| Marché de nuit | yagura de la fête bon-odori au bout de la rue, taiko et lanternes (tambour et flûte, au loin) | `bonodori` |
+| Laverie de nuit | fenêtre éclairée de l'immeuble d'en face, un piano droit et quelqu'un qui joue | `windowpiano` |
+| Toit-terrasse | saxophoniste sur le toit d’en face (dehors), un air lent de saxo alto | `sax` |
+| Atelier | accordéoniste en marinière sur le toit voisin (dehors), une valse, le soufflet qui respire | `accordion` |
+| Cabane | hibou sur son chicot, au bord du sentier (dehors de la cabane), la forêt de nuit | `owl` |
+| Phare | pêcheur qui rame au large (dehors du phare), les avirons dans l’eau calme | `oars` |
+| Cabane perchée | joueur de flûte debout sur le pont de corde (dehors), un air lent de pâtre (son synthétisé, faute d’enregistrement) | `flute` |
+| Igloo | guitariste en parka rouge sur une plaque de glace (dehors), une guitare nylon qui égrène des accords lents | `guitar` |
+| Sous-marin | la grande méduse du courant (dehors), tout le banc chante : une nappe de verre, lointaine | `jellies` |
+| Onsen | joueuse de koto à genoux sur un tatami, devant le sentier (dehors de l’onsen), des cordes pincées en gamme hirajoshi (son synthétisé, faute d’enregistrement CC0) | `koto` |
 
 Mets ce tableau à jour à chaque objet ajouté **et à chaque son retiré** : la liste réelle est `sounds` de chaque `src/rooms/<id>.ts` (`grep -n "id: '" src/rooms/*.ts`), pas ce tableau.
 
@@ -151,5 +168,7 @@ Mets ce tableau à jour à chaque objet ajouté **et à chaque son retiré** : l
 | Objet | Son | Raison |
 |---|---|---|
 | Moulin à café manuel (café) | moulure de grains | refusé par l'utilisateur : « pas agréable à écouter » — le grain abrasif qui broie fatigue (règle « frotte, râcle, broie » de l'étape 2) |
+| Verre de thé, livre (train), crayon (atelier), shishi-odoshi (onsen), néon et boulier (marché) | remuer, pages, crayon, bambou, bourdonnement, perles | aucun enregistrement CC0 doux et continu trouvé : objets devenus décor, remplacés par sablier, bol chantant, cascade (2026-11-15) |
+| Troupeau de vaches à cloches (train, dehors) | cloches de vache | tout le dehors du train défile (voie, pré, collines) : le hotspot est fixe et ne peut pas suivre l’objet ; seul un élément immobile convient, et il n’y en a pas dehors (2026-11-15) |
 
 Quand l'utilisateur refuse un objet ou un son, ajoute-le ici avec sa raison, et corrige la règle de l'étape 2 si la raison est générale.

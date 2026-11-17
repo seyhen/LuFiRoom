@@ -2,7 +2,6 @@ import type { Room } from '../../rooms/types'
 import { rand } from '../../math'
 import { scheduled } from '../events'
 import type { Channel, Kit } from '../engine'
-import { tune } from '../tune'
 
 /**
  * La mer. Enregistrée, ou synthétisée : un fond de houle grave, et des vagues qui se suivent sans régularité de machine.
@@ -14,7 +13,7 @@ export default function waves(kit: Kit, out: GainNode, room: Room): Channel {
   const rocks = id === 'lighthouse'
   return kit.loopOrChannel(loops.waves, out, () => {
     const { ctx, gain, biq, osc, loop, noise } = kit
-    const bus = gain(1.5 * tune(room, 'waves', 'level', 1))
+    const bus = gain(1) // 1,5 sortait à −26,5 dB au phare (cible −28 à −32)
     bus.connect(out)
     // Le large : un grondement qui respire très lentement.
     const sea = gain(0.32)

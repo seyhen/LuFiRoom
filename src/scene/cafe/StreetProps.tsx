@@ -170,9 +170,9 @@ function LockChain() {
 }
 
 /** La poubelle de rue : fût vert bouteille, couvercle bombé, collier de laiton, un journal du matin qui dépasse. */
-function Bin() {
+function Bin({ at = [-5.6, SW, 4.6] }: { at?: V3 }) {
   return (
-    <group position={[-5.6, SW, 4.6]} rotation-y={0.25}>
+    <group position={at} rotation-y={0.25}>
       <Part geo={cyl(0.245, 0.215, 0.74, 22)} m={K.green} p={[0, 0.37, 0]} castShadow={false} raycast={noRay} />
       {[0.2, 0.5].map((y) => (
         <Part key={y} geo={cyl(0.25, 0.25, 0.035, 22)} m={K.mustard} p={[0, y, 0]} castShadow={false} raycast={noRay} />
@@ -225,9 +225,9 @@ function Planter({ at, ry = 0, len = 1.1 }: { at: V3; ry?: number; len?: number 
 }
 
 /** Un banc de fonte et de chêne, dos au mur de la boutique : lattes, accoudoirs, plaque de laiton. */
-function Bench() {
+function Bench({ at = [-9.0, SW, 3.8] }: { at?: V3 }) {
   return (
-    <group position={[-9.0, SW, 3.8]}>
+    <group position={at}>
       {[-0.14, 0.02, 0.18].map((z) => <Box key={z} s={[1.55, 0.04, 0.13]} p={[0, 0.45, z]} m={K.oak} />)}
       {[0.64, 0.8].map((y, i) => <B key={y} s={[1.55, 0.12, 0.035]} p={[0, y, -0.24 - i * 0.03]} m={K.oak} r={0.018} rx={0.12} />)}
       {[-1, 1].map((s) => (
@@ -331,6 +331,10 @@ export function StreetProps() {
       <Planter at={[-5.0, SW, 3.66]} />
       <Planter at={[-8.0, SW, 3.66]} len={0.9} />
       <Bench />
+      {/* le trottoir du pub et de sa voisine : une jardinière, un banc dos au mur, une poubelle */}
+      <Planter at={[11.6, SW, -3.3]} />
+      <Bench at={[13.4, SW, -3.1]} />
+      <Bin at={[14.8, SW, -3.0]} />
       <BookTrolley />
       <ABoard />
       <Kegs />

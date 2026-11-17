@@ -4,15 +4,17 @@ import { StreetProps } from './StreetProps'
 import { StreetWeather } from './StreetWeather'
 import { GutterCat } from './GutterCat'
 import { Terrace } from './Terrace'
-import { CURB, RD, SW } from './streetKit'
+import { Handpanist } from './Handpanist'
+import { CURB, PUBWALK, RD, SW } from './streetKit'
 
 /** Où la neige s'arrête : le trottoir (devant et à droite), les toits des maisons voisines, sinon la chaussée. */
 function snowGround(x: number, z: number) {
   if (x < -3.85 && z < 3.36) return x > -10.85 ? SW + 7.0 : SW + 6.4 // le relieur, puis la maison basse
   if (x > 4.0 && x < 10.6 && z < -3.8) return SW + 7.6 // le pub
-  if (x > 10.6 && z < -3.0) return SW + 4.6 // sa voisine, plus basse
+  if (x > 10.6 && z < -3.8) return SW + 4.6 // sa voisine, plus basse
   const front = z > 3.3 && z < CURB.front && x > CURB.x0 && x < CURB.cx, right = x > 3.3 && x < CURB.right && z > CURB.zBack && z < CURB.cz
-  return front || right ? SW : RD
+  const pub = x >= 5 && x < PUBWALK.x1 && z >= CURB.zBack && z < PUBWALK.z1
+  return front || right || pub ? SW : RD
 }
 
 const SNOW_AREA: [number, number, number, number] = [-13, 10, -7, 10]
@@ -26,6 +28,8 @@ export function Surroundings() {
     <>
       <StreetGround />
       <StreetWeather />
+      {/* le joueur de handpan du trottoir de devant : interactif, donc hors du <Static> de la salle */}
+      <Handpanist at={[-0.9, 4.4]} ry={Math.PI / 4} />
       {/* la neige du dehors (la pluie a ses filets à elle dans StreetWeather) : aucun tracé quand il ne neige pas */}
       <OutdoorPrecip ground={snowGround} rain={0} snow={130} area={SNOW_AREA} />
     </>

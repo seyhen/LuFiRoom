@@ -4,7 +4,7 @@ import type { Room } from './types'
 import { WEATHER_LOOPS } from './weather'
 
 // Un compartiment de voiture-lits, la nuit. Les enregistrements sont à déclarer dans `loops`
-// (rails, tea, rain, pages) et `playlist` (docs/ASSETS.md) ; sources et licences : public/audio/CREDITS.md.
+// (rails, sand, rain, cards) et `playlist` (docs/ASSETS.md) ; sources et licences : public/audio/CREDITS.md.
 
 export const train: Room = {
   id: 'train',
@@ -30,24 +30,22 @@ export const train: Room = {
   },
   loops: {
     ...WEATHER_LOOPS,
-    rails: { src: 'audio/train/rails', gain: 1.07 },
-    tea: { src: 'audio/train/tea', gain: 1.24 },
-    rain: { src: 'audio/train/rain', gain: 1 },
-    pages: { src: 'audio/cafe/pages', gain: 0.8 },
-    cards: { src: 'audio/train/cards', gain: 1.08 },
+    rails: { src: 'audio/train/rails', gain: 0.9 },
+    sand: { src: 'audio/train/sand', gain: 0.8 },
+    rain: { src: 'audio/train/rain', gain: 0.8 },
+    cards: { src: 'audio/train/cards', gain: 0.8 },
   },
   stations: ['minuit', 'pluie-fine', 'nuit-douce'],
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio',.55], ['rails',.4], ['cards',.2]] },
-    read: { sounds: [['rails',.45], ['rain',.45], ['tea',.3], ['cards',.25], ['pages',.3]] },
+    read: { sounds: [['rails',.45], ['rain',.45], ['sand',.3], ['cards',.25]] },
     sleep: { sounds: [['rails',.55], ['rain',.4]], night: true },
   },
   objects: [
     { id: 'window', target: 'rails', label: 'Fenêtre · le train', anchor: [0.9, 2.4, -3.0] },
     { id: 'radio', target: 'radio', label: 'Gramophone · lofi', anchor: [-2.55, 1.1, 1.5] },
-    { id: 'tea', target: 'tea', label: 'Verre de thé · cuillère', anchor: [0.8, 1.2, -2.6] },
-    { id: 'book', target: 'pages', label: 'Livre · pages', anchor: [-2.42, 0.8, -1.68] },
+    { id: 'hourglass', target: 'sand', label: 'Sablier · le sable', anchor: [1.78, 1.18, -2.64] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-0.05, 1.6, -2.68] },
     { id: 'cards', target: 'cards', label: 'Réussite · les cartes', anchor: [2.6, 0.78, 1.05] },
   ],
@@ -56,8 +54,7 @@ export const train: Room = {
     { id: 'rails', name: 'Le train', chip: 'var(--c-rails)', volume: 0.7, sub: (s) => (s.on.rails ? 'ta-dam, ta-dam' : 'vitre fermée') },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.7, sub: () => 'sur la vitre' },
     { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
-    { id: 'tea', name: 'Thé', chip: 'var(--c-tea)', volume: 0.5, sub: () => 'la cuillère qui tinte' },
+    { id: 'sand', name: 'Sablier', chip: 'var(--c-sand)', volume: 0.45, sub: () => 'le sable qui coule' },
     { id: 'cards', name: 'Cartes', chip: 'var(--c-cards)', volume: 0.45, sub: () => 'une réussite, carte après carte' },
-    { id: 'pages', name: 'Livre', chip: 'var(--c-pages)', volume: 0.55, sub: () => 'pages tournées' },
   ],
 }

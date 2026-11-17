@@ -12,7 +12,7 @@ const NOTES = [220, 329.6, 493.9, 554.4, 659.3]
  */
 export default function aurora(kit: Kit, out: GainNode, { loops }: Room) {
   const { gain, biq, osc, loop, noise } = kit
-  return kit.loopOrChannel(loops.aurora, out, () => {
+  return kit.grainsOr(loops.aurora, out, { len: [12, 20], fade: 2.5, rate: 0.02, level: 0.1 }, () => {
     const soft = biq('lowpass', 1500, 0.5)
     soft.connect(out)
     for (const f of NOTES) {

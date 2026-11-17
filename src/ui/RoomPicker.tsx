@@ -26,8 +26,10 @@ export function RoomPicker() {
   useEffect(() => {
     const el = row.current, chip = el?.querySelector<HTMLElement>('[aria-pressed=true]')
     if (!el || !chip) return
-    const left = chip.offsetLeft - el.offsetLeft, right = left + chip.offsetWidth
-    if (left < el.scrollLeft || right > el.scrollLeft + el.clientWidth - 24) el.scrollTo({ left: left - 6, behavior: 'smooth' }) // 6 px = l'espace entre deux puces : la précédente est entièrement cachée, pas de fragment collé au bouton « toutes les pièces »
+    // centrée dans la ligne (le bouton « toutes les pièces » est hors de la ligne)
+    const mid = chip.offsetLeft - el.offsetLeft + chip.offsetWidth / 2
+    const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+    el.scrollTo({ left: mid - (el.clientWidth - 24) / 2, behavior })
   }, [current])
   if (rooms.length < 2) return null
   return (

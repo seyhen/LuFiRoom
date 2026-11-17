@@ -14,10 +14,10 @@ flags.repeat.set(4, 4)
 export const O = {
   base: gummy(0x6a6458, { roughness: 0.85, clearcoat: 0.05 }),
   earth: gummy(0x5a5040, { roughness: 0.9 }),
-  flags: gummy(0xece4d8, { map: flags, roughness: 0.6, clearcoat: 0.35, clearcoatRoughness: 0.3 }),
-  cedar: gummy(0x4a3428, { roughness: 0.5 }),
+  flags: gummy(0xece4d8, { emissive: 0xff9a52, emissiveIntensity: 0, map: flags, roughness: 0.6, clearcoat: 0.35, clearcoatRoughness: 0.3 }),
+  cedar: gummy(0x4a3428, { emissive: 0xff8a40, emissiveIntensity: 0, roughness: 0.5 }),
   hinoki: gummy(0xd9b88a, { roughness: 0.5, clearcoat: 0.3 }),
-  deck: gummy(0x8a5e3e, { roughness: 0.45, clearcoat: 0.4 }),
+  deck: gummy(0x8a5e3e, { emissive: 0xff9448, emissiveIntensity: 0, roughness: 0.45, clearcoat: 0.4 }),
   shoji: new MeshStandardMaterial({ map: shojiTex, emissiveMap: shojiTex, emissive: 0xffc77a, emissiveIntensity: 0, roughness: 0.9 }),
   tiles: gummy(0xffffff, { map: tileTex, roughness: 0.5, clearcoat: 0.4 }),
   // Les pierres : gris chaud, gris bleuté, brun de rivière, basalte sombre. Mates, à peine lustrées : de la pierre, pas du bonbon.

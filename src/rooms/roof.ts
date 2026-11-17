@@ -35,8 +35,9 @@ export const roof: Room = {
     city: { src: 'audio/roof/city', gain: 0.8 },
     pigeons: { src: 'audio/roof/pigeons', gain: 0.8 },
     wind: { src: 'audio/roof/wind', gain: 0.8 },
-    fire: { src: 'audio/cafe/fire', gain: 0.8 },
+    fire: { src: 'audio/roof/fire', gain: 0.8 },
     watering: { src: 'audio/roof/watering', gain: 0.8 },
+    sax: { src: 'audio/roof/sax', gain: 0.8 },
   },
   stations: ['soleil-bas', 'nuit-douce', 'bureau', 'rosee'],
   // le braséro en plein air : un grondement léger, plus de flammes et de craquements (voix de repli, docs/SOUNDS.md)
@@ -55,6 +56,8 @@ export const roof: Room = {
     { id: 'radio', target: 'radio', label: 'Boombox · lofi', anchor: [-2.55, 0.75, 2.35] },
     { id: 'lamp', target: 'night', label: 'Guirlande · jour / nuit', anchor: [3.0, 1.3, 2.95] },
     { id: 'watering', target: 'watering', label: 'Arrosoir · l’eau', anchor: [-0.5, 0.8, -2.11] },
+    // hors de la terrasse : le saxophoniste du toit d'en face, à droite
+    { id: 'sax', target: 'sax', label: 'Saxophoniste · l’air du soir', anchor: [4.75, -0.5, -1.65] },
   ],
   sounds: [
     { id: 'radio', name: 'Boombox lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
@@ -62,6 +65,7 @@ export const roof: Room = {
     { id: 'fire', name: 'Braséro', chip: 'var(--c-fire)', volume: 0.7, sub: (s) => (s.on.fire ? 'ça crépite' : 'éteint') },
     { id: 'wind', name: 'Vent', chip: 'var(--c-wind)', volume: 0.6, sub: () => 'sur les toits' },
     { id: 'watering', name: 'Arrosoir', chip: 'var(--c-watering)', volume: 0.45, sub: () => 'un filet d’eau sur la terre' },
+    { id: 'sax', name: 'Saxophoniste', chip: 'var(--c-sax)', volume: 0.4, sub: () => 'un air lent, de l’autre côté de la rue' },
     { id: 'pigeons', name: 'Pigeons', chip: 'var(--c-pigeons)', volume: 0.45, sub: (s) => (s.night ? 'ils somnolent' : 'roucoulements') },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'sur les toits' },
     { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },

@@ -9,7 +9,7 @@ import type { Channel, Kit } from '../engine'
  * et la cuillère qui tourne. Une tasse de temps en temps, entre deux longs calmes.
  */
 export default function kettle(kit: Kit, out: GainNode, { loops }: Room): Channel {
-  return kit.loopOrChannel(loops.kettle, out, () => {
+  return kit.grainsOr(loops.kettle, out, { len: [6, 10], fade: 1.2, rate: 0.03, level: 0.15 }, () => {
     const { ctx, gain, biq, osc, noise } = kit
     const bus = gain(6)
     bus.connect(out)

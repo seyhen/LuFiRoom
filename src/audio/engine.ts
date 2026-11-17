@@ -19,14 +19,24 @@ import waves from './channels/waves'
 import gulls from './channels/gulls'
 import chimes from './channels/chimes'
 import rails from './channels/rails'
-import tea from './channels/tea'
+import sand from './channels/sand'
 import city from './channels/city'
 import pigeons from './channels/pigeons'
 import keys from './channels/keys'
-import pencil from './channels/pencil'
+import bowl from './channels/bowl'
 import kettle from './channels/kettle'
 import spring from './channels/spring'
-import bamboo from './channels/bamboo'
+import waterfall from './channels/waterfall'
+import lapping from './channels/lapping'
+import oars from './channels/oars'
+import fountain from './channels/fountain'
+import owl from './channels/owl'
+import handpan from './channels/handpan'
+import bonodori from './channels/bonodori'
+import windowpiano from './channels/windowpiano'
+import sax from './channels/sax'
+import accordion from './channels/accordion'
+import flute from './channels/flute'
 import foghorn from './channels/foghorn'
 import bell from './channels/bell'
 import sonar from './channels/sonar'
@@ -36,7 +46,6 @@ import engineSound from './channels/engine'
 import whale from './channels/whale'
 import sizzle from './channels/sizzle'
 import simmer from './channels/simmer'
-import neon from './channels/neon'
 import tram from './channels/tram'
 import mist from './channels/mist'
 import knit from './channels/knit'
@@ -47,12 +56,11 @@ import brush from './channels/brush'
 import whisk from './channels/whisk'
 import quill from './channels/quill'
 import shell from './channels/shell'
-import abacus from './channels/abacus'
 import drip from './channels/drip'
 import aurora from './channels/aurora'
 import icehole from './channels/icehole'
-import sew from './channels/sew'
-import cocoa from './channels/cocoa'
+import stove from './channels/stove'
+import husky from './channels/husky'
 import brook from './channels/brook'
 import cicadas from './channels/cicadas'
 import frogs from './channels/frogs'
@@ -63,6 +71,9 @@ import tumble from './channels/tumble'
 import rinse from './channels/rinse'
 import gutter from './channels/gutter'
 import noise from './channels/noise'
+import guitar from './channels/guitar'
+import jellies from './channels/jellies'
+import koto from './channels/koto'
 
 // canal (bus Gain) ─┬─> master Gain 0.9 ─> volume général ─> liant doux ─> passe-haut 25 Hz ─> recalage ─> limiteur ─> plafond doux ─> sortie
 // canal (bus Gain) ─┘
@@ -95,14 +106,23 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   gulls: { build: gulls, base: 1.17 },
   chimes: { build: chimes, base: 1.2 },
   rails: { build: rails, base: 0.45 },
-  tea: { build: tea, base: 0.9 },
+  sand: { build: sand, base: 1.4 },
   city: { build: city, base: 0.63 },
   pigeons: { build: pigeons, base: 0.9 },
   keys: { build: keys, base: 0.9 },
-  pencil: { build: pencil, base: 0.9 },
+  bowl: { build: bowl, base: 0.7 },
   kettle: { build: kettle, base: 0.9 },
-  spring: { build: spring, base: 0.74 }, // 0,3 avant la mesure du fichier réel (2026-11-16) : -9,8 dB sous la médiane
-  bamboo: { build: bamboo, base: 1.5 },
+  spring: { build: spring, base: 0.3 },
+  waterfall: { build: waterfall, base: 1 },
+  lapping: { build: lapping, base: 0.85 },
+  oars: { build: oars, base: 1.25 },
+  fountain: { build: fountain, base: 1.3 },
+  owl: { build: owl, base: 0.46 },
+  handpan: { build: handpan, base: 0.9 },
+  bonodori: { build: bonodori, base: 1 },
+  windowpiano: { build: windowpiano, base: 0.8 },
+  sax: { build: sax, base: 1.4 },
+  accordion: { build: accordion, base: 1 },
   foghorn: { build: foghorn, base: 1.75 },
   bell: { build: bell, base: 2.2 },
   sonar: { build: sonar, base: 1.5 },
@@ -112,7 +132,6 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   whale: { build: whale, base: 0.7 },
   sizzle: { build: sizzle, base: 1.05 },
   simmer: { build: simmer, base: 0.65 },
-  neon: { build: neon, base: 1.3 },
   tram: { build: tram, base: 0.6 },
   mist: { build: mist, base: 1.0 },
   knit: { build: knit, base: 1.0 },
@@ -123,21 +142,24 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   whisk: { build: whisk, base: 1.0 },
   quill: { build: quill, base: 1.0 },
   shell: { build: shell, base: 1.0 },
-  abacus: { build: abacus, base: 1.0 },
   drip: { build: drip, base: 1.0 },
-  aurora: { build: aurora, base: 1.9 },
-  icehole: { build: icehole, base: 0.74 },
-  sew: { build: sew, base: 1.4 },
-  cocoa: { build: cocoa, base: 1.98 },
-  brook: { build: brook, base: 4.2 },
+  aurora: { build: aurora, base: 0.6 },
+  icehole: { build: icehole, base: 0.65 },
+  stove: { build: stove, base: 1 },
+  husky: { build: husky, base: 0.85 },
+  brook: { build: brook, base: 1.05 },
   cicadas: { build: cicadas, base: 3.0 },
-  frogs: { build: frogs, base: 0.75 }, // 2,6 avant la mesure du 2026-11-16 (+12,8 dB au-dessus de la médiane, audio:levels) ; 3,5 avant la chaîne de sortie plus douce
-  musicbox: { build: musicbox, base: 2.5 },
-  rainbarrel: { build: rainbarrel, base: 3.8 },
+  frogs: { build: frogs, base: 1.8 },
+  musicbox: { build: musicbox, base: 0.9 },
+  rainbarrel: { build: rainbarrel, base: 1.1 },
   wash: { build: wash, base: 1.0 },
   tumble: { build: tumble, base: 1.0 },
-  rinse: { build: rinse, base: 2.76 },
-  gutter: { build: gutter, base: 3.25 },
+  rinse: { build: rinse, base: 1.05 },
+  gutter: { build: gutter, base: 1.15 },
+  guitar: { build: guitar, base: 1 },
+  jellies: { build: jellies, base: 1.1 },
+  flute: { build: flute, base: 3.2 },
+  koto: { build: koto, base: 2.6 }, // provisoire : synthèse, notes espacées
   noise: { build: noise, base: 0.5 }, // sonie (pondérée A) du rose à 0,4 : celle du ventilateur et de la pluie par défaut ; couleurs égalisées dans public/noise-worklet.js
 }
 const ids = Object.keys(CHANNELS) as SoundId[]

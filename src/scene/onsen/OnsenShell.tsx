@@ -13,9 +13,13 @@ function ShojiGlow() {
   useFrame(() => {
     const e = smooth(mood.night)
     O.shoji.emissiveIntensity = 0.04 + e * 0.75
-    light.current.intensity = e * 1.1 * Math.PI // × π : voir materials.ts
+    light.current.intensity = e * 1.6 * Math.PI // × π : voir materials.ts
+    // La nuit, le sol de dalles, le cèdre et l'engawa gardent la chaleur des shōji et des lanternes (sinon ils tombent au bleu sombre).
+    O.flags.emissiveIntensity = e * 0.16
+    O.cedar.emissiveIntensity = e * 0.2
+    O.deck.emissiveIntensity = e * 0.22
   })
-  return <pointLight ref={light} color={0xffb877} intensity={0} distance={6} decay={1.5} position={[-2.3, 1.6, 0.2]} />
+  return <pointLight ref={light} color={0xffb877} intensity={0} distance={7.5} decay={1.5} position={[-2.0, 1.5, 0.4]} />
 }
 
 const ENGAWA = { x0: -3.0, x1: -1.95, z0: -2.7, z1: 3.05, top: 0.42 }

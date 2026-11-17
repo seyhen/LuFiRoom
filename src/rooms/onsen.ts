@@ -4,14 +4,14 @@ import type { Room } from './types'
 import { WEATHER_LOOPS } from './weather'
 
 // Un bain en plein air au bord d'un ryokan, en automne. Les enregistrements sont à déclarer dans `loops`
-// (spring, bamboo, chimes, birds, crickets) et `playlist` (docs/ASSETS.md) ; sources et licences : public/audio/CREDITS.md.
+// (spring, waterfall, chimes, birds, crickets) et `playlist` (docs/ASSETS.md) ; sources et licences : public/audio/CREDITS.md.
 
 export const onsen: Room = {
   id: 'onsen',
   name: 'Onsen',
   description:
     'Bain japonais en plein air au bord d’une auberge, en automne, en 3D isométrique : un bassin d’eau chaude qui fume entre ' +
-    'des rochers moussus, un bec de bambou qui verse l’eau de la source, un shishi-odoshi, un érable rouge dont les feuilles ' +
+    'des rochers moussus, un bec de bambou qui verse l’eau de la source, une cascade, un érable rouge dont les feuilles ' +
     'tombent, une lanterne de pierre, une clochette de verre sous l’avant-toit, les shōji de l’auberge, du thé sur l’engawa, ' +
     'et des montagnes dans la brume au-dessus de la palissade.',
   ui: {
@@ -33,9 +33,12 @@ export const onsen: Room = {
   loops: {
     ...WEATHER_LOOPS,
     spring: { src: 'audio/onsen/spring', gain: 0.8 },
-    chimes: { src: 'audio/beach/chimes', gain: 0.7 },
-    garden: { src: 'audio/onsen/outside', gain: 0.5 },
+    waterfall: { src: 'audio/onsen/waterfall', gain: 0.8 },
+    chimes: { src: 'audio/onsen/chimes', gain: 0.7 },
+    birds: { src: 'audio/onsen/birds', gain: 0.9 },
+    crickets: { src: 'audio/onsen/crickets', gain: 0.9 },
     whisk: { src: 'audio/onsen/whisk', gain: 0.8 },
+    // koto : synthétisé pour l'instant (src/audio/channels/koto.ts)
   },
   stations: ['rosee', 'minuit', 'brume'],
   playlist: PLAYLIST,
@@ -46,17 +49,20 @@ export const onsen: Room = {
   },
   objects: [
     { id: 'spring', target: 'spring', label: 'Source · eau chaude', anchor: [1.15, 1.1, -2.4] },
-    { id: 'bamboo', target: 'bamboo', label: 'Shishi-odoshi · bambou', anchor: [-1.1, 0.85, -2.35] },
+    { id: 'waterfall', target: 'waterfall', label: 'Cascade · l’eau de la montagne', anchor: [-1.2, 0.6, -2.15] },
     { id: 'furin', target: 'chimes', label: 'Furin · clochette', anchor: [-1.9, 2.5, 0.35] },
     { id: 'maple', target: 'outside', label: 'Érable · le jardin', anchor: [2.5, 3.0, -2.6] },
     { id: 'radio', target: 'radio', label: 'Shamisen · lofi', anchor: [-2.45, 0.85, 2.0] },
     { id: 'lamp', target: 'night', label: 'Lanterne · jour / nuit', anchor: [2.78, 1.4, -0.55] },
     { id: 'whisk', target: 'whisk', label: 'Matcha · le fouet', anchor: [-0.69, 0.62, 1.95] },
+    // hors du bain : la joueuse de koto, sur son tatami au bord du sentier, devant
+    { id: 'koto', target: 'koto', label: 'Joueuse de koto · les cordes pincées', anchor: [0.9, 0.05, 6.1] },
   ],
   sounds: [
     { id: 'radio', name: 'Shamisen lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'spring', name: 'Source', chip: 'var(--c-spring)', volume: 0.65, sub: () => 'eau chaude qui coule' },
-    { id: 'bamboo', name: 'Shishi-odoshi', chip: 'var(--c-bamboo)', volume: 0.45, sub: () => 'le bambou bascule' },
+    { id: 'waterfall', name: 'Cascade', chip: 'var(--c-waterfall)', volume: 0.5, sub: () => 'l’eau de la montagne' },
+    { id: 'koto', name: 'Joueuse de koto', chip: 'var(--c-koto)', volume: 0.4, sub: () => 'des cordes pincées, doucement' },
     { id: 'whisk', name: 'Fouet à matcha', chip: 'var(--c-whisk)', volume: 0.45, sub: () => 'le bol de thé vert' },
     { id: 'chimes', name: 'Furin', chip: 'var(--c-chimes)', volume: 0.45, sub: () => 'clochette de verre' },
     { id: 'outside', name: 'Jardin', chip: 'var(--c-win)', volume: 0.65, sub: (s) => (s.night ? 'grillons' : 'oiseaux') },

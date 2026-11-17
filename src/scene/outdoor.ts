@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { BufferGeometry, Float32BufferAttribute, Vector2, Vector3, type Material } from 'three'
 import { smooth } from '../math'
@@ -27,6 +27,11 @@ export const SKY = {
   uSkyN: { value: 0 },
   uSkyRes: { value: new Vector2(1, 1) },
 }
+
+// Le voile de neige du fond, au centre, au milieu et au bord du dégradé (couleurs et opacités de `.sky-veil.snowy`).
+const DAY_VEIL = [[236, 240, 250], [231, 236, 248], [226, 232, 246]].map(([r, g, b]) => new Vector3(r / 255, g / 255, b / 255))
+const NIGHT_VEIL = [[150, 160, 200], [145, 155, 195], [140, 150, 190]].map(([r, g, b]) => new Vector3(r / 255, g / 255, b / 255))
+const DAY_A = [0.5, 0.65, 0.78], NIGHT_A = [0.15, 0.2, 0.28]
 
 /** Gain de la lune sur le dehors, la nuit (voir `skyFade`). */
 const NIGHT_GAIN = 0.7
@@ -95,7 +100,8 @@ export function skyFade<T extends Material>(m: T, o: FadeOpts = {}): T {
           vec2 d_ = (vSkyP.xz - vec2(${f(c[0])}, ${f(c[1])})) / vec2(${f(sx)}, ${f(sz)});
           // Le fondu ne démarre pas en ligne droite : la puissance 1,6 garde le décor franc près de la pièce (les immeubles du café, les sapins
           // du train n'étaient plus que des silhouettes laiteuses) et le fait disparaître vite à la bordure, où il rejoint toujours le ciel (k = 1).
-          float k_ = pow(smoothstep(${f(r0)}, ${f(r1)}, length(d_)), 1.6);
+          // 2,0 (et non 1,6) : au milieu du fondu un volume garde 25 % de brume au lieu de 33 %, donc sa teinte de jour (revue graphique 2026-11-16).
+          float k_ = pow(smoothstep(${f(r0)}, ${f(r1)}, length(d_)), 2.0);
           k_ = max(k_, smoothstep(${f(y0)}, ${f(y1)}, vSkyP.y));
           k_ = max(k_, smoothstep(${f(below)}, ${f(below - 1.2)}, vSkyP.y));
           ${additive ? '' : `// La nuit, le dehors reçoit la lune : un voile froid et un peu de gain, pour que les volumes se lisent au lieu de tomber au bleu uni
@@ -118,15 +124,22 @@ export function skyFade<T extends Material>(m: T, o: FadeOpts = {}): T {
 export function SkyFadeClock({ room }: { room: Room }) {
   const gl = useThree((s) => s.gl)
   const size = useThree((s) => s.size)
+  const base = useRef({ day: room.sky.day.map(hexVec), night: room.sky.night.map(hexVec) })
   useLayoutEffect(() => {
-    room.sky.day.forEach((h, i) => SKY.uSkyDay.value[i].copy(hexVec(h)))
-    room.sky.night.forEach((h, i) => SKY.uSkyNight.value[i].copy(hexVec(h)))
+    base.current = { day: room.sky.day.map(hexVec), night: room.sky.night.map(hexVec) }
+    base.current.day.forEach((c, i) => SKY.uSkyDay.value[i].copy(c))
+    base.current.night.forEach((c, i) => SKY.uSkyNight.value[i].copy(c))
   }, [room])
   useLayoutEffect(() => {
     gl.getDrawingBufferSize(SKY.uSkyRes.value)
   }, [gl, size])
   useFrame(() => {
     SKY.uSkyN.value = smooth(mood.night)
+    // Sous la neige, le voile blanc du fond (`.sky-veil.snowy` de app.css) couvre le dégradé : le décor lointain se fond dans ce ciel-là,
+    // sinon il reste de la couleur de la pièce (crème, dans la cabane perchée) et fait des plaques jaunes sur un fond blanc.
+    const s = smooth(mood.snow)
+    base.current.day.forEach((c, i) => SKY.uSkyDay.value[i].copy(c).lerp(DAY_VEIL[i], s * DAY_A[i]))
+    base.current.night.forEach((c, i) => SKY.uSkyNight.value[i].copy(c).lerp(NIGHT_VEIL[i], s * NIGHT_A[i]))
   })
   return null
 }

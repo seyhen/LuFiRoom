@@ -43,7 +43,7 @@ export function Shell() {
   return (
     <>
       {/* le socle, son liseré, le sol */}
-      <Part geo={rbox(6.86, 0.55, 6.86, 0.2)} m={G.base} p={[-0.07, -0.44, -0.07]} />
+      <Part geo={rbox(6.86, 0.55, 6.86, 0.2)} m={G.base} p={[-0.07, -0.47, -0.07]} />
       <Part geo={rbox(6.92, 0.06, 6.92, 0.025)} m={G.baseTrim} p={[-0.07, -0.2, -0.07]} castShadow={false} />
       <Part geo={rbox(6.54, 0.24, 6.54, 0.08)} m={G.baseTrim} p={[-0.07, -0.12, -0.07]} />
       <mesh material={G.floor} position={[-0.07, 0.003, -0.07]} rotation-x={-Math.PI / 2} receiveShadow raycast={noRay}>

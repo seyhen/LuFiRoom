@@ -10,7 +10,7 @@ import type { Channel, Kit } from '../engine'
  * s'enfoncent, irrégulier, jamais le même. Tout passe sous 3 kHz.
  */
 export default function rainbarrel(kit: Kit, out: GainNode, { loops }: Room): Channel {
-  return kit.loopOrChannel(loops.rainbarrel, out, () => {
+  return kit.grainsOr(loops.rainbarrel, out, { len: [8, 14], fade: 0.9, rate: 0.02, level: 0.15 }, () => {
     const { ctx, gain, biq, osc, loop, noise } = kit
     const bus = gain(1)
     bus.connect(biq('lowpass', 2800, 0.5)).connect(out)

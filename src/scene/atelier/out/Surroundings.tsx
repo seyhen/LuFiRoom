@@ -8,6 +8,7 @@ import { atelier } from '../../../rooms/atelier'
 import { P } from './materials'
 import { Antenna, Block, Chimney, INSET, type BlockProps } from './Haussmann'
 import { Steam } from '../../objects/Steam'
+import { Accordionist } from './Accordionist'
 import { Dish, FarBlock, Laundry, Pigeon, RoofEvening, RoofGarden, Skylight, StairCage, Terrasson, WaterTower, type FarProps } from './RoofDress'
 
 /** Les voisins : à droite (le faîte juste sous notre plancher), à gauche devant, devant à droite (plus bas). */
@@ -98,6 +99,8 @@ export function Surroundings() {
       <Steam at={[6.2, RIGHT.top! + 1.7, -2.4]} every={0.5} />
       <Steam at={[-6.6, LEFT.top! + 1.7, 2.2]} every={0.5} />
       <Steam at={[6.6, FRONT.top! + 1.7, 4.2]} every={0.6} />
+      {/* le toit de droite : un accordéoniste et sa chaise de bistrot (interactif : `accordion`) */}
+      <Accordionist at={[5.0, RIGHT.top! + 0.09, -0.7]} ry={0.8} />
       <OutdoorPrecip ground={rainGround} area={[-13, 13, -10, 12]} />
     </>
   )
