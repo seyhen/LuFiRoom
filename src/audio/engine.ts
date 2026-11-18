@@ -77,6 +77,12 @@ import koto from './channels/koto'
 import clock from './channels/clock'
 import aquarium from './channels/aquarium'
 import snore from './channels/snore'
+import canvas from './channels/canvas'
+import percolator from './channels/percolator'
+import crickets from './channels/crickets'
+import faucet from './channels/faucet'
+import suds from './channels/suds'
+import shower from './channels/shower'
 
 // canal (bus Gain) ─┬─> master Gain 0.9 ─> volume général ─> liant doux ─> passe-haut 25 Hz ─> recalage ─> limiteur ─> plafond doux ─> sortie
 // canal (bus Gain) ─┘
@@ -166,6 +172,12 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   clock: { build: clock, base: 2.7 }, // provisoire : synthèse, un battement par seconde (sonie à -32,6 LUFS, crête à -5 dB au curseur plein)
   aquarium: { build: aquarium, base: 2.2 }, // provisoire : synthèse, filet du filtre et bulles rares
   snore: { build: snore, base: 1.2 }, // provisoire : synthèse, la respiration lente d'un chien, un ronflement très doux
+  faucet: { build: faucet, base: 1.0 }, // provisoire : synthèse, le filet du robinet dans le bain plein (à régler avec `npm run audio:levels`)
+  suds: { build: suds, base: 1.0 }, // provisoire : synthèse, le pétillement de la mousse (à régler avec `npm run audio:levels`)
+  shower: { build: shower, base: 1.0 }, // provisoire : synthèse, la douche à effet pluie dans une pièce de carreaux (à régler avec `npm run audio:levels`)
+  canvas: { build: canvas, base: 1.45 }, // provisoire : synthèse, la pluie sur la toile de la tente (sonie à -27 LUFS au volume par défaut)
+  percolator: { build: percolator, base: 1.4 }, // provisoire : synthèse, les glouglous du percolateur (sonie à -27 LUFS au volume par défaut)
+  crickets: { build: crickets, base: 1.45 }, // provisoire : synthèse, le chœur de grillons de la nuit (sonie à -27 LUFS au volume par défaut)
   noise: { build: noise, base: 0.5 }, // sonie (pondérée A) du rose à 0,4 : celle du ventilateur et de la pluie par défaut ; couleurs égalisées dans public/noise-worklet.js
 }
 const ids = Object.keys(CHANNELS) as SoundId[]

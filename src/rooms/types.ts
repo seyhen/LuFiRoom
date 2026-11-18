@@ -44,6 +44,10 @@ export type SoundId =
   | 'clock' | 'aquarium'
   // la cabane : le chien qui dort sur le tapis, devant la cheminée
   | 'snore'
+  // la tente de camping : la pluie sur la toile, le percolateur sur le réchaud, les grillons de la nuit
+  | 'canvas' | 'percolator' | 'crickets'
+  // la salle de bain : le robinet de la baignoire, la mousse du bain, la douche à effet pluie
+  | 'faucet' | 'suds' | 'shower'
 /** Un objet interactif de la scène. */
 export type ObjectId =
   | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
@@ -63,6 +67,9 @@ export type ObjectId =
   | 'koto'
   | 'clock' | 'aquarium'
   | 'dog'
+  // la tente de camping : la toile (pluie dessus), le percolateur, le bocal de lucioles
+  | 'canvas' | 'percolator' | 'fireflies'
+  | 'faucet' | 'foam' | 'shower'
 /** Ce qu'un objet pilote : un son, ou le passage jour / nuit. */
 export type Target = SoundId | 'night'
 

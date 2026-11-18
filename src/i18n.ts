@@ -224,6 +224,23 @@ const EN: Record<string, string> = {
   'Tonneau · l’eau de la gouttière': 'Rain barrel · the gutter water',
   Tonneau: 'Rain barrel',
   'l’eau de la gouttière': 'the gutter water',
+  // la salle de bain
+  'Salle de bain': 'Bathroom',
+  'Une salle de bain pastel un soir de pluie fine, en 3D isométrique : une baignoire à pieds de lion bleu givré pleine de mousse rose où flotte un canard jaune, son robinet col de cygne et son plateau de bain (thé, livre, savon, succulente), une douche à effet pluie dans une niche de zellige rose, un lavabo sur colonne et son miroir ovale, un sèche-serviettes aux serviettes douces, un tabouret où repose un kalimba, une étagère de serviettes roulées, des bougies sur la tablette de la fenêtre en arche, des plantes partout, et par la vitre embuée, une ville de colline aux toits de tuiles.':
+    'A pastel bathroom on a drizzly evening, in isometric 3D: a frosted-blue clawfoot tub full of pink bubbles with a yellow duck afloat, its swan-neck tap and a bath tray (tea, book, soap, succulent), a rain shower in a niche of pink zellige tiles, a pedestal sink and its oval mirror, a towel rail hung with soft towels, a stool where a kalimba rests, a shelf of rolled towels, candles on the sill of the arched window, plants everywhere, and through the steamed-up glass, a hillside town of tiled roofs.',
+  'Kalimba · lofi': 'Kalimba · lofi',
+  'Robinet · le filet du bain': 'Tap · the trickle into the bath',
+  'Mousse · le pétillement': 'Bubbles · the fizzing',
+  'Douche · la pluie sur le carrelage': 'Shower · the rain on the tiles',
+  'Bougies · jour / nuit': 'Candles · day / night',
+  'Kalimba lofi': 'Kalimba lofi',
+  Robinet: 'Tap',
+  Mousse: 'Bubbles',
+  Douche: 'Shower',
+  'le filet dans le bain': 'the trickle into the bath',
+  'la mousse qui pétille': 'the bubbles fizzing',
+  'la pluie sur le carrelage': 'the rain on the tiles',
+  'sur la vitre embuée': 'on the steamed-up glass',
   'sur le verre': 'on the glass',
   Forêt: 'Forest',
   Cigales: 'Cicadas',
@@ -514,6 +531,22 @@ const EN: Record<string, string> = {
   'Nappes chaudes et boîte à musique, 62 bpm.': 'Warm pads and music box, 62 bpm.',
   'Piano électrique et batterie sèche, 86 bpm, pour se concentrer.': 'Electric piano and dry drums, 86 bpm, to help you focus.',
   'Boîte à musique et grelots, en sol majeur, 70 bpm.': 'Music box and sleigh bells, in G major, 70 bpm.',
+  // la tente de camping
+  Tente: 'Tent',
+  'Une tente de camping un soir de pluie, en 3D isométrique : une grande tente-cloche de toile ecru sur son mât, ouverte vers nous, une lampe à pétrole suspendue qui dore la toile, un sac de couchage matelassé sur son matelas avec un livre et une lampe frontale, un ukulélé posé sur une caisse, un réchaud de camping avec son percolateur d’émail bleu sur une table pliante, un bocal de lucioles sur un rondin, des bottes boueuses, un ciré jaune qui sèche, un sac à dos, une guirlande de fanions, et la forêt de sapins dehors sous la pluie.':
+    'A camping tent on a rainy evening, in isometric 3D: a big ecru canvas bell tent on its centre pole, open towards us, a hanging oil lamp that turns the canvas to gold, a quilted sleeping bag on its mattress with a book and a head torch, a ukulele resting on a crate, a camp stove with its blue enamel percolator on a folding table, a jar of fireflies on a log, muddy boots, a yellow rain jacket drying, a rucksack, a string of bunting, and the fir forest outside in the rain.',
+  Ukulélé: 'Ukulele',
+  'Toile · la pluie dessus': 'Canvas · the rain on top',
+  Toile: 'Canvas',
+  'la pluie qui tambourine': 'the rain drumming',
+  'Percolateur · le café': 'Percolator · the coffee',
+  Percolateur: 'Percolator',
+  'le café qui glougloute': 'coffee bubbling away',
+  'Bocal de lucioles · les grillons': 'Firefly jar · the crickets',
+  Grillons: 'Crickets',
+  'dans les fougères, dehors': 'in the ferns outside',
+  'Lampe à pétrole · jour / nuit': 'Oil lamp · day / night',
+  'dans les sapins': 'in the firs',
 }
 
 /** Traduit un texte écrit en français dans la langue choisie. Hors composant : lit la langue du moment. */
