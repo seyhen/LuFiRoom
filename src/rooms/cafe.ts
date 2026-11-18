@@ -47,8 +47,8 @@ export const cafe: Room = {
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio',.5], ['murmur',.4], ['rain',.35], ['espresso',.2]] },
-    read: { sounds: [['pages',.4], ['rain',.5], ['drip',.2], ['fire',.35], ['radio',.3]] },
-    sleep: { sounds: [['rain',.6], ['drip',.2], ['fire',.35]], night: true },
+    read: { sounds: [['pages',.4], ['rain',.5], ['drip',.2], ['fire',.35], ['radio',.3], ['clock',.25]] },
+    sleep: { sounds: [['rain',.6], ['drip',.2], ['fire',.35], ['clock',.2]], night: true },
   },
   objects: [
     { id: 'window', target: 'street', label: 'Fenêtre · la rue', anchor: [1.4, 3.35, -3.0] },
@@ -61,6 +61,7 @@ export const cafe: Room = {
     { id: 'handpan', target: 'handpan', label: 'Joueur de handpan · l’air de la rue', anchor: [-0.7, 0.2, 4.55] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-0.11, 1.0, -0.67] },
     { id: 'drip', target: 'drip', label: 'Manteau mouillé · gouttes', anchor: [2.97, 1.45, 1.08] },
+    { id: 'clock', target: 'clock', label: 'Horloge à balancier · tic-tac', anchor: [-0.43, 2.8, -2.85] },
   ],
   sounds: [
     { id: 'radio', name: 'Jukebox lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
@@ -72,6 +73,7 @@ export const cafe: Room = {
     { id: 'espresso', name: 'Expresso', chip: 'var(--c-espresso)', volume: 0.5, sub: () => 'vapeur et tasses' },
     { id: 'drip', name: 'Gouttes', chip: 'var(--c-drip)', volume: 0.45, sub: () => 'le manteau qui s’égoutte' },
     { id: 'handpan', name: 'Joueur de handpan', chip: 'var(--c-handpan)', volume: 0.4, sub: () => 'des notes rondes sous l’auvent' },
-    { id: 'pages', name: 'Pages', chip: 'var(--c-pages)', volume: 0.55, sub: () => 'bibliothèque, tic-tac' },
+    { id: 'pages', name: 'Pages', chip: 'var(--c-pages)', volume: 0.55, sub: () => 'pages tournées' },
+    { id: 'clock', name: 'Horloge', chip: 'var(--c-clock)', volume: 0.4, sub: () => 'le balancier bat la seconde' },
   ],
 }

@@ -3,14 +3,14 @@ import { PLAYLIST } from './playlist'
 import type { Room } from './types'
 import { WEATHER_LOOPS } from './weather'
 
-// La cabane de Noël sous la neige : un feu qui crépite, le vent dehors, le chat qui ronronne, la radio. Les enregistrements sont à déclarer dans `loops`
+// La cabane de Noël sous la neige : un feu qui crépite, le vent dehors, le chat qui ronronne, le chien qui ronfle sur le tapis, la radio. Les enregistrements sont à déclarer dans `loops`
 // (feu, vent) et `playlist` (docs/ASSETS.md) ; sources et licences : public/audio/CREDITS.md.
 
 export const cabin: Room = {
   id: 'cabin',
   name: 'Cabane',
   description:
-    'Cabane de Noël sous la neige en 3D isométrique : cheminée avec un feu et des chaussettes, sapin décoré et cadeaux, fauteuil sur un tapis tressé, chat endormi sur une peau de mouton, chocolat chaud, coffre avec une radio, lampe champignon, bougies à la fenêtre sur la neige.',
+    'Cabane de Noël sous la neige en 3D isométrique : cheminée avec un feu et des chaussettes, sapin décoré et cadeaux, fauteuil sur un tapis tressé, chat endormi sur une peau de mouton, chien endormi sur le tapis, chocolat chaud, coffre avec une radio, lampe champignon, bougies à la fenêtre sur la neige.',
   // Dedans, tout est chaud : l'interface prend la teinte de la pièce (canneberge le jour, ambre la nuit), le dehors reste froid.
   ui: {
     accent: ['#b8405a', '#ffb066'],
@@ -44,11 +44,12 @@ export const cabin: Room = {
   presets: {
     work: { sounds: [['radio',.6], ['fire',.35], ['knit',.25]] },
     read: { sounds: [['fire',.55], ['knit',.3], ['radio',.3], ['purr',.3]] },
-    sleep: { sounds: [['fire',.4], ['wind',.4], ['owl',.2], ['purr',.3]], night: true },
+    sleep: { sounds: [['fire',.4], ['wind',.4], ['owl',.2], ['purr',.3], ['snore',.25]], night: true },
   },
   objects: [
     { id: 'fireplace', target: 'fire', label: 'Cheminée · feu', anchor: [-1.9, 1.05, -2.25] },
     { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-1.5, 0.3, -1.15] },
+    { id: 'dog', target: 'snore', label: 'Chien · il ronfle', anchor: [-0.45, 0.32, 0.55] },
     { id: 'turntable', target: 'radio', label: 'Tourne-disque · lofi', anchor: [1.9, 1.05, -2.6] },
     { id: 'window', target: 'wind', label: 'Fenêtre · le vent', anchor: [1.4, 3.35, -3.0] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [1.55, 0.92, -0.73] },
@@ -63,6 +64,7 @@ export const cabin: Room = {
     { id: 'knit', name: 'Tricot', chip: 'var(--c-knit)', volume: 0.45, sub: () => 'les aiguilles de bois' },
     { id: 'owl', name: 'Hibou', chip: 'var(--c-owl)', volume: 0.4, sub: () => 'sur son chicot, dans la clairière' },
     { id: 'purr', name: 'Ronron', chip: 'var(--c-cat)', volume: 0.7, sub: () => 'près du feu' },
+    { id: 'snore', name: 'Chien endormi', chip: 'var(--c-snore)', volume: 0.4, sub: () => 'il ronfle doucement' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'contre les rondins' },
     { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
   ],

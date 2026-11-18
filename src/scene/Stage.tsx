@@ -314,7 +314,7 @@ function useTapAndTurn(group: MutableRefObject<Group>, room: RoomData) {
       if (!down.moved) {
         const id = pick(e.clientX, e.clientY)
         const obj = room.objects.find((o) => o.id === id)
-        if (obj) useStore.getState().toggle(obj.target)
+        if (obj) useStore.getState().touch(obj.target)
         // Double toucher sur le fond : retour au cadrage de la pièce.
         else if (e.timeStamp - lastTap < 300) setZoom(1)
         lastTap = obj ? 0 : e.timeStamp

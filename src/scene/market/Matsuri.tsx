@@ -1,9 +1,7 @@
-import { useMemo, useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
-import { CatmullRomCurve3, TubeGeometry, Vector3, type Group } from 'three'
+import { useMemo } from 'react'
+import { CatmullRomCurve3, TubeGeometry, Vector3 } from 'three'
 import { Part, SPH, cyl, rbox, type V3 } from '../parts'
-import { reduceMotion } from '../anim'
-import { LIVE } from '../Static'
+import { School, type Swimmer } from './School'
 import { Vessel } from '../igloo/Vessel'
 import { K } from './materials'
 
@@ -80,30 +78,21 @@ function UtilityPole() {
   )
 }
 
-/** Un poisson rouge de fête foraine : corps rond, queue en éventail, nageoire, deux yeux. Nez vers +x. */
-function Goldfish({ p, m = K.goldfish, s = 1, ph = 0 }: { p: V3; m?: typeof K.goldfish; s?: number; ph?: number }) {
-  const tail = useRef<Group>(null!)
-  useFrame(({ clock }) => {
-    if (!reduceMotion) tail.current.rotation.y = Math.sin(clock.elapsedTime * 5 + ph) * 0.4
-  })
-  return (
-    <group position={p} rotation-y={Math.PI / 2} scale={s}>
-      <Part geo={SPH} m={m} scale={[0.06, 0.035, 0.032]} castShadow={false} />
-      <group ref={tail} userData={LIVE} position={[-0.055, 0, 0]}>
-        <Part geo={SPH} m={m} scale={[0.04, 0.03, 0.006]} p={[-0.025, 0, 0]} castShadow={false} />
-      </group>
-      <Part geo={SPH} m={m} scale={[0.02, 0.022, 0.006]} p={[0.0, 0.032, 0]} castShadow={false} />
-      {[-1, 1].map((z) => <Part key={z} geo={SPH} m={K.iron} scale={0.007} p={[0.04, 0.008, z * 0.022]} castShadow={false} />)}
-    </group>
-  )
+// les poissons du bassin : quatre poissons rouges qui tournent en rond (un seul banc instancié : deux tracés au lieu de vingt)
+const orbit = (r: number) => (ph: number, o: number[]) => {
+  o[0] = Math.cos(ph) * r
+  o[1] = 0
+  o[2] = -Math.sin(ph) * r
 }
+const GOLD: Swimmer[] = [
+  { tint: 0xff8a2e, s: 1, rate: 0.35, ph0: 0, at: orbit(0.24) },
+  { tint: 0xd6334f, s: 0.9, rate: 0.35, ph0: 2.2, at: orbit(0.17) },
+  { tint: 0xf0e6d0, s: 0.85, rate: 0.35, ph0: 4.0, at: orbit(0.28) },
+  { tint: 0xff8a2e, s: 0.75, rate: 0.35, ph0: 5.2, at: orbit(0.12) },
+]
 
 /** La pêche aux poissons rouges (kingyo sukui) : bassin bleu, poissons qui tournent, épuisette de papier posée sur le bord, pancarte. */
 function GoldfishPond({ position, ry = 0 }: { position: V3; ry?: number }) {
-  const ring = useRef<Group>(null!)
-  useFrame((_, dt) => {
-    if (!reduceMotion) ring.current.rotation.y += Math.min(dt, 0.05) * 0.35
-  })
   const H = 0.17
   return (
     <group position={position} rotation-y={ry}>
@@ -113,11 +102,8 @@ function GoldfishPond({ position, ry = 0 }: { position: V3; ry?: number }) {
       <Part geo={cyl(0.4, 0.4, 0.02, 24)} m={K.woodPale} p={[0, 0.19, 0]} castShadow={false} />
       {/* l'eau, un peu sous le bord, et les poissons qui tournent */}
       <Part geo={cyl(0.385, 0.385, 0.01, 28)} m={K.pond} p={[0, 0.2 + H - 0.04, 0]} castShadow={false} />
-      <group ref={ring} userData={LIVE} position={[0, 0.2 + H - 0.025, 0]}>
-        <Goldfish p={[0.24, 0, 0]} ph={0} />
-        <group rotation-y={2.2}><Goldfish p={[0.17, 0, 0]} m={K.red} s={0.9} ph={1.5} /></group>
-        <group rotation-y={4.0}><Goldfish p={[0.28, 0, 0]} m={K.cream} s={0.85} ph={3} /></group>
-        <group rotation-y={5.2}><Goldfish p={[0.12, 0, 0]} s={0.75} ph={4.4} /></group>
+      <group position={[0, 0.2 + H - 0.025, 0]}>
+        <School kind="gold" swimmers={GOLD} />
       </group>
       {/* l'épuisette : un anneau de plastique rouge, son papier, le manche posé sur le bord */}
       <group position={[0.2, 0.2 + H + 0.012, 0.41]} rotation-y={0.5}>

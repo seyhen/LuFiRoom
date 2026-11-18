@@ -5,6 +5,7 @@ import { snowY } from './out/ground'
 import { Window } from '../objects/Window'
 import { Lamp } from '../objects/Lamp'
 import { Cat } from '../objects/Cat'
+import { Dog } from './Dog'
 import { FairyLights } from '../objects/FairyLights'
 import { WIN } from '../parts'
 import { CabinShell } from './CabinShell'
@@ -81,6 +82,7 @@ export function CabinScene() {
       <Lamp position={[1.55, 0.62, -0.73]} />
       <Cocoa />
       <Cat position={[-1.55, 0.085, -1.22]} rotation={0.1} />
+      <Dog />
     </>
   )
 }

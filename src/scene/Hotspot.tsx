@@ -28,7 +28,7 @@ function Hotspot({ obj, delay, layer }: { obj: RoomObject; delay: number; layer:
         aria-label={t(obj.label)}
         aria-pressed={on}
         style={{ '--d': `${delay.toFixed(2)}s` } as CSSProperties}
-        onClick={() => useStore.getState().toggle(obj.target)}
+        onClick={() => useStore.getState().touch(obj.target)}
       >
         <span className="lbl">{t(obj.label)}</span>
       </button>

@@ -40,6 +40,10 @@ export type SoundId =
   | 'guitar' | 'jellies'
   // l'onsen : la joueuse de koto de la terrasse
   | 'koto'
+  // le café : l'horloge à balancier ; le marché de nuit : l'aquarium de l'étal
+  | 'clock' | 'aquarium'
+  // la cabane : le chien qui dort sur le tapis, devant la cheminée
+  | 'snore'
 /** Un objet interactif de la scène. */
 export type ObjectId =
   | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
@@ -57,6 +61,8 @@ export type ObjectId =
   | 'flautist'
   | 'guitarist' | 'jellychoir'
   | 'koto'
+  | 'clock' | 'aquarium'
+  | 'dog'
 /** Ce qu'un objet pilote : un son, ou le passage jour / nuit. */
 export type Target = SoundId | 'night'
 

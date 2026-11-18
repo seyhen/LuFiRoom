@@ -117,6 +117,14 @@ html.dusk .sky-night { transition: opacity 40s cubic-bezier(.45, 0, .55, 1) }
 .nz-chip { min-width: 44px; height: 44px; display: grid; place-content: center; justify-items: center; gap: 4px; padding: 0 2px; border: 1px solid var(--line);
   border-radius: 12px; background: none; color: var(--ink); font: 800 10.5px/1 var(--font-body); cursor: pointer; transition: background-color .25s, border-color .25s, transform .2s }
 .nz-chip i { width: 15px; height: 15px; border-radius: 50%; background: var(--dot); box-shadow: inset 0 0 0 1px rgba(60, 40, 90, .22) }
+.card.speeds { flex-basis: 176px }
+/* les trois barres d'une vitesse de ventilateur : n barres pleines sur trois */
+.fn-bars { display: flex; align-items: flex-end; gap: 2px; height: 15px }
+.nz-chip .fn-bars i { width: 4px; border-radius: 2px; background: var(--ink-soft); opacity: .35; box-shadow: none }
+.nz-chip .fn-bars i:nth-child(1) { height: 6px }
+.nz-chip .fn-bars i:nth-child(2) { height: 10px }
+.nz-chip .fn-bars i:nth-child(3) { height: 15px }
+.fn-bars[data-n="1"] i:nth-child(-n+1), .fn-bars[data-n="2"] i:nth-child(-n+2), .fn-bars[data-n="3"] i { background: var(--accent); opacity: 1 }
 .nz-chip[aria-pressed=true] { border-color: var(--accent); background: var(--accent-soft) }
 .nz-chip:active { transform: scale(.94) }
 .nz-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px }

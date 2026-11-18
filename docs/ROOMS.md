@@ -50,6 +50,8 @@ Outils pour le décor :
 - `ScrollLayer` : un plan transparent dont la texture défile (vagues, collines vues du train), sans rien redessiner. `glow` pour des fenêtres qui s'allument la nuit. Sous la météo : `storm` (sa teinte d'orage) et `swell` (la houle forcit, sans saut), `snow` (sa teinte sous la neige) ou `snowMap` (une jumelle enneigée de la bande, qui défile avec elle et n'est dessinée que quand il neige : les prés du train).
 - La météo derrière une vitre : `ViewFlakes` (des flocons qui tombent entre la vue et le mur, poussés par la tempête de neige, filant de côté dans le train avec `fly` ; un tracé, aucun quand il ne neige pas) et `FlashVeil` (l'éclair qui éclaire la vue, un voile qui n'est dessiné que pendant la lueur). Les volumes du dehors (tours du toit, montagnes et forêt de l'onsen) reçoivent la neige par leur matériau : `snowTop(matériau)` (`src/scene/snowTop.ts`) le blanchit là où il regarde le ciel, sans tracé en plus. Ne l'applique qu'à des matériaux du dehors : la pièce elle-même ne se couvre pas de neige.
 - `Candle`, `Steam`, `Flames`, `Cat` (position, pelage) : partagés entre les pièces.
+- `School` (`src/scene/market/School.tsx`) : un banc de poissons en deux tracés (corps, queues), quel que soit le nombre de poissons : koï à taches ou poissons rouges, chacun avec son chemin (`at(phase)`), son cap qui suit la tangente et sa teinte (couleurs de sommets × couleur d'instance). Le marché l'utilise pour l'aquarium et pour le bassin des poissons rouges (20 tracés avant, 2 maintenant).
+- Une horloge dont les aiguilles et le balancier bougent (`cafe/Clock.tsx`, `WORK`) : toutes les pièces mobiles dans UN maillage dont les sommets sont réécrits (tourner un sommet autour de z coûte moins que trois tracés de plus).
 - `Garment` (`src/scene/objects/Garment.tsx`) : un vêtement suspendu (manteau, chemise, robe), sa silhouette avec épaules, manches et ourlet ; en option un cintre, et des détails posés sur le devant. Jamais un cône ou une planche pour un manteau.
 - Des pieds inclinés autour d'un centre (trépied, tabouret, braséro) : `rotation={[-Math.sin(a) * t, 0, Math.cos(a) * t]}` pour un pied posé en `[cos(a), y, sin(a)]` dont le haut rejoint le centre. Les signes inverses écartent le haut (crochets d'un portemanteau, bouquet qui s'évase).
 - La nature (`src/scene/nature/`) : jamais une sphère étirée pour une pierre, une feuille ou un buisson.
@@ -74,7 +76,7 @@ Budget de dessin par pièce, mesuré le 2026-11-16 : appels de dessin par image 
 |---|---|---|
 | Chambre | 235 | 250 |
 | Cabane | 319 | 330 |
-| Café | 316 | 330 |
+| Café | 323 | 330 |
 | Plage | 284 | 300 |
 | Train de nuit | 259 | 270 |
 | Toit-terrasse | 330 | 340 |
@@ -82,13 +84,14 @@ Budget de dessin par pièce, mesuré le 2026-11-16 : appels de dessin par image 
 | Onsen | 275 | 290 |
 | Phare | 329 | 340 |
 | Sous-marin | 330 | 340 |
-| Marché de nuit | 369 | 380 |
+| Marché de nuit | 368 | 380 |
 | Igloo | 328 | 340 |
 | Cabane perchée | 269 | 280 |
 | Laverie de nuit | 349 | 360 |
 | Serre | 190 | 200 |
 
 Au-dessus de 300 (à ramener sous 300 quand on retouche la pièce : espacer les `Steam`, fusionner dans des `<Static>` imbriqués) : cabane, café, toit-terrasse, phare, sous-marin, marché de nuit, igloo, laverie de nuit. Le marché de nuit (369) est le plus chargé, la serre (190) la plus légère.
+Mesures du 2026-11-18 (même méthode, mêmes conditions) : le café passe de 331 à 338 avec l'horloge à balancier (+7, le mouvement fusionné en un seul maillage), le marché de 400 à 399 avec l'aquarium (+16) parce que les poissons rouges du bassin sont passés de 20 tracés à 2.
 Un sprite compte aussi : chaque particule de vapeur vivante est un appel de dessin, donc espace les émetteurs (`every` de `Steam` à 1 s ou plus pour un détail, 0,5 s pour la vedette). Un personnage ou un objet qui bouge se découpe : imbrique un `<Static>` dans son groupe `LIVE` pour fusionner ce qui ne bouge pas (voir `market/Chef.tsx`). Surveille aussi les triangles (300 à 370 milliers par image pour la plupart des pièces) : une forme de la nature coûte de 1 000 à 1 600 triangles, deux fois avec l'ombre. Pour fusionner l'intérieur d'un objet interactif, place un autre `<Static>` dans son groupe, comme la cheminée du café.
 Garde aussi au plus trois lumières ponctuelles par pièce : les bougies et les petites lampes se contentent d'un halo (sprite), sans lumière. Garde-en une pour la source chaude du soir (le lampadaire de l'atelier, la bougie de la plage) : c'est elle qui fait le cocon la nuit, avec un sol d'hémisphère tiède plutôt que bleu.
 Les boîtes arrondies (`rbox`) n'affichent que le centre d'une texture : pour un tapis, un paillasson ou un parquet qu'on veut voir à sa taille (le chevron du café), pose la texture sur un plan.

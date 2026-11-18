@@ -148,11 +148,15 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite (
 | Serre | tonneau d'eau de pluie | `rainbarrel` |
 | Serre | fontaine du parc (dehors de la serre), le jet qui retombe dans le bassin | `fountain` |
 | Café | joueur de handpan sur le trottoir de devant, son étui ouvert (dehors du café) | `handpan` |
+| Café | horloge à balancier au mur du fond (régulateur de noyer et de laiton, cadran à l'heure réelle) : un tic-tac lent et feutré, une seconde par battement, tic et tac de timbres différents (son synthétisé, faute d'enregistrement) | `clock` |
 | Marché de nuit | yagura de la fête bon-odori au bout de la rue, taiko et lanternes (tambour et flûte, au loin) | `bonodori` |
+| Marché de nuit | aquarium d'étal d'un marchand de carpes koï (trois koï, gravier, herbes, filtre suspendu, pierre à air) : le filet du filtre et des bulles rares et feutrées (son synthétisé, faute d'enregistrement) | `aquarium` |
 | Laverie de nuit | fenêtre éclairée de l'immeuble d'en face, un piano droit et quelqu'un qui joue | `windowpiano` |
 | Toit-terrasse | saxophoniste sur le toit d’en face (dehors), un air lent de saxo alto | `sax` |
 | Atelier | accordéoniste en marinière sur le toit voisin (dehors), une valse, le soufflet qui respire | `accordion` |
 | Cabane | hibou sur son chicot, au bord du sentier (dehors de la cabane), la forêt de nuit | `owl` |
+| Cabane | chien qui dort sur le tapis tressé, le flanc qui respire avec le son (provisoire : synthèse, une respiration lente et un ronflement très doux) | `snore` |
+| Chambre | ventilateur à trois vitesses (faible, moyen, fort) : la vitesse règle le son et la rotation des pales, `docs/FAN.md` | `fan` |
 | Phare | pêcheur qui rame au large (dehors du phare), les avirons dans l’eau calme | `oars` |
 | Cabane perchée | joueur de flûte debout sur le pont de corde (dehors), un air lent de pâtre (son synthétisé, faute d’enregistrement) | `flute` |
 | Igloo | guitariste en parka rouge sur une plaque de glace (dehors), une guitare nylon qui égrène des accords lents | `guitar` |

@@ -13,12 +13,13 @@ import { Overhead } from './Overhead'
 import { FruitStall } from './FruitStall'
 import { Details } from './Details'
 import { Matsuri } from './Matsuri'
+import { Aquarium } from './Aquarium'
 import { Surroundings } from './out/Surroundings'
 
 /**
  * Une ruelle de marché de nuit sous la pluie : une carriole de ramen sous ses lanternes rouges, un wok qui saute, une marmite qui
  * frémit, une enseigne au néon qui bourdonne, une télé de comptoir, un distributeur qui éclaire le pavé, une baie sur un boulevard
- * où passe un tram, des flaques qui reflètent tout ça, et des guirlandes d'ampoules tendues entre les murs.
+ * où passe un tram, des flaques qui reflètent tout ça, et des guirlandes d'ampoules tendues entre les murs, et, devant la télé, l'aquarium d'un marchand de carpes koï.
  */
 export function MarketScene() {
   return (
@@ -38,6 +39,7 @@ export function MarketScene() {
       <Overhead />
       <Details />
       <Matsuri />
+      <Aquarium />
       <Motes colors={[0xffd8c0, 0xff9ac8]} opacity={[0.3, 0.55]} n={26} />
     </Static>
     </>

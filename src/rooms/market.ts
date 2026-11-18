@@ -11,7 +11,7 @@ export const market: Room = {
   name: 'Marché de nuit',
   description:
     'Ruelle d’un marché de nuit sous la pluie, en 3D isométrique : une carriole de ramen sous ses lanternes rouges, un wok qui saute ' +
-    'sur sa flamme, une marmite de bouillon qui frémit, une enseigne au néon rose qui bourdonne, une télé de comptoir, un distributeur ' +
+    'sur sa flamme, une marmite de bouillon qui frémit, une enseigne au néon rose qui bourdonne, une télé de comptoir, un aquarium de carpes koï, un distributeur ' +
     'qui éclaire le pavé, des flaques pleines de reflets, des guirlandes d’ampoules, et par la baie, un boulevard où passe un tram.',
   ui: {
     accent: ['#d6336c', '#ff6fb1'],
@@ -40,8 +40,8 @@ export const market: Room = {
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio',.55], ['rain',.4], ['simmer',.25]] },
-    read: { sounds: [['rain',.5], ['simmer',.3], ['sizzle',.2], ['radio',.3]] },
-    sleep: { sounds: [['rain',.6], ['simmer',.2]], night: true },
+    read: { sounds: [['rain',.5], ['simmer',.3], ['sizzle',.2], ['radio',.3], ['aquarium',.25]] },
+    sleep: { sounds: [['rain',.6], ['simmer',.2], ['aquarium',.25]], night: true },
   },
   objects: [
     { id: 'tram', target: 'tram', label: 'Baie · le tram', anchor: [1.4, 2.95, -2.9] },
@@ -51,6 +51,9 @@ export const market: Room = {
     { id: 'yagura', target: 'bonodori', label: 'Yagura · la danse bon-odori', anchor: [7.77, 1.15, 2.57] },
     { id: 'lamp', target: 'night', label: 'Lanterne · jour / nuit', anchor: [1.4, 2.36, -0.73] },
     { id: 'radio', target: 'radio', label: 'Télé · lofi', anchor: [-2.3, 0.95, 2.75] },
+    // l'aquarium du marchand de koï, entre la télé et le tonneau (le tréteau est centré en (-1.48, 2.3)) : le bouton est sur le bout de la cuve
+    // côté tonneau, à 1,2 de celui de la télé (sur le centre de la cuve, il en était à 0,9 et les deux boutons se touchaient sur téléphone)
+    { id: 'aquarium', target: 'aquarium', label: 'Aquarium · carpes koï', anchor: [-1.38, 0.72, 2.0] },
   ],
   sounds: [
     { id: 'radio', name: 'Télé lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
@@ -60,5 +63,6 @@ export const market: Room = {
     { id: 'simmer', name: 'Marmite', chip: 'var(--c-simmer)', volume: 0.5, sub: () => 'le bouillon qui frémit' },
     { id: 'bonodori', name: 'Bon-odori', chip: 'var(--c-bonodori)', volume: 0.35, sub: () => 'tambour et flûte, au loin' },
     { id: 'tram', name: 'Tram', chip: 'var(--c-tram)', volume: 0.5, sub: () => 'au bout du boulevard' },
+    { id: 'aquarium', name: 'Aquarium', chip: 'var(--c-aquarium)', volume: 0.4, sub: () => 'le filtre et les bulles' },
   ],
 }

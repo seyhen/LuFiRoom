@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type { Mesh } from 'three'
 import { isActive, useStore } from '../../state/store'
+import { FAN_WIND } from '../../state/fan'
 import { smooth } from '../../math'
 import { mood, reduceMotion } from '../anim'
 import { B } from './materials'
@@ -11,7 +12,7 @@ export function MoonGarland() {
   const m = useRef<Mesh>(null!), sway = useRef(0)
   useFrame(({ clock }, delta) => {
     B.moons.emissiveIntensity = smooth(mood.night) * 0.75
-    const target = !reduceMotion && isActive(useStore.getState(), 'fan') ? 1 : 0
+    const st = useStore.getState(), target = !reduceMotion && isActive(st, 'fan') ? FAN_WIND[st.fan] : 0
     sway.current += (target - sway.current) * Math.min(1, Math.min(delta, 0.05) * 1.5)
     m.current.rotation.z = sway.current * Math.sin(clock.elapsedTime * 1.8) * 0.08
   })

@@ -1,11 +1,12 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { CatmullRomCurve3, TubeGeometry, Vector3, type Group } from 'three'
+import { CatmullRomCurve3, TubeGeometry, Vector3, type Group, type Mesh } from 'three'
 import { isActive, useStore } from '../../state/store'
+import { FAN_SPEEDS, FAN_SPIN, FAN_SPIN_CALM } from '../../state/fan'
 import { TAU, approach } from '../../math'
-import { M } from '../materials'
+import { M, gummy } from '../materials'
 import { Batch, Part, SPH, cyl, rbox, type Item, type V3 } from '../parts'
-import { useSquash } from '../anim'
+import { reduceMotion, useSquash } from '../anim'
 import { Static } from '../Static'
 import { B } from './materials'
 
@@ -23,36 +24,71 @@ const SPOKES: Item[] = [
 // le fil : il sort de l'arrière du socle, traîne sur le bureau et file vers la prise, derrière
 const CORD = new TubeGeometry(new CatmullRomCurve3([[0, 0.02, -0.15], [-0.05, 0.012, -0.24], [-0.2, 0.012, -0.26], [-0.32, 0.012, -0.3], [-0.36, 0.05, -0.36]].map(([x, y, z]) => new Vector3(x, y, z))), 24, 0.011, 6, false)
 
-/** Ventilateur de bureau rétro : socle à trois touches, pied à rotule, moteur bombé, grille à rayons, pales en pétales ; elles tournent à 22 rad/s et la tête oscille. */
+// Les trois touches de vitesse du socle (faible, moyenne, forte, de gauche à droite à l'écran) : celle de la vitesse choisie est enfoncée
+// quand il tourne. Le témoin ambre s'allume avec lui. Les deux rubans noués à la grille s'envolent d'autant plus que le vent est fort.
+const KEY_UP = 0.062, KEY_DOWN = 0.05
+const KEY = rbox(0.05, 0.03, 0.035, 0.012)
+const RIBBON = rbox(0.03, 0.2, 0.004, 0.0015)
+const PILOT = gummy(0xfff0c8, { emissive: 0xffb54a, emissiveIntensity: 0, roughness: 0.4 })
+const RIBBONS = [{ x: -0.07, m: B.blushDeep, ph: 0 }, { x: 0.075, m: B.mintSoft, ph: 2.1 }]
+
+/**
+ * Ventilateur de bureau rétro à trois vitesses : socle à trois touches (celle de la vitesse choisie est enfoncée) et son témoin, pied à rotule,
+ * moteur bombé, grille à rayons, deux rubans noués à la grille, pales en pétales. Les pales tournent lentement, normalement ou vite
+ * (9, 22 ou 38 rad/s) selon la vitesse, la tête oscille et les rubans s'envolent ; avec `prefers-reduced-motion`, elles tournent doucement
+ * (3, 5 ou 8 rad/s), la tête reste fixe et les rubans ne battent plus.
+ */
 export function Fan({ position = [0.98, 1.35, -2.45] }: { position?: V3 }) {
   const g = useRef<Group>(null!), head = useRef<Group>(null!), blades = useRef<Group>(null!)
-  const spin = useRef({ speed: 0, angle: 0, swivel: 0 })
+  const keys = useRef<(Mesh | null)[]>([]), ribbons = useRef<(Group | null)[]>([])
+  const spin = useRef({ speed: 0, angle: 0, swivel: 0, flutter: 0, lamp: 0, press: [0, 0, 0] })
   useSquash('fan', g)
   useFrame((_, delta) => {
-    const dt = Math.min(delta, 0.05), s = spin.current
-    s.speed = approach(s.speed, isActive(useStore.getState(), 'fan') ? 22 : 0, dt * 14)
-    s.angle += s.speed * dt
-    s.swivel += dt * 0.55 * (s.speed / 22)
+    const dt = Math.min(delta, 0.05), s = spin.current, st = useStore.getState()
+    const on = isActive(st, 'fan'), idx = FAN_SPEEDS.indexOf(st.fan)
+    const table = reduceMotion ? FAN_SPIN_CALM : FAN_SPIN
+    s.speed = approach(s.speed, on ? table[st.fan] : 0, dt * 14)
+    const k = s.speed / FAN_SPIN.high // 0 à l'arrêt, 1 à pleine vitesse
+    s.angle = (s.angle + s.speed * dt) % TAU
+    // la tête balaie au rythme des pales ; elle reste fixe si l'on préfère moins de mouvement
+    s.swivel += dt * 0.55 * (s.speed / FAN_SPIN.mid)
     blades.current.rotation.z = s.angle
-    head.current.rotation.y = -0.45 + Math.sin(s.swivel) * 0.4
+    head.current.rotation.y = -0.45 + (reduceMotion ? 0 : Math.sin(s.swivel) * 0.4)
+    // les touches : celle de la vitesse choisie descend, les autres remontent
+    for (let i = 0; i < 3; i++) {
+      s.press[i] = approach(s.press[i], on && i === idx ? 1 : 0, dt * 9)
+      const key = keys.current[i]
+      if (key) key.position.y = KEY_UP + (KEY_DOWN - KEY_UP) * s.press[i]
+    }
+    s.lamp = approach(s.lamp, on ? 1 : 0, dt * 5)
+    PILOT.emissiveIntensity = s.lamp * 1.3
+    // les rubans : tirés vers l'avant par le vent (la phase s'additionne image après image), qui retombent à l'arrêt
+    s.flutter = (s.flutter + dt * (3 + 9 * k)) % TAU
+    ribbons.current.forEach((r, i) => {
+      if (!r) return
+      const ph = s.flutter + RIBBONS[i].ph, wave = reduceMotion ? 0 : Math.sin(ph) * (0.05 + 0.18 * k)
+      r.rotation.x = -(0.04 + 1.0 * k + wave)
+      r.rotation.z = reduceMotion ? 0 : Math.sin(ph * 0.7 + 1) * 0.14 * k
+    })
   })
   return (
     <group ref={g} userData={{ id: 'fan' }} position={position}>
       {/* (chaque partie qui ne bouge pas par rapport à son groupe est fusionnée : socle, tête, hélice) */}
       <Static>
-      {/* le socle : un galet bombé, trois touches devant (la deuxième enfoncée : vitesse 2) */}
+      {/* le socle : un galet bombé (les trois touches de vitesse et le témoin sont dessinés dehors : ils bougent) */}
       <Part geo={cyl(0.18, 0.2, 0.05, 28)} m={M.butter} p={[0, 0.025, 0]} />
       <Part geo={SPH} m={M.butter} scale={[0.17, 0.04, 0.17]} p={[0, 0.05, 0]} />
-      {[-1, 0, 1].map((i) => (
-        <group key={i} rotation-y={-0.45 + i * 0.32}>
-          <Part geo={rbox(0.05, 0.03, 0.035, 0.012)} m={i === 0 ? M.butterDeep : M.cream} p={[0, i === 0 ? 0.052 : 0.062, 0.15]} />
-        </group>
-      ))}
       <Part geo={CORD} m={M.plum} castShadow={false} />
       {/* le pied et sa rotule, avec la molette de serrage */}
       <Part geo={cyl(0.028, 0.034, 0.27, 14)} m={M.cream} p={[0, 0.2, 0]} />
       <Part geo={SPH} m={M.butterDeep} scale={0.042} p={[0, 0.345, 0]} />
       </Static>
+      {[0, 1, 2].map((i) => (
+        <group key={i} rotation-y={-0.45 + (i - 1) * 0.32}>
+          <mesh ref={(el) => void (keys.current[i] = el)} geometry={KEY} material={i === 1 ? M.butterDeep : M.cream} position={[0, KEY_UP, 0.15]} />
+        </group>
+      ))}
+      <mesh geometry={SPH} material={PILOT} scale={0.019} position={[Math.sin(-0.45) * 0.09, 0.083, Math.cos(-0.45) * 0.09]} />
       <group ref={head} position={[0, HEAD_Y, 0]} rotation-y={-0.45}>
         <Static>
         <Part geo={cyl(0.012, 0.012, 0.09, 10)} m={M.butterDeep} p={[0.05, -0.05, -0.06]} rotation-z={Math.PI / 2} />
@@ -89,6 +125,12 @@ export function Fan({ position = [0.98, 1.35, -2.45] }: { position?: V3 }) {
         <Part geo={cyl(0.05, 0.05, 0.018, 20)} m={M.butterDeep} p={[0, 0, 0.104]} rotation-x={Math.PI / 2} />
         <Part geo={cyl(0.03, 0.03, 0.01, 18)} m={M.cream} p={[0, 0, 0.115]} rotation-x={Math.PI / 2} castShadow={false} />
         </Static>
+        {/* deux rubans noués au haut de la grille, devant les pales : le vent les soulève */}
+        {RIBBONS.map(({ x, m }, i) => (
+          <group key={i} ref={(el) => void (ribbons.current[i] = el)} position={[x, R - 0.012, 0.122]}>
+            <mesh geometry={RIBBON} material={m} position={[0, -0.1, 0]} />
+          </group>
+        ))}
       </group>
     </group>
   )

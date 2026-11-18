@@ -38,6 +38,8 @@ src/
   state/noise.ts            # la carte « Bruit » : couleur et tonalité, retenues et partagées avec les ambiances (voir docs/NOISE.md)
   state/weather.ts          # la météo : les choix, ce qu'on voit et entend (voir docs/WEATHER.md)
   state/daylight.ts         # le jour et la nuit qui suivent l'heure, et la règle de la main (voir docs/ROOMS.md)
+  state/fan.ts              # le ventilateur de la chambre à trois vitesses : vitesse retenue, règle du toucher, rotation des pales (voir docs/FAN.md)
+  state/snore.ts           # le souffle du chien endormi de la cabane, partagé par le son et le corps (voir docs/FAN.md, « Le chien de la cabane »)
   state/focus.ts            # le minuteur de concentration 25/5 ou 50/10
   math.ts, motion.ts        # petits utilitaires (maths, prefers-reduced-motion)
   rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen, lighthouse, submarine, market, igloo, treehouse, laundromat, greenhouse), index.ts, playlist.ts (les morceaux de la radio), weather.ts (enregistrements de la météo partagés)
@@ -69,7 +71,7 @@ src/
     noiseGen.ts             # repli de la carte « Bruit » sans AudioWorklet (mêmes formules que public/noise-worklet.js)
     thunder.ts              # le tonnerre de l'orage (dans le bus de la pluie ou de la tempête)
     channels/               # un canal par son : radio.ts, tracks.ts (pistes lofi), rain.ts, noise.ts (bruit blanc, rose, brun, vert, bleu, violet ; public/noise-worklet.js), fan.ts, purr.ts, outside.ts, waves.ts, rails.ts…
-  ui/                       # TopBar, WeatherPicker (sélecteur de météo), WeatherSky (pluie et neige dans le ciel du fond), SkyLife (étoile filante, oiseau, éclair, crépuscule derrière la pièce), RoomPicker, Mixer, MixerCard, SleepTimer, FocusTimer (minuteur de concentration), QuickStart (la puce « Reprendre » : la dernière ambiance, sur le mixeur silencieux), StationButton (changer de station), MasterVolume, NoiseControls (couleur et tonalité de la carte « Bruit »), MixesMenu, SharedMix, InstallButton, icons.tsx, splash.ts (écran de chargement, HTML dans index.html)
+  ui/                       # TopBar, WeatherPicker (sélecteur de météo), WeatherSky (pluie et neige dans le ciel du fond), SkyLife (étoile filante, oiseau, éclair, crépuscule derrière la pièce), RoomPicker, Mixer, MixerCard, SleepTimer, FocusTimer (minuteur de concentration), QuickStart (la puce « Reprendre » : la dernière ambiance, sur le mixeur silencieux), StationButton (changer de station), MasterVolume, NoiseControls (couleur et tonalité de la carte « Bruit »), FanControls (la vitesse du ventilateur de la chambre), MixesMenu, SharedMix, InstallButton, icons.tsx, splash.ts (écran de chargement, HTML dans index.html)
   styles/tokens.css, app.css
 tests/                      # npm run test:unit : tests unitaires des fonctions pures (node --test)
 public/noise-worklet.js    # AudioWorklet des bruits blanc, rose, brun, bleu, violet, et vert (voir docs/NOISE.md)

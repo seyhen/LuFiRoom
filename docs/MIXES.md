@@ -1,6 +1,6 @@
 # Ambiances enregistrées et partage par lien
 
-Une **ambiance** (type `Mix`, `src/state/mixes.ts`) : la pièce, les sons qui jouent avec leur volume, et le jour / nuit ; en plus, la station si la radio joue, la météo si la carte « Météo » joue, et `noise: { color, tilt }` si la carte « Bruit » joue (voir `docs/NOISE.md`).
+Une **ambiance** (type `Mix`, `src/state/mixes.ts`) : la pièce, les sons qui jouent avec leur volume, et le jour / nuit ; en plus, la station si la radio joue, la météo si la carte « Météo » joue, et `noise: { color, tilt }` si la carte « Bruit » joue (voir `docs/NOISE.md`), et `fan: 'low' | 'mid' | 'high'` si la carte « Bruit blanc » (le ventilateur de la chambre) joue (voir `docs/FAN.md`).
 
 ## Dans l'app
 
@@ -17,7 +17,7 @@ Désactivés tant qu'aucun son ne joue. Les ambiances restent sur l'appareil : p
 https://exemple.fr/?room=cabin&mix=fire.80,wind.40&night=1
 ```
 
-`room` : identifiant de la pièce ; `mix` : `son.volume` en pourcentage de curseur, séparés par des virgules ; `v=2` : la courbe des volumes (voir plus bas ; un lien sans `v` est un ancien lien) ; `night` : `1` pour la nuit, `0` pour le jour ; `noise` (`white`, `pink`, `brown`, `green`) et `tilt` (−100 à 100) règlent la carte « Bruit » si elle est dans `mix` (`&noise=brown&tilt=-30`). Un lien sans eux, ou une ambiance enregistrée avant la carte, reste valide : le réglage de l'appareil ne change pas.
+`room` : identifiant de la pièce ; `mix` : `son.volume` en pourcentage de curseur, séparés par des virgules ; `v=2` : la courbe des volumes (voir plus bas ; un lien sans `v` est un ancien lien) ; `night` : `1` pour la nuit, `0` pour le jour ; `noise` (`white`, `pink`, `brown`, `green`) et `tilt` (−100 à 100) règlent la carte « Bruit » si elle est dans `mix` (`&noise=brown&tilt=-30`). Un lien sans eux, ou une ambiance enregistrée avant la carte, reste valide : le réglage de l'appareil ne change pas. `fan` (`low`, `mid`, `high`) règle la vitesse du ventilateur de la chambre (`&fan=high`) ; sans lui, ou inconnu, le ventilateur garde sa vitesse (moyenne au départ).
 Ouvert, le lien n'allume **rien** tout seul (le navigateur interdit l'audio avant un geste, et ce serait mal poli) : une carte au-dessus du mixeur propose « Écouter » ou « Non merci », puis l'adresse est nettoyée.
 
 Un lien est ignoré, sans erreur, si sa pièce est inconnue ou si aucun de ses sons n'existe dans cette pièce ; les sons inconnus sont écartés, les volumes ramenés entre 0 et 100.

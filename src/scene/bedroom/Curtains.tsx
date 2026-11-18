@@ -2,6 +2,7 @@ import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { PlaneGeometry, TorusGeometry, type Mesh } from 'three'
 import { isActive, useStore } from '../../state/store'
+import { FAN_WIND } from '../../state/fan'
 import { TAU, approach } from '../../math'
 import { M } from '../materials'
 import { Batch, Part, SPH, cyl, type Item } from '../parts'
@@ -40,7 +41,7 @@ export function Curtains() {
   const sway = useRef(0)
   useFrame(({ clock }, delta) => {
     const s = useStore.getState(), t = clock.elapsedTime
-    const target = reduceMotion ? 0 : (isActive(s, 'window') ? 0.1 : 0) + (isActive(s, 'fan') ? 0.03 : 0)
+    const target = reduceMotion ? 0 : (isActive(s, 'window') ? 0.1 : 0) + (isActive(s, 'fan') ? 0.03 * FAN_WIND[s.fan] : 0)
     const before = sway.current
     sway.current = approach(before, target, Math.min(delta, 0.05) * 0.12)
     if (sway.current < 1e-4 && before < 1e-4) return

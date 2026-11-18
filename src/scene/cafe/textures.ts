@@ -359,3 +359,57 @@ export const pageTex = page
 export const coldGlowTex = coldGlow
 export const matTex = matTexture()
 export const wallpaperTex = wallpaperTexture()
+
+/**
+ * Le cadran de l'horloge à balancier : émail crème jauni vers les bords (l'âge), chiffres romains, chemin de fer des minutes,
+ * le nom de l'horloger et sa ville sous le centre. Dessiné sur un disque (le haut du canvas est le XII).
+ */
+function dialTexture() {
+  const S = 512, c0 = S / 2, [c, x] = makeCanvas(S, S), r = seeded(41)
+  x.fillStyle = '#e9d9b6'; x.fillRect(0, 0, S, S)
+  const g = x.createRadialGradient(c0, c0, 60, c0, c0, c0)
+  g.addColorStop(0, 'rgba(255,250,232,.95)'); g.addColorStop(0.7, 'rgba(240,226,190,.5)'); g.addColorStop(1, 'rgba(176,138,84,.55)')
+  x.fillStyle = g; x.fillRect(0, 0, S, S)
+  // quelques taches de vieillissement, le fin cheveu d'un craquelé
+  for (let i = 0; i < 26; i++) {
+    x.fillStyle = `rgba(150,112,66,${0.03 + r() * 0.04})`
+    x.beginPath(); x.arc(r() * S, r() * S, 4 + r() * 16, 0, TAU); x.fill()
+  }
+  x.strokeStyle = 'rgba(80,56,36,.18)'; x.lineWidth = 1.2
+  for (let i = 0; i < 4; i++) {
+    x.beginPath(); let px = 90 + r() * 330, py = 90 + r() * 330; x.moveTo(px, py)
+    for (let k = 0; k < 5; k++) { px += (r() - 0.5) * 36; py += (r() - 0.5) * 36; x.lineTo(px, py) }
+    x.stroke()
+  }
+  const ink = '#2a1c14'
+  // le chemin de fer : un anneau de traits fins, un trait plus gras toutes les cinq minutes
+  x.strokeStyle = ink; x.lineCap = 'round'
+  for (let m = 0; m < 60; m++) {
+    const a = (m / 60) * TAU, big = m % 5 === 0
+    x.lineWidth = big ? 5 : 2
+    x.beginPath()
+    x.moveTo(c0 + Math.sin(a) * (big ? 214 : 224), c0 - Math.cos(a) * (big ? 214 : 224))
+    x.lineTo(c0 + Math.sin(a) * 236, c0 - Math.cos(a) * 236)
+    x.stroke()
+  }
+  x.lineWidth = 3
+  x.beginPath(); x.arc(c0, c0, 238, 0, TAU); x.stroke()
+  x.beginPath(); x.arc(c0, c0, 168, 0, TAU); x.lineWidth = 1.5; x.stroke()
+  // les chiffres romains, tête vers l'extérieur
+  const ROMAN = ['XII', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI']
+  x.fillStyle = ink; x.textAlign = 'center'; x.textBaseline = 'middle'
+  x.font = 'bold 54px Georgia, "Times New Roman", serif'
+  ROMAN.forEach((n, i) => {
+    const a = (i / 12) * TAU
+    x.save(); x.translate(c0 + Math.sin(a) * 186, c0 - Math.cos(a) * 186)
+    x.rotate(a + (i > 3 && i < 9 ? Math.PI : 0)); x.fillText(n, 0, 0); x.restore()
+  })
+  // l'horloger
+  x.font = 'italic 26px Georgia, "Times New Roman", serif'
+  x.fillText('W. Logan', c0, c0 + 62)
+  x.font = '18px Georgia, "Times New Roman", serif'
+  x.fillText('EDINBURGH', c0, c0 + 90)
+  return new CanvasTexture(c)
+}
+
+export const dialTex = dialTexture()

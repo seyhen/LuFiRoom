@@ -74,6 +74,9 @@ import noise from './channels/noise'
 import guitar from './channels/guitar'
 import jellies from './channels/jellies'
 import koto from './channels/koto'
+import clock from './channels/clock'
+import aquarium from './channels/aquarium'
+import snore from './channels/snore'
 
 // canal (bus Gain) ─┬─> master Gain 0.9 ─> volume général ─> liant doux ─> passe-haut 25 Hz ─> recalage ─> limiteur ─> plafond doux ─> sortie
 // canal (bus Gain) ─┘
@@ -160,6 +163,9 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   jellies: { build: jellies, base: 1.1 },
   flute: { build: flute, base: 3.2 },
   koto: { build: koto, base: 2.6 }, // provisoire : synthèse, notes espacées
+  clock: { build: clock, base: 2.7 }, // provisoire : synthèse, un battement par seconde (sonie à -32,6 LUFS, crête à -5 dB au curseur plein)
+  aquarium: { build: aquarium, base: 2.2 }, // provisoire : synthèse, filet du filtre et bulles rares
+  snore: { build: snore, base: 1.2 }, // provisoire : synthèse, la respiration lente d'un chien, un ronflement très doux
   noise: { build: noise, base: 0.5 }, // sonie (pondérée A) du rose à 0,4 : celle du ventilateur et de la pluie par défaut ; couleurs égalisées dans public/noise-worklet.js
 }
 const ids = Object.keys(CHANNELS) as SoundId[]

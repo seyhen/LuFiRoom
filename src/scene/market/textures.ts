@@ -351,3 +351,47 @@ export const manholeTex = canvasTex(128, 128, (x) => {
   x.fillStyle = '#6a6278'; x.beginPath(); x.arc(64, 64, 22, 0, TAU); x.fill()
   x.fillStyle = '#2c2638'; x.font = `bold 18px ${JP}`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('下水', 64, 64)
 })
+
+/** Le fond de l'aquarium de l'étal : un bleu-vert profond qui s'éclaircit vers le haut, des rais de lumière, quelques bulles lointaines. */
+export const tankBackTex = canvasTex(256, 128, (x) => {
+  const r = seeded(21)
+  const g = x.createLinearGradient(0, 0, 0, 128)
+  g.addColorStop(0, '#2a9aa6'); g.addColorStop(0.55, '#136478'); g.addColorStop(1, '#0a2c40')
+  x.fillStyle = g; x.fillRect(0, 0, 256, 128)
+  for (let i = 0; i < 5; i++) {
+    const cx = 20 + i * 54 + r() * 20, w = 10 + r() * 14
+    const ray = x.createLinearGradient(cx, 0, cx + 30, 128)
+    ray.addColorStop(0, 'rgba(200,255,250,.2)'); ray.addColorStop(1, 'rgba(200,255,250,0)')
+    x.fillStyle = ray
+    x.beginPath(); x.moveTo(cx, 0); x.lineTo(cx + w, 0); x.lineTo(cx + w + 36, 128); x.lineTo(cx + 10, 128); x.closePath(); x.fill()
+  }
+  for (let i = 0; i < 16; i++) {
+    x.fillStyle = `rgba(210,255,250,${0.06 + r() * 0.1})`
+    x.beginPath(); x.arc(r() * 256, r() * 110, 3 + r() * 7, 0, TAU); x.fill()
+  }
+})
+
+/** Le gravier du fond : grains sombres et clairs sur un sable gris-beige. Tuile 1 × 1 (posée avec `worldUV`). */
+export const gravelTex = canvasTex(128, 128, (x) => {
+  const r = seeded(33)
+  x.fillStyle = '#b9ad94'; x.fillRect(0, 0, 128, 128)
+  for (let i = 0; i < 380; i++) {
+    const v = 120 + r() * 100
+    x.fillStyle = `rgb(${v | 0},${(v * 0.94) | 0},${(v * 0.8) | 0})`
+    x.beginPath(); x.ellipse(r() * 128, r() * 128, 1.5 + r() * 3.2, 1.2 + r() * 2.4, r() * 3, 0, TAU); x.fill()
+  }
+  for (let i = 0; i < 40; i++) { x.fillStyle = 'rgba(40,36,34,.55)'; x.beginPath(); x.arc(r() * 128, r() * 128, 1 + r() * 2, 0, TAU); x.fill() }
+}, [1, 1])
+
+/** La planche de l'étal : « 錦鯉 » (nishikigoi) à l'encre sur bois clair, « 一匹 三百円 » à droite, un cachet rouge. */
+export const tankSignTex = canvasTex(512, 76, (x) => {
+  const r = seeded(5)
+  x.fillStyle = '#d9b27c'; x.fillRect(0, 0, 512, 76)
+  for (let i = 0; i < 14; i++) { x.fillStyle = `rgba(110,70,30,${0.05 + r() * 0.07})`; x.fillRect(0, r() * 76, 512, 1 + r() * 2) }
+  x.fillStyle = '#1d1512'; x.textBaseline = 'middle'; x.textAlign = 'left'
+  x.font = `bold 58px ${JP}`; x.fillText('錦鯉', 22, 40)
+  x.font = `bold 30px ${JP}`; x.textAlign = 'right'; x.fillText('一匹 三百円', 410, 41)
+  x.fillStyle = '#b02a3c'; rr(x, 428, 14, 56, 48, 7); x.fill()
+  x.fillStyle = '#fff2e0'; x.textAlign = 'center'; x.font = `bold 26px ${JP}`; x.fillText('鯉', 456, 39)
+  x.strokeStyle = 'rgba(70,40,15,.55)'; x.lineWidth = 3; rr(x, 3, 3, 506, 70, 6); x.stroke()
+})
