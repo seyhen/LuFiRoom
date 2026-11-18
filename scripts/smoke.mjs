@@ -192,13 +192,13 @@ async function testRoom(page, vp, room, problems) {
     await page.waitForFunction((el) => el.getAttribute('aria-pressed') === 'false', await toggle.elementHandle(), { timeout: 30_000 })
     mark(`son « ${sound.id} »`)
 
-    // La carte « Bruit » (dans toutes les pièces, sans objet 3D) : quatre pastilles de couleur et la tonalité, des boutons et un curseur accessibles.
+    // La carte « Bruit » (dans toutes les pièces, sans objet 3D) : six pastilles de couleur et la tonalité, des boutons et un curseur accessibles.
     // Un clic sur une pastille la choisit et allume le bruit (le worklet se charge) ; un second clic sur la carte l'éteint.
     const noiseCard = page.locator('.mix .card.noise')
     if ((await noiseCard.count()) !== 1) errs.push('carte « Bruit » absente du mixeur')
     else {
       const chips = await noiseCard.locator('.nz-chip').evaluateAll((bs) => bs.map((b) => ({ label: b.getAttribute('aria-label'), pressed: b.getAttribute('aria-pressed'), w: b.offsetWidth, h: b.offsetHeight })))
-      if (chips.length !== 4 || chips.some((c) => !c.label || !['true', 'false'].includes(c.pressed) || c.w < 44 || c.h < 44)) errs.push(`pastilles du bruit mal formées : ${JSON.stringify(chips)}`)
+      if (chips.length !== 6 || chips.some((c) => !c.label || !['true', 'false'].includes(c.pressed) || c.w < 44 || c.h < 44)) errs.push(`pastilles du bruit mal formées : ${JSON.stringify(chips)}`)
       if (!(await noiseCard.locator('.nz-tone input[type=range][aria-label]').count())) errs.push('curseur de tonalité du bruit absent')
       const brown = noiseCard.locator('.nz-chip').nth(2), noiseToggle = noiseCard.locator('button.tg')
       await brown.click()

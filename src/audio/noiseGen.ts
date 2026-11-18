@@ -2,7 +2,9 @@
 // dans de longs tampons (30 s) sans couture. Garde les deux d'accord.
 
 /** Niveaux de chaque couleur, calés pour une même sonie (voir public/noise-worklet.js). */
-export const NOISE_GAIN = { white: 0.3464, pink: 0.134, brown: 0.075 }
+export const NOISE_GAIN = { white: 0.3464, pink: 0.134, brown: 0.075, blue: 0.2738, violet: 0.4924 }
+/** Bleu et violet : un passe-bas doux à 12 kHz (graphe), l'énergie au-dessus n'apporte que de la dureté. */
+export const HIGH_CUT = 12000
 /** Le vert : le blanc dans une bande large autour de 500 Hz, remonté pour valoir les autres en sonie. */
 export const GREEN = { freq: 500, q: 0.7, makeup: 3.8 }
 const LEAK = 0.9995
@@ -17,15 +19,15 @@ const rng = (seed: number) => {
   }
 }
 
-/** Trois tampons stéréo (blanc, rose, brun) de `sec` secondes, bouclant sans couture : la queue fond dans la tête (puissance constante). */
+/** Cinq tampons stéréo (blanc, rose, brun, bleu, violet) de `sec` secondes, bouclant sans couture : la queue fond dans la tête (puissance constante). */
 export function noiseBuffers(ctx: BaseAudioContext, sec = 30, fade = 1) {
   const sr = ctx.sampleRate, N = Math.floor(sec * sr), F = Math.floor(fade * sr)
-  const bufs = { white: ctx.createBuffer(2, N, sr), pink: ctx.createBuffer(2, N, sr), brown: ctx.createBuffer(2, N, sr) }
+  const bufs = { white: ctx.createBuffer(2, N, sr), pink: ctx.createBuffer(2, N, sr), brown: ctx.createBuffer(2, N, sr), blue: ctx.createBuffer(2, N, sr), violet: ctx.createBuffer(2, N, sr) }
   const seed = (Math.random() * 2147483647) | 0
   for (let c = 0; c < 2; c++) {
     const r = rng(seed ^ (c ? 0x7f4a7c15 : 0x9e3779b9))
-    const w = new Float32Array(N + F), p = new Float32Array(N + F), b = new Float32Array(N + F)
-    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, br = 0
+    const w = new Float32Array(N + F), p = new Float32Array(N + F), b = new Float32Array(N + F), bl = new Float32Array(N + F), vi = new Float32Array(N + F)
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, br = 0, pinkPrev = 0, whitePrev = 0
     for (let i = 0; i < N + F; i++) {
       const x = r()
       b0 = 0.99886 * b0 + x * 0.0555179
@@ -37,11 +39,15 @@ export function noiseBuffers(ctx: BaseAudioContext, sec = 30, fade = 1) {
       const pink = b0 + b1 + b2 + b3 + b4 + b5 + b6 + x * 0.5362
       b6 = x * 0.115926
       br = LEAK * br + x
+      bl[i] = (pink - pinkPrev) * NOISE_GAIN.blue
+      vi[i] = (x - whitePrev) * NOISE_GAIN.violet
+      pinkPrev = pink
+      whitePrev = x
       w[i] = x * NOISE_GAIN.white
       p[i] = pink * NOISE_GAIN.pink
       b[i] = br * NOISE_GAIN.brown
     }
-    for (const [name, tmp] of [['white', w], ['pink', p], ['brown', b]] as const) {
+    for (const [name, tmp] of [['white', w], ['pink', p], ['brown', b], ['blue', bl], ['violet', vi]] as const) {
       const out = bufs[name].getChannelData(c)
       out.set(tmp.subarray(0, N))
       for (let i = 0; i < F; i++) {

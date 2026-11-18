@@ -1,7 +1,7 @@
 import { useStore } from '../../state/store'
 import { NOISE_COLORS, type NoiseColor } from '../../state/noise'
 import type { Channel, Kit } from '../engine'
-import { GREEN, noiseBuffers } from '../noiseGen'
+import { GREEN, HIGH_CUT, noiseBuffers } from '../noiseGen'
 
 // Le module de l'AudioWorklet se charge une fois par AudioContext (public/noise-worklet.js : un fichier statique, sans hachage,
 // précaché par le service worker comme le reste de dist/).
@@ -20,7 +20,7 @@ const TILT_DB = 6 // à fond, ±6 dB à chaque bout : les graves d'un côté, le
 const FADE = 0.15 // s, constante de temps des fondus de couleur et de tonalité (≈ 0,5 s pour aller au bout)
 
 /**
- * Bruit blanc, rose, brun ou vert, généré en direct par un AudioWorklet : jamais de boucle, rien à télécharger (si le worklet
+ * Bruit blanc, rose, brun, vert, bleu ou violet, généré en direct par un AudioWorklet : jamais de boucle, rien à télécharger (si le worklet
  * échoue, de longs tampons de 30 s sans couture). Les couleurs sont toutes là, on les croise en fondu avec des gains ; la tonalité
  * est une paire d'étagères (graves, aigus) qui basculent en sens contraire ; un passe-haut de 25 Hz ôte le très grave inutile.
  */
@@ -31,6 +31,10 @@ export default function noise(kit: Kit, out: GainNode): Channel {
   const mix = Object.fromEntries(NOISE_COLORS.map((c) => [c, gain(want(init, c))])) as Record<NoiseColor, GainNode>
   const green = biq('bandpass', GREEN.freq, GREEN.q)
   green.connect(gain(GREEN.makeup)).connect(mix.green)
+  // bleu et violet : un passe-bas doux à 12 kHz, pour ne garder que ce qui s'entend
+  const blue = biq('lowpass', HIGH_CUT, 0.7), violet = biq('lowpass', HIGH_CUT, 0.7)
+  blue.connect(mix.blue)
+  violet.connect(mix.violet)
   const bus = gain(1)
   for (const c of NOISE_COLORS) mix[c].connect(bus)
   const low = biq('lowshelf', 320, 0.7), high = biq('highshelf', 3200, 0.7)
@@ -60,6 +64,8 @@ export default function noise(kit: Kit, out: GainNode): Channel {
     source.connect(mix.pink, 1)
     source.connect(mix.brown, 2)
     source.connect(green, 0)
+    source.connect(blue, 3)
+    source.connect(violet, 4)
     linked = true
   }
   const unlink = () => {
@@ -69,7 +75,7 @@ export default function noise(kit: Kit, out: GainNode): Channel {
   }
   loadModule(ctx).then(
     () => {
-      source = new AudioWorkletNode(ctx, 'lufi-noise', { numberOfInputs: 0, numberOfOutputs: 3, outputChannelCount: [2, 2, 2] })
+      source = new AudioWorkletNode(ctx, 'lufi-noise', { numberOfInputs: 0, numberOfOutputs: 5, outputChannelCount: [2, 2, 2, 2, 2] })
       if (wanted) link()
     },
     (e) => {
@@ -80,6 +86,8 @@ export default function noise(kit: Kit, out: GainNode): Channel {
       white.connect(green)
       loop(b.pink, 0).connect(mix.pink)
       loop(b.brown, 0).connect(mix.brown)
+      loop(b.blue, 0).connect(blue)
+      loop(b.violet, 0).connect(violet)
     },
   )
   return {

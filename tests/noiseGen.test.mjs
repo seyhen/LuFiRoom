@@ -28,7 +28,7 @@ function fft(re, im) {
 }
 
 /** Pente (dB par octave) de la densité de puissance entre 100 Hz et 4 kHz, par moyenne de fenêtres de Hann (Welch) et régression sur log2 f. */
-function slope(x) {
+function slope(x, top = 4000) {
   const N = 4096, P = new Float64Array(N / 2)
   let count = 0
   for (let o = 0; o + N <= x.length; o += N) {
@@ -41,32 +41,35 @@ function slope(x) {
   const pts = []
   for (let k = 1; k < N / 2; k++) {
     const f = (k * SR) / N
-    if (f >= 100 && f <= 4000) pts.push([Math.log2(f), 10 * Math.log10(P[k] / count)])
+    if (f >= 100 && f <= top) pts.push([Math.log2(f), 10 * Math.log10(P[k] / count)])
   }
   const mx = pts.reduce((s, p) => s + p[0], 0) / pts.length, my = pts.reduce((s, p) => s + p[1], 0) / pts.length
   return pts.reduce((s, p) => s + (p[0] - mx) * (p[1] - my), 0) / pts.reduce((s, p) => s + (p[0] - mx) ** 2, 0)
 }
 
-test('tampons : trois couleurs, stéréo, 30 s par défaut = sec × fréquence', () => {
-  for (const c of ['white', 'pink', 'brown']) {
+test('tampons : cinq couleurs, stéréo, 30 s par défaut = sec × fréquence', () => {
+  for (const c of ['white', 'pink', 'brown', 'blue', 'violet']) {
     assert.equal(bufs[c].numberOfChannels, 2)
     assert.equal(bufs[c].length, SEC * SR)
   }
   assert.equal(noiseBuffers(ctx).white.length, 30 * SR)
 })
 
-test('pentes spectrales : blanc ≈ 0, rose ≈ -3, brun ≈ -6 dB/octave', () => {
+test('pentes spectrales : blanc ≈ 0, rose ≈ -3, brun ≈ -6, bleu ≈ +3, violet ≈ +6 dB/octave', () => {
   for (const c of [0, 1]) {
     // On saute le fondu de la tête (1 s) pour ne mesurer que du bruit pur.
     const tail = (b) => b.getChannelData(c).subarray(FADE * SR)
     assert.ok(Math.abs(slope(tail(bufs.white))) < 0.4, `blanc ${slope(tail(bufs.white))}`)
     assert.ok(Math.abs(slope(tail(bufs.pink)) + 3) < 0.5, `rose ${slope(tail(bufs.pink))}`)
     assert.ok(Math.abs(slope(tail(bufs.brown)) + 6) < 0.7, `brun ${slope(tail(bufs.brown))}`)
+    // bleu et violet : dérivées du rose et du blanc ; on mesure jusqu'à 2 kHz, où la différence finie suit encore la pente idéale (fréquence d'échantillonnage du test : 16 kHz)
+    assert.ok(Math.abs(slope(tail(bufs.blue), 2000) - 3) < 0.7, `bleu ${slope(tail(bufs.blue), 2000)}`)
+    assert.ok(Math.abs(slope(tail(bufs.violet), 2000) - 6) < 0.7, `violet ${slope(tail(bufs.violet), 2000)}`)
   }
 })
 
 test('sans couture : le saut fin → début est du même ordre que le pas entre deux échantillons voisins', () => {
-  for (const c of ['white', 'pink', 'brown']) {
+  for (const c of ['white', 'pink', 'brown', 'blue', 'violet']) {
     const x = bufs[c].getChannelData(0)
     let s = 0
     for (let i = 1; i < x.length; i++) s += (x[i] - x[i - 1]) ** 2
@@ -86,7 +89,7 @@ test('fondu à puissance constante : pas de creux ni de bosse sur la tête du ta
 })
 
 test('stéréo décorrélée, sans silence ni valeur infinie', () => {
-  for (const c of ['white', 'pink', 'brown']) {
+  for (const c of ['white', 'pink', 'brown', 'blue', 'violet']) {
     const L = bufs[c].getChannelData(0), R = bufs[c].getChannelData(1)
     // Corrélation des différences : deux marches aléatoires indépendantes (brun) se ressemblent par hasard, pas leurs variations.
     let lr = 0, ll = 0, rr = 0, peak = 0

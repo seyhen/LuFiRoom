@@ -21,7 +21,7 @@ test('noise : cleanNoise (stockage ou lien)', () => {
   for (const bad of [null, undefined, 0, 'pink', [], {}, { color: 'rouge' }, { color: null }, { tilt: 1 }]) assert.equal(cleanNoise(bad), undefined, JSON.stringify(bad))
 })
 
-test('noise : les quatre couleurs ont un nom, isNoiseColor refuse le reste', () => {
+test('noise : les six couleurs ont un nom, isNoiseColor refuse le reste', () => {
   for (const c of NOISE_COLORS) assert.ok(isNoiseColor(c) && NOISE_NAMES[c])
   assert.equal(isNoiseColor('rose'), false)
   assert.equal(isNoiseColor(undefined), false)

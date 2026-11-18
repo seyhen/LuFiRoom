@@ -1,22 +1,24 @@
-# La carte « Bruit » (blanc, rose, brun, vert)
+# La carte « Bruit » (blanc, rose, brun, vert, bleu, violet)
 
 Une carte du mixeur dans **les quinze pièces** (son `noise`, dernière carte, volume par défaut 0,4, éteinte au départ), pour écouter du bruit de fond : se concentrer, couvrir un voisin, dormir. Comme la carte « Météo » (`rain`), c'est une **exception assumée** à la règle « pas de son répété d'une pièce à l'autre », et elle n'a pas d'objet 3D (pas de hotspot : le mixeur suffit).
 
 ## Ce qu'on règle
 
-- **La couleur**, par quatre pastilles (boutons `aria-pressed`, 44 px au moins, libellés « Bruit blanc / rose / brun / vert ») : choisir une couleur allume le bruit, comme choisir une météo.
+- **La couleur**, par six pastilles sur deux rangées de trois (boutons `aria-pressed`, 44 px au moins, libellés « Bruit blanc / rose / brun / vert / bleu / violet ») : choisir une couleur allume le bruit, comme choisir une météo.
   - blanc : spectre plat (0 dB par octave) ;
   - rose : −3 dB par octave (filtre de Paul Kellet raffiné) ;
   - brun : −6 dB par octave (intégrateur à fuite, coupure vers 4 Hz) ;
-  - vert : le blanc dans une bande large centrée sur 500 Hz (passe-bande, Q 0,7), les médiums de la nature.
+  - vert : le blanc dans une bande large centrée sur 500 Hz (passe-bande, Q 0,7), les médiums de la nature ;
+  - bleu : +3 dB par octave (la différence du rose), aérien et léger ;
+  - violet : +6 dB par octave (la différence du blanc), très fin et aigu. Bleu et violet passent par un passe-bas doux à 12 kHz dans le graphe (au-dessus, l'énergie n'apporte que de la dureté).
 - **La tonalité** (curseur « Tonalité », de « Grave » à « Aigu », double clic : retour au neutre) : une paire d'étagères (320 Hz et 3 200 Hz) qui basculent en sens contraire, ±6 dB à chaque bout du spectre (soit 12 dB d'écart entre les graves et les aigus à fond).
 - Le volume est celui des autres cartes.
 
-Changer de couleur ou de tonalité se fait en **fondu** (constante de temps 0,15 s) : les quatre couleurs sont toujours là, on déplace des gains, pas de clic. Un passe-haut de 25 Hz (2 biquads) ôte le très grave inutile.
+Changer de couleur ou de tonalité se fait en **fondu** (constante de temps 0,15 s) : les six couleurs sont toujours là, on déplace des gains, pas de clic. Un passe-haut de 25 Hz (2 biquads) ôte le très grave inutile.
 
 ## Comment c'est fait
 
-- `public/noise-worklet.js` : le processeur `lufi-noise`, un **AudioWorklet** qui génère le bruit en direct (xorshift32, deux canaux de graines différentes : stéréo décorrélée). Trois sorties stéréo (blanc, rose, brun) ; le vert se fait dans le graphe à partir du blanc. **Aucune boucle, aucun fichier audio.** C'est un fichier statique de `public/` : `dist/noise-worklet.js`, précaché par le service worker (`globPatterns` contient `js`), chargé par `audioWorklet.addModule(BASE_URL + 'noise-worklet.js')`.
+- `public/noise-worklet.js` : le processeur `lufi-noise`, un **AudioWorklet** qui génère le bruit en direct (xorshift32, deux canaux de graines différentes : stéréo décorrélée). Cinq sorties stéréo (blanc, rose, brun, bleu, violet) ; le vert se fait dans le graphe à partir du blanc. **Aucune boucle, aucun fichier audio.** C'est un fichier statique de `public/` : `dist/noise-worklet.js`, précaché par le service worker (`globPatterns` contient `js`), chargé par `audioWorklet.addModule(BASE_URL + 'noise-worklet.js')`.
 - `src/audio/channels/noise.ts` : le graphe (gains de couleur, passe-bande vert, étagères, passe-haut). La source n'est branchée que quand le son joue (elle se débranche 3 s après l'extinction : arrêtée, elle ne coûte rien).
 - **Repli** si l'AudioWorklet manque ou si `addModule` échoue (message `console.warn`) : `src/audio/noiseGen.ts` écrit les mêmes formules dans trois tampons de **30 s** sans couture (fondu de 1 s de la queue dans la tête, puissance constante), environ 35 Mo. Les deux fichiers ont les mêmes constantes de niveau : garde-les d'accord.
 - `src/state/noise.ts` : types, noms et sous-titres des couleurs, lecture et écriture de `localStorage` (`chambre-lofi.noise`), nettoyage de ce qui vient d'un stockage ou d'un lien. L'état (`noise: { color, tilt }`) est dans le store, **partagé par toutes les pièces** comme les volumes ; `setNoiseColor`, `setNoiseTilt`.
@@ -24,7 +26,7 @@ Changer de couleur ou de tonalité se fait en **fondu** (constante de temps 0,15
 
 ## Niveaux
 
-Les quatre couleurs sont calées pour la **même sonie pondérée A** (le blanc à RMS 0,2 avant `base`, le rose et le brun au même niveau A ; le brun garde plus de puissance brute, ses graves comptant plus fort au casque). Le `base` du canal (0,5, dans `engine.ts`) cale le rose à 0,4 sur le niveau pondéré A du ventilateur et de la pluie à leur volume par défaut (mesure avec `window.__lofi.audio`, un `AnalyserNode` branché sur `bus['<pièce>/noise']`, en dev). Pentes mesurées dans Chromium (FFT, 125 Hz à 8 kHz) : blanc −0,06, rose −3,13, brun −6,01 dB/octave ; même chose avec le repli par tampons.
+Les six couleurs sont calées pour la **même sonie pondérée A** (bleu 0,2738 et violet 0,4924, calculés comme le blanc et le rose : un calcul hors ligne de la puissance pondérée A, passe-bas de 12 kHz compris) (le blanc à RMS 0,2 avant `base`, le rose et le brun au même niveau A ; le brun garde plus de puissance brute, ses graves comptant plus fort au casque). Le `base` du canal (0,5, dans `engine.ts`) cale le rose à 0,4 sur le niveau pondéré A du ventilateur et de la pluie à leur volume par défaut (mesure avec `window.__lofi.audio`, un `AnalyserNode` branché sur `bus['<pièce>/noise']`, en dev). Pentes mesurées dans Chromium (FFT, 250 Hz à 8 kHz) : blanc −0,06, rose −3,01, brun −5,92, bleu +3,16, violet +6,18 dB/octave ; même chose avec le repli par tampons.
 
 ## Dans les ambiances
 

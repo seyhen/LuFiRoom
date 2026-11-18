@@ -3,7 +3,7 @@ import { useStore } from '../state/store'
 import { useT } from '../i18n'
 import { NOISE_CHIPS, NOISE_COLORS, NOISE_NAMES } from '../state/noise'
 
-/** Sous le volume de la carte « Bruit » : quatre pastilles de couleur (blanc, rose, brun, vert) et la tonalité, des graves aux aigus. */
+/** Sous le volume de la carte « Bruit » : six pastilles de couleur (blanc, rose, brun, vert, bleu, violet) et la tonalité, des graves aux aigus. */
 export function NoiseControls() {
   const t = useT()
   const { color, tilt } = useStore((s) => s.noise)

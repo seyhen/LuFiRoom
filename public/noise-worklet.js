@@ -1,8 +1,8 @@
 // Le bruit de la carte « Bruit » (src/audio/channels/noise.ts), généré en direct : aucune boucle, aucun fichier à télécharger.
-// Trois sorties stéréo (0 blanc, 1 rose, 2 brun), deux canaux décorrélés ; le vert, les filtres et le passe-haut sont dans le graphe.
+// Cinq sorties stéréo (0 blanc, 1 rose, 2 brun, 3 bleu, 4 violet), deux canaux décorrélés ; le vert, les filtres et le passe-haut sont dans le graphe.
 // Les mêmes formules sont dans src/audio/noiseGen.ts (le repli sans AudioWorklet) : garde-les d'accord.
 // Niveaux calés pour une même sonie (pondération A, après le passe-haut de 25 Hz) ; le brun garde un peu plus de puissance brute pour ses graves.
-const GAIN = { white: 0.3464, pink: 0.134, brown: 0.075 }
+const GAIN = { white: 0.3464, pink: 0.134, brown: 0.075, blue: 0.2738, violet: 0.4924 }
 const LEAK = 0.9995 // brun : intégrateur à fuite, coupure vers 3,8 Hz (le passe-haut de 25 Hz ôte la dérive)
 
 // xorshift32 : léger, sans coût d'allocation, une graine par canal pour qu'ils ne se ressemblent pas.
@@ -21,6 +21,8 @@ class Voice {
     this.r = rng(seed)
     this.b0 = this.b1 = this.b2 = this.b3 = this.b4 = this.b5 = this.b6 = 0
     this.brown = 0
+    this.pinkPrev = 0 // bleu : dérivée du rose
+    this.whitePrev = 0 // violet : dérivée du blanc
   }
 }
 
@@ -33,8 +35,8 @@ class LufiNoise extends AudioWorkletProcessor {
   process(_in, out) {
     for (let c = 0; c < 2; c++) {
       const v = this.v[c], r = v.r
-      const w = out[0][c], p = out[1][c], b = out[2][c]
-      if (!w || !p || !b) continue
+      const w = out[0][c], p = out[1][c], b = out[2][c], bl = out[3][c], vi = out[4][c]
+      if (!w || !p || !b || !bl || !vi) continue
       for (let i = 0; i < w.length; i++) {
         const x = r()
         // rose : filtre de Paul Kellet (version raffinée), −3 dB par octave
@@ -48,9 +50,15 @@ class LufiNoise extends AudioWorkletProcessor {
         v.b6 = x * 0.115926
         // brun : intégrale du blanc, −6 dB par octave
         v.brown = LEAK * v.brown + x
+        // bleu : dérivée du rose, +3 dB par octave ; violet : dérivée du blanc, +6 dB par octave (le graphe les adoucit au-dessus de 12 kHz)
+        const blue = pink - v.pinkPrev, violet = x - v.whitePrev
+        v.pinkPrev = pink
+        v.whitePrev = x
         w[i] = x * GAIN.white
         p[i] = pink * GAIN.pink
         b[i] = v.brown * GAIN.brown
+        bl[i] = blue * GAIN.blue
+        vi[i] = violet * GAIN.violet
       }
     }
     return true

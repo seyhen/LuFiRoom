@@ -82,7 +82,7 @@ Les pistes de la radio ne sont téléchargées qu'à l'écoute et ne comptent pa
 
 ## Bruits colorés
 
-Ils ne sont pas des fichiers : la carte « Bruit » (blanc, rose, brun, vert) est générée en direct par `public/noise-worklet.js` (repli : `src/audio/noiseGen.ts`). Voir `docs/NOISE.md`.
+Ils ne sont pas des fichiers : la carte « Bruit » (blanc, rose, brun, vert, bleu, violet) est générée en direct par `public/noise-worklet.js` (repli : `src/audio/noiseGen.ts`). Voir `docs/NOISE.md`.
 
 ## Sourcer un son sur Freesound (automatique)
 
@@ -211,6 +211,6 @@ rebond, au survol et aux animations. Leur ancre de hotspot reste dans `bedroom.t
   Le fondu jour / nuit actuel dure ~0.9 s ; la pluie assombrit un peu la pièce.
 - Les ombres temps réel (shadow map 2048) disparaissent : c'est le gain de performance attendu de cette phase.
 
-## Le bruit blanc, rose, brun, vert
+## Le bruit blanc, rose, brun, vert, bleu, violet
 
 Aucun fichier : la carte « Bruit » (`noise`) est calculée en direct par un AudioWorklet (`public/noise-worklet.js`), rien à encoder ni à créditer. Voir `docs/NOISE.md`.

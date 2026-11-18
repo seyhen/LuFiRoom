@@ -32,7 +32,7 @@ export type SoundId =
   | 'frogs' | 'musicbox' | 'rainbarrel'
   // la laverie de nuit : le lave-linge, le sèche-linge, le rinçage, la gouttière
   | 'wash' | 'tumble' | 'rinse' | 'gutter'
-  // la carte « Bruit » (blanc, rose, brun, vert), dans toutes les pièces, sans objet 3D : voir docs/NOISE.md
+  // la carte « Bruit » (blanc, rose, brun, vert, bleu, violet), dans toutes les pièces, sans objet 3D : voir docs/NOISE.md
   | 'noise'
 // la cabane perchée : le joueur de flûte du pont de corde
   | 'flute'

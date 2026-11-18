@@ -1,7 +1,7 @@
 // La carte « Bruit » : la couleur du bruit et sa tonalité. Elles se retiennent d'une pièce à l'autre et d'une visite à l'autre,
 // et voyagent avec l'ambiance (state/mixes.ts). Le son : src/audio/channels/noise.ts (voir docs/NOISE.md).
 
-export const NOISE_COLORS = ['white', 'pink', 'brown', 'green'] as const
+export const NOISE_COLORS = ['white', 'pink', 'brown', 'green', 'blue', 'violet'] as const
 export type NoiseColor = (typeof NOISE_COLORS)[number]
 
 export interface NoiseSetting {
@@ -14,15 +14,17 @@ export const isNoiseColor = (v: unknown): v is NoiseColor => NOISE_COLORS.includ
 export const clampTilt = (v: number) => (Number.isFinite(v) ? Math.min(1, Math.max(-1, Math.round(v * 100) / 100)) : 0)
 
 /** Le nom de chaque couleur (pastille, ambiance enregistrée, titre de l'écran verrouillé). */
-export const NOISE_NAMES: Record<NoiseColor, string> = { white: 'Bruit blanc', pink: 'Bruit rose', brown: 'Bruit brun', green: 'Bruit vert' }
+export const NOISE_NAMES: Record<NoiseColor, string> = { white: 'Bruit blanc', pink: 'Bruit rose', brown: 'Bruit brun', green: 'Bruit vert', blue: 'Bruit bleu', violet: 'Bruit violet' }
 /** Le mot court de la pastille. */
-export const NOISE_CHIPS: Record<NoiseColor, string> = { white: 'Blanc', pink: 'Rose', brown: 'Brun', green: 'Vert' }
+export const NOISE_CHIPS: Record<NoiseColor, string> = { white: 'Blanc', pink: 'Rose', brown: 'Brun', green: 'Vert', blue: 'Bleu', violet: 'Violet' }
 /** Sous-titre de la carte, par couleur. */
 export const NOISE_SUBS: Record<NoiseColor, string> = {
   white: 'blanc · clair et net',
   pink: 'rose · doux, équilibré',
   brown: 'brun · grave, profond',
   green: 'vert · médiums, nature',
+  blue: 'bleu · aérien, léger',
+  violet: 'violet · très fin, aigu',
 }
 
 export const DEFAULT_NOISE: NoiseSetting = { color: 'pink', tilt: 0 }

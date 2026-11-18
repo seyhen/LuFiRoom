@@ -74,10 +74,12 @@ test('lien : noise et tilt (en %, borné, illisible = 0, ignoré si la carte est
   const get = (q) => mixFromSearch(`?room=bedroom&v=2&${q}`)?.noise
   assert.deepEqual(get('mix=noise.50&noise=brown&tilt=-40'), { color: 'brown', tilt: -0.4 })
   assert.deepEqual(get('mix=noise.50&noise=green'), { color: 'green', tilt: 0 })
+  assert.deepEqual(get('mix=noise.50&noise=violet&tilt=30'), { color: 'violet', tilt: 0.3 })
+  assert.deepEqual(get('mix=noise.50&noise=blue'), { color: 'blue', tilt: 0 })
   assert.deepEqual(get('mix=noise.50&noise=white&tilt=500'), { color: 'white', tilt: 1 })
   assert.deepEqual(get('mix=noise.50&noise=white&tilt=-500'), { color: 'white', tilt: -1 })
   assert.deepEqual(get('mix=noise.50&noise=pink&tilt=abc'), { color: 'pink', tilt: 0 })
-  assert.equal(get('mix=noise.50&noise=violet&tilt=10'), undefined)
+  assert.equal(get('mix=noise.50&noise=turquoise&tilt=10'), undefined)
   assert.equal(get('mix=noise.50'), undefined)
   assert.equal(get('mix=fan.50&noise=brown&tilt=10'), undefined)
 })

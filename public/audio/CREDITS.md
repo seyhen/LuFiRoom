@@ -41,7 +41,7 @@ Toutes viennent de Pixabay, sous la **Pixabay Content License** (<https://pixaba
 
 ## Bruit (carte « Bruit »)
 
-Le bruit blanc, rose, brun et vert est généré en direct par `public/noise-worklet.js` (repli : `src/audio/noiseGen.ts`) : aucun fichier, aucune source extérieure, aucune licence à respecter. Voir `docs/NOISE.md`.
+Le bruit blanc, rose, brun, vert, bleu et violet est généré en direct par `public/noise-worklet.js` (repli : `src/audio/noiseGen.ts`) : aucun fichier, aucune source extérieure, aucune licence à respecter. Voir `docs/NOISE.md`.
 
 ## Radio lofi
 
