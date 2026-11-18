@@ -69,6 +69,15 @@ html.dusk .sky-night { transition: opacity 40s cubic-bezier(.45, 0, .55, 1) }
 .eyebrow, .count, .mute { white-space: nowrap }
 .mute { font: 800 12px/1 var(--font-body); color: var(--accent); background: none; border: 0; padding: 5px 8px; border-radius: 10px; cursor: pointer }
 .mute:focus-visible { outline: 2px solid var(--accent) }
+.fold { display: grid; place-items: center; width: 32px; height: 32px; margin-left: 2px; color: var(--ink-soft); background: none; border: 0; border-radius: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent }
+.fold svg { width: 18px; height: 18px; transition: transform .25s ease }
+.fold:focus-visible { outline: 2px solid var(--accent) }
+/* réduit : seul l'en-tête reste, le chevron se retourne et la rangée du bas ne laisse plus de vide */
+.dock-inner.shut .fold svg { transform: rotate(180deg) }
+.dock-inner.shut .dock-head { padding-bottom: 2px }
+.dock-inner.shut { padding-bottom: 8px }
+.mix[hidden] { display: none }
+@media (pointer: coarse) { .fold { width: 40px; height: 40px } }
 .mix { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding: 1px }
 .mix::-webkit-scrollbar { display: none }
 /* indice de défilement, même masque que .rooms : fondu à droite s'il reste des cartes, à gauche une fois défilé */

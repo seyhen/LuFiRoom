@@ -52,6 +52,8 @@ const EN: Record<string, string> = {
   silence: 'silence',
   Silence: 'Silence',
   'Tout couper': 'Mute all',
+  'Réduire le mixeur': 'Collapse the mixer',
+  'Déployer le mixeur': 'Expand the mixer',
   'Enregistrer celle-ci': 'Save this one',
   Partager: 'Share',
   'Ambiance enregistrée.': 'Mood saved.',
