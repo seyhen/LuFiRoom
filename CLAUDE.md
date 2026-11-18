@@ -69,7 +69,7 @@ src/
     noiseGen.ts             # repli de la carte « Bruit » sans AudioWorklet (mêmes formules que public/noise-worklet.js)
     thunder.ts              # le tonnerre de l'orage (dans le bus de la pluie ou de la tempête)
     channels/               # un canal par son : radio.ts, tracks.ts (pistes lofi), rain.ts, noise.ts (bruit blanc, rose, brun, vert ; public/noise-worklet.js), fan.ts, purr.ts, outside.ts, waves.ts, rails.ts…
-  ui/                       # TopBar, WeatherPicker (sélecteur de météo), WeatherSky (pluie et neige dans le ciel du fond), SkyLife (étoile filante, oiseau, éclair, crépuscule derrière la pièce), RoomPicker, Mixer, MixerCard, SleepTimer, FocusTimer (minuteur de concentration), QuickStart (puces Travailler / Lire / Dormir), StationButton (changer de station), MasterVolume, NoiseControls (couleur et tonalité de la carte « Bruit »), MixesMenu, SharedMix, InstallButton, icons.tsx, splash.ts (écran de chargement, HTML dans index.html)
+  ui/                       # TopBar, WeatherPicker (sélecteur de météo), WeatherSky (pluie et neige dans le ciel du fond), SkyLife (étoile filante, oiseau, éclair, crépuscule derrière la pièce), RoomPicker, Mixer, MixerCard, SleepTimer, FocusTimer (minuteur de concentration), QuickStart (la puce « Reprendre » : la dernière ambiance, sur le mixeur silencieux), StationButton (changer de station), MasterVolume, NoiseControls (couleur et tonalité de la carte « Bruit »), MixesMenu, SharedMix, InstallButton, icons.tsx, splash.ts (écran de chargement, HTML dans index.html)
   styles/tokens.css, app.css
 tests/                      # npm run test:unit : tests unitaires des fonctions pures (node --test)
 public/noise-worklet.js    # AudioWorklet des bruits blanc, rose, brun, vert (voir docs/NOISE.md)
