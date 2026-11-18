@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { CatmullRomCurve3, TubeGeometry, Vector3, type Group, type Mesh } from 'three'
 import { isActive, useStore } from '../../state/store'
 import { FAN_SPEEDS, FAN_SPIN, FAN_SPIN_CALM } from '../../state/fan'
@@ -27,9 +28,12 @@ const CORD = new TubeGeometry(new CatmullRomCurve3([[0, 0.02, -0.15], [-0.05, 0.
 // Les trois touches de vitesse du socle (faible, moyenne, forte, de gauche à droite à l'écran) : celle de la vitesse choisie est enfoncée
 // quand il tourne. Le témoin ambre s'allume avec lui. Les deux rubans noués à la grille s'envolent d'autant plus que le vent est fort.
 const KEY_UP = 0.062, KEY_DOWN = 0.05
-const KEY = rbox(0.05, 0.03, 0.035, 0.012)
-const RIBBON = rbox(0.03, 0.2, 0.004, 0.0015)
-const PILOT = gummy(0xfff0c8, { emissive: 0xffb54a, emissiveIntensity: 0, roughness: 0.4 })
+const KEY = rbox(0.055, 0.03, 0.04, 0.012)
+// les touches sont à l'avant du socle, du côté de la caméra : faible à gauche, fort à droite (à l'écran)
+const KEYS_AT = 0.55, KEYS_GAP = 0.42
+// un ruban noué : la bande et son nœud, en un seul maillage (un tracé de moins que deux)
+const RIBBON = mergeGeometries([rbox(0.03, 0.2, 0.004, 0.0015).clone().translate(0, -0.1, 0), SPH.clone().scale(0.016, 0.016, 0.016).translate(0, 0.004, 0)])!
+const PILOT = gummy(0xd9b078, { emissive: 0xffa631, emissiveIntensity: 0, roughness: 0.4 })
 const RIBBONS = [{ x: -0.07, m: B.blushDeep, ph: 0 }, { x: 0.075, m: B.mintSoft, ph: 2.1 }]
 
 /**
@@ -58,7 +62,11 @@ export function Fan({ position = [0.98, 1.35, -2.45] }: { position?: V3 }) {
     for (let i = 0; i < 3; i++) {
       s.press[i] = approach(s.press[i], on && i === idx ? 1 : 0, dt * 9)
       const key = keys.current[i]
-      if (key) key.position.y = KEY_UP + (KEY_DOWN - KEY_UP) * s.press[i]
+      if (key) {
+        key.position.y = KEY_UP + (KEY_DOWN - KEY_UP) * s.press[i]
+        const down = s.press[i] > 0.5 ? M.butterDeep : M.cream
+        if (key.material !== down) key.material = down
+      }
     }
     s.lamp = approach(s.lamp, on ? 1 : 0, dt * 5)
     PILOT.emissiveIntensity = s.lamp * 1.3
@@ -84,11 +92,11 @@ export function Fan({ position = [0.98, 1.35, -2.45] }: { position?: V3 }) {
       <Part geo={SPH} m={M.butterDeep} scale={0.042} p={[0, 0.345, 0]} />
       </Static>
       {[0, 1, 2].map((i) => (
-        <group key={i} rotation-y={-0.45 + (i - 1) * 0.32}>
-          <mesh ref={(el) => void (keys.current[i] = el)} geometry={KEY} material={i === 1 ? M.butterDeep : M.cream} position={[0, KEY_UP, 0.15]} />
+        <group key={i} rotation-y={KEYS_AT + (i - 1) * KEYS_GAP}>
+          <mesh ref={(el) => void (keys.current[i] = el)} geometry={KEY} material={M.cream} position={[0, KEY_UP, 0.148]} />
         </group>
       ))}
-      <mesh geometry={SPH} material={PILOT} scale={0.019} position={[Math.sin(-0.45) * 0.09, 0.083, Math.cos(-0.45) * 0.09]} />
+      <mesh geometry={SPH} material={PILOT} scale={0.019} position={[Math.sin(KEYS_AT) * 0.075, 0.088, Math.cos(KEYS_AT) * 0.075]} />
       <group ref={head} position={[0, HEAD_Y, 0]} rotation-y={-0.45}>
         <Static>
         <Part geo={cyl(0.012, 0.012, 0.09, 10)} m={M.butterDeep} p={[0.05, -0.05, -0.06]} rotation-z={Math.PI / 2} />
@@ -128,7 +136,7 @@ export function Fan({ position = [0.98, 1.35, -2.45] }: { position?: V3 }) {
         {/* deux rubans noués au haut de la grille, devant les pales : le vent les soulève */}
         {RIBBONS.map(({ x, m }, i) => (
           <group key={i} ref={(el) => void (ribbons.current[i] = el)} position={[x, R - 0.012, 0.122]}>
-            <mesh geometry={RIBBON} material={m} position={[0, -0.1, 0]} />
+            <mesh geometry={RIBBON} material={m} />
           </group>
         ))}
       </group>

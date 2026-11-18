@@ -104,7 +104,7 @@ function buildDog(): BufferGeometry {
     ell([0.6, 0.082, 0], [0.11, 0.062, 0.075], { color: CREAM, k: 0.04 }),
     ...pair(ell([0.52, 0.085, 0.075], [0.075, 0.058, 0.05], { color: HONEY, k: 0.04 })),
     ell([0.7, 0.103, 0], [0.028, 0.022, 0.034], { color: INK, k: 0.015 }),
-    ...pair(ell([0.54, 0.185, 0.062], [0.05, 0.02, 0.034], { color: TAN, k: 0.03, rot: [0.2, 0, 0.1] })),
+    ...pair(ell([0.54, 0.185, 0.062], [0.05, 0.024, 0.036], { color: TAN, k: 0.03, rot: [0.2, 0, 0.1] })),
     // les oreilles tombantes, couchées de part et d'autre de la tête
     ...[1, -1].map((s) => cone([0.4, 0.175, s * 0.085], [0.32, 0.06, s * 0.215], 0.07, 0.055, { color: EAR, k: 0.035 })),
     // la queue, enroulée sur le flanc visible, bout clair

@@ -18,7 +18,7 @@ export const FAN_NAMES: Record<FanSpeed, string> = { low: 'Vitesse faible', mid:
 /** Le mot court de la pastille. */
 export const FAN_CHIPS: Record<FanSpeed, string> = { low: 'Faible', mid: 'Moyen', high: 'Fort' }
 /** Sous-titre de la carte, par vitesse. */
-export const FAN_SUBS: Record<FanSpeed, string> = { low: 'ventilateur · brise douce', mid: 'ventilateur · souffle régulier', high: 'ventilateur · plein vent' }
+export const FAN_SUBS: Record<FanSpeed, string> = { low: 'brise douce', mid: 'souffle régulier', high: 'plein vent' }
 
 /** Ce que fait un toucher sur l'objet : `on` / `speed` donnent l'état d'après (`on` faux : il s'éteint, et repart de « Faible »). */
 export function fanTap(on: boolean, speed: FanSpeed): { on: boolean; speed: FanSpeed } {

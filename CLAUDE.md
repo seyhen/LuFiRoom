@@ -14,6 +14,7 @@ Nom : « LufiRoom » (le dossier et les clés de stockage gardent « chambre-lof
 - `docs/RADIO.md` : les stations de la radio générative.
 - `docs/WEATHER.md` : la météo (sélecteur, son, ce qu'on voit dehors).
 - `docs/NOISE.md` : la carte « Bruit » (blanc, rose, brun, vert, bleu, violet ; worklet, tonalité, niveaux).
+- `docs/FAN.md` : le ventilateur de la chambre à trois vitesses (son, pales, pastilles, règle du toucher, lien) et le chien endormi de la cabane (souffle partagé entre le son et le corps).
 - `docs/captures/` : captures du prototype, jour et nuit, mobile et desktop.
 
 ## Stack cible
