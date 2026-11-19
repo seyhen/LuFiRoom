@@ -45,7 +45,7 @@ export function Wing() {
     const ph = (t % 1.3) / 1.3, flash = (ph < 0.06 || (ph > 0.14 && ph < 0.2)) ? 1 : 0
     red.current.scale.setScalar(0.3 + n * 0.5)
     ;(red.current.material as typeof O.navRed).opacity = 0.35 + n * 0.55
-    strobe.current.scale.setScalar(0.9)
+    strobe.current.scale.setScalar(0.6)
     ;(strobe.current.material as typeof O.strobe).opacity = flash * (0.25 + n * 0.7)
   })
   return (

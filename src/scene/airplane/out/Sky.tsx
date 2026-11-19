@@ -10,8 +10,8 @@ import { O } from './materials'
 import { S } from './layout'
 
 /** Où sont la lune (et le soleil le jour) et l'aurore, en coordonnées d'écran (voir layout.ts). */
-const MOON = S(-4.6, 7.0, -30)
-const AURORA = S(-6.4, 4.6, -30)
+const MOON = S(-5.0, 5.6, -12)
+const AURORA = S(-7.0, 3.4, -12)
 
 /**
  * Le ciel qu'on voit loin derrière : la lune (ou le soleil le jour) et son halo, en haut à gauche de l'écran, au-dessus des nuages qui s'y fondent ;
@@ -50,7 +50,7 @@ export function Sky() {
       </group>
       <group position={AURORA}>
         <mesh ref={aur} material={O.aurora} raycast={noRay} renderOrder={-3}>
-          <planeGeometry args={[7.5, 3.6]} />
+          <planeGeometry args={[6, 3]} />
         </mesh>
       </group>
     </group>

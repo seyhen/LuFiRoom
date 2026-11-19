@@ -17,12 +17,12 @@ export function CabinLights() {
   useFrame(() => {
     const n = smooth(mood.night)
     port.current.color.copy(tmp.copy(SUN).lerp(MOON, n))
-    port.current.intensity = (0.5 + n * 0.6) * Math.PI
+    port.current.intensity = (0.3 + n * 0.3) * Math.PI
     bounce.current.intensity = (0.16 + n * 0.5) * Math.PI
   })
   return (
     <>
-      <pointLight ref={port} color={0xfff0d0} intensity={0} distance={5.5} decay={1.4} position={[PORTS[0].x + 0.1, 1.75, -2.45]} />
+      <pointLight ref={port} color={0xfff0d0} intensity={0} distance={5.5} decay={1.4} position={[PORTS[0].x + 0.35, 1.75, -2.2]} />
       <pointLight ref={bounce} color={0xffe2c4} intensity={0} distance={11} decay={1.3} position={[3.0, 2.2, 3.0]} />
     </>
   )

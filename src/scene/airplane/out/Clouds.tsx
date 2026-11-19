@@ -37,7 +37,7 @@ function cloudItems(): Item[] {
     const edge = half / Math.max(Math.abs(dx), Math.abs(dz))
     const rad = 0.8 + r() * 0.55, d = edge + 0.35 + r() * 0.6
     const front = dx > 0.3 || dz > 0.3
-    out.push({ p: [SLAB.c + dx * d, (front ? -1.05 : -0.7) + (r() - 0.5) * 0.24, SLAB.c + dz * d], s: [rad, rad * 0.7, rad], c: i % 3 === 0 ? SIDE : TOP })
+    out.push({ p: [SLAB.c + dx * d, (front ? -1.05 : -1.25) + (r() - 0.5) * 0.24, SLAB.c + dz * d], s: [rad, rad * 0.7, rad], c: i % 3 === 0 ? SIDE : TOP })
   }
   for (const [y, k, n, sz] of [[-1.6, 0.94, 14, 1.3], [-2.4, 0.7, 9, 1.25], [-3.1, 0.42, 5, 1.05]] as const) {
     for (let i = 0; i < n; i++) {
@@ -71,8 +71,8 @@ function cloudItems(): Item[] {
   return out
 }
 
-const DAY = new Color(0xeef3fd), NIGHT = new Color(0x7e90cf), RAIN = new Color(0xb5bccb), STORM = new Color(0x6c7488)
-const EM_DAY = new Color(0xe2eafb), EM_NIGHT = new Color(0x5568b8)
+const DAY = new Color(0xeef3fd), NIGHT = new Color(0x7384b8), RAIN = new Color(0xb5bccb), STORM = new Color(0x6c7488)
+const EM_DAY = new Color(0xe2eafb), EM_NIGHT = new Color(0x46568f)
 
 /** Le matériau des nuages suit le temps : blanc bleuté le jour, lunaire la nuit (avec un éclat propre), plombé sous la pluie, ardoise à l'orage. */
 export function CloudSea() {

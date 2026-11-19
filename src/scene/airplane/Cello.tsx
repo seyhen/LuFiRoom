@@ -70,7 +70,7 @@ export function Cello({ position }: { position: V3 }) {
       b.at = t
       if (on && !reduceMotion) {
         b.flip = !b.flip
-        puffs.emit(b.flip ? noteTexA : noteTexB, position[0] + 0.2 + rand(-0.05, 0.05), position[1] + 0.9, position[2] + rand(-0.15, 0.15), { size: 0.24, life: 3.2, vy: 0.3, sway: 0.14 })
+        puffs.emit(b.flip ? noteTexA : noteTexB, position[0] + 0.2 + rand(-0.05, 0.05), position[1] + 0.9, position[2] + rand(-0.15, 0.15), { size: 0.18, life: 2.6, vy: 0.3, sway: 0.14 })
       }
     }
     const k = on ? Math.exp(-(t - b.at) * 1.4) : 0
