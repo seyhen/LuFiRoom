@@ -1,6 +1,6 @@
 # LufiRoom
 
-Webapp d'ambiance sonore : des pièces en 3D isométrique, style « gummy » (dix-neuf aujourd'hui : chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit, igloo, cabane perchée, laverie de nuit, serre, tente de camping, salle de bain, avion de nuit), où chaque objet est un interrupteur de son. On touche la radio pour lancer la musique lofi, le ventilo pour le bruit blanc, etc., et on choisit la météo (pluie, orage, neige…) dans le sélecteur du haut. On compose son ambiance pour travailler, lire ou dormir.
+Webapp d'ambiance sonore : des pièces en 3D isométrique, style « gummy » (dix-neuf aujourd'hui : chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit, igloo, cabane perchée, laverie de nuit, serre, tente de camping, salle de bain, avion de nuit, oasis du désert), où chaque objet est un interrupteur de son. On touche la radio pour lancer la musique lofi, le ventilo pour le bruit blanc, etc., et on choisit la météo (pluie, orage, neige…) dans le sélecteur du haut. On compose son ambiance pour travailler, lire ou dormir.
 
 Nom : « LufiRoom » (le dossier et les clés de stockage gardent « chambre-lofi »).
 
@@ -43,12 +43,12 @@ src/
   state/snore.ts           # le souffle du chien endormi de la cabane, partagé par le son et le corps (voir docs/FAN.md, « Le chien de la cabane »)
   state/focus.ts            # le minuteur de concentration 25/5 ou 50/10
   math.ts, motion.ts        # petits utilitaires (maths, prefers-reduced-motion)
-  rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen, lighthouse, submarine, market, igloo, treehouse, laundromat, greenhouse, tent, bathroom, airplane), index.ts, playlist.ts (les morceaux de la radio), weather.ts (enregistrements de la météo partagés)
+  rooms/                    # types.ts (format d'une pièce), une pièce par fichier (bedroom, cabin, cafe, beach, train, roof, atelier, onsen, lighthouse, submarine, market, igloo, treehouse, laundromat, greenhouse, tent, bathroom, airplane, oasis), index.ts, playlist.ts (les morceaux de la radio), weather.ts (enregistrements de la météo partagés)
   scene/
     Stage.tsx               # <Canvas>, caméra iso, lumières, cadrage, rotation au drag
     scenes.ts               # associe chaque pièce à sa scène 3D ; ajouter une pièce : docs/ROOMS.md
     <pièce>/out/            # le décor du dehors de chaque pièce (Surroundings.tsx) : forêt, rue, mer, toits… (bedroom/sky pour la chambre ; voir docs/ROOMS.md, « Le dehors d'une pièce »)
-    bedroom/, cabin/, cafe/, beach/, train/, roof/, atelier/, onsen/, lighthouse/, submarine/, market/, igloo/, treehouse/, laundromat/, greenhouse/, tent/, bathroom/, airplane/   # la scène de chaque pièce, un fichier par objet, ses matériaux et ses textures
+    bedroom/, cabin/, cafe/, beach/, train/, roof/, atelier/, onsen/, lighthouse/, submarine/, market/, igloo/, treehouse/, laundromat/, greenhouse/, tent/, bathroom/, airplane/, oasis/   # la scène de chaque pièce, un fichier par objet, ses matériaux et ses textures
     objects/                # objets partagés entre pièces : Window, Radio, Lamp, Cat, FairyLights, Candles, Candle, Steam, Flames, ScrollLayer, Garment, ViewFlakes, FlashVeil, FlyBy (oiseau de loin qui passe), OutdoorPrecip, GlowPoints, useBeat, beads
     nature/                 # pierres, feuillages, feuilles, fougères, plantes retombantes, rosettes, sapins : formes et matériaux partagés
     parts.tsx, Static.tsx   # briques (Part, Batch, rbox, cyl, worldUV, orient) ; <Static> regroupe le décor immobile en peu de tracés
@@ -139,6 +139,7 @@ Les défauts qui reviennent le plus, à traquer avant de dire « fini » (explic
 - **Un récipient fermé** : `cyl` est un cylindre plein, son dessus couvre ce qu'on pose dedans (le cacao d'un quart, l'eau d'un seau, la neige d'une casserole). Un récipient qu'on regarde dedans est ouvert : paroi, paroi intérieure, fond, bord (`Vessel` dans `scene/igloo/Vessel.tsx`), et son contenu assez haut pour que le bord de devant ne le cache pas.
 - **L'arrière est vide** : le haut de l'écran, c'est le fond de la pièce (la caméra voit +x et +z, le fond est en -x, -z). Un aplat de ciel là-haut est un défaut : pose des volumes derrière (immeubles, tours, collines…) qui dépassent le mur du fond et restent entre 5 et 10 du centre, sinon `skyFade` les efface.
 - **Un dehors qui ne va pas avec la pièce** : mêmes matières, mêmes teintes, même pays et même activité qu'à l'intérieur (marché japonais : immeubles sombres de béton, enseignes en kana et kanji, étals de street food, distributeurs, fils ; jamais de brique européenne ni de lettrage latin). Le dehors du toit reste des toits plus bas et une ville de la même famille que les tours de la pièce.
+- **Un horizon en lame** : des dunes ou des collines lointaines dont la face a plus de 0,7 de pente (la caméra regarde à 38°) cachent le sol derrière elles et font une arête nette sur le ciel, au lieu de se fondre dans la brume. Garde la pente sous 0,5 là où `skyFade` commence à voiler, et fais les palmiers du fond à 6 à 8 m (au-delà, leur couronne sort par le haut de l'écran) (oasis, 2026-11-19).
 - **Un dehors à une autre échelle** : le dehors continue ce que la pièce montre déjà, à la même taille (petites tours dans la pièce du toit = petites tours dehors, pas de grandes). Compare fenêtres, étages, arbres côte à côte sur la capture.
 - **Des coins du haut vides sur grand écran** : à 1440 px ils sont à 13 à 18 du centre, au-delà du fondu standard de `skyFade` (`r1` ≈ 12,5). Un décor lointain, bas et pâle, prend son propre fondu large (`r0` ≈ 9,5, `r1` ≈ 17,5 : falaises du phare, glaciers de l'igloo). Vérifie en 1440 et en 390 px (2026-11-11).
 - **Un halo qui ne s'éteint pas avec la distance** : `skyFade` ne touche pas les `SpriteMaterial` ; fais un plan face caméra en matériau additif `skyFade({ additive: true })` (méduses du sous-marin).

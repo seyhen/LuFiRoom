@@ -66,8 +66,8 @@ export function WallKilim({ position }: { position: V3 }) {
 export function JarCorner() {
   return (
     <Static>
-      <Amphora p={[-2.65, 0, -2.5]} h={1.05} ry={0.5} />
-      <Amphora p={[-2.2, 0, -2.78]} h={0.8} ry={2} plug />
+      <Amphora p={[-2.5, 0, -2.45]} h={1.05} ry={0.5} />
+      <Amphora p={[-1.7, 0, -2.6]} h={0.8} ry={2} plug />
       <group position={[-2.75, 0, -1.55]}>
         <mesh geometry={JAR} material={D.clayPlain} scale={0.62} castShadow receiveShadow />
         <Part geo={cyl(0.12, 0.12, 0.01, 16)} m={D.grain} p={[0, 0.58, 0]} castShadow={false} />

@@ -31,8 +31,8 @@ export function OasisScene() {
         <Cushion position={[0.35, 0.012, 1.5]} ry={0.5} s={0.6} />
         <Bolster position={[-1.9, 0.012, 0.55]} ry={0.25} />
         <Pouf position={[0.0, 0, 2.6]} />
-        <Slippers position={[0.75, 0.012, 1.15]} ry={0.6} />
-        <WallKilim position={[-1.5, 1.38, -2.975]} />
+        <Slippers position={[1.0, 0.016, 2.3]} ry={0.35} />
+        <WallKilim position={[-1.45, 1.52, -2.975]} />
         <FrontCorner />
       </Static>
       <Rugs />

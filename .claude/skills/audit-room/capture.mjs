@@ -20,7 +20,7 @@ const args = process.argv.slice(2), flags = args.filter((a) => a.startsWith('--'
 const out = pos[0]
 if (!out) { console.error('usage: capture.mjs <dossier> [pièces] [--mobile] [--sounds] [--check] [--once=d|n]'); process.exit(1) }
 mkdirSync(out, { recursive: true })
-const ALL = ['bedroom', 'cabin', 'cafe', 'beach', 'train', 'roof', 'atelier', 'onsen', 'lighthouse', 'submarine', 'market', 'igloo', 'treehouse', 'laundromat', 'greenhouse', 'tent', 'bathroom', 'airplane']
+const ALL = ['bedroom', 'cabin', 'cafe', 'beach', 'train', 'roof', 'atelier', 'onsen', 'lighthouse', 'submarine', 'market', 'igloo', 'treehouse', 'laundromat', 'greenhouse', 'tent', 'bathroom', 'airplane', 'oasis']
 const ids = pos[1] ? pos[1].split(',') : ALL
 const mobile = flags.includes('--mobile'), sounds = flags.includes('--sounds'), check = flags.includes('--check')
 const once = flags.find((f) => f.startsWith('--once='))?.slice(7)

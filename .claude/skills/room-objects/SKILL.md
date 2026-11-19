@@ -170,6 +170,9 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite (
 | Salle de bain | douche à effet pluie dans sa niche de zellige, la pluie chaude sur le carrelage avec la réverbération d'une pièce carrelée (son synthétisé, provisoire) | `shower` |
 | Avion de nuit | hublot sur l'aile et son réacteur : le souffle grave des moteurs entendu dans la cabine (son synthétisé, provisoire) | `jet` |
 | Avion de nuit | violoncelle sanglé sur le siège voisin : nappe de cordes et phrases lentes en ré majeur (son synthétisé, provisoire) | `lullaby` |
+| Oasis du désert | auvent de toile rayée sur ses perches, le vent doux qui passe sur le sable des dunes (son synthétisé, provisoire) | `dunes` |
+| Oasis du désert | grand palmier dattier, les palmes qui bruissent dans la brise (son synthétisé, provisoire) | `palms` |
+| Oasis du désert | mare et sa petite source de pierre, le filet d'eau et le clapotis rond (son synthétisé, provisoire) | `oasis` |
 
 Mets ce tableau à jour à chaque objet ajouté **et à chaque son retiré** : la liste réelle est `sounds` de chaque `src/rooms/<id>.ts` (`grep -n "id: '" src/rooms/*.ts`), pas ce tableau.
 

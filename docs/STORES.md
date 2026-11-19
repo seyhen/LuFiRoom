@@ -88,12 +88,12 @@ Aucun contenu sensible : pas de violence, de contenu sexuel, de langage cru, de 
 > LufiRoom n'a pas besoin de compte : ouvrir l'appli suffit. Pour tester :
 > 1. Ouvrir l'appli : une pièce en 3D s'affiche. Toucher un objet (la radio, le ventilateur, la fenêtre…) lance son son. Le son ne démarre qu'après un toucher.
 > 2. Le mixeur (barre du bas ou panneau) liste un son par carte avec son volume.
-> 3. Choisir une autre pièce avec le sélecteur de pièces du haut (17 pièces).
+> 3. Choisir une autre pièce avec le sélecteur de pièces du haut (19 pièces).
 > 4. Lancer un son, verrouiller l'écran : le son continue (mode d'arrière-plan « audio »). Les commandes de lecture/pause apparaissent sur l'écran de verrouillage.
 > 5. Minuteur de sommeil : menu du haut, choisir une durée ; le son s'estompe à la fin.
 > 6. Couper le réseau : tout fonctionne (pièces, sons et musique embarqués dans l'appli).
 >
-> Pourquoi ce n'est pas un simple site web : l'appli embarque ses 17 pièces et tous ses sons (hors ligne complet, pas de chargement réseau) ; elle joue en arrière-plan écran verrouillé avec les commandes de l'écran de verrouillage (Media Session / mode audio d'arrière-plan) ; elle a un minuteur de sommeil ; elle s'installe comme une vraie appli, avec son icône et son écran de lancement. Aucune donnée n'est collectée ; aucun achat intégré ; aucune publicité.
+> Pourquoi ce n'est pas un simple site web : l'appli embarque ses 19 pièces et tous ses sons (hors ligne complet, pas de chargement réseau) ; elle joue en arrière-plan écran verrouillé avec les commandes de l'écran de verrouillage (Media Session / mode audio d'arrière-plan) ; elle a un minuteur de sommeil ; elle s'installe comme une vraie appli, avec son icône et son écran de lancement. Aucune donnée n'est collectée ; aucun achat intégré ; aucune publicité.
 
 À vérifier avant d'envoyer cette note : chaque point doit être vrai dans la version soumise (emplacements des menus, commandes de l'écran verrouillé sur iOS, extinction du minuteur). Je n'ai pas testé sur un appareil iOS : ne rien affirmer qui n'a pas été essayé. Les emplacements exacts des boutons sont à adapter à l'interface réelle.
 

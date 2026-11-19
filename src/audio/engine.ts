@@ -183,9 +183,9 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   canvas: { build: canvas, base: 1.45 }, // provisoire : synthèse, la pluie sur la toile de la tente (sonie à -27 LUFS au volume par défaut)
   percolator: { build: percolator, base: 1.4 }, // provisoire : synthèse, les glouglous du percolateur (sonie à -27 LUFS au volume par défaut)
   crickets: { build: crickets, base: 1.45 }, // provisoire : synthèse, le chœur de grillons de la nuit (sonie à -27 LUFS au volume par défaut)
-  dunes: { build: dunes, base: 1.0 }, // provisoire : synthèse, le vent des dunes
-  palms: { build: palms, base: 1.0 }, // provisoire : synthèse, les palmes dans la brise
-  oasis: { build: oasis, base: 1.0 }, // provisoire : synthèse, la source qui clapote dans la mare
+  dunes: { build: dunes, base: 1.4 }, // provisoire : synthèse, le vent des dunes (sonie à -27,7 LUFS au volume par défaut)
+  palms: { build: palms, base: 1.9 }, // provisoire : synthèse, les palmes dans la brise (sonie à -27,4 LUFS au volume par défaut)
+  oasis: { build: oasis, base: 1.4 }, // provisoire : synthèse, la source qui clapote dans la mare (sonie à -27,2 LUFS au volume par défaut)
   jet: { build: jet, base: 0.72 }, // provisoire : synthèse, le souffle grave des moteurs entendu depuis la cabine
   lullaby: { build: lullaby, base: 1.34 }, // provisoire : synthèse, la nappe de cordes et le violoncelle de la berceuse
   noise: { build: noise, base: 0.5 }, // sonie (pondérée A) du rose à 0,4 : celle du ventilateur et de la pluie par défaut ; couleurs égalisées dans public/noise-worklet.js

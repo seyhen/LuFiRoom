@@ -6,7 +6,7 @@ import { gridIcon } from './icons'
 
 /**
  * Choix de la pièce : une puce par pièce, de vrais boutons, sur une ligne qui défile, et un bouton « toutes les pièces » qui les ouvre en grille
- * (sur téléphone, la ligne n'en montre que quatre sur dix-sept). Rien à choisir tant qu'il n'y en a qu'une.
+ * (sur téléphone, la ligne n'en montre que quatre sur dix-neuf). Rien à choisir tant qu'il n'y en a qu'une.
  */
 export function RoomPicker() {
   const current = useStore((s) => (s.leaving ?? s.room))

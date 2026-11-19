@@ -85,7 +85,7 @@ Les vingt-huit morceaux sont ceux que le propriétaire a fournis (sept le 2026-1
 ## Sons synthétisés
 
 Tant qu'un son n'a pas d'enregistrement dans `loops` de sa pièce (`src/rooms/`), il reste synthétisé en direct (moteur de la phase 1) : rien à créditer. C'est le cas de la radio, tant qu'aucune piste n'est déclarée : ses cinq stations sont calculées en direct (`src/audio/stations.ts`).
-Chaque pièce a désormais des enregistrements pour ses sons (voir les sections ci-dessus). Restent synthétisés : le robinet, la mousse et la douche de la salle de bain (`faucet`, `suds`, `shower`, aucun fichier), la cloche de bouée du phare, les oiseaux et les grillons du jardin de l'onsen, la pluie du marché et les vagues du phare, ainsi que la radio.
+Chaque pièce a désormais des enregistrements pour ses sons (voir les sections ci-dessus). Restent synthétisés : le robinet, la mousse et la douche de la salle de bain (`faucet`, `suds`, `shower`, aucun fichier), le vent des dunes, les palmes et la source de la mare de l'oasis (`dunes`, `palms`, `oasis`, aucun fichier), la cloche de bouée du phare, les oiseaux et les grillons du jardin de l'onsen, la pluie du marché et les vagues du phare, ainsi que la radio.
 
 ## Boucles ajoutées le 2026-10-17 (toit, onsen, phare, sous-marin, marché, plage, train)
 
