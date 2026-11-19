@@ -43,7 +43,7 @@ Cahier des charges d'origine :
 - `public/audio/CREDITS.md` à jour.
 
 ## Phase 3 : plusieurs chambres
-État : dix-sept pièces (chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit, igloo, cabane perchée, laverie de nuit, serre, tente de camping, salle de bain). Guide : `docs/ROOMS.md`.
+État : dix-neuf pièces (chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit, igloo, cabane perchée, laverie de nuit, serre, tente de camping, salle de bain, avion de nuit). Guide : `docs/ROOMS.md`.
 
 - [x] Format de pièce stabilisé : `src/rooms/types.ts` (objets, sons, enregistrements, ciel, lumières), scène associée dans `src/scene/scenes.ts`.
 - [x] Moteur lu depuis la pièce courante : scène, lumières, hotspots, mixeur, audio (bus et canaux par pièce).
@@ -122,7 +122,7 @@ Rien de ceci n'est décidé une fois pour toutes : à confirmer avant de l'attaq
 
 - [x] **Ciel vivant et vrai jour / nuit** : le jour et la nuit suivent l'heure (passage de 40 s avec crépuscule, un geste prend la main jusqu'au prochain changement de période, `src/state/daylight.ts`) ; orage rare et doux (éclair dehors, tonnerre grave, jamais pendant le fondu du minuteur), étoile filante et oiseau dans le ciel, mouette et avion à la plage, pigeon au toit. Écartés : la feuille d'érable de l'onsen (cachée par la brume) et le jet de vapeur de l'expresso (invisible sur le carrelage).
 - [x] **Météo** (1re version) : un sélecteur dans la barre du haut remplace le nuage ; dégagé, bruine, pluie, orage, neige, tempête de neige, dans toutes les pièces (carte « Météo » du mixeur, entendue d'où l'on est), pluie et neige dans le ciel du fond. Voir `docs/WEATHER.md`.
-- [x] **Carte « Bruit »** : bruit blanc, rose, brun, vert, bleu et violet dans les dix-sept pièces, généré en direct par un AudioWorklet (aucune boucle, repli par tampons de 30 s), couleur et tonalité réglables, retenues et partagées avec les ambiances. Voir `docs/NOISE.md`.
+- [x] **Carte « Bruit »** : bruit blanc, rose, brun, vert, bleu et violet dans les dix-neuf pièces, généré en direct par un AudioWorklet (aucune boucle, repli par tampons de 30 s), couleur et tonalité réglables, retenues et partagées avec les ambiances. Voir `docs/NOISE.md`.
 - [ ] Météo : vrais enregistrements de bruine, orage, neige et tempête de neige ; vues peintes enneigées.
 - [ ] Les derniers sons synthétisés à enregistrer (voir Phase 2), son de neige et de bois qui craque pour la cabane, pistes de Noël.
 - [ ] Modèle Blender en `.glb` (Phase 2) : en suspens, les pièces sont construites en code.

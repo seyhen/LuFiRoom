@@ -23,6 +23,8 @@ const imports: Record<string, () => Promise<{ default: ComponentType }>> = {
   greenhouse: () => import('./greenhouse/GreenhouseScene').then((m) => ({ default: m.GreenhouseScene })),
   tent: () => import('./tent/TentScene').then((m) => ({ default: m.TentScene })),
   bathroom: () => import('./bathroom/BathroomScene').then((m) => ({ default: m.BathroomScene })),
+  airplane: () => import('./airplane/AirplaneScene').then((m) => ({ default: m.AirplaneScene })),
+  oasis: () => import('./oasis/OasisScene').then((m) => ({ default: m.OasisScene })),
 }
 
 const loads = new Map<string, Promise<{ default: ComponentType }>>()

@@ -1,5 +1,5 @@
 # Vérifications à chaque push et à chaque pull request : build TypeScript, musique des stations, test de fumée dans Chromium
-# (les quinze pièces, téléphone et ordinateur), et contrôle des fichiers son. Voir la section « Commandes » de CLAUDE.md.
+# (toutes les pièces, téléphone et ordinateur), et contrôle des fichiers son. Voir la section « Commandes » de CLAUDE.md.
 name: CI
 
 on:
@@ -50,7 +50,7 @@ jobs:
       - name: Chromium pour Playwright
         run: npx playwright install --with-deps chromium
 
-      - name: Test de fumée (quinze pièces, 390 px et ordinateur)
+      - name: Test de fumée (toutes les pièces, 390 px et ordinateur)
         run: npm run test:smoke
 
       - name: Captures des pièces en échec

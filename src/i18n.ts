@@ -242,6 +242,20 @@ const EN: Record<string, string> = {
   'la pluie sur le carrelage': 'the rain on the tiles',
   'sur la vitre embuée': 'on the steamed-up glass',
   'sur le verre': 'on the glass',
+  // l'avion de nuit
+  'Avion de nuit': 'Night flight',
+  'Une cabine d’avion de nuit en vol long-courrier, en 3D isométrique : deux rangées de sièges bleu nuit tissés de constellations contre le flanc, des hublots ovales sur une mer de nuages éclairée par la lune, une aurore lointaine et une aile avec son feu rouge, des coffres à bagages et leurs bandeaux de lumière indigo, une lampe de lecture, un voyageur endormi sous un polaire lilas avec un masque de sommeil, un violoncelle sanglé sur son siège, un casque et une tablette de vol sur une tablette rabattue, un plateau repas avec son thé qui fume, un chariot de service, un rideau d’office, une porte de secours et des pastilles lumineuses le long du couloir.':
+    'A night cabin on a long-haul flight, in isometric 3D: two rows of midnight-blue seats woven with constellations along the fuselage, oval windows onto a sea of clouds lit by the moon, a faraway aurora and a wing with its red light, overhead bins with their indigo strips of light, a reading lamp, a sleeping traveller under a lilac fleece with a sleep mask, a cello strapped into its own seat, headphones and a flight tablet on a folded-down table, a meal tray with its steaming tea, a service trolley, a galley curtain, an emergency door and lights along the aisle floor.',
+  'Casque · lofi': 'Headphones · lofi',
+  'Hublot · les moteurs': 'Window · the engines',
+  'Violoncelle · la berceuse': 'Cello · the lullaby',
+  'Lampe de lecture · jour / nuit': 'Reading light · day / night',
+  'Casque lofi': 'Lofi headphones',
+  Moteurs: 'Engines',
+  Berceuse: 'Lullaby',
+  'le souffle grave des réacteurs': 'the deep hush of the engines',
+  'un violoncelle qui berce': 'a cello rocking you to sleep',
+  'à travers le fuselage': 'through the fuselage',
   Forêt: 'Forest',
   Cigales: 'Cicadas',
   'l’été dans le chêne': 'summer in the oak',
@@ -547,6 +561,22 @@ const EN: Record<string, string> = {
   'dans les fougères, dehors': 'in the ferns outside',
   'Lampe à pétrole · jour / nuit': 'Oil lamp · day / night',
   'dans les sapins': 'in the firs',
+  // l'oasis du désert
+  Oasis: 'Oasis',
+  'Une oasis du désert, en 3D isométrique : un campement de pierre et de toile au bord d’une petite mare, deux murs de pisé dont un percé d’une arche sur les dunes, un auvent de toile rayée tendu sur des perches, des tapis posés les uns sur les autres avec des coussins, un plateau de cuivre avec sa théière et ses verres, un oud sur un coussin, une lanterne de laiton ajouré, la mare entre les rochers et les roseaux, un grand palmier dattier, et dehors les dunes dorées, un bosquet de palmiers, un village de terre au loin et un dromadaire accroupi, sous un ciel de désert plein d’étoiles la nuit.':
+    'A desert oasis, in isometric 3D: a camp of stone and canvas by a small pool, two mud-brick walls, one pierced by an arch onto the dunes, a striped canvas awning stretched on poles, rugs laid one on top of another with cushions, a copper tray with its teapot and glasses, an oud on a cushion, a pierced brass lantern, the pool among rocks and reeds, a tall date palm, and outside the golden dunes, a grove of palms, a mud village in the distance and a kneeling dromedary, under a desert sky full of stars at night.',
+  'Oud · lofi': 'Oud · lofi',
+  Oud: 'Oud',
+  'Auvent · le vent des dunes': 'Awning · the wind in the dunes',
+  Dunes: 'Dunes',
+  'le vent sur le sable': 'wind over the sand',
+  'Palmier · les palmes': 'Palm tree · the fronds',
+  Palmier: 'Palm tree',
+  'les palmes dans la brise': 'fronds in the breeze',
+  'Mare · la source': 'Pool · the spring',
+  Mare: 'Pool',
+  'la source qui clapote': 'the spring lapping',
+  'sur les dunes': 'over the dunes',
 }
 
 /** Traduit un texte écrit en français dans la langue choisie. Hors composant : lit la langue du moment. */

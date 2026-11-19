@@ -52,6 +52,11 @@ export interface FadeOpts {
   below?: number
   /** Un matériau additif (reflets, halos) s'éteint vers le noir au lieu de prendre la couleur du ciel (il l'ajouterait). */
   additive?: boolean
+  /**
+   * La nuit, des étoiles fines (fixes à l'écran, comme un ciel) là où le matériau s'est fondu dans le ciel : pour le sol qui couvre le haut de
+   * l'écran (le désert, 2026-11-19). 0 : aucune ; 1 : une étoile pour trente cases environ.
+   */
+  stars?: number
 }
 
 /**
@@ -59,7 +64,7 @@ export interface FadeOpts {
  * la pièce (et la hauteur, si on la donne). Se combine avec `snowTop` et les autres `onBeforeCompile` (appelés d'abord).
  */
 export function skyFade<T extends Material>(m: T, o: FadeOpts = {}): T {
-  const { c = [-0.07, -0.07], r0 = 7, r1 = 12, sx = 1, sz = 1, y0 = 40, y1 = 60, below = -40, additive = false } = o
+  const { c = [-0.07, -0.07], r0 = 7, r1 = 12, sx = 1, sz = 1, y0 = 40, y1 = 60, below = -40, additive = false, stars = 0 } = o
   const prev = m.onBeforeCompile, key = m.customProgramCacheKey()
   const f = (v: number) => v.toFixed(3)
   m.onBeforeCompile = (sh, r) => {
@@ -110,13 +115,24 @@ export function skyFade<T extends Material>(m: T, o: FadeOpts = {}): T {
           float moon_ = uSkyN * (1.0 - smoothstep(0.10, 0.38, dot(gl_FragColor.rgb, vec3(0.299, 0.587, 0.114))));
           gl_FragColor.rgb = gl_FragColor.rgb * (1.0 + ${f(NIGHT_GAIN)} * moon_) + vec3(0.012, 0.022, 0.05) * moon_;`}
           gl_FragColor.rgb = mix(gl_FragColor.rgb, ${additive ? 'vec3(0.0)' : 'sky_'}, k_);
+          ${stars > 0 && !additive ? `// Des étoiles dans le ciel de la nuit : des points fixes à l'écran (une case sur trente, au hasard), que seul le sol fondu dans le ciel montre.
+          {
+            vec2 cell_ = gl_FragCoord.xy / (uSkyRes.y / 120.0);
+            vec2 id_ = floor(cell_);
+            float h1_ = fract(sin(dot(id_, vec2(127.1, 311.7))) * 43758.5453);
+            float h2_ = fract(sin(dot(id_, vec2(269.5, 183.3))) * 43758.5453);
+            vec2 cp_ = vec2(0.3 + 0.4 * fract(h1_ * 13.0), 0.3 + 0.4 * fract(h2_ * 11.0));
+            float big_ = step(0.992, h1_);
+            float st_ = step(0.967, h1_) * smoothstep(0.17 + big_ * 0.1, 0.0, length(fract(cell_) - cp_)) * (0.35 + 0.65 * h2_);
+            gl_FragColor.rgb += vec3(1.0, 0.95, 0.85) * st_ * uSkyN * pow(k_, 1.5) * ${f(stars)};
+          }` : ''}
         }
         #include <dithering_fragment>`,
       )
   }
   // la clé dit tout ce que le shader injecte : deux matériaux pareils et fondus pareil partagent un seul programme compilé
   const params = [c[0], c[1], r0, r1, sx, sz, y0, y1, below].map(f).join(',')
-  m.customProgramCacheKey = () => `${key}|sky${params}${additive ? 'a' : ''}`
+  m.customProgramCacheKey = () => `${key}|sky${params}${additive ? 'a' : ''}${stars > 0 && !additive ? `s${f(stars)}` : ''}`
   return m
 }
 

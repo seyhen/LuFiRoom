@@ -48,6 +48,10 @@ export type SoundId =
   | 'canvas' | 'percolator' | 'crickets'
   // la salle de bain : le robinet de la baignoire, la mousse du bain, la douche à effet pluie
   | 'faucet' | 'suds' | 'shower'
+  // l'oasis du désert : le vent des dunes, les palmes du palmier, la source de la mare
+  | 'dunes' | 'palms' | 'oasis'
+  // l'avion de nuit : le souffle des moteurs (le hublot), la berceuse du violoncelle
+  | 'jet' | 'lullaby'
 /** Un objet interactif de la scène. */
 export type ObjectId =
   | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
@@ -70,6 +74,10 @@ export type ObjectId =
   // la tente de camping : la toile (pluie dessus), le percolateur, le bocal de lucioles
   | 'canvas' | 'percolator' | 'fireflies'
   | 'faucet' | 'foam' | 'shower'
+  // l'oasis du désert : l'auvent de toile (le vent des dunes), le palmier, la mare
+  | 'awning' | 'datepalm' | 'waterhole'
+  // l'avion de nuit : le hublot (les moteurs), le violoncelle sanglé sur son siège
+  | 'porthole' | 'cello'
 /** Ce qu'un objet pilote : un son, ou le passage jour / nuit. */
 export type Target = SoundId | 'night'
 

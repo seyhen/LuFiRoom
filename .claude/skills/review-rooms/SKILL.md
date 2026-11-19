@@ -1,6 +1,6 @@
 ---
 name: review-rooms
-description: Revue graphique d'ensemble de LufiRoom (les dix-sept pièces, jour et nuit, desktop et mobile) et de son rendu : lumière, fondu du dehors, nuit, cadrage, interface. À lancer quand l'utilisateur demande « une revue graphique », « ce que tu en penses », « comment améliorer le rendu », après un changement de moteur de rendu (Lights.tsx, outdoor.ts, materials.ts, Stage.tsx) ou avant une mise en ligne qui touche l'apparence. Ne remplace pas audit-room, qui juge une pièce en gros plan, objet par objet.
+description: Revue graphique d'ensemble de LufiRoom (les dix-neuf pièces, jour et nuit, desktop et mobile) et de son rendu : lumière, fondu du dehors, nuit, cadrage, interface. À lancer quand l'utilisateur demande « une revue graphique », « ce que tu en penses », « comment améliorer le rendu », après un changement de moteur de rendu (Lights.tsx, outdoor.ts, materials.ts, Stage.tsx) ou avant une mise en ligne qui touche l'apparence. Ne remplace pas audit-room, qui juge une pièce en gros plan, objet par objet.
 ---
 
 # Revue graphique d'ensemble
@@ -14,7 +14,7 @@ npx vite --port 5173 &                                  # arrêter à la fin : p
 D=<scratchpad>/revue
 node .claude/skills/audit-room/capture.mjs $D           # 17 pièces, jour et nuit, 1440 × 900 : lance-le en arrière-plan
 node .claude/skills/audit-room/capture.mjs $D/m bedroom,market,greenhouse,beach --mobile --once=d
-for r in bedroom cabin cafe beach train roof atelier onsen lighthouse submarine market igloo treehouse laundromat greenhouse tent bathroom; do bash .claude/skills/audit-room/pair.sh $D $r; done
+for r in bedroom cabin cafe beach train roof atelier onsen lighthouse submarine market igloo treehouse laundromat greenhouse tent bathroom airplane; do bash .claude/skills/audit-room/pair.sh $D $r; done
 ```
 
 Un seul navigateur à la fois (deux font expirer les captures). Pour comparer un réglage de moteur : capture avant, change, capture après sur 2 ou 3 pièces représentatives (café et laverie pour la brume de jour, train et atelier pour la nuit, igloo pour le blanc), et recadre `avant | après` avec la même commande `hstack` que `pair.sh`.

@@ -168,6 +168,8 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite (
 | Salle de bain | robinet col de cygne de la baignoire, le filet d'eau chaude dans un bain plein (son synthétisé, provisoire) | `faucet` |
 | Salle de bain | mousse du bain (canard, bulles de savon), le pétillement doux de milliers de bulles (son synthétisé, provisoire) | `suds` |
 | Salle de bain | douche à effet pluie dans sa niche de zellige, la pluie chaude sur le carrelage avec la réverbération d'une pièce carrelée (son synthétisé, provisoire) | `shower` |
+| Avion de nuit | hublot sur l'aile et son réacteur : le souffle grave des moteurs entendu dans la cabine (son synthétisé, provisoire) | `jet` |
+| Avion de nuit | violoncelle sanglé sur le siège voisin : nappe de cordes et phrases lentes en ré majeur (son synthétisé, provisoire) | `lullaby` |
 
 Mets ce tableau à jour à chaque objet ajouté **et à chaque son retiré** : la liste réelle est `sounds` de chaque `src/rooms/<id>.ts` (`grep -n "id: '" src/rooms/*.ts`), pas ce tableau.
 
