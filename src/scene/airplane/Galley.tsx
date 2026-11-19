@@ -45,7 +45,7 @@ function Counter() {
           </mesh>
         ))}
         <Part geo={rbox(0.03, 0.9, 0.04, 0.012)} m={A.aluminium} p={[0.3, 0.5, 0]} castShadow={false} />
-        <Part geo={rbox(0.54, 0.08, len, 0.02)} m={A.rubber} p={[0, 0.04, 0]} castShadow={false} />
+        <Part geo={rbox(0.5, 0.08, len, 0.02)} m={A.rubber} p={[0, 0.04, 0]} castShadow={false} />
         {/* la cafetière : un corps d'acier, sa verseuse de verre, son cadran allumé, la goutte */}
         <group position={[0.0, 1.04, -0.85]}>
           <Part geo={rbox(0.3, 0.42, 0.26, 0.04)} m={A.steel} p={[0, 0.21, 0]} />
@@ -131,7 +131,7 @@ export function Trolley({ position }: { position: V3 }) {
         {[-0.14, 0.14].map((z) => <Part key={z} geo={cyl(0.014, 0.014, 0.34, 8)} m={A.aluminium} p={[-0.54, 1.12, z]} castShadow={false} />)}
         <Part geo={cyl(0.016, 0.016, 0.28, 8)} m={A.aluminium} p={[-0.54, 1.29, 0]} rotation-x={Math.PI / 2} castShadow={false} />
         {/* dessus : deux verseuses, des gobelets, un panier, une boîte de thé */}
-        {[-0.32, -0.16].map((x, i) => (
+        {[-0.36, -0.12].map((x, i) => (
           <group key={x} position={[x, TOP_Y + 0.0175, -0.04 + i * 0.03]}>
             <Part geo={cyl(0.07, 0.065, 0.3, 16)} m={A.steel} p={[0, 0.15, 0]} />
             <Part geo={cyl(0.052, 0.058, 0.03, 14)} m={A.rubber} p={[0, 0.315, 0]} castShadow={false} />
@@ -145,7 +145,7 @@ export function Trolley({ position }: { position: V3 }) {
         <Part geo={rbox(0.14, 0.07, 0.1, 0.012)} m={A.shade} p={[-0.02, TOP_Y + 0.0525, 0.12]} rotation-y={0.2} castShadow={false} />
         <Part geo={SPH_MID} m={A.tea} scale={0.01} p={[-0.02, TOP_Y + 0.0525 + 0.04, 0.12]} castShadow={false} />
       </Static>
-      <Steam at={[-0.32, TOP_Y + 0.4, -0.04]} every={1.6} />
+      <Steam at={[-0.36, TOP_Y + 0.4, -0.04]} every={1.6} />
     </group>
   )
 }

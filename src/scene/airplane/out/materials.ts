@@ -84,6 +84,14 @@ export const auroraTex = canvasTex(512, 256, (x) => {
     g.addColorStop(0, 'rgba(110,255,190,.55)'); g.addColorStop(0.5, 'rgba(80,220,200,.28)'); g.addColorStop(1, 'rgba(150,130,255,0)')
     x.fillStyle = g; x.fillRect(px, 256 - h, w, h)
   }
+  // les bords s'effacent : ni pied coupé net, ni côtés francs
+  x.globalCompositeOperation = 'destination-in'
+  const v = x.createLinearGradient(0, 0, 0, 256)
+  v.addColorStop(0, 'rgba(0,0,0,1)'); v.addColorStop(0.55, 'rgba(0,0,0,1)'); v.addColorStop(0.95, 'rgba(0,0,0,0)')
+  x.fillStyle = v; x.fillRect(0, 0, 512, 256)
+  const hz = x.createLinearGradient(0, 0, 512, 0)
+  hz.addColorStop(0, 'rgba(0,0,0,0)'); hz.addColorStop(0.2, 'rgba(0,0,0,1)'); hz.addColorStop(0.8, 'rgba(0,0,0,1)'); hz.addColorStop(1, 'rgba(0,0,0,0)')
+  x.fillStyle = hz; x.fillRect(0, 0, 512, 256)
 })
 
 const tone = (c: number, o = {}) => far(c, { roughness: 0.78, ...o })
