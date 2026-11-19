@@ -53,9 +53,9 @@ export function Shell() {
       <Part geo={worldUV(rbox(6.16, KNEE, 0.05, 0.015), 0.6)} m={B.subway} p={[0.1, KNEE / 2, IN + 0.025]} />
       <Part geo={worldUV(rbox(0.05, KNEE, 6.15, 0.015), 0.6)} m={B.subway} p={[IN + 0.025, KNEE / 2, 0.125]} />
       <Part geo={rbox(6.2, 0.09, 0.09, 0.03)} m={B.rail} p={[0.1, KNEE + 0.045, IN + 0.045]} castShadow={false} />
-      <Part geo={rbox(0.09, 0.09, 6.11, 0.03)} m={B.rail} p={[IN + 0.045, KNEE + 0.045, 0.145]} castShadow={false} />
+      <Part geo={rbox(0.09, 0.09, 6.13, 0.03)} m={B.rail} p={[IN + 0.045, KNEE + 0.045, 0.155]} castShadow={false} />
       <Part geo={rbox(6.2, 0.15, 0.075, 0.025)} m={B.trim} p={[0.1, 0.075, IN + 0.0375]} castShadow={false} />
-      <Part geo={rbox(0.075, 0.15, 6.125, 0.025)} m={B.trim} p={[IN + 0.0375, 0.075, 0.1375]} castShadow={false} />
+      <Part geo={rbox(0.075, 0.15, 6.145, 0.025)} m={B.trim} p={[IN + 0.0375, 0.075, 0.1475]} castShadow={false} />
       {/* l'angle des deux murs : une baguette de carrelage arrondie */}
       <Part geo={cyl(0.03, 0.03, KNEE, 10)} m={B.trim} p={[IN + 0.03, KNEE / 2, IN + 0.03]} castShadow={false} />
     </>

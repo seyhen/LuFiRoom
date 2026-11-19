@@ -1,6 +1,6 @@
 # La carte « Bruit » (blanc, rose, brun, vert, bleu, violet)
 
-Une carte du mixeur dans **les seize pièces** (son `noise`, dernière carte, volume par défaut 0,4, éteinte au départ), pour écouter du bruit de fond : se concentrer, couvrir un voisin, dormir. Comme la carte « Météo » (`rain`), c'est une **exception assumée** à la règle « pas de son répété d'une pièce à l'autre », et elle n'a pas d'objet 3D (pas de hotspot : le mixeur suffit).
+Une carte du mixeur dans **les dix-sept pièces** (son `noise`, dernière carte, volume par défaut 0,4, éteinte au départ), pour écouter du bruit de fond : se concentrer, couvrir un voisin, dormir. Comme la carte « Météo » (`rain`), c'est une **exception assumée** à la règle « pas de son répété d'une pièce à l'autre », et elle n'a pas d'objet 3D (pas de hotspot : le mixeur suffit).
 
 ## Ce qu'on règle
 

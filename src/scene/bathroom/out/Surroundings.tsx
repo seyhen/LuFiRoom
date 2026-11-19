@@ -28,7 +28,7 @@ const FAR_BLOCKS: [number, number, number, number, number][] = [
 function Evening() {
   useFrame(() => {
     const n = smooth(mood.night), k = Math.min(1, n + mood.rain * 0.3)
-    T.glass.emissiveIntensity = 0.03 + k * 1.0 // les fenêtres s'allument le soir (ou sous la pluie)
+    T.glass.emissiveIntensity = 0.03 + k * 0.7 // les fenêtres s'allument le soir (ou sous la pluie)
   })
   return null
 }

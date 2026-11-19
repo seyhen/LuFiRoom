@@ -13,7 +13,10 @@ import { TUB_AT } from './Tub'
 import { bubbleTex } from './textures'
 
 /** Le pied de la mousse : le milieu du tas, à la surface de l'eau, dans la moitié du bain qui est loin du robinet. */
-const FOOT: V3 = [TUB_AT[0] + 0.52, TUB.water, TUB_AT[2]]
+const FOOT: V3 = [TUB_AT[0] + 0.5, TUB.water, TUB_AT[2]]
+
+/** L'étalement du tas (un peu plus large que les monticules ci-dessous, pour qu'il remplisse la moitié libre du bain). */
+const K = 1.12
 
 /** Les monticules de la mousse : [x, y, z, rx, ry, rz, couleur] depuis le pied (y depuis l'eau). Un tas qui dépasse le bord de 16 cm. */
 const MOUNDS: [number, number, number, number, number, number, number][] = [
@@ -27,14 +30,14 @@ const MOUNDS: [number, number, number, number, number, number, number][] = [
   [0.2, 0.3, 0.02, 0.12, 0.12, 0.12, 0xfffafa],
   [-0.18, 0.12, 0.26, 0.13, 0.1, 0.1, 0xf9f1ff],
 ]
-const FOAM = blob(MOUNDS.map(([x, y, z, rx, ry, rz, color]) => ell([x, y, z], [rx, ry, rz], { color })), { h: 0.018, k: 0.07, pad: 0.04 })
+const FOAM = blob(MOUNDS.map(([x, y, z, rx, ry, rz, color]) => ell([x * K, y * 1.1, z * K], [rx * K, ry * 1.1, rz * K], { color })), { h: 0.018, k: 0.07, pad: 0.04 })
 
 /** La hauteur du tas à (x, z) : le haut du monticule le plus haut (0 hors du tas). */
 function top(x: number, z: number) {
   let y = 0
   for (const [cx, cy, cz, rx, ry, rz] of MOUNDS) {
-    const k = 1 - ((x - cx) / rx) ** 2 - ((z - cz) / rz) ** 2
-    if (k > 0) y = Math.max(y, cy + ry * Math.sqrt(k))
+    const k = 1 - ((x - cx * K) / (rx * K)) ** 2 - ((z - cz * K) / (rz * K)) ** 2
+    if (k > 0) y = Math.max(y, cy * 1.1 + ry * 1.1 * Math.sqrt(k))
   }
   return y
 }

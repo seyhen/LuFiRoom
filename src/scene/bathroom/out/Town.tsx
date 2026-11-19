@@ -38,7 +38,7 @@ const azulejoTex = canvasTex(128, 128, (x) => {
 
 /** Les murs, un par teinte (le crépi les nuance) ; les toits ; les menuiseries. */
 const WALLS = [0xf2c3a2, 0xf2da98, 0xb6dcc8, 0xb2cde4, 0xf0b6c2, 0xf5e9d6, 0xe8bf7c].map((c) => skyFade(far(c, { map: plasterTex, roughness: 0.88 }), F))
-const TILE = [0xcf7d5a, 0xbd7052, 0xd98e68].map((c) => skyFade(snowTop(far(c, { roughness: 0.7 }), 1, 0.45, 0.8), F))
+const TILE = [0xb97562, 0xa86a58, 0xc58470].map((c) => skyFade(snowTop(far(c, { roughness: 0.7 }), 1, 0.45, 0.8), F))
 export const T = {
   azulejo: skyFade(far(0xffffff, { map: azulejoTex, roughness: 0.4 }), F),
   green: skyFade(snowTop(far(0x6aa8a0, { roughness: 0.55 }), 0.9, 0.4, 0.8), F),
@@ -115,7 +115,7 @@ function makeHouses(): House[] {
   }
   for (let i = 0, z = -4.2; z > -7; i++) {
     const d = 1.8 + r() * 0.8
-    out.push({ x: 8.6 + r() * 0.4, z: z - d / 2, w: 2.2 + r() * 0.5, d, floors: 2, wall: Math.floor(r() * WALLS.length), roof: (['gx', 'hip', 'gz'] as const)[i % 3], tile: Math.floor(r() * TILE.length) })
+    out.push({ x: 10.4 + r() * 0.4, z: z - d / 2, w: 2.2 + r() * 0.5, d, floors: 2, wall: Math.floor(r() * WALLS.length), roof: (['gx', 'hip', 'gz'] as const)[i % 3], tile: Math.floor(r() * TILE.length) })
     z -= d + 0.05
   }
   return out

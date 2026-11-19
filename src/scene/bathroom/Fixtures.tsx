@@ -197,9 +197,9 @@ export function TowelBasket({ position }: { position: V3 }) {
 
 /** Un tabouret rond de rotin, posé sur trois pieds ; dessus, une serviette pliée. `top` : la hauteur du dessus de la serviette. */
 export const STOOL_TOP = 0.52
-export function Stool({ position }: { position: V3 }) {
+export function Stool({ position, s = 1 }: { position: V3; s?: number }) {
   return (
-    <group position={position}>
+    <group position={position} scale={s}>
       <Part geo={cyl(0.25, 0.25, 0.05, 24)} m={B.woodLight} p={[0, 0.455, 0]} />
       <Part geo={cyl(0.24, 0.24, 0.06, 24)} m={B.wickerSmall} p={[0, 0.4, 0]} castShadow={false} />
       {[0, 1, 2].map((i) => {

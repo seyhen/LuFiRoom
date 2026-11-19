@@ -92,7 +92,7 @@ export function Faucet() {
         <Cross x={0.25} ceramic={B.ceramicBlue} k={-1} />
         {/* le filet : un cylindre d'eau, du bec à la surface (sa texture défile vers le bas) */}
         <mesh ref={jet} material={B.stream} position={[0, SPOUT_Y - 0.02 - FALL / 2, REACH]} userData={LIVE} raycast={() => {}} renderOrder={5}>
-          <cylinderGeometry args={[0.017, 0.012, FALL, 10, 1, true]} />
+          <cylinderGeometry args={[0.03, 0.021, FALL, 12, 1, true]} />
         </mesh>
         {/* l'impact : une touffe d'écume et deux ronds qui s'élargissent */}
         <mesh ref={foam} material={B.ripple} position={[0, yw + 0.012, REACH]} userData={LIVE} raycast={() => {}} scale={[0.05, 0.02, 0.05]}>

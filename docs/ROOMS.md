@@ -12,7 +12,7 @@ Le moteur (scène, audio, mixeur, sélecteur) ne change pas.
 | `sounds` | les cartes du mixeur, dans l'ordre : nom, pastille, volume par défaut, sous-titre vivant ; en option une icône (`icon: 'vinyl'`) et le nom du bouton qui change la musique (`skip`) |
 | `loops`, `playlist` | enregistrements de la pièce (voir `docs/ASSETS.md`). Un son sans enregistrement reste synthétisé |
 | `sky` | dégradé du fond, de jour et de nuit |
-| `ui` | les teintes d'interface de la pièce (accent, encre, panneau du mixeur, fond), de jour et de nuit. Chaque pièce a la sienne : canneberge et ambre pour la cabane, vert bouteille et laiton pour le café, corail pour la plage, bordeaux pour le train, brique le jour et néon rose la nuit pour le toit, bleu de Paris et ocre pour l'atelier, vermillon et lanterne pour l'onsen, bleu marine et corail pour le phare, turquoise et laiton pour le sous-marin, rose néon et brique pour le marché de nuit, vert bouteille et laiton pour la serre, rouille le jour et menthe d'aurore la nuit pour l'igloo ; la chambre garde le teal de base |
+| `ui` | les teintes d'interface de la pièce (accent, encre, panneau du mixeur, fond), de jour et de nuit. Chaque pièce a la sienne : canneberge et ambre pour la cabane, vert bouteille et laiton pour le café, corail pour la plage, bordeaux pour le train, brique le jour et néon rose la nuit pour le toit, bleu de Paris et ocre pour l'atelier, vermillon et lanterne pour l'onsen, bleu marine et corail pour le phare, turquoise et laiton pour le sous-marin, rose néon et brique pour le marché de nuit, vert bouteille et laiton pour la serre, rouille le jour et menthe d'aurore la nuit pour l'igloo ; rose dragée le jour et rose pêche la nuit pour la salle de bain ; la chambre garde le teal de base |
 | `stations` | les stations de la radio générative (`src/audio/stations.ts`), dans l'ordre : la première est celle d'une première visite (`noel` pour la cabane, `bureau` pour l'atelier, `brume` pour le café et l'onsen…) |
 | `light` | hémisphérique et soleil (ou lune), de jour et de nuit |
 | `shelter` | d'où l'on entend la météo (la carte « Météo », le son `rain`) : `glass` par défaut (derrière une vitre, plus claire quand l'objet `window` est ouvert), `open` en plein air (plage, toit, onsen, marché), `deep` à travers une coque (sous-marin). Chaque pièce a cette carte : voir `docs/WEATHER.md` |
@@ -90,6 +90,7 @@ Budget de dessin par pièce, mesuré le 2026-11-16 : appels de dessin par image 
 | Laverie de nuit | 349 | 360 |
 | Serre | 190 | 200 |
 | Tente de camping | 200 | 210 |
+| Salle de bain | 219 | 230 |
 
 Au-dessus de 300 (à ramener sous 300 quand on retouche la pièce : espacer les `Steam`, fusionner dans des `<Static>` imbriqués) : cabane, café, toit-terrasse, phare, sous-marin, marché de nuit, igloo, laverie de nuit. Le marché de nuit (369) est le plus chargé, la serre (190) la plus légère.
 Mesures du 2026-11-18 (même méthode, mêmes conditions) : le café passe de 331 à 338 avec l'horloge à balancier (+7, le mouvement fusionné en un seul maillage), le marché de 400 à 399 avec l'aquarium (+16) parce que les poissons rouges du bassin sont passés de 20 tracés à 2.

@@ -24,7 +24,7 @@ const label = (col: string) => gummy(0xffffff, { map: bottleTex(col), roughness:
  * éponge de serviettes rose, sauge, crème et pêche ; les verts des plantes que la lueur des bougies dore le soir.
  */
 export const B = {
-  floor: gummy(0xffffff, { map: floor, roughness: 0.42, clearcoat: 0.55 }),
+  floor: gummy(0xffffff, { map: floor, roughness: 0.5, clearcoat: 0.28 }),
   base: gummy(0xd9c9bd, { roughness: 0.8, clearcoat: 0.05 }),
   baseTrim: gummy(0xf0e4d8, { roughness: 0.55, clearcoat: 0.25 }),
   wall: gummy(0xffffff, { map: paper, roughness: 0.88, clearcoat: 0.04 }),
@@ -47,7 +47,7 @@ export const B = {
   ceramicRose: gummy(0xf2bcc6, { roughness: 0.25, clearcoat: 0.85 }),
   ceramicBlue: gummy(0x9ccbe0, { roughness: 0.25, clearcoat: 0.85 }),
   // la baignoire
-  tubOuter: gummy(0xa6cfe0, { roughness: 0.28, clearcoat: 0.85, side: DoubleSide }),
+  tubOuter: gummy(0xa6cfe0, { roughness: 0.28, clearcoat: 0.85, side: DoubleSide, emissive: 0x7aa8c8, emissiveIntensity: 0.1 }),
   tubInner: gummy(0xfef9f3, { roughness: 0.18, clearcoat: 0.95, side: DoubleSide }),
   water: gummy(0xbfe6ea, { roughness: 0.05, clearcoat: 1, emissive: 0x9fd4dc, emissiveIntensity: 0.05 }),
   foam: gummy(0xfff5f6, { roughness: 0.55, clearcoat: 0.25, vertexColors: true }),
@@ -58,7 +58,7 @@ export const B = {
   // la vitre embuée : sa buée s'épaissit quand l'eau chaude coule (voir Window.tsx)
   fog: new MeshBasicMaterial({ map: fogTex, color: 0xffffff, transparent: true, opacity: 0.85, depthWrite: false, side: DoubleSide }),
   // l'eau qui coule : le filet du robinet, la pluie de la douche
-  stream: new MeshBasicMaterial({ map: streamA, color: 0xdff4fb, transparent: true, opacity: 0.6, depthWrite: false, side: DoubleSide }),
+  stream: new MeshBasicMaterial({ map: streamA, color: 0xeaf8ff, transparent: true, opacity: 0.85, depthWrite: false, side: DoubleSide }),
   rain: new MeshBasicMaterial({ map: streamB, color: 0xe8f8ff, transparent: true, opacity: 0.5, depthWrite: false, side: DoubleSide }),
   ripple: new MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false, side: DoubleSide }),
   // les serviettes, le tapis
@@ -85,7 +85,8 @@ export const B = {
   duckSkin: skin({ roughness: 0.3, clearcoat: 0.85 }),
   eye: gummy(0x2a2428, { roughness: 0.1, clearcoat: 1 }),
   // le kalimba
-  tine: gummy(0xe8b49a, { roughness: 0.2, metalness: 0.5, clearcoat: 0.9 }),
+  kalimba: gummy(0xd4a56a, { roughness: 0.55, clearcoat: 0.3, emissive: 0xd4a56a, emissiveIntensity: 0.1 }),
+  tine: gummy(0xf2f4f6, { roughness: 0.25, metalness: 0.4, clearcoat: 0.9, emissive: 0xdde6ee, emissiveIntensity: 0.12 }),
   cloth: gummy(0xe9a9b4, { roughness: 0.92, clearcoat: 0 }),
   // les plantes
   terracotta: M.terracotta,

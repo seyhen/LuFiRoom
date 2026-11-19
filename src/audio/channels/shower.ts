@@ -52,7 +52,7 @@ export default function shower(kit: Kit, out: GainNode, { loops }: Room): Channe
     lfo.connect(gain(0.02)).connect(spray.gain)
     lfo.start()
     // les gouttes sur le bac
-    const patter = gain(0.2)
+    const patter = gain(0.06)
     loop(makePatter(ctx), rand(0, 10)).connect(patter).connect(bus)
     // le fond chaud
     loop(noise.pink, 1.9).connect(biq('lowpass', 520, 0.6)).connect(gain(0.1)).connect(bus)

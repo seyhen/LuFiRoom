@@ -28,8 +28,8 @@ export const bathroom: Room = {
   zoom: 0.88,
   sky: { day: ['#fbeee9', '#f1d6d4', '#dcb8c8'], night: ['#3b3150', '#261f38', '#16111f'] },
   light: {
-    hemi: { sky: [0xfff4f2, 0x7c7ab8], ground: [0xe9cdc8, 0x6a4a58], intensity: [0.74, 0.42] },
-    sun: { color: [0xfff1e4, 0x9fb4e8], intensity: [0.52, 0.16] },
+    hemi: { sky: [0xfff4f2, 0x9a96d0], ground: [0xe9cdc8, 0x7a5a68], intensity: [0.74, 0.56] },
+    sun: { color: [0xfff1e4, 0x9fb4e8], intensity: [0.52, 0.2] },
   },
   loops: {
     ...WEATHER_LOOPS,
@@ -42,7 +42,7 @@ export const bathroom: Room = {
     sleep: { sounds: [['shower', 0.35], ['suds', 0.2], ['rain', 0.4]], night: true },
   },
   objects: [
-    { id: 'radio', target: 'radio', label: 'Kalimba · lofi', anchor: [1.5, 0.72, 0.7] },
+    { id: 'radio', target: 'radio', label: 'Kalimba · lofi', anchor: [1.5, 0.84, 0.7] },
     { id: 'faucet', target: 'faucet', label: 'Robinet · le filet du bain', anchor: [-0.55, 1.24, -2.7] },
     { id: 'foam', target: 'suds', label: 'Mousse · le pétillement', anchor: [0.62, 0.9, -2.4] },
     { id: 'shower', target: 'shower', label: 'Douche · la pluie sur le carrelage', anchor: [-2.3, 2.52, 1.15] },

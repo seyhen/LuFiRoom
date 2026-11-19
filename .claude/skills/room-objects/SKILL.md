@@ -165,6 +165,9 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite (
 | Tente de camping | la toile de la tente-cloche, sous la pluie : des impacts ronds et sourds sur le tissu tendu (son synthétisé) | `canvas` |
 | Tente de camping | percolateur d’émail bleu sur son réchaud : des glouglous ronds par cycles sous le souffle bas de la flamme (son synthétisé) | `percolator` |
 | Tente de camping | bocal de lucioles sur un rondin : le chœur de grillons de la nuit (son synthétisé) | `crickets` |
+| Salle de bain | robinet col de cygne de la baignoire, le filet d'eau chaude dans un bain plein (son synthétisé, provisoire) | `faucet` |
+| Salle de bain | mousse du bain (canard, bulles de savon), le pétillement doux de milliers de bulles (son synthétisé, provisoire) | `suds` |
+| Salle de bain | douche à effet pluie dans sa niche de zellige, la pluie chaude sur le carrelage avec la réverbération d'une pièce carrelée (son synthétisé, provisoire) | `shower` |
 
 Mets ce tableau à jour à chaque objet ajouté **et à chaque son retiré** : la liste réelle est `sounds` de chaque `src/rooms/<id>.ts` (`grep -n "id: '" src/rooms/*.ts`), pas ce tableau.
 

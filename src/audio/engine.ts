@@ -172,9 +172,9 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   clock: { build: clock, base: 2.7 }, // provisoire : synthèse, un battement par seconde (sonie à -32,6 LUFS, crête à -5 dB au curseur plein)
   aquarium: { build: aquarium, base: 2.2 }, // provisoire : synthèse, filet du filtre et bulles rares
   snore: { build: snore, base: 1.2 }, // provisoire : synthèse, la respiration lente d'un chien, un ronflement très doux
-  faucet: { build: faucet, base: 1.0 }, // provisoire : synthèse, le filet du robinet dans le bain plein (à régler avec `npm run audio:levels`)
-  suds: { build: suds, base: 1.0 }, // provisoire : synthèse, le pétillement de la mousse (à régler avec `npm run audio:levels`)
-  shower: { build: shower, base: 1.0 }, // provisoire : synthèse, la douche à effet pluie dans une pièce de carreaux (à régler avec `npm run audio:levels`)
+  faucet: { build: faucet, base: 4.5 }, // provisoire : synthèse, le filet du robinet dans le bain plein (sonie à -27,8 LUFS au curseur plein, comme la médiane)
+  suds: { build: suds, base: 3.0 }, // provisoire : synthèse, le pétillement de la mousse
+  shower: { build: shower, base: 5.0 }, // provisoire : synthèse, la douche à effet pluie dans une pièce de carreaux
   canvas: { build: canvas, base: 1.45 }, // provisoire : synthèse, la pluie sur la toile de la tente (sonie à -27 LUFS au volume par défaut)
   percolator: { build: percolator, base: 1.4 }, // provisoire : synthèse, les glouglous du percolateur (sonie à -27 LUFS au volume par défaut)
   crickets: { build: crickets, base: 1.45 }, // provisoire : synthèse, le chœur de grillons de la nuit (sonie à -27 LUFS au volume par défaut)
