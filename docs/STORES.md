@@ -40,7 +40,7 @@ Brouillon à copier dans App Store Connect et la Google Play Console. Rien ici n
 
 > LufiRoom is a set of soft, rounded little isometric 3D rooms where every object is a sound switch. Tap the radio for lofi music, the fan for white noise, the window for rain... and build the ambience that helps you work, read or sleep.
 >
-> • Seventeen rooms, each with its own look and sounds: bedroom, cabin, café, beach, night train, rooftop, workshop, onsen, lighthouse, submarine, night market, igloo, treehouse, night laundromat, greenhouse, camping tent, bathroom.
+> • Nineteen rooms, each with its own look and sounds: bedroom, cabin, café, beach, night train, rooftop, workshop, onsen, lighthouse, submarine, night market, igloo, treehouse, night laundromat, greenhouse, camping tent, bathroom, night flight, desert oasis.
 > • A mixer to set each sound's volume, without touching the 3D if you prefer.
 > • Weather of your choice (rain, storm, snow...), and day and night that follow your clock.
 > • A radio playing soft music, specific to each room.
