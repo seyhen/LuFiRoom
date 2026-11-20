@@ -1,6 +1,6 @@
-import { Rock } from '../../nature/Rock'
 import { Part, rbox, worldUV } from '../../parts'
 import { FarCamel } from './Camel'
+import { Buttes } from './Mesa'
 import { groundY } from './ground'
 import { O } from './materials'
 
@@ -40,29 +40,6 @@ function Village() {
         <Part geo={rbox(0.8, 1.0, 0.56, 0.04)} m={O.ksarDark} p={[0, 0.5, 0.02]} castShadow={false} />
         <Part geo={rbox(3.34, 0.12, 0.64, 0.04)} m={O.ksarCap} p={[0, 1.55, 0]} castShadow={false} />
       </group>
-    </>
-  )
-}
-
-/** Les falaises de grès strié derrière à droite : trois masses étagées aux strates horizontales, des éboulis à leur pied. */
-function Buttes() {
-  const list: { at: [number, number]; w: number; d: number; h: number; ry: number }[] = [
-    { at: [5.6, -8.4], w: 3.6, d: 2.8, h: 3.2, ry: 0.4 },
-    { at: [10.0, -5.4], w: 2.4, d: 2.2, h: 2.4, ry: 1.0 },
-    { at: [9.8, -9.4], w: 2.2, d: 2.0, h: 2.0, ry: 0.2 },
-  ]
-  return (
-    <>
-      {list.map(({ at: [x, z], w, d, h, ry }, i) => {
-        const y = groundY(x, z) - 0.3
-        return (
-          <group key={i} position={[x, y, z]} rotation-y={ry}>
-            <Part geo={worldUV(rbox(w, h, d, 0.3), 2.4)} m={O.strata} p={[0, h / 2, 0]} castShadow={false} />
-            <Part geo={worldUV(rbox(w * 0.7, h * 0.4, d * 0.7, 0.25), 2.4)} m={O.strata} p={[w * 0.04, h + h * 0.18, 0]} rotation-y={0.3} castShadow={false} />
-            {[[-0.62, 0.6, 0.5], [0.66, 0.45, 0.4], [0.1, 0.7, 0.45]].map(([sx, sz, k], j) => <Rock key={j} v={j + i} p={[sx * w, 0, sz * d]} s={[k * 1.1, k * 0.7, k]} ry={j} m={O.stoneRed} shadow={false} />)}
-          </group>
-        )
-      })}
     </>
   )
 }

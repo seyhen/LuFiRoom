@@ -134,11 +134,12 @@ interface Dressing {
   doors: Item[]
   chimneys: Item[]
   laundry: Item[]
+  huts: Item[]
 }
 
 /** Les fenêtres, volets, balcons, pots de fleurs, portes, cheminées, linge de chaque maison, en listes (une série instanciée par sorte). */
 function dress(): Dressing {
-  const r = seeded(5), d: Dressing = { frames: [], lit: [], dark: [], shutters: [], rails: [], pots: [], doors: [], chimneys: [], laundry: [] }
+  const r = seeded(5), d: Dressing = { frames: [], lit: [], dark: [], shutters: [], rails: [], pots: [], doors: [], chimneys: [], laundry: [], huts: [] }
   const SH = [0x5f9a72, 0x4f7fae, 0x5aa59c, 0x8fb9d6, 0x6f9e5a]
   const FL = [0xf08aa2, 0xe85a6c, 0xfafafa, 0xf5b84a]
   const LA = [0xf3b6c4, 0xfff4e2, 0x9cc6e4, 0xf2d27a, 0xa9d8b8]
@@ -165,6 +166,13 @@ function dress(): Dressing {
         if (f > 0 && r() < 0.16) for (let k = -1; k <= 1; k++) d.laundry.push({ p: at(k * 0.17, -0.48, 0.2), s: side === 'z' ? ([0.12, 0.2, 0.012] as V3) : ([0.012, 0.2, 0.12] as V3), c: LA[Math.floor(r() * LA.length)] })
       }
     }
+    // un toit plat n'est pas nu : un abri d'escalier, une terrasse avec ses pots de fleurs et un muret
+    if (h.roof === 'flat') {
+      const top = GROUND + H + 0.28
+      d.huts.push({ p: [h.x + h.w * 0.22, top + 0.22, h.z - h.d * 0.18], s: [0.55, 0.44, 0.5], c: 0xf2e4d2 })
+      d.huts.push({ p: [h.x - h.w * 0.3, top + 0.05, h.z + h.d * 0.3], s: [h.w * 0.34, 0.1, 0.1], c: 0xe9d3c0 })
+      for (const k of [-1, 0, 1]) d.pots.push({ p: [h.x - h.w * 0.3 + k * 0.2, top + 0.16, h.z + h.d * 0.3], s: 0.08, c: FL[(k + 2 + HOUSES.indexOf(h)) % FL.length] })
+    }
     if (h.roof !== 'hip' && r() < 0.5) d.chimneys.push({ p: [h.x + (r() - 0.5) * h.w * 0.5, GROUND + H + 0.45, h.z - 0.1], s: [0.3, 0.7, 0.3] })
   }
   return d
@@ -174,13 +182,15 @@ const D = dress()
 const RAIL_GEO = new BoxGeometry(1, 1, 1), BOX = RAIL_GEO
 
 /** Une maison : le corps (crépi ou azulejos), le toit, le socle. Ses fenêtres sont dans les séries communes. */
-function HouseBody({ h }: { h: House }) {
+function HouseBody({ h, i }: { h: House; i: number }) {
   const H = h.floors * FLOOR + 0.3, cx = h.x, cz = h.z, wall = WALLS[h.wall], tile = TILE[h.tile]
+  // deux maisons voisines de même hauteur : leurs corniches (un peu plus larges que le mur) se recouvrent ; chacune a sa hauteur, 0,012 d'écart
+  const lift = (i % 3) * 0.012
   return (
     <group>
       <Part geo={rbox(h.w, H, h.d, 0.04)} m={h.azulejo ? T.azulejo : wall} p={[cx, GROUND + H / 2, cz]} castShadow={false} />
-      <Part geo={rbox(h.w + 0.06, 0.28, h.d + 0.06, 0.03)} m={T.stone} p={[cx, GROUND + 0.14, cz]} castShadow={false} />
-      <Part geo={rbox(h.w + 0.12, 0.08, h.d + 0.12, 0.03)} m={T.white} p={[cx, GROUND + H + 0.01, cz]} castShadow={false} />
+      <Part geo={rbox(h.w + 0.06, 0.28, h.d + 0.06, 0.03)} m={T.stone} p={[cx, GROUND + 0.14 + lift, cz]} castShadow={false} />
+      <Part geo={rbox(h.w + 0.12, 0.08, h.d + 0.12, 0.03)} m={T.white} p={[cx, GROUND + H + 0.01 + lift, cz]} castShadow={false} />
       {h.roof === 'gx' && <Part geo={prism(h.d + 0.34, 0.9, h.w + 0.2)} m={tile} p={[cx, GROUND + H + 0.05, cz]} castShadow={false} />}
       {h.roof === 'gz' && <Part geo={prism(h.w + 0.34, 0.9, h.d + 0.2)} m={tile} p={[cx, GROUND + H + 0.05, cz]} rotation-y={Math.PI / 2} castShadow={false} />}
       {h.roof === 'hip' && <Part geo={HIP} m={tile} p={[cx, GROUND + H + 0.05 + 0.5, cz]} scale={[h.w + 0.3, 1, h.d + 0.3]} castShadow={false} />}
@@ -247,7 +257,7 @@ function Lines() {
 export function Town() {
   return (
     <>
-      {HOUSES.map((h, i) => <HouseBody key={i} h={h} />)}
+      {HOUSES.map((h, i) => <HouseBody key={i} h={h} i={i} />)}
       <Church x={CHURCH[0]} z={CHURCH[1]} />
       <Lines />
       <Batch geo={BOX} m={T.frame} items={D.frames} />
@@ -259,6 +269,7 @@ export function Town() {
       <Batch geo={BOX} m={T.door} items={D.doors} />
       <Batch geo={BOX} m={T.cloth} items={D.laundry} />
       <Batch geo={BOX} m={WALLS[3]} items={D.chimneys} />
+      <Batch geo={BOX} m={T.shutter} items={D.huts} />
     </>
   )
 }

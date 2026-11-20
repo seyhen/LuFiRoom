@@ -44,7 +44,7 @@ export const bathroom: Room = {
   objects: [
     { id: 'radio', target: 'radio', label: 'Kalimba · lofi', anchor: [1.5, 0.84, 0.7] },
     { id: 'faucet', target: 'faucet', label: 'Robinet · le filet du bain', anchor: [-0.8, 1.2, -2.82] },
-    { id: 'foam', target: 'suds', label: 'Mousse · le pétillement', anchor: [0.8, 0.75, -2.35] },
+    { id: 'foam', target: 'suds', label: 'Mousse · le pétillement', anchor: [0.7, 0.6, -2.02] },
     { id: 'shower', target: 'shower', label: 'Douche · la pluie sur le carrelage', anchor: [-2.3, 2.52, 1.15] },
     { id: 'lamp', target: 'night', label: 'Bougies · jour / nuit', anchor: [1.15, 2.1, -2.88] },
   ],

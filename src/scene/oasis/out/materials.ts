@@ -4,7 +4,7 @@ import { far } from '../../materials'
 import { skyFade } from '../../outdoor'
 import { farFoliage, farLeafy, farStone } from '../../nature/materials'
 import { glowTex } from '../../textures'
-import { barkTex, ksarColor, ksarGlow, strataTex, waterTex } from '../textures'
+import { barkTex, ksarColor, ksarGlow, waterTex } from '../textures'
 
 // Les matériaux du dehors de l'oasis : des dunes d'or qui se fondent dans le ciel bleu du jour (indigo la nuit), un bosquet, un village
 // de terre. Peu de matériaux, partagés ; le sol porte aussi les étoiles de la nuit (`stars` de skyFade : il couvre le haut de l'écran).
@@ -25,8 +25,9 @@ export const O = {
   grass: near(snowTop(farLeafy(0x7a9a3a), 0.6)),
   stone: near(snowTop(farStone(0xc0a078), 0.8)),
   stoneRed: wide(snowTop(farStone(0xc08a58), 0.8)),
-  strata: wide(snowTop(far(0xffffff, { map: strataTex, roughness: 0.92 }), 0.7)),
-  strataNear: near(snowTop(far(0xffffff, { map: strataTex, roughness: 0.92 }), 0.7)),
+  stoneDark: wide(snowTop(farStone(0x8a5e48), 0.8)),
+  stoneCream: wide(snowTop(farStone(0xdcc296), 0.8)),
+  cliff: wide(snowTop(far(0xffffff, { vertexColors: true, roughness: 0.94 }), 0.7)),
   ksar: wide(new MeshStandardMaterial({ color: 0xffffff, map: ksarColor, emissive: 0xffffff, emissiveMap: ksarGlow, emissiveIntensity: 0.0, roughness: 0.94 })),
   ksarCap: wide(far(0xb98258, { roughness: 0.95 })),
   ksarDark: wide(far(0x6a4630, { roughness: 0.95 })),

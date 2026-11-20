@@ -89,8 +89,8 @@ Budget de dessin par pièce, mesuré le 2026-11-16 : appels de dessin par image 
 | Cabane perchée | 269 | 280 |
 | Laverie de nuit | 349 | 360 |
 | Serre | 190 | 200 |
-| Tente de camping | 200 | 210 |
-| Salle de bain | 219 | 230 |
+| Tente de camping | 190 | 210 |
+| Salle de bain | 220 | 230 |
 | Avion de nuit | 251 | 260 |
 | Oasis du désert | 247 | 250 |
 
@@ -119,6 +119,8 @@ Les boîtes arrondies (`rbox`) n'affichent que le centre d'une texture : pour un
 - **Un masque de visage jusqu'au sommet du crâne** : vu d'en haut, l'animal paraît chauve (manchots de l'igloo) ; garde une calotte de pelage, et dans une texture plus haute que large convertis un rayon vertical avec la hauteur.
 - **Une ressource GPU refaite à chaque rendu** (2026-11-12) : un `useMemo` dont la dépendance est un tableau ou un objet neuf à chaque rendu du parent (`points={[-1, 0, 1].map(...)}`, `lines={['OPEN']}`) refabrique la texture ou la géométrie à chaque re-rendu, et personne ne la libère (`freeScene` ne voit que ce qui est dans la scène au départ). Trouvé par l'enquête par pièce : +1 géométrie par visite dans le train et le toit (`objects/GlowPoints.tsx`), +3 à +5 textures par visite dans le marché (`Blade` de `market/Details.tsx`, texture `smallNeon`). Correctif : clé sur le contenu (`const key = points.flat().join(',')`, `const text = lines.join('\n')`, puis `useMemo(..., [key])`) et `useEffect(() => () => tex.dispose(), [tex])` (`geo.dispose()` pour une géométrie). Méthode de mesure : étape 2.3 du skill `release-check` (pour chaque pièce, `goto(R)`, lectures stables de `gl.info.memory`, retour à la chambre, trois paires ; on ignore la première visite ; des chiffres qui montent aux visites 2 et 3 = fuite). Un tour de toutes les pièces d'un coup est trop bruité pour trouver le coupable.
 - **Un trait dessiné dans une texture de façade au mauvais endroit** (2026-11-11) : l'appui de fenêtre de `farWall()` (`atelier/out/roofMaterials.ts`) était à y = 74, au milieu de la vitre (16 à 88) : des barres sombres sans motif sous la brume. Il est maintenant une tablette claire sous la vitre (y = 92). Regarde une façade peinte en gros plan, de jour et de nuit ; `facade()` est partagé avec la laverie.
+- **La pluie du premier plan passe devant le sol de la pièce** (salle de bain, 2026-11-20) : sans `covered`, `OutdoorPrecip` n'écarte qu'une colonne dont le haut ET le bas sont dans la silhouette ; une colonne devant le socle, qui n'en croise qu'une partie, dessinait ses traits par-dessus le carrelage (17,7 % des colonnes, mesuré en simulant `spot()` et la projection de l'écran ; 0 % avec `covered`). Toute pièce à murs ou à toit passe `covered` ; la tente l'avait (0 % mesuré).
+- **Des barres lointaines et des toits plats nus** : un pan de toit terracotta de plusieurs mètres sans fenêtre ni cheminée se lit comme un aplat (coins du haut de la salle de bain). Habille-les en séries de `BoxGeometry` (fenêtres, souches, abri d'escalier, pots) : 3 tracés pour toutes les barres.
 - **Les faces tournées vers la caméra restent dans le noir** (tente, 2026-11-18) : la lampe est au milieu, la caméra voit l'autre côté des objets. Une seconde lumière douce côté caméra (`bounce`), à intensité modeste et à longue portée (11), les sort du noir sans effacer la lampe. Une botte ou un instrument se dessine d'abord par son contour (extrusion d'une silhouette, `BOOT` dans `tent/Props.tsx`), pas par un assemblage de cylindres ; les cordes d'un ukulélé gardent un rayon de 0,003 pour laisser voir la touche et la rosace.
 - **Textures noires au retour sur l'onglet** : le contexte WebGL peut être repris par le navigateur ; `ContextGuard` (`Stage.tsx`) reconstruit le canvas à `webglcontextrestored` ou au retour sur l'onglet, et renvoie les textures à la carte graphique. Les canvas des textures sont créés par `makeCanvas` avec `willReadFrequently` : sinon le navigateur peut les vider pendant que l'onglet dort (sol et murs noirs sur téléphone).
 
