@@ -37,15 +37,15 @@ export function AirplaneScene() {
       <ExitDoor />
       <Bulkhead />
       <Trolley position={[-1.3, 0, 0.55]} />
-      {/* rangée 2, sièges A, B, C : le violoncelle, la tablette du casque, le plateau repas */}
+      {/* rangée 2, sièges A, B, C : le violoncelle, le plateau repas (B), la tablette du casque (C) : le casque et le violoncelle restent à 44 px l'un de l'autre sur un téléphone */}
       <Cello position={[r2 - 0.11, 0.605, SEAT_Z.A]} />
       <Static>
         <TrayTable position={[r2, 0, SEAT_Z.B]} />
         <TrayTable position={[r2, 0, SEAT_Z.C]} />
       </Static>
-      <Headphones position={[r2 + 0.62, TY, SEAT_Z.B - 0.2]} />
-      <Tablet position={[r2 + 0.48, TY, SEAT_Z.B + 0.2]} />
-      <MealTray position={[r2, 0, SEAT_Z.C]} />
+      <Headphones position={[r2 + 0.62, TY, SEAT_Z.C - 0.2]} />
+      <Tablet position={[r2 + 0.48, TY, SEAT_Z.C + 0.2]} />
+      <MealTray position={[r2, 0, SEAT_Z.B]} />
       {/* rangée 1 : le livre et la trousse, le plaid et l'oreiller sous plastique */}
       <BookAndPouch position={[r1, 0, SEAT_Z.B]} />
       <PillowBag position={[r1, 0, SEAT_Z.C]} />

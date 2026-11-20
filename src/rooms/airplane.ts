@@ -48,9 +48,9 @@ export const airplane: Room = {
     sleep: { sounds: [['jet', 0.4], ['lullaby', 0.3], ['rain', 0.2]], night: true },
   },
   objects: [
-    { id: 'radio', target: 'radio', label: 'Casque · lofi', anchor: [1.52, 1.16, -1.62] },
+    { id: 'radio', target: 'radio', label: 'Casque · lofi', anchor: [1.52, 0.98, -0.74] },
     { id: 'porthole', target: 'jet', label: 'Hublot · les moteurs', anchor: [-1.7, 1.75, -2.9] },
-    { id: 'cello', target: 'lullaby', label: 'Violoncelle · la berceuse', anchor: [0.8, 1.3, -2.3] },
+    { id: 'cello', target: 'lullaby', label: 'Violoncelle · la berceuse', anchor: [0.8, 1.6, -2.3] },
     { id: 'lamp', target: 'night', label: 'Lampe de lecture · jour / nuit', anchor: [0.9, 3.04, -2.7] },
   ],
   sounds: [

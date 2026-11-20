@@ -26,7 +26,6 @@ export const O = {
   stone: near(snowTop(farStone(0xc0a078), 0.8)),
   stoneRed: wide(snowTop(farStone(0xc08a58), 0.8)),
   stoneDark: wide(snowTop(farStone(0x8a5e48), 0.8)),
-  stoneCream: wide(snowTop(farStone(0xdcc296), 0.8)),
   cliff: wide(snowTop(far(0xffffff, { vertexColors: true, roughness: 0.94 }), 0.7)),
   ksar: wide(new MeshStandardMaterial({ color: 0xffffff, map: ksarColor, emissive: 0xffffff, emissiveMap: ksarGlow, emissiveIntensity: 0.0, roughness: 0.94 })),
   ksarCap: wide(far(0xb98258, { roughness: 0.95 })),

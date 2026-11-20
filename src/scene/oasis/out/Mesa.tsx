@@ -142,7 +142,7 @@ export const FAR_MESAS: MesaSpec[] = [
 
 /** L'éboulis au pied : des blocs de grès de tailles et de teintes variées, du gros près de la paroi au gravier plus loin. */
 const SCREE: [number, number, number, number, number][] = [
-  // x, z, taille, rotation, teinte (0 rouge, 1 sable, 2 sombre, 3 crème)
+  // x, z, taille, rotation, teinte (0 rouge, 1 et 3 sable, 2 sombre)
   [4.6, -6.7, 0.5, 0.3, 0], [7.4, -6.9, 0.38, 1.6, 2], [8.4, -8.4, 0.52, 2.2, 1], [12.0, -7.8, 0.48, 0.8, 0],
   [11.6, -4.6, 0.36, 2.6, 3], [9.0, -4.7, 0.3, 0.1, 1], [5.2, -10.1, 0.42, 1.2, 3], [7.8, -11.4, 0.5, 2.9, 2],
   [12.0, -9.8, 0.38, 0.5, 1], [4.0, -8.4, 0.34, 1.9, 2], [10.6, -3.9, 0.26, 1.0, 0], [8.0, -9.8, 0.28, 2.0, 0],
@@ -152,7 +152,7 @@ const SCREE: [number, number, number, number, number][] = [
 export function Buttes() {
   const geos = useMemo(() => [...MESAS, ...FAR_MESAS].map(mesaGeo), [])
   useEffect(() => () => geos.forEach((g) => g.dispose()), [geos])
-  const mats = [O.stoneRed, O.stone, O.stoneDark, O.stoneCream]
+  const mats = [O.stoneRed, O.stone, O.stoneDark, O.stone]
   return (
     <>
       {[...MESAS, ...FAR_MESAS].map(({ at: [x, z], ry }, i) => (
