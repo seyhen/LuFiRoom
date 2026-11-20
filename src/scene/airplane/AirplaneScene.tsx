@@ -49,7 +49,7 @@ export function AirplaneScene() {
       {/* rangée 1 : le livre et la trousse, le plaid et l'oreiller sous plastique, les chaussons */}
       <BookAndPouch position={[r1, 0, SEAT_Z.B]} />
       <PillowBag position={[r1, 0, SEAT_Z.C]} />
-      <Slippers position={[r1 + 0.8, 0, SEAT_Z.B]} />
+      <Slippers position={[1.6, 0, 0.1]} />
       <Suitcase position={[2.55, 0, 0.6]} />
       <Duffel position={[2.3, 0, 2.4]} />
       <ReadingLight />

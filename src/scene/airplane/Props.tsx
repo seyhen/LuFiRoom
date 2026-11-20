@@ -41,19 +41,27 @@ export function PillowBag({ position }: { position: V3 }) {
   )
 }
 
-/** Une paire de chaussons de la compagnie, éponge crème : le second est tombé sur le flanc. `position` : le sol, devant le siège. */
+/** Un chausson d'éponge crème, ouvert derrière : une semelle, l'empeigne arrondie, le bord de la cheville, la doublure qui se voit, une petite aile brodée. Le bout est vers +x, la semelle sur y = 0. */
+function Slipper({ ry, pos }: { ry: number; pos: V3 }) {
+  return (
+    <group position={pos} rotation-y={ry}>
+      <Part geo={rbox(0.31, 0.02, 0.125, 0.01)} m={A.slipper} p={[0, 0.01, 0]} castShadow={false} />
+      <Part geo={rbox(0.12, 0.014, 0.1, 0.005)} m={A.slipper} p={[-0.085, 0.027, 0]} castShadow={false} />
+      <Part geo={rbox(0.19, 0.055, 0.125, 0.028)} m={A.slipper} p={[0.065, 0.04, 0]} />
+      <Part geo={SPH_MID} m={A.slipper} scale={[0.1, 0.034, 0.063]} p={[0.07, 0.066, 0]} castShadow={false} />
+      <Part geo={rbox(0.018, 0.026, 0.108, 0.008)} m={A.sock} p={[-0.032, 0.056, 0]} castShadow={false} />
+      <Part geo={rbox(0.05, 0.004, 0.016, 0.002)} m={A.sock} p={[0.095, 0.1, 0]} rotation-y={0.5} castShadow={false} />
+    </group>
+  )
+}
+
+/** Une paire de chaussons de la compagnie, éponge crème, laissée dans l'allée, l'un un peu de travers. `position` : le sol, au milieu de la paire. */
 export function Slippers({ position }: { position: V3 }) {
   return (
-    <group position={position}>
+    <group position={position} scale={1.3}>
       <Static>
-        <group position={[0, 0, -0.1]} rotation-y={0.12}>
-          <Part geo={rbox(0.22, 0.048, 0.09, 0.024)} m={A.slipper} p={[0, 0.024, 0]} />
-          <Part geo={rbox(0.07, 0.01, 0.075, 0.004)} m={A.sock} p={[-0.07, 0.052, 0]} castShadow={false} />
-        </group>
-        <group position={[0.02, 0.0, 0.14]} rotation-y={-0.5} rotation-x={Math.PI / 2 - 0.12}>
-          <Part geo={rbox(0.22, 0.048, 0.09, 0.024)} m={A.slipper} p={[0, 0.045, 0.03]} />
-          <Part geo={rbox(0.07, 0.01, 0.075, 0.004)} m={A.sock} p={[-0.07, 0.073, 0.03]} castShadow={false} />
-        </group>
+        <Slipper ry={0.25} pos={[0, 0, -0.1]} />
+        <Slipper ry={-0.12} pos={[0.03, 0, 0.1]} />
       </Static>
     </group>
   )
@@ -73,9 +81,15 @@ export function Suitcase({ position, ry = Math.PI / 4 }: { position: V3; ry?: nu
         {/* la poignée télescopique : deux tiges d'aluminium, une poignée */}
         {[-0.12, 0.12].map((x) => <Part key={x} geo={cyl(0.012, 0.012, 0.36, 8)} m={A.aluminium} p={[x, 1.07, -0.06]} castShadow={false} />)}
         <Part geo={rbox(0.3, 0.036, 0.05, 0.016)} m={A.rubber} p={[0, 1.26, -0.06]} castShadow={false} />
-        {/* les roulettes et le pied */}
-        {[-0.19, 0.19].map((x) => <Part key={x} geo={cyl(0.04, 0.04, 0.03, 12)} m={A.rubber} p={[x, 0.04, 0.08]} rotation-x={Math.PI / 2} rotation-z={Math.PI / 2} castShadow={false} />)}
-        <Part geo={rbox(0.22, 0.02, 0.1, 0.008)} m={A.rubber} p={[0, 0.095, -0.1]} castShadow={false} />
+        {/* les roulettes : un boîtier sous la coque, la roue, son moyeu */}
+        {[-0.19, 0.19].map((x) => (
+          <group key={x}>
+            <Part geo={rbox(0.07, 0.08, 0.1, 0.02)} m={A.rubber} p={[x, 0.12, 0.08]} castShadow={false} />
+            <Part geo={cyl(0.045, 0.045, 0.04, 14)} m={A.rubber} p={[x, 0.045, 0.08]} rotation-z={Math.PI / 2} castShadow={false} />
+            <Part geo={cyl(0.02, 0.02, 0.046, 10)} m={A.aluminium} p={[x, 0.045, 0.08]} rotation-z={Math.PI / 2} castShadow={false} />
+          </group>
+        ))}
+        <Part geo={rbox(0.22, 0.03, 0.1, 0.008)} m={A.rubber} p={[0, 0.115, -0.1]} castShadow={false} />
         {/* l'étiquette : un cordon qui part de la poignée de portage */}
         <Part geo={cyl(0.004, 0.004, 0.12, 4)} m={A.strap} p={[0.2, 0.84, 0.15]} castShadow={false} />
         <mesh material={A.tag} position={[0.21, 0.74, 0.157]}>

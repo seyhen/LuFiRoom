@@ -47,13 +47,13 @@ export const cabin: Room = {
     sleep: { sounds: [['fire',.4], ['wind',.4], ['owl',.2], ['purr',.3], ['snore',.25]], night: true },
   },
   objects: [
-    { id: 'fireplace', target: 'fire', label: 'Cheminée · feu', anchor: [-1.9, 1.05, -2.25] },
+    { id: 'fireplace', target: 'fire', label: 'Cheminée · feu', anchor: [-1.9, 1.35, -2.25] },
     { id: 'cat', target: 'purr', label: 'Chat · ronron', anchor: [-1.5, 0.3, -1.15] },
-    { id: 'dog', target: 'snore', label: 'Chien · il ronfle', anchor: [-0.62, 0.24, 0.38] },
+    { id: 'dog', target: 'snore', label: 'Chien · il ronfle', anchor: [0.45, 0.14, 1.37] },
     { id: 'turntable', target: 'radio', label: 'Tourne-disque · lofi', anchor: [1.9, 1.05, -2.6] },
     { id: 'window', target: 'wind', label: 'Fenêtre · le vent', anchor: [1.4, 3.35, -3.0] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [1.55, 0.92, -0.73] },
-    { id: 'knit', target: 'knit', label: 'Panier de tricot · les aiguilles', anchor: [-0.2, 0.5, 1.6] },
+    { id: 'knit', target: 'knit', label: 'Panier de tricot · les aiguilles', anchor: [-0.43, 0.87, 2.35] },
     // hors de la cabane : le hibou sur son chicot, au bord du sentier
     { id: 'owl', target: 'owl', label: 'Hibou · la forêt de nuit', anchor: [7.4, 1.75, 2.6] },
   ],

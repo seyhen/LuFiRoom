@@ -11,7 +11,7 @@ import { SEA, SLAB } from './layout'
 
 const LUMP = new SphereGeometry(1, 10, 7)
 // Les teintes par copie : le dessus clair, le flanc, le ventre bleuté (le matériau lui-même change avec le jour, la nuit, la pluie)
-const TOP = 0xf6f8ff, SIDE = 0xe6ecfb, UNDER = 0xc6d2ee, DEEP = 0xaebcdf
+const TOP = 0xe6ecf9, SIDE = 0xd8e0f2, UNDER = 0xc0cdea, DEEP = 0xaab8dc
 
 /** Un tas de boules sur une demi-ellipse, plus grosses au milieu. */
 function heap(out: Item[], r: () => number, c: [number, number, number], w: number, h: number, n: number, size: number, flat = 0.62) {
@@ -71,8 +71,8 @@ function cloudItems(): Item[] {
   return out
 }
 
-const DAY = new Color(0xeef3fd), NIGHT = new Color(0x7384b8), RAIN = new Color(0xb5bccb), STORM = new Color(0x6c7488)
-const EM_DAY = new Color(0xe2eafb), EM_NIGHT = new Color(0x46568f)
+const DAY = new Color(0xd4dcee), NIGHT = new Color(0x7384b8), RAIN = new Color(0xb5bccb), STORM = new Color(0x6c7488)
+const EM_DAY = new Color(0xc8d3ec), EM_NIGHT = new Color(0x46568f)
 
 /** Le matériau des nuages suit le temps : blanc bleuté le jour, lunaire la nuit (avec un éclat propre), plombé sous la pluie, ardoise à l'orage. */
 export function CloudSea() {

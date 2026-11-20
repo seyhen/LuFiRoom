@@ -32,7 +32,7 @@ export function OasisScene() {
         <Bolster position={[-1.9, 0.012, 0.55]} ry={0.25} />
         <Pouf position={[0.0, 0, 2.6]} />
         <Slippers position={[1.0, 0.016, 2.3]} ry={0.35} />
-        <WallKilim position={[-1.45, 1.52, -2.975]} />
+        <WallKilim position={[-2.972, 1.45, 2.2]} ry={Math.PI / 2} />
         <FrontCorner />
       </Static>
       <Rugs />

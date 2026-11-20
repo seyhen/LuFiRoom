@@ -9,7 +9,7 @@ import { O } from './materials'
 // coins du haut des grands écrans) ; la nuit, quelques fenêtres du village s'allument (`emissiveMap`).
 
 interface Block { dx: number; dz: number; w: number; d: number; h: number; crenel?: boolean }
-const KSAR_AT: [number, number] = [-12.4, 2.4]
+const KSAR_AT: [number, number] = [-11.2, 3.4]
 const BLOCKS: Block[] = [
   { dx: 0, dz: 0, w: 3.6, d: 2.8, h: 2.8 },
   { dx: -2.5, dz: 0.5, w: 1.8, d: 1.8, h: 4.8, crenel: true },

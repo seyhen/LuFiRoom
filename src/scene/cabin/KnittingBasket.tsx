@@ -48,7 +48,7 @@ function scarfGeo(a: number, w = 0.1, th = 0.016) {
 const SCARF = scarfGeo(0.35)
 
 /** Le panier à tricot, à côté du pouf : son pied au sol. */
-export const KNIT = { x: -0.2, z: 1.6 }
+export const KNIT = { x: -0.35, z: 2.35 }
 
 /**
  * À côté du pouf, le panier à tricot (ouvert : on voit dedans) : une pelote canneberge qui se dévide, deux autres pelotes sur un

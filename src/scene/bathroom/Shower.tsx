@@ -122,7 +122,7 @@ export function Shower() {
           <Part geo={SPH} m={B.chrome} scale={0.035} p={[0, 0.02, 0]} castShadow={false} />
           {/* la tête : un disque bombé, son joint de laiton, la cuvette des buses, un anneau en relief sur le dessus */}
           <Part geo={cyl(0.2, 0.19, 0.045, 32)} m={B.chrome} p={[0, -0.02, 0]} />
-          <Part geo={cyl(0.205, 0.205, 0.012, 32)} m={B.brass} p={[0, -0.002, 0]} castShadow={false} />
+          <Part geo={cyl(0.205, 0.205, 0.012, 32)} m={B.brass} p={[0, 0.003, 0]} castShadow={false} />
           <Part geo={SPH} m={B.chrome} scale={[0.185, 0.035, 0.185]} p={[0, 0.005, 0]} castShadow={false} />
           <Part m={B.chrome} p={[0, 0.032, 0]} rotation-x={Math.PI / 2} castShadow={false}>
             <torusGeometry args={[0.1, 0.007, 8, 32]} />

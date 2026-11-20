@@ -61,7 +61,7 @@ export const cafe: Room = {
     { id: 'handpan', target: 'handpan', label: 'Joueur de handpan · l’air de la rue', anchor: [-0.7, 0.2, 4.55] },
     { id: 'lamp', target: 'night', label: 'Lampe · jour / nuit', anchor: [-0.11, 1.0, -0.67] },
     { id: 'drip', target: 'drip', label: 'Manteau mouillé · gouttes', anchor: [2.97, 1.45, 1.08] },
-    { id: 'clock', target: 'clock', label: 'Horloge à balancier · tic-tac', anchor: [-0.43, 2.8, -2.85] },
+    { id: 'clock', target: 'clock', label: 'Horloge à balancier · tic-tac', anchor: [-0.43, 3.08, -2.84] },
   ],
   sounds: [
     { id: 'radio', name: 'Jukebox lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },

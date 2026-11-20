@@ -18,8 +18,8 @@ interface Gift {
 // aucun paquet ne dépasse 24 cm, nœud compris ; ceux qui glissent sous les branches évitent les boules (vérifié point par point).
 const GIFTS: Gift[] = [
   { x: -0.98, z: 1.52, w: 0.42, h: 0.24, d: 0.42, r: 0.35, paper: 0xd9506a, ribbon: 0xfff3dc },
-  { x: -0.92, z: 2.35, w: 0.5, h: 0.22, d: 0.36, r: -0.25, paper: 0x7fbf9e, ribbon: 0xd9506a },
-  { x: -0.5, z: 2.85, w: 0.26, h: 0.22, d: 0.26, r: 0.45, paper: 0xf6d071, ribbon: 0xd9506a },
+  { x: -1.1, z: 2.2, w: 0.5, h: 0.22, d: 0.36, r: -0.25, paper: 0x7fbf9e, ribbon: 0xd9506a },
+  { x: -0.85, z: 2.88, w: 0.26, h: 0.22, d: 0.26, r: 0.45, paper: 0xf6d071, ribbon: 0xd9506a },
   { x: -1.62, z: 2.78, w: 0.34, h: 0.24, d: 0.34, r: 0.12, paper: 0x4fb0bf, ribbon: 0xf6d071 },
   { x: -2.7, z: 2.9, w: 0.3, h: 0.22, d: 0.26, r: -0.4, paper: 0xfff4e6, ribbon: 0xd9506a },
 ]

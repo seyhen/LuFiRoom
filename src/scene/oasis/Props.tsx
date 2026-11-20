@@ -47,17 +47,16 @@ export function Chest({ position, ry = 0 }: { position: V3; ry?: number }) {
   )
 }
 
-/** Le kilim accroché au mur du fond : une tige de bois, deux cordons, le tissage rayé, une frange en bas. `y` est le centre. */
-export function WallKilim({ position }: { position: V3 }) {
-  const [x, y, z] = position
+/** Le kilim accroché à un mur : une tige de bois, deux glands, le tissage rayé, une frange en bas. `position` est le centre du tissage, `ry` tourne le tissu vers l'intérieur (π/2 : le mur de gauche, il regarde +x). */
+export function WallKilim({ position, ry = 0 }: { position: V3; ry?: number }) {
   return (
-    <group>
-      <mesh material={D.kilim} position={[x, y, z]} receiveShadow raycast={() => {}}>
+    <group position={position} rotation-y={ry}>
+      <mesh material={D.kilim} receiveShadow raycast={() => {}}>
         <planeGeometry args={[1.0, 0.9]} />
       </mesh>
-      <Part geo={cyl(0.024, 0.024, 1.18, 8)} m={D.woodDark} p={[x, y + 0.47, z + 0.02]} rotation-z={Math.PI / 2} castShadow={false} />
-      {[-0.5, 0.5].map((dx) => <Part key={dx} geo={SPH} m={D.woodDark} scale={0.032} p={[x + dx * 1.18, y + 0.47, z + 0.02]} castShadow={false} />)}
-      {Array.from({ length: 16 }, (_, i) => <Part key={i} geo={cyl(0.007, 0.007, 0.08, 4)} m={D.blanket} p={[x - 0.47 + i * 0.0625, y - 0.49, z + 0.012]} castShadow={false} />)}
+      <Part geo={cyl(0.024, 0.024, 1.18, 8)} m={D.woodDark} p={[0, 0.47, 0.02]} rotation-z={Math.PI / 2} castShadow={false} />
+      {[-0.5, 0.5].map((dx) => <Part key={dx} geo={SPH} m={D.woodDark} scale={0.032} p={[dx * 1.18, 0.47, 0.02]} castShadow={false} />)}
+      {Array.from({ length: 16 }, (_, i) => <Part key={i} geo={cyl(0.007, 0.007, 0.08, 4)} m={D.blanket} p={[-0.47 + i * 0.0625, -0.49, 0.012]} castShadow={false} />)}
     </group>
   )
 }

@@ -43,10 +43,10 @@ export const bathroom: Room = {
   },
   objects: [
     { id: 'radio', target: 'radio', label: 'Kalimba · lofi', anchor: [1.5, 0.84, 0.7] },
-    { id: 'faucet', target: 'faucet', label: 'Robinet · le filet du bain', anchor: [-0.55, 1.24, -2.7] },
-    { id: 'foam', target: 'suds', label: 'Mousse · le pétillement', anchor: [0.62, 0.9, -2.4] },
+    { id: 'faucet', target: 'faucet', label: 'Robinet · le filet du bain', anchor: [-0.8, 1.2, -2.82] },
+    { id: 'foam', target: 'suds', label: 'Mousse · le pétillement', anchor: [0.8, 0.75, -2.35] },
     { id: 'shower', target: 'shower', label: 'Douche · la pluie sur le carrelage', anchor: [-2.3, 2.52, 1.15] },
-    { id: 'lamp', target: 'night', label: 'Bougies · jour / nuit', anchor: [1.0, 2.05, -2.86] },
+    { id: 'lamp', target: 'night', label: 'Bougies · jour / nuit', anchor: [1.15, 2.1, -2.88] },
   ],
   sounds: [
     { id: 'radio', name: 'Kalimba lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },

@@ -16,7 +16,7 @@ import { C } from './materials'
 // Le chien est dessiné dans son propre repère (x vers l'avant, le museau vers +x, y en haut, z sur le flanc visible), puis tourné pour
 // regarder vers la caméra. Il est couché sur le ventre, le menton sur les pattes avant, les pattes arrière repliées sur le flanc visible,
 // la queue enroulée devant elles. Le sol est à y = 0.
-const AT: V3 = [-0.5, 0.038, 0.5] // posé sur le tapis tressé, devant le fauteuil, en face de la peau de mouton du chat
+const AT: V3 = [0.05, 0.038, 1.0] // posé sur le tapis tressé, devant le fauteuil, en face de la peau de mouton du chat (assez loin du chat et du panier pour que leurs boutons ne se chevauchent pas sur un téléphone)
 const TURN = -0.75
 // le chien est un gabarit moyen : un peu plus grand que le chat
 const SIZE = 1.15

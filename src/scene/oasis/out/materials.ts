@@ -1,4 +1,4 @@
-import { AdditiveBlending, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial } from 'three'
+import { AdditiveBlending, DoubleSide, MeshBasicMaterial, MeshStandardMaterial, SpriteMaterial } from 'three'
 import { snowTop } from '../../snowTop'
 import { far } from '../../materials'
 import { skyFade } from '../../outdoor'
@@ -35,6 +35,7 @@ export const O = {
   camelDark: near(far(0x8a6a44, { roughness: 0.9 })),
   camelFar: wide(far(0x9a7a52, { roughness: 0.9 })),
   blanket: near(far(0xb5532c, { roughness: 0.92 })),
+  cloth: near(far(0xffffff, { vertexColors: true, roughness: 0.92, side: DoubleSide })),
   blanketIndigo: near(far(0x2a417d, { roughness: 0.92 })),
   saddle: near(far(0x6a3e22, { roughness: 0.8 })),
   rope: near(far(0xd8c69a, { roughness: 0.9 })),

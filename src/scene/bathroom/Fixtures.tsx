@@ -11,8 +11,8 @@ export function Print({ p, w, h, m, side = 'back' }: { p: V3; w: number; h: numb
   return (
     <group position={p} rotation-y={side === 'left' ? Math.PI / 2 : 0}>
       <Part geo={rbox(w + 0.07, h + 0.07, 0.04, 0.012)} m={B.woodLight} castShadow={false} />
-      <Part geo={rbox(w + 0.03, h + 0.03, 0.044, 0.008)} m={B.trim} castShadow={false} />
-      <mesh material={m} position={[0, 0, 0.0235]} raycast={() => {}}>
+      <Part geo={rbox(w + 0.03, h + 0.03, 0.056, 0.008)} m={B.trim} castShadow={false} />
+      <mesh material={m} position={[0, 0, 0.0335]} raycast={() => {}}>
         <planeGeometry args={[w, h]} />
       </mesh>
     </group>

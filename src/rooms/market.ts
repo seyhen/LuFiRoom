@@ -45,15 +45,15 @@ export const market: Room = {
   },
   objects: [
     { id: 'tram', target: 'tram', label: 'Baie · le tram', anchor: [1.4, 2.95, -2.9] },
-    { id: 'wok', target: 'sizzle', label: 'Wok · ça saute', anchor: [0.24, 1.28, -0.87] },
-    { id: 'pot', target: 'simmer', label: 'Marmite · bouillon', anchor: [1.42, 1.28, -0.85] },
+    { id: 'wok', target: 'sizzle', label: 'Wok · ça saute', anchor: [-0.45, 1.4, -0.88] },
+    { id: 'pot', target: 'simmer', label: 'Marmite · bouillon', anchor: [1.54, 1.1, -0.52] },
     // hors du marché : la tour de la fête bon-odori, au loin
     { id: 'yagura', target: 'bonodori', label: 'Yagura · la danse bon-odori', anchor: [7.77, 1.15, 2.57] },
-    { id: 'lamp', target: 'night', label: 'Lanterne · jour / nuit', anchor: [1.4, 2.36, -0.73] },
-    { id: 'radio', target: 'radio', label: 'Télé · lofi', anchor: [-2.3, 0.95, 2.75] },
+    { id: 'lamp', target: 'night', label: 'Lanterne · jour / nuit', anchor: [1.58, 2.64, -0.78] },
+    { id: 'radio', target: 'radio', label: 'Télé · lofi', anchor: [-2.75, 1.15, 2.54] },
     // l'aquarium du marchand de koï, entre la télé et le tonneau (le tréteau est centré en (-1.48, 2.3)) : le bouton est sur le bout de la cuve
     // côté tonneau, à 1,2 de celui de la télé (sur le centre de la cuve, il en était à 0,9 et les deux boutons se touchaient sur téléphone)
-    { id: 'aquarium', target: 'aquarium', label: 'Aquarium · carpes koï', anchor: [-1.38, 0.72, 2.0] },
+    { id: 'aquarium', target: 'aquarium', label: 'Aquarium · carpes koï', anchor: [-1.42, 0.7, 2.18] },
   ],
   sounds: [
     { id: 'radio', name: 'Télé lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },

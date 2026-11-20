@@ -266,7 +266,7 @@ export function Yatai() {
           <Part geo={cyl(0.07, 0.07, 0.025, 14)} m={K.lanternCap} p={[0, -0.54, 0]} castShadow={false} />
         </group>
       ))}
-      <Lantern position={[0.5, 2.55, -0.3]} />
+      <Lantern position={[0.68, 2.55, -0.3]} />
     </group>
   )
 }

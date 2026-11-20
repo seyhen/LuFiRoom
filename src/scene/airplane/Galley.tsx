@@ -36,7 +36,7 @@ function Counter() {
   return (
     <Static>
       <group position={[IN + 0.28, 0, z0]}>
-        <Part geo={rbox(0.55, 1.0, len, 0.05)} m={A.binPlain} p={[0, 0.5, 0]} />
+        <Part geo={rbox(0.55, 0.92, len, 0.05)} m={A.binPlain} p={[0, 0.54, 0]} />
         <Part geo={rbox(0.6, 0.04, len + 0.05, 0.015)} m={A.cartTop} p={[0.01, 1.02, 0]} castShadow={false} />
         {/* deux portes d'aluminium à poignée creuse (le texte « LUFI AIR · SERVICE » en bas) */}
         {[-0.62, 0.62].map((z) => (
@@ -45,7 +45,8 @@ function Counter() {
           </mesh>
         ))}
         <Part geo={rbox(0.03, 0.9, 0.04, 0.012)} m={A.aluminium} p={[0.3, 0.5, 0]} castShadow={false} />
-        <Part geo={rbox(0.5, 0.08, len, 0.02)} m={A.rubber} p={[0, 0.04, 0]} castShadow={false} />
+        {/* le socle : en retrait de 2,5 cm devant, de 6 cm côté cloison (la plinthe d'aluminium du mur passe là) et de 3 cm à chaque bout, sinon son bout se confond avec celui du meuble */}
+        <Part geo={rbox(0.44, 0.1, len - 0.06, 0.02)} m={A.rubber} p={[0.01, 0.05, 0]} castShadow={false} />
         {/* la cafetière : un corps d'acier, sa verseuse de verre, son cadran allumé, la goutte */}
         <group position={[0.0, 1.04, -0.85]}>
           <Part geo={rbox(0.3, 0.42, 0.26, 0.04)} m={A.steel} p={[0, 0.21, 0]} />
@@ -133,10 +134,16 @@ export function Trolley({ position }: { position: V3 }) {
         {/* dessus : deux verseuses, des gobelets, un panier, une boîte de thé */}
         {[-0.36, -0.12].map((x, i) => (
           <group key={x} position={[x, TOP_Y + 0.0175, -0.04 + i * 0.03]}>
-            <Part geo={cyl(0.07, 0.065, 0.3, 16)} m={A.steel} p={[0, 0.15, 0]} />
-            <Part geo={cyl(0.052, 0.058, 0.03, 14)} m={A.rubber} p={[0, 0.315, 0]} castShadow={false} />
-            <Part geo={cyl(0.012, 0.012, 0.09, 8)} m={A.steel} p={[0.09, 0.2, 0]} rotation-z={0.9} castShadow={false} />
-            <Part geo={cyl(0.008, 0.008, 0.22, 6)} m={A.rubber} p={[-0.075, 0.16, 0]} castShadow={false} />
+            {/* une verseuse d'acier : le corps, l'épaule, le couvercle et son bouton, le bec, l'anse, un bandeau de couleur (café rouge, thé vert) */}
+            <Part geo={cyl(0.07, 0.065, 0.25, 18)} m={A.steel} p={[0, 0.125, 0]} />
+            <Part geo={cyl(0.0715, 0.0715, 0.035, 18)} m={i ? A.pillow : A.tomato} p={[0, 0.1, 0]} castShadow={false} />
+            <Part geo={SPH_MID} m={A.steel} scale={[0.068, 0.034, 0.068]} p={[0, 0.25, 0]} castShadow={false} />
+            <Part geo={cyl(0.04, 0.05, 0.03, 16)} m={A.rubber} p={[0, 0.292, 0]} castShadow={false} />
+            <Part geo={SPH_MID} m={A.rubber} scale={0.016} p={[0, 0.318, 0]} castShadow={false} />
+            <Part geo={cyl(0.012, 0.02, 0.07, 8)} m={A.steel} p={[0.085, 0.235, 0]} rotation-z={-0.9} castShadow={false} />
+            <Part m={A.rubber} p={[-0.066, 0.15, 0]} rotation-z={Math.PI / 2} castShadow={false}>
+              <torusGeometry args={[0.055, 0.011, 6, 14, Math.PI]} />
+            </Part>
           </group>
         ))}
         <Part geo={cyl(0.045, 0.032, 0.2, 14)} m={A.napkin} p={[0.12, TOP_Y + 0.1175, -0.1]} castShadow={false} />

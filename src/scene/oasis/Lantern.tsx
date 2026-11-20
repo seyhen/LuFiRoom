@@ -34,12 +34,12 @@ export function Lantern() {
     const a = reduceMotion ? 0 : 0.016 + 0.03 * s.wind
     sway.current.rotation.set(Math.sin(s.ph2) * a * 0.8, 0, Math.sin(s.ph) * a)
     const f = 1 + (reduceMotion ? 0 : Math.sin(clock.elapsedTime * 6.1) * 0.04 + Math.sin(clock.elapsedTime * 9.7) * 0.025)
-    light.current.intensity = e * 2.4 * Math.PI * f
+    light.current.intensity = e * 1.8 * Math.PI * f
     bounce.current.intensity = (0.05 + e * 0.95) * Math.PI
     D.lantern.emissiveIntensity = 0.04 + e * 1.5 * f
-    glow.current.material.opacity = 0.06 + e * 0.8
+    glow.current.material.opacity = 0.06 + e * 0.6
     // les étoiles de lumière sur le sable : elles tournent doucement avec la balançoire de la lanterne
-    D.lanternCast.opacity = e * 0.7 * (1 - mood.rain * 0.2)
+    D.lanternCast.opacity = e * 0.45 * (1 - mood.rain * 0.2)
     cast.current.visible = e > 0.02
     cast.current.rotation.z = Math.sin(s.ph) * a * 6
   })

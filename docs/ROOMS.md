@@ -91,8 +91,8 @@ Budget de dessin par pièce, mesuré le 2026-11-16 : appels de dessin par image 
 | Serre | 190 | 200 |
 | Tente de camping | 200 | 210 |
 | Salle de bain | 219 | 230 |
-| Avion de nuit | 244 | 260 |
-| Oasis du désert | 243 | 250 |
+| Avion de nuit | 251 | 260 |
+| Oasis du désert | 247 | 250 |
 
 Au-dessus de 300 (à ramener sous 300 quand on retouche la pièce : espacer les `Steam`, fusionner dans des `<Static>` imbriqués) : cabane, café, toit-terrasse, phare, sous-marin, marché de nuit, igloo, laverie de nuit. Le marché de nuit (369) est le plus chargé, la serre (190) la plus légère.
 Mesures du 2026-11-18 (même méthode, mêmes conditions) : le café passe de 331 à 338 avec l'horloge à balancier (+7, le mouvement fusionné en un seul maillage), le marché de 400 à 399 avec l'aquarium (+16) parce que les poissons rouges du bassin sont passés de 20 tracés à 2.
