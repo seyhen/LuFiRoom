@@ -41,32 +41,6 @@ export function PillowBag({ position }: { position: V3 }) {
   )
 }
 
-/** Un chausson d'éponge crème, ouvert derrière : une semelle, l'empeigne arrondie, le bord de la cheville, la doublure qui se voit, une petite aile brodée. Le bout est vers +x, la semelle sur y = 0. */
-function Slipper({ ry, pos }: { ry: number; pos: V3 }) {
-  return (
-    <group position={pos} rotation-y={ry}>
-      <Part geo={rbox(0.31, 0.02, 0.125, 0.01)} m={A.slipper} p={[0, 0.01, 0]} castShadow={false} />
-      <Part geo={rbox(0.12, 0.014, 0.1, 0.005)} m={A.slipper} p={[-0.085, 0.027, 0]} castShadow={false} />
-      <Part geo={rbox(0.19, 0.055, 0.125, 0.028)} m={A.slipper} p={[0.065, 0.04, 0]} />
-      <Part geo={SPH_MID} m={A.slipper} scale={[0.1, 0.034, 0.063]} p={[0.07, 0.066, 0]} castShadow={false} />
-      <Part geo={rbox(0.018, 0.026, 0.108, 0.008)} m={A.sock} p={[-0.032, 0.056, 0]} castShadow={false} />
-      <Part geo={rbox(0.05, 0.004, 0.016, 0.002)} m={A.sock} p={[0.095, 0.1, 0]} rotation-y={0.5} castShadow={false} />
-    </group>
-  )
-}
-
-/** Une paire de chaussons de la compagnie, éponge crème, laissée dans l'allée, l'un un peu de travers. `position` : le sol, au milieu de la paire. */
-export function Slippers({ position }: { position: V3 }) {
-  return (
-    <group position={position} scale={1.3}>
-      <Static>
-        <Slipper ry={0.25} pos={[0, 0, -0.1]} />
-        <Slipper ry={-0.12} pos={[0.03, 0, 0.1]} />
-      </Static>
-    </group>
-  )
-}
-
 /**
  * Une valise cabine à roulettes, corail, qui attend dans l'allée : une coque rigide à nervures, sa poignée télescopique à moitié sortie,
  * sa poignée de portage, deux roulettes, une étiquette « TYO » au bout d'un cordon. `position` : le sol sous la valise ; la face avant regarde +x +z.

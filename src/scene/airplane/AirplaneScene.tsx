@@ -7,7 +7,7 @@ import { ExitDoor } from './Door'
 import { Headphones } from './Headphones'
 import { Hublots } from './Hublot'
 import { Overhead } from './Overhead'
-import { BookAndPouch, Duffel, PillowBag, Slippers, Suitcase } from './Props'
+import { BookAndPouch, Duffel, PillowBag, Suitcase } from './Props'
 import { ReadingLight } from './ReadingLight'
 import { Seats } from './Seats'
 import { Shell } from './Shell'
@@ -46,10 +46,9 @@ export function AirplaneScene() {
       <Headphones position={[r2 + 0.62, TY, SEAT_Z.B - 0.2]} />
       <Tablet position={[r2 + 0.48, TY, SEAT_Z.B + 0.2]} />
       <MealTray position={[r2, 0, SEAT_Z.C]} />
-      {/* rangée 1 : le livre et la trousse, le plaid et l'oreiller sous plastique, les chaussons */}
+      {/* rangée 1 : le livre et la trousse, le plaid et l'oreiller sous plastique */}
       <BookAndPouch position={[r1, 0, SEAT_Z.B]} />
       <PillowBag position={[r1, 0, SEAT_Z.C]} />
-      <Slippers position={[1.6, 0, 0.1]} />
       <Suitcase position={[2.55, 0, 0.6]} />
       <Duffel position={[2.3, 0, 2.4]} />
       <ReadingLight />

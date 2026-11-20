@@ -109,7 +109,6 @@ export const A = {
   hoodie: gummy(0xe6996a, { roughness: 0.92, clearcoat: 0 }),
   hair: gummy(0x3a2a2c, { roughness: 0.7, clearcoat: 0.3 }),
   sock: gummy(0xf08a78, { roughness: 0.95, clearcoat: 0 }),
-  slipper: gummy(0xf3ecde, { roughness: 0.95, clearcoat: 0 }),
   // les bagages et le livre
   suitcase: gummy(0xf09a86, { roughness: 0.3, clearcoat: 0.8 }),
   suitcaseRib: gummy(0xe0826e, { roughness: 0.3, clearcoat: 0.6 }),
