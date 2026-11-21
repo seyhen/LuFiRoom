@@ -59,6 +59,15 @@ export const fanTex = (() => {
   return new CanvasTexture(c)
 })()
 
+/** Le flou de rotation de la soufflante : un disque gris-bleu doux, transparent vers le bord (il apparaît quand les pales vont vite). */
+export const fanBlurTex = (() => {
+  const [c, x] = makeCanvas(128, 128)
+  const g = x.createRadialGradient(64, 64, 8, 64, 64, 64)
+  g.addColorStop(0, 'rgba(176,186,208,0.9)'); g.addColorStop(0.75, 'rgba(120,132,162,0.8)'); g.addColorStop(1, 'rgba(120,132,162,0)')
+  x.fillStyle = g; x.fillRect(0, 0, 128, 128)
+  return new CanvasTexture(c)
+})()
+
 /** La lune : un disque crème, des mers d'ombre douces. */
 export const moonTex = (() => {
   const [c, x] = makeCanvas(256, 256)
@@ -106,6 +115,7 @@ export const O = {
   nacelle: skyFade(far(0xe6eaf2, { roughness: 0.45, emissive: 0xaab6d8, emissiveIntensity: 0.06, side: DoubleSide }), { r0: 10, r1: 19 }),
   inlet: skyFade(far(0x3a4258, { roughness: 0.6 }), { r0: 10, r1: 19 }),
   fan: skyFade(far(0xffffff, { map: fanTex, roughness: 0.4, metalness: 0.2 }), { r0: 10, r1: 19 }),
+  fanBlur: new MeshBasicMaterial({ map: fanBlurTex, transparent: true, opacity: 0, depthWrite: false, fog: false }),
   tailcone: skyFade(far(0xb7bfd2, { roughness: 0.4, metalness: 0.4 }), { r0: 10, r1: 19 }),
   // les corps du ciel : dessinés par-dessus la mer de nuages (sans test de profondeur), loin des murs de la cabine
   moon: new MeshBasicMaterial({ map: moonTex, transparent: true, opacity: 0, depthTest: false, depthWrite: false, fog: false }),
@@ -113,5 +123,6 @@ export const O = {
   halo: new MeshBasicMaterial({ map: glowTex, transparent: true, opacity: 0, depthTest: false, depthWrite: false, blending: AdditiveBlending, color: 0xbcccff, fog: false }),
   aurora: new MeshBasicMaterial({ map: auroraTex, transparent: true, opacity: 0, depthTest: false, depthWrite: false, blending: AdditiveBlending, side: DoubleSide, fog: false }),
   navRed: new MeshBasicMaterial({ color: 0xff4a4a, transparent: true, opacity: 0.9, depthTest: false, depthWrite: false, blending: AdditiveBlending }),
+  navGreen: new MeshBasicMaterial({ color: 0x4aff8a, transparent: true, opacity: 0.9, depthTest: false, depthWrite: false, blending: AdditiveBlending }),
   strobe: new MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthTest: false, depthWrite: false, blending: AdditiveBlending }),
 }

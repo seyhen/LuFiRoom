@@ -89,7 +89,7 @@ Budget de dessin par pièce, mesuré le 2026-11-16 : appels de dessin par image 
 | Cabane perchée | 269 | 280 |
 | Laverie de nuit | 349 | 360 |
 | Serre | 190 | 200 |
-| Salle de bain | 220 | 230 |
+| Salle de bain | 212 | 230 |
 | Avion de nuit | 247 | 260 |
 | Oasis du désert | 248 | 250 |
 

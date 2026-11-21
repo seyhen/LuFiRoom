@@ -11,47 +11,75 @@ import { A } from './materials'
 import { ROW_X, SEAT_Z } from './layout'
 import { Seat } from './Seats'
 
-const HOODIE = 0xe6996a, PANTS = 0x4a5678, SKIN = 0xefc3a0, HAIR = 0x3a2a2c, LILAC = 0xb4a4dc, SOCK = 0xf08a78, LILAC2 = 0xc2b3e6
+const SWEATER = 0xe8b64a, SWEATER2 = 0xf2c866, PANTS = 0x4a5678, SKIN = 0xefc3a0, HAIR = 0x3a2a2c, LILAC = 0xb4a4dc, LILAC2 = 0xc9bced, SOCK = 0xf08a78, BLUSH = 0xf0a090
 
-// Un dormeur du hublot, assis au dossier incliné, enroulé dans un polaire lilas. Le corps et la couverture sont d'une seule peau
-// (seuls les pieds en chaussettes corail dépassent), la tête est à part pour pencher vers le hublot. Repère : celui du siège (x vers l'avant).
+// Le repère est celui du siège (x vers l'avant). Le dossier bascule autour de (-0,24 ; 0,46) de 0,13 + 0,2 (voir `Seat`) :
+// `bk(s, d, z)` donne le point à la distance `s` le long du dossier et à `d` devant sa face de tissu (qui est à d = 0,03).
+const TILT = 0.33, PIV = [-0.24, 0.46]
+const U = [-Math.sin(TILT), Math.cos(TILT)], N = [Math.cos(TILT), Math.sin(TILT)]
+const bk = (s: number, d: number, z = 0): V3 => [PIV[0] + N[0] * d + U[0] * s, PIV[1] + N[1] * d + U[1] * s, z]
+
+// Le corps : un voyageur assis, le dos au dossier incliné, en sweat pêche et pantalon bleu nuit, chaussettes corail. Les bras reposent
+// sur les cuisses, les mains l'une contre l'autre sur le plaid. Épaules de 0,42 m, tête de 0,23 m : des proportions humaines, un peu gummy.
 const BODY = blob(
   [
-    ell([-0.4, 0.93, 0], [0.17, 0.36, 0.27], { rot: [0, 0, 0.33], color: HOODIE }),
-    ell([-0.16, 0.63, 0], [0.24, 0.13, 0.27], { color: PANTS }),
-    pair(cone([-0.1, 0.62, 0.12], [0.3, 0.62, 0.12], 0.11, 0.095, { color: PANTS })),
-    pair(cone([0.32, 0.6, 0.12], [0.37, 0.1, 0.12], 0.085, 0.07, { color: PANTS })),
-    pair(ell([0.43, 0.05, 0.12], [0.12, 0.045, 0.07], { color: SOCK })),
-    pair(cone([-0.36, 1.22, 0.3], [-0.2, 0.88, 0.33], 0.07, 0.062, { color: HOODIE })),
-    cone([-0.4, 1.2, 0], [-0.43, 1.34, 0], 0.075, 0.07, { color: SKIN }),
-    // le polaire : le haut de la poitrine, le ventre, les genoux, un pan qui retombe devant, deux sur les côtés, des plis
-    ell([-0.2, 0.95, 0], [0.2, 0.2, 0.33], { color: LILAC, k: 0.06 }),
-    ell([0.0, 0.8, 0], [0.32, 0.15, 0.4], { color: LILAC, k: 0.06 }),
-    ell([0.2, 0.76, 0], [0.2, 0.14, 0.41], { color: LILAC2, k: 0.06 }),
-    ell([0.37, 0.54, 0], [0.07, 0.3, 0.4], { color: LILAC, k: 0.05 }),
-    pair(ell([0.1, 0.57, 0.4], [0.28, 0.26, 0.06], { color: LILAC2, k: 0.05 })),
-    pair(ell([0.04, 0.92, 0.18], [0.14, 0.08, 0.1], { color: LILAC2, k: 0.05 })),
-    ell([-0.12, 1.1, 0.0], [0.1, 0.07, 0.22], { color: LILAC2, k: 0.05 }),
+    // le torse : le ventre, la poitrine plus large, les épaules, le cou
+    ell(bk(0.28, 0.125), [0.095, 0.2, 0.17], { rot: [0, 0, TILT], color: SWEATER }),
+    ell(bk(0.5, 0.12), [0.092, 0.19, 0.2], { rot: [0, 0, TILT], color: SWEATER }),
+    pair(ell(bk(0.66, 0.1, 0.2), 0.08, { color: SWEATER })),
+    cone(bk(0.66, 0.1), bk(0.84, 0.1), 0.062, 0.054, { color: SKIN, k: 0.02 }),
+    // le bassin et les cuisses
+    ell([-0.08, 0.585, 0], [0.16, 0.1, 0.2], { color: PANTS }),
+    pair(cone([-0.06, 0.585, 0.105], [0.33, 0.6, 0.115], 0.09, 0.07, { color: PANTS })),
+    // les jambes : du genou à la cheville, le revers du pantalon, la chaussette, le pied
+    pair(cone([0.33, 0.6, 0.115], [0.395, 0.21, 0.115], 0.07, 0.054, { color: PANTS })),
+    pair(cone([0.395, 0.22, 0.115], [0.4, 0.1, 0.115], 0.052, 0.046, { color: SOCK })),
+    pair(ell([0.45, 0.055, 0.115], [0.115, 0.042, 0.055], { color: SOCK })),
+    // les bras : le haut du bras, le coude, l'avant-bras, la main (et le pouce) posée sur le plaid
+    pair(cone(bk(0.66, 0.1, 0.22), [-0.2, 0.8, 0.255], 0.062, 0.055, { color: SWEATER })),
+    pair(cone([-0.2, 0.8, 0.255], [0.0, 0.752, 0.13], 0.055, 0.046, { color: SWEATER })),
+    pair(cone([-0.02, 0.752, 0.14], [0.02, 0.746, 0.12], 0.05, 0.047, { color: SWEATER2 })),
+    pair(ell([0.075, 0.738, 0.1], [0.06, 0.028, 0.042], { color: SKIN, rot: [0.2, 0, 0] })),
+    pair(ell([0.1, 0.75, 0.06], [0.03, 0.018, 0.02], { color: SKIN })),
   ],
-  { h: 0.026, k: 0.06, pad: 0.05 },
+  { h: 0.022, k: 0.035, pad: 0.05 },
 )
+
+// Le plaid lilas sur les cuisses et les genoux : un dessus, un pan qui pend de chaque côté, un pan devant les genoux, un pli ; des rayures plus claires.
+const PLAID = blob(
+  [
+    ell([0.14, 0.646, 0], [0.29, 0.055, 0.235], { color: LILAC }),
+    pair(ell([0.14, 0.585, 0.232], [0.26, 0.09, 0.03], { color: LILAC })),
+    ell([0.43, 0.49, 0], [0.1, 0.21, 0.225], { color: LILAC }),
+    ell([0.2, 0.672, 0], [0.04, 0.03, 0.18], { color: LILAC2, k: 0.03 }),
+    ell([-0.1, 0.69, 0], [0.04, 0.04, 0.18], { color: LILAC2, k: 0.03 }),
+  ],
+  {
+    h: 0.02, k: 0.04, pad: 0.04,
+    paint: (p, base) => (Math.floor((p.x + p.y * 0.6 + 1) / 0.07) % 3 === 0 ? base.lerp(base.clone().set(0xe3d9fa), 0.55) : base),
+  },
+)
+
+// La tête : un crâne, une mâchoire, des joues, un nez, deux oreilles, des cheveux sur le dessus et l'arrière (le visage reste dégagé).
+// L'origine est la base du cou, le visage regarde +x.
 const HEAD = blob(
   [
-    ell([0, 0.19, 0], [0.15, 0.18, 0.15], { color: SKIN }),
-    ell([0.07, 0.07, 0], [0.09, 0.07, 0.1], { color: SKIN }),
-    ell([-0.04, 0.245, 0], [0.165, 0.16, 0.165], { color: HAIR, k: 0.03 }),
-    pair(ell([-0.01, 0.18, 0.155], [0.032, 0.05, 0.022], { color: SKIN })),
-    ell([0.145, 0.15, 0], [0.032, 0.036, 0.03], { color: SKIN }),
+    ell([0, 0.135, 0], [0.108, 0.13, 0.098], { color: SKIN }),
+    ell([0.03, 0.06, 0], [0.082, 0.07, 0.082], { color: SKIN }),
+    pair(ell([0.075, 0.07, 0.06], [0.03, 0.03, 0.026], { color: BLUSH, k: 0.02 })),
+    ell([0.108, 0.105, 0], [0.022, 0.026, 0.02], { color: SKIN, k: 0.02 }),
+    pair(ell([-0.005, 0.125, 0.1], [0.02, 0.036, 0.012], { color: SKIN, k: 0.02 })),
+    ell([-0.04, 0.17, 0], [0.108, 0.115, 0.104], { color: HAIR, k: 0.02 }),
+    ell([0.0, 0.215, 0], [0.105, 0.06, 0.1], { color: HAIR, k: 0.02 }),
+    ell([0.062, 0.225, 0], [0.04, 0.026, 0.075], { color: HAIR, k: 0.02 }),
   ],
-  { h: 0.014, k: 0.03, pad: 0.03 },
+  { h: 0.012, k: 0.03, pad: 0.03 },
 )
 
-const NECK: V3 = [-0.43, 1.32, 0]
-
 /**
- * Le dormeur du siège hublot de la rangée 1 : un voyageur en sweat pêche, enroulé dans un polaire lilas, la tête sur un oreiller de
- * voyage menthe, un masque de sommeil rose aux yeux fermés dessinés. Sa poitrine monte et descend à peine ; de loin en loin un « Z » s'envole.
- * Le siège a son dossier incliné.
+ * Le dormeur du siège hublot de la rangée 1 : un voyageur en sweat pêche, un plaid lilas sur les genoux, les mains posées dessus, la tête
+ * contre l'appuie-tête dans un oreiller de voyage menthe, les yeux fermés, un sourire à peine. Sa poitrine monte et descend à peine ;
+ * de loin en loin un « Z » s'envole. Le siège a son dossier incliné.
  */
 export function Sleeper() {
   const p: V3 = [ROW_X[0], 0, SEAT_Z.A]
@@ -60,7 +88,8 @@ export function Sleeper() {
   useFrame(({ clock }) => {
     body.current.scale.y = reduceMotion ? 1 : 1 + Math.sin(clock.elapsedTime * 0.9) * 0.006
   })
-  useEvery(5, 9, () => zs.emit(zTex, p[0] - 0.2, 1.95, p[2] - 0.1, { size: 0.2, life: 3.4, vy: 0.2, sway: 0.1, grow: 0.5, peak: 0.8 }), () => true, 2)
+  const neck = bk(0.8, 0.095)
+  useEvery(5, 9, () => zs.emit(zTex, p[0] + neck[0] - 0.05, 1.9, p[2] - 0.05, { size: 0.2, life: 3.4, vy: 0.2, sway: 0.1, grow: 0.5, peak: 0.8 }), () => true, 2)
   return (
     <group position={p}>
       <Static>
@@ -68,25 +97,26 @@ export function Sleeper() {
       </Static>
       <group ref={body} userData={LIVE}>
         <mesh geometry={BODY} material={A.person} castShadow receiveShadow />
-        {/* l'oreiller de voyage : un U menthe qui entoure la nuque, ouvert devant */}
-        <group position={[NECK[0] + 0.02, 1.2, 0]} rotation-x={-Math.PI / 2}>
-          <Part m={A.pillow} rotation-z={0.84}>
-            <torusGeometry args={[0.125, 0.055, 12, 22, 4.6]} />
-          </Part>
+        <mesh geometry={PLAID} material={A.plaid} castShadow receiveShadow />
+        {/* l'oreiller de voyage : un U menthe autour de la nuque, ouvert devant */}
+        <group position={bk(0.72, 0.085)} rotation-z={TILT}>
+          <group rotation-x={-Math.PI / 2}>
+            <Part m={A.pillow} rotation-z={0.84}>
+              <torusGeometry args={[0.1, 0.05, 12, 22, 4.6]} />
+            </Part>
+          </group>
         </group>
-        {/* la tête, penchée vers le hublot et contre l'appuie-tête */}
-        <group position={NECK} rotation-x={-0.16} rotation-z={0.18}>
+        {/* la tête, appuyée au repose-tête, un peu penchée vers le hublot, le visage tourné vers la pièce */}
+        <group position={neck} rotation-z={0.2} rotation-x={-0.12} rotation-y={-0.25} scale={1.12}>
           <mesh geometry={HEAD} material={A.person} castShadow receiveShadow />
-          {/* le masque : un bandeau de satin autour de la tête et le patin brodé de deux yeux fermés */}
-          <Part m={A.maskBand} p={[0, 0.2, 0]} rotation-x={Math.PI / 2} castShadow={false}>
-            <torusGeometry args={[0.158, 0.012, 6, 28]} />
-          </Part>
-          <mesh material={A.mask} position={[0, 0.2, 0]}>
-            <cylinderGeometry args={[0.17, 0.17, 0.095, 20, 1, true, Math.PI / 2 - 0.62, 1.24]} />
-          </mesh>
-          {/* un sourire à peine */}
-          <Part m={A.hoodie} p={[0.156, 0.075, 0]} rotation-y={Math.PI / 2} rotation-z={Math.PI} castShadow={false}>
-            <torusGeometry args={[0.022, 0.004, 5, 10, Math.PI]} />
+          {/* les yeux fermés : deux petits arcs de cils, et un sourire à peine */}
+          {[-1, 1].map((s) => (
+            <Part key={s} m={A.lash} p={[0.1, 0.122, s * 0.042]} rotation-y={Math.PI / 2} rotation-z={Math.PI} castShadow={false}>
+              <torusGeometry args={[0.02, 0.0045, 5, 10, Math.PI]} />
+            </Part>
+          ))}
+          <Part m={A.lash} p={[0.1, 0.062, 0]} rotation-y={Math.PI / 2} rotation-z={Math.PI} castShadow={false}>
+            <torusGeometry args={[0.02, 0.004, 5, 10, Math.PI]} />
           </Part>
         </group>
       </group>

@@ -106,6 +106,9 @@ export const A = {
   mask: gummy(0xffffff, { map: maskTex, roughness: 0.5, clearcoat: 0.3 }),
   maskBand: gummy(0xe9a5bd, { roughness: 0.85, clearcoat: 0 }),
   person: skin({ roughness: 0.62, clearcoat: 0.18 }),
+  /** Le plaid du dormeur : une laine mate, ses couleurs viennent des sommets. */
+  lash: gummy(0x5a3a3c, { roughness: 0.8, clearcoat: 0 }),
+  plaid: skin({ roughness: 0.97, clearcoat: 0 }),
   hoodie: gummy(0xe6996a, { roughness: 0.92, clearcoat: 0 }),
   hair: gummy(0x3a2a2c, { roughness: 0.7, clearcoat: 0.3 }),
   sock: gummy(0xf08a78, { roughness: 0.95, clearcoat: 0 }),
