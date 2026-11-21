@@ -18,7 +18,7 @@ import { Surroundings } from './out/Surroundings'
 const STOOL_S = 1.2
 
 /**
- * Une salle de bain pastel un soir de pluie fine, sur une ville de colline : la baignoire à pieds de lion sous la fenêtre en arche
+ * Une salle de bain pastel un soir de pluie fine, dans le jardin d'un cottage : la baignoire à pieds de lion sous la fenêtre en arche
  * (mousse, canard, robinet col de cygne, plateau de bain), la douche à effet pluie dans sa niche de zellige rose, le lavabo sur colonne
  * et son miroir, le sèche-serviettes, la robe de chambre, le panier à linge, l'étagère de serviettes roulées, le tabouret du kalimba, des
  * plantes, des bougies sur la tablette (la lampe : jour / nuit). La vapeur monte du bain, la buée gagne la vitre quand l'eau coule.

@@ -3,8 +3,9 @@ import { PLAYLIST } from './playlist'
 import type { Room } from './types'
 import { WEATHER_LOOPS } from './weather'
 
-// Une salle de bain de rêve un soir de pluie fine : baignoire à pieds de lion pleine de mousse, carrelage pastel, fenêtre embuée sur une
-// ville de colline. Sons nouveaux (le robinet de la baignoire, la mousse du bain, la douche à effet pluie) synthétisés pour l'instant :
+// Une salle de bain de rêve un soir de pluie fine : baignoire à pieds de lion pleine de mousse, carrelage pastel, fenêtre embuée sur le
+// jardin d'un cottage (la pièce est son extension de plain-pied : dehors, hortensias, glycine, mare, chemin de dalles, village dans la
+// brume). Sons nouveaux (le robinet de la baignoire, la mousse du bain, la douche à effet pluie) synthétisés pour l'instant :
 // leurs enregistrements se déclareront dans `loops` (docs/ASSETS.md), sources et licences dans public/audio/CREDITS.md.
 
 export const bathroom: Room = {
@@ -15,7 +16,7 @@ export const bathroom: Room = {
     'où flotte un canard jaune, son robinet col de cygne et son plateau de bain (thé, livre, savon, succulente), une douche à effet ' +
     'pluie dans une niche de zellige rose, un lavabo sur colonne et son miroir ovale, un sèche-serviettes aux serviettes douces, un ' +
     'tabouret où repose un kalimba, une étagère de serviettes roulées, des bougies sur la tablette de la fenêtre en arche, des ' +
-    'plantes partout, et par la vitre embuée, une ville de colline aux toits de tuiles.',
+    'plantes partout, et par la vitre embuée, un jardin de cottage sous la pluie : hortensias, glycine, mare à nénuphars et chemin de dalles.',
   ui: {
     accent: ['#c4567a', '#ffb3c8'],
     ink: ['#4a2c3a', '#fdeef0'],
@@ -24,9 +25,9 @@ export const bathroom: Room = {
     line: ['rgba(196, 86, 122, .16)', 'rgba(255, 179, 200, .18)'],
     bg: ['#f4dfe0', '#1b1220'],
   },
-  // la fenêtre donne sur une ville de colline (toits, une église, du linge) : on recule pour la voir
+  // le dehors est un jardin de cottage (maison de pierre, hortensias, mare, collines et village au fond) : on recule pour le voir
   zoom: 0.88,
-  sky: { day: ['#fbeee9', '#f1d6d4', '#dcb8c8'], night: ['#3b3150', '#261f38', '#16111f'] },
+  sky: { day: ['#f6eeec', '#ead9dc', '#d6bccb'], night: ['#3b3150', '#261f38', '#16111f'] },
   light: {
     hemi: { sky: [0xfff4f2, 0x9a96d0], ground: [0xe9cdc8, 0x7a5a68], intensity: [0.74, 0.56] },
     sun: { color: [0xfff1e4, 0x9fb4e8], intensity: [0.52, 0.2] },
