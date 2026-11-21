@@ -18,7 +18,7 @@ Brouillon à copier dans App Store Connect et la Google Play Console. Rien ici n
 
 > LufiRoom, ce sont des petites pièces en 3D isométrique, toutes douces et arrondies, où chaque objet est un interrupteur de son. Touche la radio pour lancer de la musique lofi, le ventilateur pour un bruit blanc, la fenêtre pour la pluie… et compose l'ambiance qui t'aide à travailler, lire ou dormir.
 >
-> • Seize pièces, chacune avec son décor et ses sons : chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit, igloo, cabane perchée, laverie de nuit, serre, tente de camping.
+> • Dix-huit pièces, chacune avec son décor et ses sons : chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit, igloo, cabane perchée, laverie de nuit, serre, salle de bain, avion de nuit, oasis du désert.
 > • Un mixeur pour régler le volume de chaque son, sans toucher la 3D si tu préfères.
 > • La météo au choix (pluie, orage, neige…), et le jour et la nuit qui suivent l'heure.
 > • Une radio qui joue de la musique douce, propre à chaque pièce.
@@ -40,7 +40,7 @@ Brouillon à copier dans App Store Connect et la Google Play Console. Rien ici n
 
 > LufiRoom is a set of soft, rounded little isometric 3D rooms where every object is a sound switch. Tap the radio for lofi music, the fan for white noise, the window for rain... and build the ambience that helps you work, read or sleep.
 >
-> • Nineteen rooms, each with its own look and sounds: bedroom, cabin, café, beach, night train, rooftop, workshop, onsen, lighthouse, submarine, night market, igloo, treehouse, night laundromat, greenhouse, camping tent, bathroom, night flight, desert oasis.
+> • Eighteen rooms, each with its own look and sounds: bedroom, cabin, café, beach, night train, rooftop, workshop, onsen, lighthouse, submarine, night market, igloo, treehouse, night laundromat, greenhouse, bathroom, night flight, desert oasis.
 > • A mixer to set each sound's volume, without touching the 3D if you prefer.
 > • Weather of your choice (rain, storm, snow...), and day and night that follow your clock.
 > • A radio playing soft music, specific to each room.
@@ -88,12 +88,12 @@ Aucun contenu sensible : pas de violence, de contenu sexuel, de langage cru, de 
 > LufiRoom n'a pas besoin de compte : ouvrir l'appli suffit. Pour tester :
 > 1. Ouvrir l'appli : une pièce en 3D s'affiche. Toucher un objet (la radio, le ventilateur, la fenêtre…) lance son son. Le son ne démarre qu'après un toucher.
 > 2. Le mixeur (barre du bas ou panneau) liste un son par carte avec son volume.
-> 3. Choisir une autre pièce avec le sélecteur de pièces du haut (19 pièces).
+> 3. Choisir une autre pièce avec le sélecteur de pièces du haut (18 pièces).
 > 4. Lancer un son, verrouiller l'écran : le son continue (mode d'arrière-plan « audio »). Les commandes de lecture/pause apparaissent sur l'écran de verrouillage.
 > 5. Minuteur de sommeil : menu du haut, choisir une durée ; le son s'estompe à la fin.
 > 6. Couper le réseau : tout fonctionne (pièces, sons et musique embarqués dans l'appli).
 >
-> Pourquoi ce n'est pas un simple site web : l'appli embarque ses 19 pièces et tous ses sons (hors ligne complet, pas de chargement réseau) ; elle joue en arrière-plan écran verrouillé avec les commandes de l'écran de verrouillage (Media Session / mode audio d'arrière-plan) ; elle a un minuteur de sommeil ; elle s'installe comme une vraie appli, avec son icône et son écran de lancement. Aucune donnée n'est collectée ; aucun achat intégré ; aucune publicité.
+> Pourquoi ce n'est pas un simple site web : l'appli embarque ses 18 pièces et tous ses sons (hors ligne complet, pas de chargement réseau) ; elle joue en arrière-plan écran verrouillé avec les commandes de l'écran de verrouillage (Media Session / mode audio d'arrière-plan) ; elle a un minuteur de sommeil ; elle s'installe comme une vraie appli, avec son icône et son écran de lancement. Aucune donnée n'est collectée ; aucun achat intégré ; aucune publicité.
 
 À vérifier avant d'envoyer cette note : chaque point doit être vrai dans la version soumise (emplacements des menus, commandes de l'écran verrouillé sur iOS, extinction du minuteur). Je n'ai pas testé sur un appareil iOS : ne rien affirmer qui n'a pas été essayé. Les emplacements exacts des boutons sont à adapter à l'interface réelle.
 

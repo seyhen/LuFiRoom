@@ -101,7 +101,7 @@ Lis `.claude/skills/audit-room/overlaps.js`, colle-le dans `evaluate_script` (pi
    - **deux boîtes voisines dont les faces de côté se recouvrent** (façade de grès et mur de brique d'un angle, redents du pignon et façade) : raccourcis l'une de 0,03, ou fais dépasser l'autre de 0,03 ;
    - **un dessus posé à 0,002 d'un autre** (les planches du ponton sur leur poutre) : au moins 0,012 d'écart.
    Après correction, relance le détecteur : les chiffres du haut de la liste doivent avoir disparu.
-9. **Triangles par image** (le budget des tracés ne les compte pas) : `__lofi.three().gl.info.render.triangles`, après 5 s. Les 19 pièces font aujourd'hui 110 000 à 540 000 ; au-delà de 600 000 on cherche la série coupable (`Batch` de centaines de copies, sphères `SPH` de 1 344 triangles sur des formes minuscules) ; le test de fumée (`npm run test:smoke`) les affiche par pièce et échoue au-dessus de 1 000 000. `Part` et `Batch` prennent déjà `SPH_MID` / `SPH_LO` pour les petites formes ; une sphère passée à la main (`<mesh geometry={SPH}>`) n'est pas réduite.
+9. **Triangles par image** (le budget des tracés ne les compte pas) : `__lofi.three().gl.info.render.triangles`, après 5 s. Les 18 pièces font aujourd'hui 110 000 à 540 000 ; au-delà de 600 000 on cherche la série coupable (`Batch` de centaines de copies, sphères `SPH` de 1 344 triangles sur des formes minuscules) ; le test de fumée (`npm run test:smoke`) les affiche par pièce et échoue au-dessus de 1 000 000. `Part` et `Batch` prennent déjà `SPH_MID` / `SPH_LO` pour les petites formes ; une sphère passée à la main (`<mesh geometry={SPH}>`) n'est pas réduite.
 
 ## Étape 2 — Scan du code (les pièges connus)
 

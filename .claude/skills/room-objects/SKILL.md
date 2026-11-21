@@ -162,9 +162,6 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite (
 | Igloo | guitariste en parka rouge sur une plaque de glace (dehors), une guitare nylon qui égrène des accords lents | `guitar` |
 | Sous-marin | la grande méduse du courant (dehors), tout le banc chante : une nappe de verre, lointaine | `jellies` |
 | Onsen | joueuse de koto à genoux sur un tatami, devant le sentier (dehors de l’onsen), des cordes pincées en gamme hirajoshi (son synthétisé, faute d’enregistrement CC0) | `koto` |
-| Tente de camping | la toile de la tente-cloche, sous la pluie : des impacts ronds et sourds sur le tissu tendu (son synthétisé) | `canvas` |
-| Tente de camping | percolateur d’émail bleu sur son réchaud : des glouglous ronds par cycles sous le souffle bas de la flamme (son synthétisé) | `percolator` |
-| Tente de camping | bocal de lucioles sur un rondin : le chœur de grillons de la nuit (son synthétisé) | `crickets` |
 | Salle de bain | robinet col de cygne de la baignoire, le filet d'eau chaude dans un bain plein (son synthétisé, provisoire) | `faucet` |
 | Salle de bain | mousse du bain (canard, bulles de savon), le pétillement doux de milliers de bulles (son synthétisé, provisoire) | `suds` |
 | Salle de bain | douche à effet pluie dans sa niche de zellige, la pluie chaude sur le carrelage avec la réverbération d'une pièce carrelée (son synthétisé, provisoire) | `shower` |

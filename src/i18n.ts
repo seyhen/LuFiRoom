@@ -545,22 +545,6 @@ const EN: Record<string, string> = {
   'Nappes chaudes et boîte à musique, 62 bpm.': 'Warm pads and music box, 62 bpm.',
   'Piano électrique et batterie sèche, 86 bpm, pour se concentrer.': 'Electric piano and dry drums, 86 bpm, to help you focus.',
   'Boîte à musique et grelots, en sol majeur, 70 bpm.': 'Music box and sleigh bells, in G major, 70 bpm.',
-  // la tente de camping
-  Tente: 'Tent',
-  'Une tente de camping un soir de pluie, en 3D isométrique : une grande tente-cloche de toile ecru sur son mât, ouverte vers nous, une lampe à pétrole suspendue qui dore la toile, un sac de couchage matelassé sur son matelas avec un livre et une lampe frontale, un ukulélé posé sur une caisse, un réchaud de camping avec son percolateur d’émail bleu sur une table pliante, un bocal de lucioles sur un rondin, des bottes boueuses, un ciré jaune qui sèche, un sac à dos, une guirlande de fanions, et la forêt de sapins dehors sous la pluie.':
-    'A camping tent on a rainy evening, in isometric 3D: a big ecru canvas bell tent on its centre pole, open towards us, a hanging oil lamp that turns the canvas to gold, a quilted sleeping bag on its mattress with a book and a head torch, a ukulele resting on a crate, a camp stove with its blue enamel percolator on a folding table, a jar of fireflies on a log, muddy boots, a yellow rain jacket drying, a rucksack, a string of bunting, and the fir forest outside in the rain.',
-  Ukulélé: 'Ukulele',
-  'Toile · la pluie dessus': 'Canvas · the rain on top',
-  Toile: 'Canvas',
-  'la pluie qui tambourine': 'the rain drumming',
-  'Percolateur · le café': 'Percolator · the coffee',
-  Percolateur: 'Percolator',
-  'le café qui glougloute': 'coffee bubbling away',
-  'Bocal de lucioles · les grillons': 'Firefly jar · the crickets',
-  Grillons: 'Crickets',
-  'dans les fougères, dehors': 'in the ferns outside',
-  'Lampe à pétrole · jour / nuit': 'Oil lamp · day / night',
-  'dans les sapins': 'in the firs',
   // l'oasis du désert
   Oasis: 'Oasis',
   'Une oasis du désert, en 3D isométrique : un campement de pierre et de toile au bord d’une petite mare, deux murs de pisé dont un percé d’une arche sur les dunes, un auvent de toile rayée tendu sur des perches, des tapis posés les uns sur les autres avec des coussins, un plateau de cuivre avec sa théière et ses verres, un oud sur un coussin, une lanterne de laiton ajouré, la mare entre les rochers et les roseaux, un grand palmier dattier, et dehors les dunes dorées, un bosquet de palmiers, un village de terre au loin et un dromadaire accroupi, sous un ciel de désert plein d’étoiles la nuit.':

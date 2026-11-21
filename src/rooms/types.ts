@@ -44,8 +44,6 @@ export type SoundId =
   | 'clock' | 'aquarium'
   // la cabane : le chien qui dort sur le tapis, devant la cheminée
   | 'snore'
-  // la tente de camping : la pluie sur la toile, le percolateur sur le réchaud, les grillons de la nuit
-  | 'canvas' | 'percolator' | 'crickets'
   // la salle de bain : le robinet de la baignoire, la mousse du bain, la douche à effet pluie
   | 'faucet' | 'suds' | 'shower'
   // l'oasis du désert : le vent des dunes, les palmes du palmier, la source de la mare
@@ -71,8 +69,6 @@ export type ObjectId =
   | 'koto'
   | 'clock' | 'aquarium'
   | 'dog'
-  // la tente de camping : la toile (pluie dessus), le percolateur, le bocal de lucioles
-  | 'canvas' | 'percolator' | 'fireflies'
   | 'faucet' | 'foam' | 'shower'
   // l'oasis du désert : l'auvent de toile (le vent des dunes), le palmier, la mare
   | 'awning' | 'datepalm' | 'waterhole'

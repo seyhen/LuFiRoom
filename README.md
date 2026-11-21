@@ -1,6 +1,6 @@
 # LufiRoom
 
-Webapp d'ambiance sonore : des pièces en 3D isométrique, style « gummy », où chaque objet est un interrupteur de son. Seize pièces aujourd'hui (chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit, igloo, cabane perchée, laverie de nuit, serre, tente de camping).
+Webapp d'ambiance sonore : des pièces en 3D isométrique, style « gummy », où chaque objet est un interrupteur de son. Dix-huit pièces aujourd'hui (chambre, cabane, café, plage, train de nuit, toit-terrasse, atelier, onsen, phare, sous-marin, marché de nuit, igloo, cabane perchée, laverie de nuit, serre, salle de bain, avion de nuit, oasis du désert).
 
 On touche la radio pour lancer la musique, le ventilo pour le souffle, le chat pour son ronron… On choisit la météo (pluie, orage, neige…) dans le sélecteur du haut, on règle la carte « Bruit » (blanc, rose, brun, vert), et on compose son ambiance pour travailler, lire ou dormir. La radio est générative (stations de lofi calculées en direct, avec de vrais morceaux quand ils sont présents). Interface en français et en anglais, installable (PWA, et coque mobile Capacitor).
 

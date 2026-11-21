@@ -148,3 +148,13 @@ test('loadLast : retire les sons inconnus, null si plus rien ou pièce inconnue 
   localStorage.setItem('chambre-lofi.last', 'zzz')
   assert.equal(loadLast(), null)
 })
+
+test('pièce retirée (la tente) : la pièce retombe sur la chambre, ambiances et liens sont ignorés', () => {
+  reset()
+  assert.equal(roomById('tent').id, 'bedroom')
+  storeMixes([{ id: 'x', name: 'Soir', mix: { v: 2, room: 'tent', on: ['rain'], vol: {}, night: true } }])
+  assert.deepEqual(loadMixes(), [])
+  storeLast({ v: 2, room: 'tent', on: ['rain'], vol: {}, night: true })
+  assert.equal(loadLast(), null)
+  assert.equal(mixFromSearch('?room=tent&mix=rain.60&night=1&v=2'), null)
+})

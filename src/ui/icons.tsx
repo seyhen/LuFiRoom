@@ -8,9 +8,6 @@ const svg = (children: ReactNode) => (
 )
 
 export const soundIcons: Record<SoundId, ReactNode> = {
-  canvas: svg(<><path d="M3 20h18L12 5z" /><path d="M12 5V3M12 20l-3-7M12 20l3-7" /></>),
-  percolator: svg(<><path d="M7 10h9v7.500a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z" /><path d="M16 11.500h2.300a1.700 1.700 0 0 1 0 3.400H16" /><path d="M10 10V8.200h3V10M11.500 5.800c-.6-.8.6-1.400 0-2.200" /><path d="M5 19.500h13" /></>),
-  crickets: svg(<><path d="M8 6h8M7 8h10v9.500a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z" /><path d="M10.500 12.500h.01M13.500 15.500h.01M12.500 11h.01M10 16.500h.01" /><path d="M4.500 4.500l1 1M19.500 4.500l-1 1" /></>),
   radio: svg(<><rect x="3" y="8.5" width="18" height="11.5" rx="3.2" /><circle cx="8.5" cy="14.2" r="2.6" /><path d="M14.5 12.5h3.5M14.5 16h3.5M8 8.5 15.5 3.5" /></>),
   noise: svg(<><path d="M3 12h1.4M6.4 8.5v7M9.6 4.5v15M12.8 7.5v9M16 3.5v17M19.2 9v6M21.4 12h-.1" /></>),
   rain: svg(<><path d="M7.2 15a4 4 0 0 1 .4-8 5.5 5.5 0 0 1 10.3 1.7A3.2 3.2 0 0 1 17.6 15z" /><path d="M8.5 18.2 7.6 20.4M12.5 18.2l-.9 2.2M16.5 18.2l-.9 2.2" /></>),

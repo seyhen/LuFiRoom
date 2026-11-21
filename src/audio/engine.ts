@@ -77,9 +77,6 @@ import koto from './channels/koto'
 import clock from './channels/clock'
 import aquarium from './channels/aquarium'
 import snore from './channels/snore'
-import canvas from './channels/canvas'
-import percolator from './channels/percolator'
-import crickets from './channels/crickets'
 import faucet from './channels/faucet'
 import suds from './channels/suds'
 import shower from './channels/shower'
@@ -180,9 +177,6 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   faucet: { build: faucet, base: 4.5 }, // provisoire : synthèse, le filet du robinet dans le bain plein (sonie à -27,8 LUFS au curseur plein, comme la médiane)
   suds: { build: suds, base: 3.0 }, // provisoire : synthèse, le pétillement de la mousse
   shower: { build: shower, base: 5.0 }, // provisoire : synthèse, la douche à effet pluie dans une pièce de carreaux
-  canvas: { build: canvas, base: 1.45 }, // provisoire : synthèse, la pluie sur la toile de la tente (sonie à -27 LUFS au volume par défaut)
-  percolator: { build: percolator, base: 1.4 }, // provisoire : synthèse, les glouglous du percolateur (sonie à -27 LUFS au volume par défaut)
-  crickets: { build: crickets, base: 1.45 }, // provisoire : synthèse, le chœur de grillons de la nuit (sonie à -27 LUFS au volume par défaut)
   dunes: { build: dunes, base: 1.4 }, // provisoire : synthèse, le vent des dunes (sonie à -27,7 LUFS au volume par défaut)
   palms: { build: palms, base: 1.9 }, // provisoire : synthèse, les palmes dans la brise (sonie à -27,4 LUFS au volume par défaut)
   oasis: { build: oasis, base: 1.4 }, // provisoire : synthèse, la source qui clapote dans la mare (sonie à -27,2 LUFS au volume par défaut)
