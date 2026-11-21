@@ -90,7 +90,7 @@ Budget de dessin par pièce, mesuré le 2026-11-16 : appels de dessin par image 
 | Laverie de nuit | 349 | 360 |
 | Serre | 190 | 200 |
 | Salle de bain | 212 | 230 |
-| Avion de nuit | 247 | 260 |
+| Avion de nuit | 208 | 260 |
 | Oasis du désert | 248 | 250 |
 
 Au-dessus de 300 (à ramener sous 300 quand on retouche la pièce : espacer les `Steam`, fusionner dans des `<Static>` imbriqués) : cabane, café, toit-terrasse, phare, sous-marin, marché de nuit, igloo, laverie de nuit. Le marché de nuit (369) est le plus chargé, la serre (190) la plus légère.
