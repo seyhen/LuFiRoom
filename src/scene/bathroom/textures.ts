@@ -97,7 +97,7 @@ export const fogTex = canvasTex(512, 512, (x) => {
     s.addColorStop(0, 'rgba(255,255,255,0)'); s.addColorStop(0.1, 'rgba(255,255,255,.4)'); s.addColorStop(1, 'rgba(255,255,255,0)')
     x.fillStyle = s; x.fillRect(px, py, 2.5 + r() * 2.5, len)
   }
-  // le cœur, tracé au doigt : on efface la buée (le jardin se voit à travers), un tour clair autour
+  // le cœur, tracé au doigt : on efface la buée (le ciel de bulles se voit à travers), un tour clair autour
   x.save(); x.translate(300, 300); x.lineCap = 'round'; x.lineJoin = 'round'
   const heart = () => { x.beginPath(); x.moveTo(0, 40); x.bezierCurveTo(-64, -4, -38, -52, 0, -22); x.bezierCurveTo(38, -52, 64, -4, 0, 40) }
   x.globalCompositeOperation = 'destination-out'; x.lineWidth = 15; x.strokeStyle = 'rgba(0,0,0,.95)'; heart(); x.stroke()

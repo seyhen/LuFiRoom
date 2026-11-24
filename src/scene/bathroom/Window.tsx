@@ -27,12 +27,12 @@ const GLASS = (() => {
   return g
 })()
 
-const WHITE = new Color(0xffffff), NIGHT = new Color(0x8f98b8), tmp = new Color()
+const WHITE = new Color(0xffffff), NIGHT = new Color(0xa89ccc), tmp = new Color()
 
 /**
  * La fenêtre en arche au-dessus de la baignoire : cadre blanc, croisillons, tablette de bois, et une vitre embuée (un cœur dessiné
- * au doigt, des coulures). Quand l'eau chaude coule (robinet ou douche), la buée s'épaissit et le jardin derrière s'efface un peu ;
- * la nuit elle prend le bleu des lumières de la ville. Sur la tablette, un petit vase et un brin d'eucalyptus.
+ * au doigt, des coulures). Quand l'eau chaude coule (robinet ou douche), la buée s'épaissit et le monde de bulles derrière s'efface un peu ;
+ * la nuit elle prend la teinte violette du ciel. Sur la tablette, un petit vase et un brin d'eucalyptus.
  */
 export function ArchWindow() {
   useFrame((_, delta) => {

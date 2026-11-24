@@ -1,51 +1,79 @@
-import { useEffect, useMemo } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useFrame, useThree } from '@react-three/fiber'
+import type { OrthographicCamera } from 'three'
 import { bathroom } from '../../../rooms/bathroom'
-
+import { useStore } from '../../../state/store'
+import { mood, reduceMotion } from '../../anim'
+import { life } from '../../life'
 import { OutdoorPrecip } from '../../objects/OutdoorPrecip'
-import { GlowPoints } from '../../objects/GlowPoints'
 import { SkyFadeClock } from '../../outdoor'
-import { Static } from '../../Static'
-import { noRay, type V3 } from '../../parts'
-import { Cottage, Smoke, WINDOW_GLOWS } from './Cottage'
-import { Garden, LAMP_GLOWS, evening } from './Garden'
-import { O } from './materials'
-import { terrainGeo, terrainY } from './terrain'
-import { Village } from './Village'
+import { Batch, SPH_MID, type V3 } from '../../parts'
+import { BigBubbles, bigSlots } from './Big'
+import { Bubbles, type Keep } from './Bubbles'
+import { makeBank, makeCloudlets, toItems } from './foam'
+import { viewOf } from './layout'
+import { BUB, O } from './materials'
+import { Sky } from './Sky'
 
-// Le dehors de la salle de bain : un jardin de cottage sous la pluie fine. La pièce est l'extension de plain-pied d'une maison de
-// campagne (pierre crème, volets menthe, glycine, ardoise, cheminée qui fume) ; elle repose sur le pré, entre les hortensias, un
-// chemin de dalles, une mare à nénuphars, un banc et une cabane à outils. Au fond, des collines douces et un village à clocher, pâles
-// dans la brume. La pluie ne tombe que dehors (`covered`) ; la nuit, les fenêtres s'allument et les lanternes du chemin aussi.
+// Le dehors de la salle de bain : un monde de bulles dans le ciel. La pièce flotte sur un banc de mousse de bain rose (de gros paquets de
+// bulles opaques, roses, crème et blanc cassé, qui montent contre son socle et le portent), dans un ciel pastel (rose pâle, lilas et pêche le
+// jour, violet étoilé la nuit) rempli de bulles de savon irisées : de toutes tailles, qui dérivent et crèvent de loin en loin, et jusqu'à six
+// grosses qui gardent chacune une petite scène (un canard, un monstera, une bougie, des serviettes, un savon, une étoile de mer). Au loin, de petits
+// nuages de mousse, un arc-en-ciel pâle le jour par temps clair, la lune la nuit. La pluie et la neige tombent dehors (`covered` : rien sur le
+// socle) et s'arrêtent sur la mousse et sur les grosses bulles, où elles crèvent en petites bulles. Tout est en séries instanciées : peu de tracés.
 
-const GLOWS: V3[] = [...WINDOW_GLOWS, ...LAMP_GLOWS]
+/** Où tombe la pluie : autour du banc (le ciel plus loin vient de WeatherSky). */
+const AREA: [number, number, number, number] = [-13, 14, -13, 13]
 
-function Evening() {
-  useFrame(() => {
-    const k = evening()
-    O.glass.emissiveIntensity = 0.04 + k * 0.85 // les fenêtres s'allument le soir (ou sous la pluie)
-    O.lantern.emissiveIntensity = 0.1 + k * 1.2
+/** Le temps qui passe sur les bulles et sur la mousse : leurs couleurs qui ondulent, l'éclair qui les éclaire, la lueur de la nuit. */
+function Weather() {
+  useFrame((_, delta) => {
+    if (!reduceMotion) BUB.phase.value = (BUB.phase.value + Math.min(delta, 0.05) * 0.03) % 1000
+    BUB.flash.value = life.flash
+    const n = mood.night
+    O.foam.emissiveIntensity = 0.07 + n * 0.07 + life.flash * 0.25
+    O.thing.emissiveIntensity = 0.05 + n * 0.16 + life.flash * 0.2
   })
   return null
 }
 
 export function Surroundings() {
-  const geo = useMemo(() => terrainGeo(), [])
-  useEffect(() => () => geo.dispose(), [geo])
+  const camera = useThree((s) => s.camera) as OrthographicCamera
+  const { width, height } = useThree((s) => s.size)
+  const { top, bottom } = useStore((s) => s.insets)
+  // le champ visible, lu sur la caméra quand l'écran ou l'interface change (le zoom de la main ne déplace pas le décor)
+  const [view, setView] = useState(() => viewOf(camera, height, top, bottom))
+  useLayoutEffect(() => {
+    const v = viewOf(camera, height, top, bottom)
+    setView((p) => (p.l === v.l && p.r === v.r && p.t === v.t && p.b === v.b && p.ut === v.ut && p.ub === v.ub ? p : v))
+  }, [camera, width, height, top, bottom])
+  const bank = useMemo(makeBank, [])
+  const foam = useMemo(() => [...toItems(bank.puffs), ...toItems(makeCloudlets(view))], [bank, view])
+  const layout = useMemo(() => bigSlots(view, bank.top), [view, bank])
+  const slots = layout.slots
+  const keep = useMemo<Keep[]>(() => [...slots.map((s) => ({ sx: s.sx, sy: s.sy, r: s.r })), { sx: layout.moon[0], sy: layout.moon[1], r: 0 }].slice(0, slots.length), [slots, layout])
+  // les dessus des grosses bulles (pour les gouttes qui y éclatent), donnés par BigBubbles
+  const caps = useRef<() => V3[]>(() => [])
+  const onCaps = useCallback((f: () => V3[]) => { caps.current = f }, [])
+  const getCaps = useCallback(() => caps.current(), [])
+  // le sol de la pluie : le dessus de la mousse, ou le dessus d'une grosse bulle
+  const ground = useMemo(() => (x: number, z: number) => {
+    let y = bank.top(x, z)
+    for (const s of slots) {
+      const d2 = (x - s.p[0]) ** 2 + (z - s.p[2]) ** 2
+      if (d2 < s.r * s.r) y = Math.max(y, s.p[1] + Math.sqrt(s.r * s.r - d2))
+    }
+    return y
+  }, [bank, slots])
   return (
     <>
       <SkyFadeClock room={bathroom} />
-      <Evening />
-      <mesh geometry={geo} material={O.grass} receiveShadow raycast={noRay} />
-      <Static>
-        <Cottage />
-        <Village />
-      </Static>
-      <Garden />
-      <Smoke />
-      <GlowPoints points={GLOWS} color={0xffc880} size={0.9} level={evening} />
-      <OutdoorPrecip ground={terrainY} area={[-14, 15, -14, 13]} covered />
+      <Weather />
+      <Sky view={view} moon={layout.moon} />
+      <Batch geo={SPH_MID} m={O.foam} items={foam} />
+      <Bubbles view={view} spots={bank.spots} caps={getCaps} keep={keep} />
+      <BigBubbles slots={slots} onCaps={onCaps} />
+      <OutdoorPrecip ground={ground} area={AREA} covered />
     </>
   )
 }
-

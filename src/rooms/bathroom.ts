@@ -3,10 +3,10 @@ import { PLAYLIST } from './playlist'
 import type { Room } from './types'
 import { WEATHER_LOOPS } from './weather'
 
-// Une salle de bain de rêve un soir de pluie fine : baignoire à pieds de lion pleine de mousse, carrelage pastel, fenêtre embuée sur le
-// jardin d'un cottage (la pièce est son extension de plain-pied : dehors, hortensias, glycine, mare, chemin de dalles, village dans la
-// brume). Sons nouveaux (le robinet de la baignoire, la mousse du bain, la douche à effet pluie) synthétisés pour l'instant :
-// leurs enregistrements se déclareront dans `loops` (docs/ASSETS.md), sources et licences dans public/audio/CREDITS.md.
+// Une salle de bain de rêve un soir de pluie fine : baignoire à pieds de lion pleine de mousse rose, carrelage pastel, fenêtre embuée sur un
+// monde de bulles (la pièce flotte sur un banc de mousse de bain rose, dans un ciel pastel plein de bulles de savon irisées dont six
+// grosses gardent une petite scène). Sons nouveaux (le robinet de la baignoire, la mousse du bain, la douche à effet pluie) synthétisés pour
+// l'instant : leurs enregistrements se déclareront dans `loops` (docs/ASSETS.md), sources et licences dans public/audio/CREDITS.md.
 
 export const bathroom: Room = {
   id: 'bathroom',
@@ -16,7 +16,7 @@ export const bathroom: Room = {
     'où flotte un canard jaune, son robinet col de cygne et son plateau de bain (thé, livre, savon, succulente), une douche à effet ' +
     'pluie dans une niche de zellige rose, un lavabo sur colonne et son miroir ovale, un sèche-serviettes aux serviettes douces, un ' +
     'tabouret où repose un kalimba, une étagère de serviettes roulées, des bougies sur la tablette de la fenêtre en arche, des ' +
-    'plantes partout, et par la vitre embuée, un jardin de cottage sous la pluie : hortensias, glycine, mare à nénuphars et chemin de dalles.',
+    'plantes partout, et par la vitre embuée, un monde de bulles : la pièce flotte sur un nuage de mousse de bain rose, dans un ciel pastel plein de bulles de savon irisées, dont de grosses qui gardent un canard, un monstera, une bougie ou une étoile de mer.',
   ui: {
     accent: ['#c4567a', '#ffb3c8'],
     ink: ['#4a2c3a', '#fdeef0'],
@@ -25,9 +25,10 @@ export const bathroom: Room = {
     line: ['rgba(196, 86, 122, .16)', 'rgba(255, 179, 200, .18)'],
     bg: ['#f4dfe0', '#1b1220'],
   },
-  // le dehors est un jardin de cottage (maison de pierre, hortensias, mare, collines et village au fond) : on recule pour le voir
+  // le dehors est un monde de bulles (banc de mousse, bulles de toutes tailles, nuages de mousse au loin) : on recule un peu pour le voir
   zoom: 0.88,
-  sky: { day: ['#f6eeec', '#ead9dc', '#d6bccb'], night: ['#3b3150', '#261f38', '#16111f'] },
+  // ciel pastel : rose très pâle au centre, lilas, pêche sur les bords ; la nuit, un violet profond (les étoiles et la lune sont dans le décor)
+  sky: { day: ['#fdeaf0', '#ecdcf3', '#fbd8cb'], night: ['#3d2f68', '#2a2050', '#181033'] },
   light: {
     hemi: { sky: [0xfff4f2, 0x9a96d0], ground: [0xe9cdc8, 0x7a5a68], intensity: [0.74, 0.56] },
     sun: { color: [0xfff1e4, 0x9fb4e8], intensity: [0.52, 0.2] },
