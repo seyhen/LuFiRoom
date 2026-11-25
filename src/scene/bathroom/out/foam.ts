@@ -75,6 +75,7 @@ export interface Bank {
 export function makeBank(): Bank {
   const r = seeded(97), puffs: Puff[] = []
   // le flanc : quatre étages de gros paquets qui font le tour (un nuage qui se resserre vers le bas), pour que le socle repose dessus
+  const rings: Puff[] = []
   const LEVELS: [number, number, number][] = [[-0.5, 0, 1.2], [-1.5, 0.35, 1.45], [-2.4, -0.7, 1.35], [-3.2, -2.0, 1.15]]
   LEVELS.forEach(([y, grow, rad], L) => {
     const n = 26 - L * 2
@@ -83,11 +84,7 @@ export function makeBank(): Bank {
       const x = CX + Math.cos(a) * d, z = CZ + Math.sin(a) * d
       const ring: Puff = { p: [x, y - R * 0.1 + r() * 0.2, z], r: R, c: bank(r) }
       puffs.push(ring)
-      // de l'écume sur le flanc : de petites bulles sur le dessus de chaque gros paquet des deux étages du haut
-      if (L < 3) for (let k = 0; k < 5; k++) {
-        const az = a + (r() - 0.5) * 2.2, el = 0.15 + r() * 1.1, q = 0.16 + r() * 0.26, dd = R * 0.93
-        puffs.push({ p: [x + Math.cos(az) * Math.cos(el) * dd, ring.p[1] + Math.sin(el) * dd, z + Math.sin(az) * Math.cos(el) * dd], r: q, c: bank(r) })
-      }
+      rings.push(ring)
     }
   })
   // un socle dessous, qu'on ne voit pas mais qui bouche le ciel entre le socle de la pièce et le flanc : tout reste sous le carrelage
@@ -101,29 +98,25 @@ export function makeBank(): Bank {
     const x = gx + (r() - 0.5) * 0.7, z = gz + (r() - 0.5) * 0.7, a = Math.atan2(z - CZ, x - CX), rho = Math.hypot(x - CX, z - CZ)
     if (rho > shore(a) - 0.5 || slabGap(x, z) < -0.1) continue
     const R = 0.8 + r() * 0.55
-    put(big, x, surface(x, z) - R * (0.78 + r() * 0.3), z, R, bank(r))
+    put(big, x, surface(x, z) - R * (0.95 + r() * 0.3), z, R, bank(r))
   }
   puffs.push(...big)
-  // les paquets moyens, puis les petits, posés sur les flancs des précédents
-  const mids: Puff[] = []
-  for (const b of big) {
-    const k = r() < 0.9 ? (r() < 0.6 ? 3 : 2) : 1
-    for (let i = 0; i < k; i++) {
-      const az = Math.PI / 4 + (r() - 0.5) * Math.PI * 1.5, el = 0.3 + r() * 0.95, R = b.r * (0.36 + r() * 0.3), d = b.r * 0.82
-      put(mids, b.p[0] + Math.cos(az) * Math.cos(el) * d, b.p[1] + Math.sin(el) * d, b.p[2] + Math.sin(az) * Math.cos(el) * d, R, bank(r))
+  // la peau : la mousse est un amas serré de bulles presque de même taille qui se recouvrent (jamais quelques points épars sur une boule lisse :
+  // ça faisait des boutons). Dessus : une grille serrée posée sur le relief ; sur le flanc : le côté de la caméra de chaque gros paquet.
+  const skin: Puff[] = []
+  for (let gx = -9.6; gx <= 9.6; gx += 0.42) for (let gz = -9.6; gz <= 9.6; gz += 0.42) {
+    const x = gx + (r() - 0.5) * 0.3, z = gz + (r() - 0.5) * 0.3, a = Math.atan2(z - CZ, x - CX), rho = Math.hypot(x - CX, z - CZ)
+    if (rho > shore(a) - 0.7 || slabGap(x, z) < -0.1) continue
+    const R = 0.24 + 0.12 * (noise(x * 1.7, z * 1.7) * 0.5 + 0.5) + r() * 0.06
+    put(skin, x, surface(x, z) + 0.12 * noise(x * 1.1 + 9, z * 1.1) - R * 0.25, z, R, bank(r))
+  }
+  for (const g of rings) {
+    for (let i = 0; i < 11; i++) {
+      const az = Math.PI / 4 + (r() - 0.5) * Math.PI * 1.5, el = -0.15 + r() * 1.35, R = 0.26 + r() * 0.16, d = g.r * 0.95
+      skin.push({ p: [g.p[0] + Math.cos(az) * Math.cos(el) * d, g.p[1] + Math.sin(el) * d, g.p[2] + Math.sin(az) * Math.cos(el) * d], r: R, c: bank(r) })
     }
   }
-  puffs.push(...mids)
-  // les petites bulles : une croûte de bulles de toutes tailles sur chaque paquet, surtout du côté de la caméra (c'est elles qui font la mousse)
-  const smalls: Puff[] = []
-  for (const b of [...big, ...mids]) {
-    const k = b.r > 0.6 ? 3 + Math.floor(r() * 3) : 1 + Math.floor(r() * 2)
-    for (let i = 0; i < k; i++) {
-      const az = Math.PI / 4 + (r() - 0.5) * Math.PI * 1.6, el = 0.25 + r() * 1.1, R = 0.14 + r() * r() * 0.36, d = b.r * 0.92
-      put(smalls, b.p[0] + Math.cos(az) * Math.cos(el) * d, b.p[1] + Math.sin(el) * d, b.p[2] + Math.sin(az) * Math.cos(el) * d, R, bank(r))
-    }
-  }
-  puffs.push(...smalls)
+  puffs.push(...skin)
 
   // la carte des hauteurs (une case de 0,5), pour la pluie
   const N = 52, X0 = -13, CELL = 0.5, grid = new Float32Array(N * N).fill(-3.6)
