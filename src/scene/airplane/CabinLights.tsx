@@ -9,7 +9,7 @@ const SUN = new Color(0xfff0d0), MOON = new Color(0x8fb0ff), tmp = new Color()
 
 /**
  * Les deux autres lumières de la cabine (avec la lampe de lecture, trois en tout) : la lumière du hublot, le soleil le jour et la lune la nuit,
- * qui tombe sur le dormeur et le siège voisin, et un reflet doux venu de l'avant (les faces tournées vers nous seraient sinon dans le noir :
+ * qui tombe sur les sièges du hublot, et un reflet doux venu de l'avant (les faces tournées vers nous seraient sinon dans le noir :
  * une seule lampe de lecture éclaire surtout les faces qui la regardent), plus chaud et plus fort la nuit, quand la cabine est dans la pénombre.
  */
 export function CabinLights() {

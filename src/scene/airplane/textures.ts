@@ -242,32 +242,6 @@ export const trayTex = canvasTex(384, 512, (x) => {
   x.fillStyle = 'rgba(49,64,124,.45)'; x.font = 'bold 22px "Nunito", sans-serif'; x.textAlign = 'center'; x.fillText('LUFI AIR', 262, 486)
 })
 
-/** La couverture : un polaire lilas, une bordure surpiquée, de petites étoiles brodées. Tuile de 1. */
-export const blanketTex = canvasTex(256, 256, (x) => {
-  const r = seeded(51)
-  x.fillStyle = '#b4a4dc'; x.fillRect(0, 0, 256, 256)
-  for (let i = 0; i < 2200; i++) { x.fillStyle = `rgba(${r() < 0.5 ? '255,255,255' : '90,70,140'},${r() * 0.07})`; x.beginPath(); x.arc(r() * 256, r() * 256, 1 + r() * 2, 0, TAU); x.fill() }
-  x.strokeStyle = 'rgba(255,255,255,.55)'; x.lineWidth = 2.4; x.setLineDash([8, 6]); rr(x, 14, 14, 228, 228, 10); x.stroke(); x.setLineDash([])
-  x.fillStyle = 'rgba(255,246,214,.8)'
-  for (const [px, py] of [[70, 80], [180, 60], [128, 150], [60, 200], [200, 190]]) {
-    x.beginPath()
-    for (let k = 0; k < 10; k++) { const a = (k / 10) * TAU - Math.PI / 2, rad = k % 2 ? 4 : 9; x.lineTo(px + Math.cos(a) * rad, py + Math.sin(a) * rad) }
-    x.closePath(); x.fill()
-  }
-}, [1, 1])
-
-/** Le masque de sommeil : satin rose pâle, deux yeux fermés dessinés (cils recourbés), un liseré. Sur un plan, 2 : 1. */
-export const maskTex = canvasTex(256, 128, (x) => {
-  x.fillStyle = '#f2bdd0'; x.fillRect(0, 0, 256, 128)
-  x.strokeStyle = '#2e2a46'; x.lineWidth = 6; x.lineCap = 'round'
-  for (const cx of [78, 178]) {
-    x.beginPath(); x.moveTo(cx - 28, 58); x.quadraticCurveTo(cx, 82, cx + 28, 58); x.stroke()
-    for (const [dx, dy] of [[-18, 7], [-6, 12], [8, 12], [20, 7]]) { x.beginPath(); x.moveTo(cx + dx, 66 + dy * 0.25); x.lineTo(cx + dx * 1.1, 66 + dy); x.lineWidth = 3.5; x.stroke() }
-    x.lineWidth = 6
-  }
-  x.strokeStyle = 'rgba(255,255,255,.6)'; x.lineWidth = 3; rr(x, 6, 6, 244, 116, 40); x.stroke()
-})
-
 /** La table d'harmonie du violoncelle : épicéa roux vernis, f dessinés, filet de contour. u : de gauche à droite de la caisse, v : de bas en haut. */
 export const celloPlate = canvasTex(256, 512, (x) => {
   const r = seeded(61)
@@ -302,13 +276,3 @@ export function fadeTex(up = false) {
   return new CanvasTexture(c)
 }
 
-/** Un « Z » qui s'envole du dormeur (sprite). */
-export const zTex = (() => {
-  const [c, x] = makeCanvas(64, 64)
-  x.lineCap = 'round'; x.lineJoin = 'round'
-  for (const pass of [0, 1]) {
-    x.strokeStyle = pass ? '#7f6cc8' : '#ffffff'; x.lineWidth = pass ? 6 : 12
-    x.beginPath(); x.moveTo(18, 18); x.lineTo(46, 18); x.lineTo(18, 46); x.lineTo(46, 46); x.stroke()
-  }
-  return new CanvasTexture(c)
-})()

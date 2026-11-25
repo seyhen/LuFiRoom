@@ -4,7 +4,7 @@ import type { Room } from './types'
 import { WEATHER_LOOPS } from './weather'
 
 // Un vol long-courrier de nuit : une cabine aux sièges bleu nuit tissés de constellations, des hublots sur une mer de nuages que la lune éclaire,
-// des lumières tamisées, un voyageur endormi sous un polaire lilas, un violoncelle sanglé à sa place, un casque et un plateau repas sur les tablettes.
+// des lumières tamisées, un violoncelle sanglé à sa place, un casque et un plateau repas sur les tablettes.
 // Sons nouveaux (le souffle grave des moteurs, la berceuse du violoncelle) synthétisés pour l'instant : leurs enregistrements se déclareront dans
 // `loops` (docs/ASSETS.md), sources et licences dans public/audio/CREDITS.md. La météo de la carte « Météo » s'entend à travers le fuselage
 // (`shelter: 'deep'`) ; la carte « Bruit » est celle de toutes les pièces.
@@ -15,8 +15,8 @@ export const airplane: Room = {
   description:
     'Une cabine d’avion de nuit en vol long-courrier, en 3D isométrique : deux rangées de sièges bleu nuit tissés de constellations contre le flanc, ' +
     'des hublots ovales sur une mer de nuages éclairée par la lune, une aurore lointaine et deux ailes avec leurs réacteurs et leurs feux de bout d’aile, des coffres à bagages ' +
-    'et leurs bandeaux de lumière indigo, une lampe de lecture, un voyageur endormi sous un polaire lilas avec un oreiller de voyage menthe, un ' +
-    'violoncelle sanglé sur son siège, un casque et une tablette de vol sur une tablette rabattue, un plateau repas avec son thé qui fume, ' +
+    'et leurs bandeaux de lumière indigo, une lampe de lecture, un violoncelle ' +
+    'sanglé sur son siège, un casque et une tablette de vol sur une tablette rabattue, un plateau repas avec son thé qui fume, ' +
     'un chariot de service, un rideau d’office, une porte de secours et des pastilles lumineuses le long du couloir.',
   // Bleu nuit des sièges, lueur ambre de la lampe de lecture : l'interface suit la cabine.
   ui: {

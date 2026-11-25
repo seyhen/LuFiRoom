@@ -1,6 +1,6 @@
 import { AdditiveBlending, DoubleSide, MeshBasicMaterial, PlaneGeometry, RepeatWrapping } from 'three'
-import { M, gummy, skin } from '../materials'
-import { blanketTex, carpetTex, cartTex, coverTex, curtainTex, doorTex, binTex, fadeTex, lavTex, mapTex, maskTex, posterTex, runnerTex, seatTex, signTex, tagTex, trayTex, wallTex, celloPlate } from './textures'
+import { M, gummy } from '../materials'
+import { carpetTex, cartTex, coverTex, curtainTex, doorTex, binTex, fadeTex, lavTex, mapTex, posterTex, runnerTex, seatTex, signTex, tagTex, trayTex, wallTex, celloPlate } from './textures'
 
 const wall = wallTex.clone()
 wall.repeat.set(1 / 2.4, 1 / 4.35)
@@ -99,18 +99,9 @@ export const A = {
   band: gummy(0x8f7ad2, { roughness: 0.4, clearcoat: 0.6 }),
   cord: gummy(0xeae4f4, { roughness: 0.8, clearcoat: 0.1 }),
   // le couchage
-  blanket: gummy(0xffffff, { map: blanketTex, roughness: 0.96, clearcoat: 0, side: DoubleSide }),
   blanketPlain: gummy(0xb4a4dc, { roughness: 0.96, clearcoat: 0 }),
   pillow: gummy(0x9fdcc6, { roughness: 0.92, clearcoat: 0 }),
   pillowBag: gummy(0xf4f8fb, { roughness: 0.2, clearcoat: 0.9, transparent: true, opacity: 0.72, depthWrite: false }),
-  mask: gummy(0xffffff, { map: maskTex, roughness: 0.5, clearcoat: 0.3 }),
-  maskBand: gummy(0xe9a5bd, { roughness: 0.85, clearcoat: 0 }),
-  person: skin({ roughness: 0.62, clearcoat: 0.18 }),
-  /** Le plaid du dormeur : une laine mate, ses couleurs viennent des sommets. */
-  lash: gummy(0x5a3a3c, { roughness: 0.8, clearcoat: 0 }),
-  plaid: skin({ roughness: 0.97, clearcoat: 0 }),
-  hoodie: gummy(0xe6996a, { roughness: 0.92, clearcoat: 0 }),
-  hair: gummy(0x3a2a2c, { roughness: 0.7, clearcoat: 0.3 }),
   sock: gummy(0xf08a78, { roughness: 0.95, clearcoat: 0 }),
   // les bagages et le livre
   suitcase: gummy(0xf09a86, { roughness: 0.3, clearcoat: 0.8 }),

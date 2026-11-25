@@ -11,14 +11,12 @@ import { BookAndPouch, Duffel, PillowBag, Suitcase } from './Props'
 import { ReadingLight } from './ReadingLight'
 import { Seats } from './Seats'
 import { Shell } from './Shell'
-import { Sleeper } from './Sleeper'
 import { MealTray, Tablet, TrayTable, TY } from './Table'
 import { ROW_X, SEAT_Z } from './layout'
 import { Surroundings } from './out/Surroundings'
 
 /**
- * Une cabine d'avion de nuit, en coupe, sur une mer de nuages : deux rangées de sièges bleu nuit contre le flanc (un dormeur au hublot de la
- * rangée 1, un violoncelle sanglé au hublot de la rangée 2), un couloir à pastilles lumineuses, une cloison arrière avec son office, son
+ * Une cabine d'avion de nuit, en coupe, sur une mer de nuages : deux rangées de sièges bleu nuit contre le flanc (un violoncelle sanglé au hublot de la rangée 2), un couloir à pastilles lumineuses, une cloison arrière avec son office, son
  * rideau et ses toilettes, une porte de secours, des coffres à bagages qui cachent leur lumière indigo. Quatre objets : le casque (la radio) et
  * la tablette de vol, le hublot (les moteurs), le violoncelle (la berceuse), la lampe de lecture (jour / nuit).
  */
@@ -32,7 +30,6 @@ export function AirplaneScene() {
       </Static>
       <Overhead />
       <Seats />
-      <Sleeper />
       <Hublots />
       <ExitDoor />
       <Bulkhead />

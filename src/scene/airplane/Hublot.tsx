@@ -47,7 +47,7 @@ function Port({ x, drop, tex, group, id }: { x: number; drop: number; tex: Retur
 }
 
 /**
- * Les hublots du flanc : celui de la rangée 1 (au-dessus du dormeur, store à moitié baissé) est l'objet « hublot » ; celui de la rangée 2
+ * Les hublots du flanc : celui de la rangée 1 (au-dessus du siège vide, store à moitié baissé) est l'objet « hublot » ; celui de la rangée 2
  * est ouvert sur l'aurore. Le petit hublot de la porte de secours montre la même vue. Les vues suivent le jour, la nuit et la météo.
  */
 export function Hublots() {

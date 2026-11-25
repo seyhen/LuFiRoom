@@ -10,7 +10,7 @@ const HEAD = worldUV(rbox(0.15, 0.3, 0.5, 0.07), 1)
 /**
  * Un siège de cabine, vu de face (il regarde +x) : deux pieds et leurs platines d'aluminium, l'assise et sa coque, le dossier en
  * étoffe de constellations, l'appuie-tête avec sa housse blanche et ses deux ailes qui se rabattent, les accoudoirs, deux sangles de
- * ceinture posées en travers avec leur boucle. `recline` incline le dossier (le dormeur). `leftArm` : l'accoudoir côté hublot.
+ * ceinture posées en travers avec leur boucle. `recline` incline le dossier. `leftArm` : l'accoudoir côté hublot.
  * `position` : le sol sous le centre de l'assise.
  */
 export function Seat({ position, recline = 0, leftArm = false, belt = true }: { position: [number, number, number]; recline?: number; leftArm?: boolean; belt?: boolean }) {
@@ -56,7 +56,7 @@ export function Seat({ position, recline = 0, leftArm = false, belt = true }: { 
   )
 }
 
-/** Les sièges de la cabine (hors ceux qui portent un objet, qui prennent la même `Seat` dans leur fichier). Celui du dormeur (rangée 1, hublot) est dans `Sleeper.tsx`. */
+/** Les sièges de la cabine (hors ceux qui portent un objet, qui prennent la même `Seat` dans leur fichier). */
 export const SEATS: { row: number; id: keyof typeof SEAT_Z; p: [number, number, number] }[] = ROW_X.flatMap((x, row) =>
   (Object.keys(SEAT_Z) as (keyof typeof SEAT_Z)[]).map((id) => ({ row, id, p: [x, 0, SEAT_Z[id]] as [number, number, number] })),
 )
@@ -64,8 +64,8 @@ export const SEATS: { row: number; id: keyof typeof SEAT_Z; p: [number, number, 
 export function Seats() {
   return (
     <Static>
-      {SEATS.filter(({ row, id }) => !(row === 0 && id === 'A')).map(({ row, id, p }) => (
-        <Seat key={`${row}${id}`} position={p} leftArm={id === 'A' || id === 'D'} belt={!(row === 1 && id === 'A')} />
+      {SEATS.map(({ row, id, p }) => (
+        <Seat key={`${row}${id}`} position={p} leftArm={id === 'A' || id === 'D'} belt />
       ))}
     </Static>
   )
