@@ -121,10 +121,10 @@ export function Trolley({ position }: { position: V3 }) {
     <group position={position}>
       <Static>
         <Part geo={rbox(1.0, 0.86, 0.42, 0.04)} m={A.cartTop} p={[0, 0.54, 0]} />
-        <mesh material={A.cartFace} position={[0, 0.54, 0.213]}>
+        <mesh material={A.cartFace} position={[0, 0.54, 0.222]}>
           <planeGeometry args={[0.92, 0.46]} />
         </mesh>
-        <Part geo={rbox(1.04, 0.035, 0.46, 0.015)} m={A.steel} p={[0, TOP_Y - 0.0, 0]} />
+        <Part geo={rbox(1.04, 0.047, 0.46, 0.015)} m={A.steel} p={[0, TOP_Y - 0.0065, 0]} />
         {/* les roulettes, une pédale de frein rouge */}
         {[[-0.4, 0.16], [0.4, 0.16], [-0.4, -0.16], [0.4, -0.16]].map(([x, z], i) => <Part key={i} geo={cyl(0.06, 0.06, 0.04, 14)} m={A.rubber} p={[x, 0.06, z]} rotation-x={Math.PI / 2} />)}
         <Part geo={rbox(0.1, 0.014, 0.05, 0.005)} m={A.tomato} p={[0.4, 0.14, 0.22]} castShadow={false} />

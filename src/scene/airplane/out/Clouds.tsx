@@ -68,6 +68,15 @@ function cloudItems(): Item[] {
   heap(out, r, [7, SEA + 0.3, -13], 2.4, 1.4, 6, 1.3)
   heap(out, r, [-15, SEA + 0.2, 7], 2.2, 1.2, 6, 1.2)
   heap(out, r, [-17, SEA + 0.7, -11], 2.6, 1.8, 7, 1.4)
+  // l'aile du fond (z < 0) ne passe pas derrière un nuage : son bout (et l'ailette) flottait seul au-dessus d'une bosse. Sous son emprise (plan : bord d'attaque
+  // x = 2,7 - 0,88 (|z| - 3,35), bord de fuite x = -3,2 - 0,28 (|z| - 3,35)), plus une marge devant pour le réacteur, le dessus des nuages reste sous le dessous de l'aile (y = -0,33).
+  for (const it of out) {
+    const [x, , z] = it.p, zz = -z
+    if (zz < 3 || zz > 15) continue
+    if (x > 2.7 - (zz - 3.35) * 0.88 + 2.6 || x < -3.2 - (zz - 3.35) * 0.28 - 1.6) continue
+    const sy = typeof it.s === 'number' ? it.s : it.s[1]
+    it.p[1] = Math.min(it.p[1], -0.5 - sy)
+  }
   return out
 }
 

@@ -14,8 +14,8 @@ export const airplane: Room = {
   name: 'Avion de nuit',
   description:
     'Une cabine d’avion de nuit en vol long-courrier, en 3D isométrique : deux rangées de sièges bleu nuit tissés de constellations contre le flanc, ' +
-    'des hublots ovales sur une mer de nuages éclairée par la lune, une aurore lointaine et une aile avec son feu rouge, des coffres à bagages ' +
-    'et leurs bandeaux de lumière indigo, une lampe de lecture, un voyageur endormi sous un polaire lilas avec un masque de sommeil, un ' +
+    'des hublots ovales sur une mer de nuages éclairée par la lune, une aurore lointaine et deux ailes avec leurs réacteurs et leurs feux de bout d’aile, des coffres à bagages ' +
+    'et leurs bandeaux de lumière indigo, une lampe de lecture, un voyageur endormi sous un polaire lilas avec un oreiller de voyage menthe, un ' +
     'violoncelle sanglé sur son siège, un casque et une tablette de vol sur une tablette rabattue, un plateau repas avec son thé qui fume, ' +
     'un chariot de service, un rideau d’office, une porte de secours et des pastilles lumineuses le long du couloir.',
   // Bleu nuit des sièges, lueur ambre de la lampe de lecture : l'interface suit la cabine.

@@ -110,8 +110,8 @@ export function Cello({ position }: { position: V3 }) {
             </Part>
             <Part geo={SPH} m={A.maple} scale={[0.028, 0.03, 0.02]} p={[0, 1.57, 0.045]} castShadow={false} />
             {/* la sangle : en travers de la taille, deux boucles aux bouts */}
-            <Part geo={rbox(0.76, 0.05, 0.014, 0.005)} m={A.strap} p={[0, 0.52, 0.134]} />
-            {[-1, 1].map((s) => <Part key={s} geo={rbox(0.05, 0.062, 0.02, 0.008)} m={A.buckle} p={[s * 0.34, 0.52, 0.137]} castShadow={false} />)}
+            <Part geo={rbox(0.58, 0.05, 0.014, 0.005)} m={A.strap} p={[0, 0.52, 0.134]} />
+            {[-1, 1].map((s) => <Part key={s} geo={rbox(0.05, 0.062, 0.02, 0.008)} m={A.buckle} p={[s * 0.27, 0.52, 0.137]} castShadow={false} />)}
             {/* l'archet, debout contre le flanc : baguette, hausse, mèche */}
             <Part geo={cyl(0.007, 0.007, 1.0, 6)} m={A.ebony} p={[-0.3, 0.6, 0.13]} rotation-z={-0.025} castShadow={false} />
             <Part geo={rbox(0.022, 0.07, 0.026, 0.008)} m={A.ebony} p={[-0.31, 0.12, 0.13]} castShadow={false} />
@@ -121,16 +121,14 @@ export function Cello({ position }: { position: V3 }) {
             <mesh material={A.tag} position={[0.07, 1.43, 0.075]} rotation-z={0.2} castShadow={false}>
               <planeGeometry args={[0.09, 0.045]} />
             </mesh>
-          </Static>
-          {/* les cordes : des fils d'acier fin ; elles vibrent quand la berceuse joue */}
-          <group>
+            {/* les cordes : des fils d'acier fin ; elles vibrent quand la berceuse joue (leur matériau s'allume : il est partagé, elles restent fusionnées) */}
             {segs.map(({ long, short }, i) => (
               <group key={i}>
                 <Part geo={geoFor(long.len)} m={A.string} p={long.p} rotation={long.r} castShadow={false} />
                 <Part geo={geoFor(short.len)} m={A.string} p={short.p} rotation={short.r} castShadow={false} />
               </group>
             ))}
-          </group>
+          </Static>
         </group>
       </group>
       <group ref={puffs.group} />

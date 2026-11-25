@@ -42,7 +42,7 @@ function mirrorZ(g: BufferGeometry) {
   return m
 }
 const WING_R = mirrorZ(WING_L)
-const NX = 0.9, NY = -0.5, NZ = -7.1 // le centre de la nacelle (le milieu de son axe)
+const NX = 0.9, NY = -0.5, NZ = -6.3 // le centre de la nacelle (le milieu de son axe) ; à 6,3 du fuselage le pylône touche le bord d attaque (le bord est à x = 0,1) et le bas du réacteur reste au-dessus du panneau du mixeur à 1440 px
 
 /**
  * Une aile et son réacteur, derrière le flanc de la cabine. `side` = -1 : l'aile gauche (le flanc du fond, en haut à droite de l'écran, feu de bout

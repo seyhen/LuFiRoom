@@ -51,6 +51,8 @@ const PLAID = blob(
     ell([0.14, 0.646, 0], [0.29, 0.055, 0.235], { color: LILAC }),
     pair(ell([0.14, 0.585, 0.232], [0.26, 0.09, 0.03], { color: LILAC })),
     ell([0.43, 0.49, 0], [0.1, 0.21, 0.225], { color: LILAC }),
+    // un pan entre le dessus et le devant : sans lui les genoux (le pantalon) passaient entre les deux et tachaient le plaid
+    ell([0.32, 0.62, 0], [0.13, 0.085, 0.225], { color: LILAC }),
     ell([0.2, 0.672, 0], [0.04, 0.03, 0.18], { color: LILAC2, k: 0.03 }),
     ell([-0.1, 0.69, 0], [0.04, 0.04, 0.18], { color: LILAC2, k: 0.03 }),
   ],
