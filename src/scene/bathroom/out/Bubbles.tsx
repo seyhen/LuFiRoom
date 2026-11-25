@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { InstancedBufferAttribute, type InstancedMesh } from 'three'
+import { InstancedBufferAttribute, SphereGeometry, type InstancedMesh } from 'three'
 import { clamp, rand } from '../../../math'
 import { mood, reduceMotion } from '../../anim'
 import { useEvery } from '../../life'
-import { SPH_MID, noRay, type V3 } from '../../parts'
+import { noRay, type V3 } from '../../parts'
 import { bubbleMaterial } from './materials'
 import { ROOM, S, type View } from './layout'
 
@@ -54,7 +54,7 @@ export interface Keep {
 export function Bubbles({ view, spots, caps, keep }: { view: View; spots: V3[]; caps: () => V3[]; keep: Keep[] }) {
   const n = clamp(Math.round(((view.r - view.l) * (view.t - view.b)) / 9), 36, NB)
   const geo = useMemo(() => {
-    const g = SPH_MID.clone()
+    const g = new SphereGeometry(1, 16, 10)
     g.setAttribute('aLife', new InstancedBufferAttribute(new Float32Array(NB + NP), 1))
     g.setAttribute('aHue', new InstancedBufferAttribute(new Float32Array(NB + NP), 1))
     return g

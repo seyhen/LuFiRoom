@@ -1,7 +1,7 @@
 import { Motes } from '../Floaters'
 import { Static } from '../Static'
 import { BathSteam } from './BathSteam'
-import { BathMat, Hamper, Print, Robe, ShelfUnit, Sink, Stool, STOOL_TOP, TowelBasket, TowelLadder } from './Fixtures'
+import { BathMat, BathScale, Hamper, Print, Robe, ShelfUnit, Sink, Stool, STOOL_TOP, TowelBasket, TowelLadder } from './Fixtures'
 import { Faucet } from './Faucet'
 import { Kalimba } from './Kalimba'
 import { HangingFern, MonsteraStand, Strelitzia } from './Plants'
@@ -37,12 +37,16 @@ export function BathroomScene() {
         <ShelfUnit position={[2.55, 0, -2.78]} />
         <BathMat position={[0.1, 0, -1.35]} />
         <TowelBasket position={[2.7, 0, 0.0]} />
+        <BathScale position={[-0.35, 0, 1.55]} ry={0.35} />
         <Stool position={[1.5, 0, 0.7]} s={STOOL_S} />
         <Strelitzia position={[-2.62, 0, 2.98]} s={0.9} />
         <MonsteraStand position={[2.35, 0, 2.7]} />
         <HangingFern position={[-2.2, 3.75, -2.99]} />
         <Print p={[-1.4, 2.75, -2.975]} w={0.32} h={0.42} m={B.printA} />
         <Print p={[-0.85, 2.95, -2.975]} w={0.24} h={0.32} m={B.printB} />
+        {/* sur le mur de gauche, au-dessus du strelitzia : deux gravures de plus (le mur du fond n'est pas le seul à porter des cadres) */}
+        <Print p={[-2.975, 2.7, 2.28]} w={0.34} h={0.46} m={B.printB} side="left" />
+        <Print p={[-2.975, 2.5, 2.78]} w={0.24} h={0.32} m={B.printA} side="left" />
       </Static>
       <Tub />
       <ArchWindow />
@@ -50,7 +54,7 @@ export function BathroomScene() {
       <Suds />
       <Shower />
       <Kalimba position={[1.5, STOOL_TOP * STOOL_S, 0.7]} ry={Math.PI / 4} />
-      <SillCandles position={[1.0, 1.75, -2.86]} />
+      <SillCandles position={[1.0, 1.75, -2.83]} />
       {/* la vapeur du bain, toujours un peu, plus quand l'eau coule */}
       <BathSteam at={[TUB_AT[0] + 0.1, TUB.water + 0.18, TUB_AT[2]]} every={2.6} hot={['faucet', 'suds', 'shower']} size={0.6} spread={0.4} />
       <Motes colors={[0xfff2e4, 0xffd6b8]} opacity={[0.3, 0.45]} />

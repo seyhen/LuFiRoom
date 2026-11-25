@@ -65,7 +65,7 @@ export function Sink({ position }: { position: V3 }) {
       <Part geo={cyl(0.17, 0.2, 0.05, 22)} m={B.ceramic} p={[0.14, 0.025, 0]} castShadow={false} />
       <Part geo={rbox(0.46, 0.15, 0.66, 0.07)} m={B.ceramic} p={[0.2, 0.82, 0]} />
       <Part geo={rbox(0.03, 0.15, 0.66, 0.012)} m={B.ceramic} p={[-0.015, 0.97, 0]} castShadow={false} />
-      <Part geo={cyl(0.2, 0.17, 0.012, 26)} m={B.basin} p={[0.22, 0.9, 0]} scale={[1, 1, 1.36]} castShadow={false} />
+      <Part geo={cyl(0.2, 0.17, 0.012, 26)} m={B.basin} p={[0.22, 0.9, 0]} scale={[0.9, 1, 1.3]} castShadow={false} />
       <Part geo={cyl(0.02, 0.02, 0.012, 12)} m={B.chrome} p={[0.22, 0.906, 0]} castShadow={false} />
       {/* le mélangeur : un col, un bec, deux manettes en croix */}
       <Part geo={cyl(0.016, 0.02, 0.12, 12)} m={B.brass} p={[0.02, 0.97, 0]} castShadow={false} />
@@ -79,7 +79,7 @@ export function Sink({ position }: { position: V3 }) {
         </group>
       ))}
       {/* sur le rebord : le gobelet aux deux brosses à dents, le flacon de savon liquide */}
-      <group position={[0.26, 0.9, -0.24]}>
+      <group position={[0.34, 0.9, -0.275]}>
         <Part geo={cyl(0.04, 0.034, 0.1, 14)} m={B.ceramicBlue} p={[0, 0.05, 0]} castShadow={false} />
         {[[-0.012, 0.1], [0.014, -0.15]].map(([x, tilt], i) => (
           <group key={i} position={[x, 0.05, 0]} rotation-z={tilt}>
@@ -88,7 +88,7 @@ export function Sink({ position }: { position: V3 }) {
           </group>
         ))}
       </group>
-      <group position={[0.3, 0.9, 0.24]}>
+      <group position={[0.34, 0.9, 0.275]}>
         <Part geo={cyl(0.03, 0.03, 0.1, 14)} m={B.bottleRose} p={[0, 0.05, 0]} castShadow={false} />
         <Part geo={cyl(0.008, 0.008, 0.045, 8)} m={B.bottleCap} p={[0, 0.12, 0]} castShadow={false} />
         <Part geo={rbox(0.045, 0.014, 0.012, 0.005)} m={B.bottleCap} p={[0.015, 0.145, 0]} castShadow={false} />
@@ -176,6 +176,22 @@ export function BathMat({ position, ry = 0.05 }: { position: V3; ry?: number }) 
           <Part geo={SPH} m={B.towelRose} scale={[0.05, 0.035, 0.05]} p={[-0.08, 0.036, 0]} castShadow={false} />
         </group>
       ))}
+    </group>
+  )
+}
+
+/** Le pèse-personne : une caisse aux coins ronds en porcelaine menthe, un plateau de verre dépoli, un écran de chiffres, deux plages antidérapantes, quatre plots de caoutchouc. */
+export function BathScale({ position, ry = 0 }: { position: V3; ry?: number }) {
+  return (
+    <group position={position} rotation-y={ry}>
+      <Part geo={rbox(0.34, 0.04, 0.34, 0.03)} m={B.ceramicMint} p={[0, 0.02, 0]} />
+      <Part geo={rbox(0.3, 0.012, 0.3, 0.02)} m={B.scaleGlass} p={[0, 0.046, 0]} castShadow={false} />
+      {/* les deux plages de pied, un petit écran rond et son trait, deux piles de chiffres */}
+      {[-0.07, 0.07].map((x) => <Part key={x} geo={rbox(0.095, 0.004, 0.18, 0.012)} m={B.towelCream} p={[x, 0.054, -0.02]} castShadow={false} />)}
+      <Part geo={rbox(0.12, 0.005, 0.04, 0.012)} m={B.ink} p={[0, 0.0545, 0.125]} castShadow={false} />
+      <Part geo={rbox(0.07, 0.006, 0.01, 0.004)} m={B.ceramicRose} p={[0, 0.058, 0.125]} castShadow={false} />
+      {/* un pied de chaque coin : quatre petits plots de caoutchouc */}
+      {[-1, 1].flatMap((sx) => [-1, 1].map((sz) => <Part key={`${sx}${sz}`} geo={cyl(0.02, 0.02, 0.012, 8)} m={B.ink} p={[sx * 0.13, 0.004, sz * 0.13]} castShadow={false} />))}
     </group>
   )
 }

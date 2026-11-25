@@ -56,7 +56,7 @@ export function ArchWindow() {
         {/* le bouton de l'espagnolette, d'un côté */}
         <Part geo={rbox(0.03, 0.11, 0.03, 0.01)} m={B.brass} p={[CX + 0.04, WIN.y0 + 0.8, -2.935]} castShadow={false} />
         {/* la tablette de bois, avec son nez arrondi */}
-        <Part geo={rbox(2.1, 0.06, 0.22, 0.025)} m={B.woodLight} p={[CX, WIN.y0 - 0.13, -2.89]} />
+        <Part geo={rbox(2.1, 0.06, 0.28, 0.025)} m={B.woodLight} p={[CX, WIN.y0 - 0.13, -2.86]} />
         {/* un vase et un brin d'eucalyptus, dans l'angle droit de la tablette */}
         <group position={[WIN.x1 - 0.12, WIN.y0 - 0.1, -2.88]}>
           <Part geo={cyl(0.04, 0.03, 0.1, 14)} m={B.ceramicRose} p={[0, 0.05, 0]} castShadow={false} />
@@ -91,14 +91,14 @@ export function SillCandles({ position }: { position: [number, number, number] }
   return (
     <group ref={g} userData={{ id: 'lamp' }} position={position}>
       <Static>
-        <Part geo={cyl(0.22, 0.2, 0.02, 28)} m={B.brass} p={[0, 0.01, 0]} />
-        <Part geo={cyl(0.19, 0.19, 0.006, 28)} m={B.brassDark} p={[0, 0.022, 0]} castShadow={false} />
+        <Part geo={cyl(0.22, 0.2, 0.02, 28)} m={B.brass} p={[0, 0.01, 0.0]} scale={[1, 1, 0.4]} />
+        <Part geo={cyl(0.19, 0.19, 0.006, 28)} m={B.brassDark} p={[0, 0.022, 0]} scale={[1, 1, 0.4]} castShadow={false} />
         {/* le pot de la plus petite : de la cire coulée sur le bord */}
-        <Part geo={cyl(0.052, 0.045, 0.05, 14)} m={B.ceramicBlue} p={[0.1, 0.045, 0.05]} castShadow={false} />
+        <Part geo={cyl(0.052, 0.045, 0.05, 14)} m={B.ceramicBlue} p={[0.1, 0.045, 0.03]} castShadow={false} />
       </Static>
       <Candle position={[-0.1, 0.03, 0.0]} height={0.2} radius={0.04} holder="jar" />
       <Candle position={[0.0, 0.165, -0.04]} height={0.15} radius={0.028} holder="brass" />
-      <Candle position={[0.1, 0.05, 0.05]} height={0.06} radius={0.034} />
+      <Candle position={[0.1, 0.05, 0.03]} height={0.06} radius={0.034} />
       <sprite ref={glow} position={[0, 0.3, 0.05]} scale={1.2} raycast={() => {}}>
         <spriteMaterial map={glowTex} transparent depthWrite={false} blending={AdditiveBlending} opacity={0.15} />
       </sprite>

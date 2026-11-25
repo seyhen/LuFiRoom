@@ -43,9 +43,9 @@ export function ShowerStall() {
   const { x0, x1, z0, z1, h } = TRAY, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, w = x1 - x0, d = z1 - z0
   return (
     <>
-      {/* le mur de zellige, plus épais que le soubassement qu'il recouvre (il dépasse de 3 cm) */}
-      <Part geo={worldUV(rbox(0.08, 2.7, d - 0.04, 0.012), 0.8)} m={B.zellige} p={[-2.96, 1.35, cz]} />
-      <Part geo={rbox(0.1, 0.05, d, 0.015)} m={B.trim} p={[-2.95, 2.72, cz]} castShadow={false} />
+      {/* le mur de zellige, plus épais que la plinthe et les carreaux qu'il recouvre (sa face est à -2,90 ; à -2,92 elle était à 5 mm de celle de la plinthe : coplanaire) */}
+      <Part geo={worldUV(rbox(0.1, 2.7, d - 0.04, 0.012), 0.8)} m={B.zellige} p={[-2.95, 1.35, cz]} />
+      <Part geo={rbox(0.12, 0.05, d, 0.015)} m={B.trim} p={[-2.94, 2.72, cz]} castShadow={false} />
       {/* le bac : un cadre de porcelaine, un fond en pente douce, la bonde */}
       <Part geo={rbox(w, h, d, 0.03)} m={B.ceramic} p={[cx, h / 2, cz]} />
       <Part geo={cyl(0.075, 0.075, 0.012, 20)} m={B.chrome} p={[-2.2, h + 0.006, cz]} castShadow={false} />

@@ -170,6 +170,26 @@ export const streamTex = canvasTex(64, 128, (x) => {
   }
 }, [1, 1])
 
+/**
+ * Le filet du robinet : une colonne d'eau, pas une pluie. Un fond clair et translucide (le volume d'eau), des traînées plus vives et
+ * quelques filets bleutés plus sombres qui lui donnent son relief ; sans le fond, des traînées de 5 % de la largeur disparaissaient
+ * à l'échelle de la pièce (le filet était invisible, remarque de l'audit du 2026-11-25). La texture défile vers le bas.
+ */
+export const jetTex = canvasTex(64, 128, (x) => {
+  const r = seeded(43)
+  x.clearRect(0, 0, 64, 128)
+  x.fillStyle = 'rgba(214,240,252,.46)'; x.fillRect(0, 0, 64, 128)
+  for (let k = 0; k < 9; k++) {
+    const px = r() * 64, len = 40 + r() * 80, py = r() * 128, w = 3 + r() * 6
+    for (const oy of [-128, 0, 128]) {
+      const s = x.createLinearGradient(0, py + oy, 0, py + oy + len)
+      const c = k % 3 === 2 ? '120,190,225' : '255,255,255'
+      s.addColorStop(0, `rgba(${c},0)`); s.addColorStop(0.3, `rgba(${c},${0.55 + r() * 0.35})`); s.addColorStop(1, `rgba(${c},0)`)
+      x.fillStyle = s; x.fillRect(px, py + oy, w, len)
+    }
+  }
+}, [1, 1])
+
 /** Une bulle de savon : un anneau presque transparent, deux reflets, un liseré rose et bleu. Sprite 64 px. */
 export const bubbleTex = (() => {
   const [c, x] = makeCanvas(64, 64)

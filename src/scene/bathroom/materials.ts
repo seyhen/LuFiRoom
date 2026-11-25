@@ -2,12 +2,12 @@ import { DoubleSide, MeshBasicMaterial } from 'three'
 import { M, gummy, skin } from '../materials'
 import { foliage, leafy } from '../nature/materials'
 import { wickerTex } from '../greenhouse/textures'
-import { bottleTex, floorTex, fogTex, matTex, mirrorTex, paperTex, printTex, streamTex, subwayTex, towelTex, zelligeTex } from './textures'
+import { bottleTex, floorTex, fogTex, jetTex, matTex, mirrorTex, paperTex, printTex, streamTex, subwayTex, towelTex, zelligeTex } from './textures'
 
 const floor = floorTex.clone()
 floor.repeat.set(10.7, 10.7)
 // une texture de filet par jet : elles défilent chacune à leur vitesse
-const streamA = streamTex.clone(), streamB = streamTex.clone()
+const streamA = jetTex.clone(), streamB = streamTex.clone()
 streamB.repeat.set(5, 2.4)
 const wickBig = wickerTex.clone(), wickSmall = wickerTex.clone()
 wickBig.repeat.set(6, 2.4)
@@ -33,7 +33,7 @@ export const B = {
   zellige: gummy(0xffffff, { map: zelligeTex, roughness: 0.32, clearcoat: 0.7 }),
   trim: gummy(0xfbf4ea, { roughness: 0.4, clearcoat: 0.6 }),
   rail: gummy(0xeeb0bd, { roughness: 0.38, clearcoat: 0.7 }),
-  chrome: gummy(0xdfe7ec, { roughness: 0.18, metalness: 0.55, clearcoat: 1 }),
+  chrome: gummy(0xeaf0f3, { roughness: 0.2, metalness: 0.2, clearcoat: 1 }),
   brass: M.brass,
   brassDark: gummy(0xb98c3c, { roughness: 0.35, metalness: 0.3, clearcoat: 0.8 }),
   woodLight: gummy(0xdcb98c, { roughness: 0.62, clearcoat: 0.2 }),
@@ -46,6 +46,8 @@ export const B = {
   ceramic: gummy(0xfdf8f2, { roughness: 0.2, clearcoat: 0.9 }),
   ceramicRose: gummy(0xf2bcc6, { roughness: 0.25, clearcoat: 0.85 }),
   ceramicBlue: gummy(0x9ccbe0, { roughness: 0.25, clearcoat: 0.85 }),
+  ceramicMint: gummy(0xbfe3d2, { roughness: 0.25, clearcoat: 0.85 }),
+  scaleGlass: gummy(0xf4f8f6, { roughness: 0.12, clearcoat: 1 }),
   // la baignoire
   tubOuter: gummy(0xa6cfe0, { roughness: 0.28, clearcoat: 0.85, side: DoubleSide, emissive: 0x7aa8c8, emissiveIntensity: 0.1 }),
   tubInner: gummy(0xfef9f3, { roughness: 0.18, clearcoat: 0.95, side: DoubleSide }),

@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import type { Group } from 'three'
 import { reduceMotion } from '../anim'
 import { useBeat } from '../objects/useBeat'
-import { Part, SPH, cyl, rbox, type V3 } from '../parts'
+import { Part, cyl, rbox, type V3 } from '../parts'
 import { Static } from '../Static'
 import { B } from './materials'
 
@@ -13,8 +13,8 @@ const LEN = Array.from({ length: N }, (_, i) => 0.14 + 0.085 * (1 - Math.abs(i -
 /**
  * Le kalimba, objet « radio » de la salle de bain : un piano à pouces de noyer, posé sur une serviette pliée, sur un tabouret.
  * Une caisse creuse (table, fond, trou de résonance rond cerclé de bois sombre), un chevalet de laiton, une barre de maintien et neuf lames d'acier clair de
- * longueurs différentes qui sortent du chevalet. Sur le kick, les lames tremblent chacune à son tour et des notes s'envolent. À côté,
- * un petit sac de toile rose pour le ranger et un cordon. `position` : le dessus de la serviette, sous l'instrument.
+ * longueurs différentes qui sortent du chevalet. Sur le kick, les lames tremblent chacune à son tour et des notes s'envolent. Près du tabouret,
+ * un petit sac de toile rose pour le ranger, posé au sol. `position` : le dessus de la serviette, sous l'instrument.
  */
 export function Kalimba({ position, ry = 0 }: { position: V3; ry?: number }) {
   const tines = useRef<Group[]>([])
@@ -38,11 +38,6 @@ export function Kalimba({ position, ry = 0 }: { position: V3; ry?: number }) {
           <Part geo={rbox(0.022, 0.02, 0.23, 0.008)} m={B.brass} p={[-0.09, 0.094, 0]} castShadow={false} />
           <Part geo={rbox(0.018, 0.014, 0.24, 0.006)} m={B.brassDark} p={[-0.125, 0.092, 0]} castShadow={false} />
           {[-0.1, 0.1].map((z) => <Part key={z} geo={cyl(0.007, 0.007, 0.01, 8)} m={B.brass} p={[-0.125, 0.1, z]} castShadow={false} />)}
-          {/* la table de lecture des notes : une planchette claire sous les lames */}
-          <Part geo={rbox(0.05, 0.004, 0.2, 0.002)} m={B.trim} p={[-0.16, 0.086, 0]} castShadow={false} />
-          {/* un cordon de poignet qui pend sur le côté */}
-          <Part geo={cyl(0.004, 0.004, 0.14, 5)} m={B.cloth} p={[0.0, 0.03, 0.14]} rotation-x={Math.PI / 2} castShadow={false} />
-          <Part geo={SPH} m={B.cloth} scale={[0.018, 0.018, 0.018]} p={[0.0, 0.03, 0.215]} castShadow={false} />
         </Static>
         {/* les lames : chacune tourne autour de son appui sur le chevalet, pour trembler */}
         {LEN.map((len, i) => (
@@ -53,10 +48,11 @@ export function Kalimba({ position, ry = 0 }: { position: V3; ry?: number }) {
         ))}
        </group>
       </group>
-      {/* le sac de toile du kalimba, à côté, sur la serviette (immobile) */}
-      <group position={[position[0] - 0.12, position[1] + 0.03, position[2] + 0.34]} rotation-y={0.4}>
-        <Part geo={rbox(0.15, 0.06, 0.1, 0.03)} m={B.cloth} castShadow={false} />
-        <Part geo={cyl(0.003, 0.003, 0.13, 5)} m={B.paper} p={[0, 0.03, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+      {/* le sac de toile du kalimba, au sol près du tabouret (immobile) : un ruban de fermeture et une étiquette */}
+      <group position={[position[0] + 0.52, 0.04, position[2] + 0.36]} rotation-y={0.5}>
+        <Part geo={rbox(0.24, 0.08, 0.16, 0.04)} m={B.cloth} castShadow={false} />
+        <Part geo={cyl(0.006, 0.006, 0.2, 6)} m={B.paper} p={[0, 0.045, 0]} rotation-z={Math.PI / 2} castShadow={false} />
+        <Part geo={rbox(0.05, 0.05, 0.012, 0.006)} m={B.paper} p={[0.04, 0.0, 0.082]} castShadow={false} />
       </group>
       <group ref={notes.group} />
     </>

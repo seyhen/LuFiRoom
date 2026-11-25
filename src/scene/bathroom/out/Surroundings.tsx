@@ -1,13 +1,13 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import type { OrthographicCamera } from 'three'
+import { SphereGeometry, type OrthographicCamera } from 'three'
 import { bathroom } from '../../../rooms/bathroom'
 import { useStore } from '../../../state/store'
 import { mood, reduceMotion } from '../../anim'
 import { life } from '../../life'
 import { OutdoorPrecip } from '../../objects/OutdoorPrecip'
 import { SkyFadeClock } from '../../outdoor'
-import { Batch, SPH_MID, type V3 } from '../../parts'
+import { Batch, SPH_LO, SPH_MID, type V3 } from '../../parts'
 import { BigBubbles, bigSlots } from './Big'
 import { Bubbles, type Keep } from './Bubbles'
 import { makeBank, makeCloudlets, toItems } from './foam'
@@ -21,6 +21,9 @@ import { Sky } from './Sky'
 // grosses qui gardent chacune une petite scène (un canard, un monstera, une bougie, des serviettes, un savon, une étoile de mer). Au loin, de petits
 // nuages de mousse, un arc-en-ciel pâle le jour par temps clair, la lune la nuit. La pluie et la neige tombent dehors (`covered` : rien sur le
 // socle) et s'arrêtent sur la mousse et sur les grosses bulles, où elles crèvent en petites bulles. Tout est en séries instanciées : peu de tracés.
+
+/** La mousse se dessine avec trois finesses de sphère, selon la taille du paquet : 903 sphères de 440 triangles faisaient 400 000 des 690 000 triangles de la pièce. */
+const SPH_M16 = new SphereGeometry(1, 16, 10)
 
 /** Où tombe la pluie : autour du banc (le ciel plus loin vient de WeatherSky). */
 const AREA: [number, number, number, number] = [-13, 14, -13, 13]
@@ -48,7 +51,11 @@ export function Surroundings() {
     setView((p) => (p.l === v.l && p.r === v.r && p.t === v.t && p.b === v.b && p.ut === v.ut && p.ub === v.ub ? p : v))
   }, [camera, width, height, top, bottom])
   const bank = useMemo(makeBank, [])
-  const foam = useMemo(() => [...toItems(bank.puffs), ...toItems(makeCloudlets(view))], [bank, view])
+  const foam = useMemo(() => {
+    const all = [...toItems(bank.puffs), ...toItems(makeCloudlets(view))]
+    // petits paquets (< 0,5 de rayon : 40 px au plus) : 12 x 8 ; moyens : 16 x 10 ; grands : 20 x 12
+    return { lo: all.filter((i) => (i.s as number) < 0.5), mid: all.filter((i) => (i.s as number) >= 0.5 && (i.s as number) < 0.95), hi: all.filter((i) => (i.s as number) >= 0.95) }
+  }, [bank, view])
   const layout = useMemo(() => bigSlots(view, bank.top), [view, bank])
   const slots = layout.slots
   const keep = useMemo<Keep[]>(() => [...slots.map((s) => ({ sx: s.sx, sy: s.sy, r: s.r })), { sx: layout.moon[0], sy: layout.moon[1], r: 0 }].slice(0, slots.length), [slots, layout])
@@ -70,7 +77,9 @@ export function Surroundings() {
       <SkyFadeClock room={bathroom} />
       <Weather />
       <Sky view={view} moon={layout.moon} />
-      <Batch geo={SPH_MID} m={O.foam} items={foam} />
+      <Batch geo={SPH_LO} m={O.foam} items={foam.lo} />
+      <Batch geo={SPH_M16} m={O.foam} items={foam.mid} />
+      <Batch geo={SPH_MID} m={O.foam} items={foam.hi} />
       <Bubbles view={view} spots={bank.spots} caps={getCaps} keep={keep} />
       <BigBubbles slots={slots} onCaps={onCaps} />
       <OutdoorPrecip ground={ground} area={AREA} covered />
