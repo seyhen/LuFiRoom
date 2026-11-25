@@ -15,7 +15,7 @@ export const F = { c: [0, 0] as [number, number], r0: 10, r1: 22 }
 
 export const O = {
   /** Mousse : blanche, la teinte vient de chaque paquet (couleur d'instance). Un peu d'émission : elle reste douce la nuit et à l'ombre. */
-  foam: skyFade(snowTop(far(0xffffff, { roughness: 0.4, emissive: 0xffd8e6, emissiveIntensity: 0.07 }), 1, 0.4, 0.8), F),
+  foam: skyFade(snowTop(far(0xffffff, { roughness: 0.3, emissive: 0xffd8e6, emissiveIntensity: 0.07 }), 1, 0.4, 0.8), F),
   /** Ce qu'il y a dans les grosses bulles : une seule peau par objet, la couleur vient des sommets. */
   thing: skyFade(far(0xffffff, { vertexColors: true, roughness: 0.46, emissive: 0xffe8e0, emissiveIntensity: 0.05 }), F),
   /** La flamme de la bougie. */

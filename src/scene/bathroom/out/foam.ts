@@ -4,20 +4,20 @@ import type { Item, V3 } from '../../parts'
 import { S, type View } from './layout'
 
 // La mousse : le banc de mousse de bain rose qui porte la pièce, et les petits nuages de mousse lointains. Du pur calcul (aucun three) :
-// des paquets de bulles opaques (des sphères de 0,2 à 1,7 de rayon, en une seule série instanciée) posés en trois couches (gros paquets,
-// moyens, petits) et de l'écume sur le flanc, avec la règle du socle : rien de la mousse ne perce le carrelage de la pièce (le haut d'un
+// des paquets de bulles (des sphères de 0,14 à 1,7 de rayon, en une seule série instanciée) posés en trois couches (gros paquets en
+// fond, moyens, et une croûte de petites bulles du côté de la caméra : c'est elle qui fait la mousse) et de l'écume sur le flanc, avec la règle du socle : rien de la mousse ne perce le carrelage de la pièce (le haut d'un
 // paquet reste sous y = 0 là où il mord sur le socle), mais elle monte contre le socle et déborde autour et dessous.
 
-/** Les teintes de mousse : rose bonbon, crème, blanc cassé, un peu de lilas et de pêche. */
-const PINK = [0xf6b4c7, 0xf2a4bd, 0xfac1d1, 0xf7bdcb]
-const CREAM = [0xfff0da, 0xffe8cf, 0xfdf0e0]
-const WHITE = [0xf7eeee, 0xf2e9f0, 0xfaf3ef]
-const EXTRA = [0xe9c2e0, 0xffd0bd]
+/** Les teintes de mousse : du blanc chaud à peine rosé (la mousse de bain n'est jamais en boules de couleurs franches), un souffle de rose et de lilas. */
+const PINK = [0xfbdbe6, 0xf9d0df, 0xfce2ea]
+const CREAM = [0xfff4e6, 0xffeedd, 0xfff1e8]
+const WHITE = [0xfffafa, 0xfff3f6, 0xfdf6fb, 0xfff8f2]
+const EXTRA = [0xf0d9ec, 0xffe2d4]
 const PALE = [0xfff0e2, 0xf9eef0, 0xfbd9e2, 0xf3e6f1]
 const pick = (r: () => number, a: number[]) => a[Math.floor(r() * a.length) % a.length]
 const bank = (r: () => number) => {
   const u = r()
-  return pick(r, u < 0.42 ? PINK : u < 0.68 ? CREAM : u < 0.92 ? WHITE : EXTRA)
+  return pick(r, u < 0.22 ? PINK : u < 0.42 ? CREAM : u < 0.94 ? WHITE : EXTRA)
 }
 
 export interface Puff {
@@ -84,8 +84,8 @@ export function makeBank(): Bank {
       const ring: Puff = { p: [x, y - R * 0.1 + r() * 0.2, z], r: R, c: bank(r) }
       puffs.push(ring)
       // de l'écume sur le flanc : de petites bulles sur le dessus de chaque gros paquet des deux étages du haut
-      if (L < 2) for (let k = 0; k < 3; k++) {
-        const az = a + (r() - 0.5) * 2.2, el = 0.15 + r() * 1.1, q = 0.2 + r() * 0.2, dd = R * 0.93
+      if (L < 3) for (let k = 0; k < 5; k++) {
+        const az = a + (r() - 0.5) * 2.2, el = 0.15 + r() * 1.1, q = 0.16 + r() * 0.26, dd = R * 0.93
         puffs.push({ p: [x + Math.cos(az) * Math.cos(el) * dd, ring.p[1] + Math.sin(el) * dd, z + Math.sin(az) * Math.cos(el) * dd], r: q, c: bank(r) })
       }
     }
@@ -107,18 +107,21 @@ export function makeBank(): Bank {
   // les paquets moyens, puis les petits, posés sur les flancs des précédents
   const mids: Puff[] = []
   for (const b of big) {
-    const k = r() < 0.8 ? (r() < 0.45 ? 2 : 1) : 0
+    const k = r() < 0.9 ? (r() < 0.6 ? 3 : 2) : 1
     for (let i = 0; i < k; i++) {
-      const az = r() * Math.PI * 2, el = 0.35 + r() * 0.9, R = b.r * (0.5 + r() * 0.32), d = b.r * 0.8
+      const az = Math.PI / 4 + (r() - 0.5) * Math.PI * 1.5, el = 0.3 + r() * 0.95, R = b.r * (0.36 + r() * 0.3), d = b.r * 0.82
       put(mids, b.p[0] + Math.cos(az) * Math.cos(el) * d, b.p[1] + Math.sin(el) * d, b.p[2] + Math.sin(az) * Math.cos(el) * d, R, bank(r))
     }
   }
   puffs.push(...mids)
+  // les petites bulles : une croûte de bulles de toutes tailles sur chaque paquet, surtout du côté de la caméra (c'est elles qui font la mousse)
   const smalls: Puff[] = []
   for (const b of [...big, ...mids]) {
-    if (r() < 0.55) continue
-    const az = r() * Math.PI * 2, el = 0.5 + r() * 0.9, R = 0.24 + r() * 0.2, d = b.r * 0.9
-    put(smalls, b.p[0] + Math.cos(az) * Math.cos(el) * d, b.p[1] + Math.sin(el) * d, b.p[2] + Math.sin(az) * Math.cos(el) * d, R, bank(r))
+    const k = b.r > 0.6 ? 3 + Math.floor(r() * 3) : 1 + Math.floor(r() * 2)
+    for (let i = 0; i < k; i++) {
+      const az = Math.PI / 4 + (r() - 0.5) * Math.PI * 1.6, el = 0.25 + r() * 1.1, R = 0.14 + r() * r() * 0.36, d = b.r * 0.92
+      put(smalls, b.p[0] + Math.cos(az) * Math.cos(el) * d, b.p[1] + Math.sin(el) * d, b.p[2] + Math.sin(az) * Math.cos(el) * d, R, bank(r))
+    }
   }
   puffs.push(...smalls)
 
