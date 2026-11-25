@@ -7,7 +7,7 @@ import { mood, reduceMotion } from '../../anim'
 import { life } from '../../life'
 import { OutdoorPrecip } from '../../objects/OutdoorPrecip'
 import { SkyFadeClock } from '../../outdoor'
-import { Batch, SPH_LO, SPH_MID, type V3 } from '../../parts'
+import { Batch, SPH_MID, type V3 } from '../../parts'
 import { BigBubbles, bigSlots } from './Big'
 import { Bubbles, type Keep } from './Bubbles'
 import { makeBank, makeCloudlets, toItems } from './foam'
@@ -24,6 +24,8 @@ import { Sky } from './Sky'
 
 /** La mousse se dessine avec trois finesses de sphère, selon la taille du paquet : 903 sphères de 440 triangles faisaient 400 000 des 690 000 triangles de la pièce. */
 const SPH_M16 = new SphereGeometry(1, 16, 10)
+/** Les bulles de la mousse (moins de 0,5 de rayon, 40 px au plus, par milliers) : 10 x 7, 140 triangles. */
+const SPH_S = new SphereGeometry(1, 10, 7)
 
 /** Où tombe la pluie : autour du banc (le ciel plus loin vient de WeatherSky). */
 const AREA: [number, number, number, number] = [-13, 14, -13, 13]
@@ -77,7 +79,7 @@ export function Surroundings() {
       <SkyFadeClock room={bathroom} />
       <Weather />
       <Sky view={view} moon={layout.moon} />
-      <Batch geo={SPH_LO} m={O.foam} items={foam.lo} />
+      <Batch geo={SPH_S} m={O.foam} items={foam.lo} />
       <Batch geo={SPH_M16} m={O.foam} items={foam.mid} />
       <Batch geo={SPH_MID} m={O.foam} items={foam.hi} />
       <Bubbles view={view} spots={bank.spots} caps={getCaps} keep={keep} />

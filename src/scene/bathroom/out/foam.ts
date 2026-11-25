@@ -83,7 +83,7 @@ export function makeBank(): Bank {
       const a = ((i + r() * 0.6) / n) * Math.PI * 2, d = shore(a) + grow - 0.2 - r() * 0.5, R = rad * (0.75 + r() * 0.5)
       const x = CX + Math.cos(a) * d, z = CZ + Math.sin(a) * d
       const ring: Puff = { p: [x, y - R * 0.1 + r() * 0.2, z], r: R, c: bank(r) }
-      puffs.push(ring)
+      puffs.push({ ...ring, r: R * 0.8 })
       rings.push(ring)
     }
   })
@@ -97,7 +97,7 @@ export function makeBank(): Bank {
   for (let gx = -10; gx <= 10; gx += 1.15) for (let gz = -10; gz <= 10; gz += 1.15) {
     const x = gx + (r() - 0.5) * 0.7, z = gz + (r() - 0.5) * 0.7, a = Math.atan2(z - CZ, x - CX), rho = Math.hypot(x - CX, z - CZ)
     if (rho > shore(a) - 0.5 || slabGap(x, z) < -0.1) continue
-    const R = 0.8 + r() * 0.55
+    const R = 0.55 + r() * 0.3
     put(big, x, surface(x, z) - R * (0.95 + r() * 0.3), z, R, bank(r))
   }
   puffs.push(...big)
@@ -111,8 +111,8 @@ export function makeBank(): Bank {
     put(skin, x, surface(x, z) + 0.12 * noise(x * 1.1 + 9, z * 1.1) - R * 0.25, z, R, bank(r))
   }
   for (const g of rings) {
-    for (let i = 0; i < 11; i++) {
-      const az = Math.PI / 4 + (r() - 0.5) * Math.PI * 1.5, el = -0.15 + r() * 1.35, R = 0.26 + r() * 0.16, d = g.r * 0.95
+    for (let i = 0; i < 18; i++) {
+      const az = Math.PI / 4 + (r() - 0.5) * Math.PI * 1.8, el = -0.25 + r() * 1.6, R = 0.26 + r() * 0.16, d = g.r * 0.96
       skin.push({ p: [g.p[0] + Math.cos(az) * Math.cos(el) * d, g.p[1] + Math.sin(el) * d, g.p[2] + Math.sin(az) * Math.cos(el) * d], r: R, c: bank(r) })
     }
   }
@@ -152,14 +152,11 @@ export function makeCloudlets(v: View): Puff[] {
       const x = sx + (r() - 0.5) * cell[0] * 0.7, y = sy + (r() - 0.5) * cell[1] * 0.7
       // la place du banc et de la pièce à l'écran : rien ici
       if ((x / 9.6) ** 2 + ((y + 0.5) / 8) ** 2 < 1) continue
-      const w = 2.2 + r() * 3.2, n = 5 + Math.floor(r() * 4), dz = -5 - r() * 8
-      for (let i = 0; i < n; i++) {
-        const u = (i / (n - 1)) * 2 - 1, R = (0.55 + r() * 0.5) * (1.45 - Math.abs(u) * 0.7), p = S(x + u * w * 0.5 + (r() - 0.5) * 0.4, y + R * 0.45 + (r() - 0.5) * 0.25, dz + (r() - 0.5) * 1.2)
-        out.push({ p, r: R, c: pick(r, PALE) })
-      }
-      for (let i = 0; i < 2 + Math.floor(r() * 2); i++) {
-        const u = r() * 1.2 - 0.6, R = 0.4 + r() * 0.3
-        out.push({ p: S(x + u * w * 0.5, y + 0.85 + r() * 0.3, dz + (r() - 0.5)), r: R, c: pick(r, PALE) })
+      // un nuage de mousse lointain : un petit amas de bulles de la taille de celles du banc (pas de grosses boules lisses)
+      const w = 1.6 + r() * 2.2, dz = -5 - r() * 8
+      for (let i = 0; i < 20; i++) {
+        const u = r() * 2 - 1, v = r(), R = 0.26 + r() * 0.22, hh = (1 - u * u) ** 0.6 * (0.5 + 0.9 * v)
+        out.push({ p: S(x + u * w * 0.5, y + R * 0.4 + hh * 0.8, dz + (r() - 0.5) * 0.8), r: R, c: pick(r, PALE) })
       }
     }
   }
