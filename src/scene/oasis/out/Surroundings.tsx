@@ -23,7 +23,7 @@ function Evening() {
 }
 
 /** Quelques rochers et un cairn au pied des dunes proches (les côtés et le devant, jamais devant l'entrée du campement). */
-const ROCKS: [number, number, number, number][] = [[-5.4, 2.2, 0.55, 0.4], [-4.6, -2.6, 0.45, 2.0], [6.6, 0.6, 0.5, 1.1], [3.6, 6.2, 0.4, 2.8], [-1.8, 6.8, 0.5, 0.6], [5.2, 5.0, 0.35, 3.1]]
+const ROCKS: [number, number, number, number][] = [[-5.4, 2.2, 0.55, 0.4], [-4.6, -2.6, 0.45, 2.0], [7.4, 1.6, 0.5, 1.1], [3.6, 6.2, 0.4, 2.8], [-1.8, 6.8, 0.5, 0.6], [5.2, 5.0, 0.35, 3.1]]
 
 /** Le dehors de l'oasis : les dunes d'or (un sol en grille, les étoiles de la nuit dedans), le bosquet et sa mare derrière à gauche, le ksar, les falaises et la caravane au fond, un dromadaire accroupi devant à droite. */
 export function Surroundings() {
@@ -38,7 +38,7 @@ export function Surroundings() {
         <Grove />
         <Far />
         {ROCKS.map(([x, z, k, ry], i) => <Rock key={i} v={i} p={[x, groundY(x, z) - 0.08, z]} s={[k * 1.2, k * 0.7, k]} ry={ry} m={O.stone} shadow={false} />)}
-        <KneelingCamel at={[6.0, -2.6]} ry={-2.356} />
+        <KneelingCamel at={[5.4, -0.6]} ry={-Math.PI / 2} />
       </Static>
       <OutdoorPrecip ground={groundY} area={[-13, 13, -12, 12]} covered />
     </>

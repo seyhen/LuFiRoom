@@ -66,7 +66,7 @@ export function JarCorner() {
   return (
     <Static>
       <Amphora p={[-2.5, 0, -2.45]} h={1.05} ry={0.5} />
-      <Amphora p={[-1.7, 0, -2.6]} h={0.8} ry={2} plug />
+      <Amphora p={[-1.5, 0, -2.6]} h={0.8} ry={2} plug />
       <group position={[-2.75, 0, -1.55]}>
         <mesh geometry={JAR} material={D.clayPlain} scale={0.62} castShadow receiveShadow />
         <Part geo={cyl(0.12, 0.12, 0.01, 16)} m={D.grain} p={[0, 0.58, 0]} castShadow={false} />
@@ -90,9 +90,15 @@ export function FrontCorner() {
     <Static>
       {/* le sac de grain : un volume qui s'affaisse, le col ficelé, une trace de grain renversé */}
       <group position={[2.55, 0, 2.15]} rotation-y={0.5}>
-        <Part geo={rbox(0.42, 0.46, 0.3, 0.14)} m={D.sack} p={[0, 0.23, 0]} />
-        <Part geo={SPH} m={D.sack} scale={[0.12, 0.09, 0.1]} p={[0, 0.5, 0]} castShadow={false} />
-        <Part m={D.rope} p={[0, 0.45, 0]} rotation-x={Math.PI / 2} castShadow={false}><torusGeometry args={[0.09, 0.012, 6, 14]} /></Part>
+        {/* le ventre affaissé, plus large que haut ; le col froncé qui s'évase en collerette au-dessus de la ficelle, la gueule qui retombe d'un côté */}
+        <Part geo={rbox(0.5, 0.36, 0.36, 0.15)} m={D.sack} p={[0, 0.18, 0]} rotation-z={0.05} />
+        <Part geo={cyl(0.05, 0.085, 0.07, 10)} m={D.sack} p={[0.01, 0.39, 0]} rotation-z={0.05} castShadow={false} />
+        <Part geo={cyl(0.12, 0.05, 0.07, 10)} m={D.sack} p={[0.03, 0.46, 0]} rotation-z={0.22} castShadow={false} />
+        <Part geo={SPH} m={D.sack} scale={[0.07, 0.035, 0.1]} p={[0.07, 0.49, 0.02]} rotation-z={0.5} castShadow={false} />
+        <Part m={D.rope} p={[0.015, 0.42, 0]} rotation-x={Math.PI / 2} castShadow={false}><torusGeometry args={[0.063, 0.012, 6, 14]} /></Part>
+        {/* un pli de toile sur le flanc, et le bout de ficelle qui pend */}
+        <Part geo={SPH_MID} m={D.sack} scale={[0.012, 0.11, 0.12]} p={[0.25, 0.19, -0.04]} castShadow={false} />
+        <Part geo={cyl(0.005, 0.005, 0.07, 4)} m={D.rope} p={[0.08, 0.4, 0.06]} rotation-z={0.3} castShadow={false} />
         <Part geo={SPH_MID} m={D.grain} scale={[0.14, 0.015, 0.1]} p={[0.26, 0.005, 0.1]} castShadow={false} />
       </group>
       {/* le panier : un tressage évasé, une anse arquée, un tas de dattes dessus */}
@@ -118,9 +124,9 @@ export function FrontCorner() {
   )
 }
 
-/** La gourde de peau de chèvre pendue à la perche arrière de l'auvent : le sac, les quatre moignons, le col noué, la corde. */
+/** La gourde de peau de chèvre pendue à la poutre de l'auvent, à 0,3 de la perche arrière : le sac, les quatre moignons, le col noué, la corde. */
 export function Waterskin() {
-  const x = BEAM[0] + 0.1, top = BEAM[1] - 0.18, z = -2.78
+  const x = BEAM[0] + 0.1, top = BEAM[1] - 0.18, z = -2.6
   return (
     <group position={[x, top, z]}>
       <Static>

@@ -96,7 +96,8 @@ export function Shell() {
       <Part geo={worldUV(rbox(0.1, 0.34, 6.1, 0.04), 1.6)} m={D.strata} p={[IN + 0.05, 0.17, 0.05]} />
       {/* les poutres de palmier qui sortent du mur, sous le chaperon */}
       {[-2.7, -1.8, -0.9, 0.0, 2.35, 2.95].map((x) => <Beam key={x} at={x} y={BACK_H - 0.4} axis="z" />)}
-      {[-2.55, -1.65, -0.75, 0.15, 1.05, 1.95, 2.85].map((z) => <Beam key={z} at={z} y={LEFT_H - 0.35} axis="x" />)}
+      {/* pas de poutre sous l'auvent : sa toile (accrochée à 2,2) passerait au travers */}
+      {[0.15, 1.05, 1.95, 2.85].map((z) => <Beam key={z} at={z} y={LEFT_H - 0.35} axis="x" />)}
       <Lattice />
       {/* l'étagère de poteries au mur de gauche : une planche sur deux consoles, deux bols, une cruche de cuivre */}
       <group position={[IN + 0.14, 1.35, 1.0]}>

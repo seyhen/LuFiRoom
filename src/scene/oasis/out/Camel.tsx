@@ -15,17 +15,18 @@ const BODY: Blob[] = [
   ell([0, 0.52, 0], [0.92, 0.4, 0.42], { color: TAN, k: 0.1 }),
   ell([-0.78, 0.52, 0], [0.34, 0.38, 0.37], { color: TAN, k: 0.1 }),
   ell([0.0, 0.3, 0], [0.85, 0.26, 0.4], { color: BELLY, k: 0.1 }),
-  ell([-0.04, 1.02, 0], [0.3, 0.36, 0.27], { color: TAN_D, k: 0.1 }),
+  ell([-0.04, 0.98, 0], [0.38, 0.3, 0.28], { color: TAN_D, k: 0.1 }),
   ell([0.76, 0.66, 0], [0.34, 0.44, 0.34], { color: TAN, k: 0.1 }),
   // le cou : trois cônes qui montent en S, et la tête
   cone([0.86, 0.78, 0], [1.12, 1.18, 0], 0.23, 0.16, { color: TAN, k: 0.1 }),
-  cone([1.12, 1.18, 0], [1.1, 1.62, 0], 0.16, 0.12, { color: TAN, k: 0.08 }),
-  cone([1.1, 1.62, 0], [1.28, 1.78, 0], 0.12, 0.115, { color: TAN, k: 0.06 }),
-  ell([1.44, 1.8, 0], [0.2, 0.125, 0.105], { rot: [0, 0, -0.2], color: TAN, k: 0.05 }),
-  ell([1.6, 1.74, 0], [0.13, 0.09, 0.085], { rot: [0, 0, -0.25], color: TAN, k: 0.04 }),
-  ell([1.66, 1.67, 0], [0.095, 0.04, 0.07], { color: LIP, k: 0.03 }),
-  ...pair(ell([1.46, 1.86, 0.1], [0.032, 0.03, 0.02], { color: EYE, k: 0.01 }), 'z'),
-  ...pair(cone([1.3, 1.88, 0.07], [1.26, 1.99, 0.09], 0.036, 0.022, { color: TAN_D, k: 0.03 }), 'z'),
+  // le cou se penche en avant (un S souple, la tête reposée plus bas) : plus de périscope
+  cone([1.12, 1.18, 0], [1.28, 1.5, 0], 0.16, 0.125, { color: TAN, k: 0.08 }),
+  cone([1.28, 1.5, 0], [1.48, 1.66, 0], 0.125, 0.115, { color: TAN, k: 0.06 }),
+  ell([1.62, 1.68, 0], [0.2, 0.125, 0.105], { rot: [0, 0, -0.32], color: TAN, k: 0.05 }),
+  ell([1.8, 1.6, 0], [0.13, 0.09, 0.085], { rot: [0, 0, -0.4], color: TAN, k: 0.04 }),
+  ell([1.86, 1.52, 0], [0.095, 0.04, 0.07], { color: LIP, k: 0.03 }),
+  ...pair(ell([1.64, 1.74, 0.1], [0.032, 0.03, 0.02], { color: EYE, k: 0.01 }), 'z'),
+  ...pair(cone([1.5, 1.76, 0.07], [1.44, 1.87, 0.09], 0.036, 0.022, { color: TAN_D, k: 0.03 }), 'z'),
   // les pattes repliées : l'avant-bras couché sous la poitrine, le jarret couché sous la croupe, les callosités
   ...pair(cone([0.55, 0.14, 0.3], [1.12, 0.13, 0.28], 0.11, 0.085, { color: TAN_D, k: 0.06 }), 'z'),
   ...pair(cone([-0.6, 0.17, 0.3], [-0.05, 0.14, 0.3], 0.15, 0.1, { color: TAN_D, k: 0.06 }), 'z'),
@@ -35,7 +36,7 @@ const BODY: Blob[] = [
 
 
 // Les ellipsoïdes du dos (centre, rayons) : la croupe, le corps, la bosse. La couverture les épouse à 8 cm (la peau du blob gonfle un peu au sommet de la bosse).
-const BACK_E: [number, number, number, number, number, number][] = [[0, 0.52, 0.92, 0.4, 0.42, 0], [-0.78, 0.52, 0.34, 0.38, 0.37, 0], [-0.04, 1.02, 0.3, 0.36, 0.27, 0]]
+const BACK_E: [number, number, number, number, number, number][] = [[0, 0.52, 0.92, 0.4, 0.42, 0], [-0.78, 0.52, 0.34, 0.38, 0.37, 0], [-0.04, 0.98, 0.38, 0.3, 0.28, 0]]
 const COVER = 0.08
 /** La hauteur du dos en (x, z) : le plus haut des trois volumes, ou -1 hors du dos. */
 const backY = (x: number, z: number) => BACK_E.reduce((m, [cx, cy, rx, ry, rz]) => {
@@ -111,8 +112,8 @@ export function KneelingCamel({ at, ry }: { at: [number, number]; ry: number }) 
         ))}
         <Part geo={cyl(0.31, 0.31, 0.06, 14)} m={O.rope} p={[0.4, 0.82, 0]} rotation-z={-0.1} castShadow={false} />
         {/* la longe qui pend du licol, posée sur le sable */}
-        <Part geo={cyl(0.012, 0.012, 0.5, 5)} m={O.rope} p={[1.7, 1.45, 0.03]} rotation-z={0.15} castShadow={false} />
-        <Part geo={SPH_LO} m={O.rope} scale={0.03} p={[1.72, 1.2, 0.03]} castShadow={false} />
+        <Part geo={cyl(0.012, 0.012, 0.5, 5)} m={O.rope} p={[1.9, 1.3, 0.03]} rotation-z={0.15} castShadow={false} />
+        <Part geo={SPH_LO} m={O.rope} scale={0.03} p={[1.92, 1.05, 0.03]} castShadow={false} />
       </Static>
     </group>
   )

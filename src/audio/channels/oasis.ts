@@ -7,9 +7,9 @@ import type { Kit } from '../engine'
  * Un son de base, continu et doux. Synthèse provisoire (un enregistrement viendra). Plus grave et plus lent qu'un ruisseau : de gros
  * « bloups » ronds (un sinus de 150 à 420 Hz qui monte d'un quart en 60 à 140 ms, attaque douce, extinction lente) tous les quarts de
  * seconde environ, des gouttes plus fines par-dessus (500 à 1 100 Hz, rares) et le filet lui-même, un bruit rose entre 0,9 et 2,6 kHz
- * qui frétille. La boucle (18 s, stéréo) est calculée une fois ; tout s'enroule sur sa fin, donc aucune couture. Tout passe sous 2,8 kHz.
+ * qui frétille. La boucle (30 s, stéréo) est calculée une fois ; tout s'enroule sur sa fin, donc aucune couture. Tout passe sous 2,8 kHz.
  */
-export function pondLap(ctx: BaseAudioContext, sec = 18) {
+export function pondLap(ctx: BaseAudioContext, sec = 30) {
   const sr = ctx.sampleRate, N = Math.floor(sec * sr), buf = ctx.createBuffer(2, N, sr)
   for (let c = 0; c < 2; c++) {
     const d = buf.getChannelData(c)
@@ -20,7 +20,7 @@ export function pondLap(ctx: BaseAudioContext, sec = 18) {
       for (let i = 0; i < n; i++) {
         const k = i / n, f = f0 * (1 + rise * Math.min(1, k * 1.6))
         ph += (TAU * f) / sr
-        d[(n0 + i) % N] += amp * Math.min(1, i / (0.008 * sr)) * Math.exp(-3.4 * k) * Math.sin(ph)
+        d[(n0 + i) % N] += amp * Math.min(1, i / (0.008 * sr), (n - i) / (0.012 * sr)) * Math.exp(-3.4 * k) * Math.sin(ph) // attaque 8 ms, fin fondue sur 12 ms : aucun cran où la bulle s'arrête
       }
     }
     // la densité des bloups respire (deux houles lentes qui divisent la boucle en nombres entiers)
@@ -67,7 +67,7 @@ export default function oasis(kit: Kit, out: GainNode, { loops }: Room) {
     loop(noise.brown, rand(0, 5)).connect(biq('bandpass', 180, 0.8)).connect(gain(0.16)).connect(bus)
     // les bloups et le filet, deux lectures décalées dont le niveau respire à des rythmes différents
     const buf = pondLap(ctx)
-    for (const [offset, lvl, rate] of [[0, 0.6, 0.043], [9.7, 0.32, 0.071]] as const) {
+    for (const [offset, lvl, rate] of [[0, 0.6, 0.043], [13.3, 0.32, 0.071]] as const) {
       const v = gain(lvl)
       loop(buf, offset).connect(v).connect(bus)
       const lfo = osc('sine', rate)
