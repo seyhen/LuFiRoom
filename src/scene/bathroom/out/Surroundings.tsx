@@ -7,7 +7,7 @@ import { mood, reduceMotion } from '../../anim'
 import { life } from '../../life'
 import { OutdoorPrecip } from '../../objects/OutdoorPrecip'
 import { SkyFadeClock } from '../../outdoor'
-import { Batch, SPH_MID, type V3 } from '../../parts'
+import { Batch, type V3 } from '../../parts'
 import { BigBubbles, bigSlots } from './Big'
 import { Bubbles, type Keep } from './Bubbles'
 import { makeBank, makeCloudlets, toItems } from './foam'
@@ -23,7 +23,8 @@ import { Sky } from './Sky'
 // socle) et s'arrêtent sur la mousse et sur les grosses bulles, où elles crèvent en petites bulles. Tout est en séries instanciées : peu de tracés.
 
 /** La mousse se dessine avec trois finesses de sphère, selon la taille du paquet : 903 sphères de 440 triangles faisaient 400 000 des 690 000 triangles de la pièce. */
-const SPH_M16 = new SphereGeometry(1, 16, 10)
+/** Les gros paquets (cœurs cachés sous la peau de bulles) : 12 x 8, 192 triangles. */
+const SPH_CORE = new SphereGeometry(1, 12, 8)
 /** Les bulles de la mousse (moins de 0,5 de rayon, 40 px au plus, par milliers) : 9 x 6, 108 triangles. */
 const SPH_S = new SphereGeometry(1, 9, 6)
 
@@ -80,8 +81,8 @@ export function Surroundings() {
       <Weather />
       <Sky view={view} moon={layout.moon} />
       <Batch geo={SPH_S} m={O.foam} items={foam.lo} />
-      <Batch geo={SPH_M16} m={O.foam} items={foam.mid} />
-      <Batch geo={SPH_MID} m={O.foam} items={foam.hi} />
+      <Batch geo={SPH_CORE} m={O.foam} items={foam.mid} />
+      <Batch geo={SPH_CORE} m={O.foam} items={foam.hi} />
       <Bubbles view={view} spots={bank.spots} caps={getCaps} keep={keep} />
       <BigBubbles slots={slots} onCaps={onCaps} />
       <OutdoorPrecip ground={ground} area={AREA} covered />

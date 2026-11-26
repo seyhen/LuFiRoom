@@ -106,23 +106,23 @@ export function makeBank(): Bank {
   // la peau : la mousse est un amas serré de bulles presque de même taille qui se recouvrent (jamais quelques points épars sur une boule lisse :
   // ça faisait des boutons). Dessus : une grille serrée posée sur le relief ; sur le flanc : le côté de la caméra de chaque gros paquet.
   const skin: Puff[] = []
-  for (let gx = -9.6; gx <= 9.6; gx += 0.42) for (let gz = -9.6; gz <= 9.6; gz += 0.42) {
+  for (let gx = -9.6; gx <= 9.6; gx += 0.55) for (let gz = -9.6; gz <= 9.6; gz += 0.55) {
     const x = gx + (r() - 0.5) * 0.3, z = gz + (r() - 0.5) * 0.3, a = Math.atan2(z - CZ, x - CX), rho = Math.hypot(x - CX, z - CZ)
     if (rho > shore(a) - 0.2 || slabGap(x, z) < -0.1) continue
-    const R = 0.24 + 0.12 * (noise(x * 1.7, z * 1.7) * 0.5 + 0.5) + r() * 0.06
+    const R = 0.3 + 0.14 * (noise(x * 1.7, z * 1.7) * 0.5 + 0.5) + r() * 0.06
     put(skin, x, surface(x, z) + 0.12 * noise(x * 1.1 + 9, z * 1.1) - R * 0.25, z, R, bank(r))
   }
   for (const g of rings) {
     for (let i = 0; i < 22; i++) {
-      const az = Math.PI / 4 + (r() - 0.5) * Math.PI * 1.8, el = -1.3 + r() * 2.7, R = 0.26 + r() * 0.16, d = g.r * 0.96
+      const az = Math.PI / 4 + (r() - 0.5) * Math.PI * 1.8, el = -1.3 + r() * 2.7, R = 0.34 + r() * 0.16, d = g.r * 0.96
       skin.push({ p: [g.p[0] + Math.cos(az) * Math.cos(el) * d, g.p[1] + Math.sin(el) * d, g.p[2] + Math.sin(az) * Math.cos(el) * d], r: R, c: bank(r) })
     }
   }
   // les gros paquets du dessous se voient sous la pièce : ils ont leur peau de bulles eux aussi
   for (const g of under) {
-    const n = Math.ceil(g.r * g.r * 11)
+    const n = Math.ceil(g.r * g.r * 7)
     for (let i = 0; i < n; i++) {
-      const az = Math.PI / 4 + (r() - 0.5) * Math.PI * 1.9, el = -1.3 + r() * 2.6, R = 0.28 + r() * 0.16, d = g.r * 0.97
+      const az = Math.PI / 4 + (r() - 0.5) * Math.PI * 1.9, el = -1.3 + r() * 2.6, R = 0.36 + r() * 0.16, d = g.r * 0.97
       skin.push({ p: [g.p[0] + Math.cos(az) * Math.cos(el) * d, g.p[1] + Math.sin(el) * d, g.p[2] + Math.sin(az) * Math.cos(el) * d], r: R, c: bank(r) })
     }
   }
@@ -164,8 +164,8 @@ export function makeCloudlets(v: View): Puff[] {
       if ((x / 9.6) ** 2 + ((y + 0.5) / 8) ** 2 < 1) continue
       // un nuage de mousse lointain : un petit amas de bulles de la taille de celles du banc (pas de grosses boules lisses)
       const w = 1.6 + r() * 2.2, dz = -5 - r() * 8
-      for (let i = 0; i < 20; i++) {
-        const u = r() * 2 - 1, v = r(), R = 0.26 + r() * 0.22, hh = (1 - u * u) ** 0.6 * (0.5 + 0.9 * v)
+      for (let i = 0; i < 13; i++) {
+        const u = r() * 2 - 1, v = r(), R = 0.32 + r() * 0.24, hh = (1 - u * u) ** 0.6 * (0.5 + 0.9 * v)
         out.push({ p: S(x + u * w * 0.5, y + R * 0.4 + hh * 0.8, dz + (r() - 0.5) * 0.8), r: R, c: pick(r, PALE) })
       }
     }
