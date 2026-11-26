@@ -30,8 +30,12 @@ export type SoundId =
   | 'brook' | 'cicadas'
   // la serre : le chœur de grenouilles du bassin, la boîte à musique, le tonneau d'eau de pluie
   | 'frogs' | 'musicbox' | 'rainbarrel'
+  // la serre : la volière d'oiseaux de forêt tropicale
+  | 'aviary'
   // la laverie de nuit : le lave-linge, le sèche-linge, le rinçage, la gouttière
   | 'wash' | 'tumble' | 'rinse' | 'gutter'
+  // la laverie de nuit : les voitures de la rue mouillée, derrière la vitrine
+  | 'wetroad'
   // la carte « Bruit » (blanc, rose, brun, vert, bleu, violet), dans toutes les pièces, sans objet 3D : voir docs/NOISE.md
   | 'noise'
 // la cabane perchée : le joueur de flûte du pont de corde
@@ -60,8 +64,8 @@ export type ObjectId =
   | 'hourglass' | 'bowl' | 'skiff' | 'rowboat'
   | 'icewindow' | 'icehole' | 'husky'
   | 'birdhouse' | 'hammock' | 'oak' | 'brook' | 'lemonade'
-  | 'washer' | 'dryer' | 'changer' | 'folding' | 'rinse' | 'gutter'
-  | 'pond' | 'musicbox' | 'barrel' | 'fountain' | 'owl'
+  | 'washer' | 'dryer' | 'changer' | 'folding' | 'rinse' | 'gutter' | 'wetroad'
+  | 'pond' | 'musicbox' | 'barrel' | 'fountain' | 'owl' | 'aviary'
   | 'handpan' | 'yagura' | 'pianowindow'
   | 'sax' | 'accordion'
   | 'flautist'

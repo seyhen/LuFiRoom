@@ -3,8 +3,8 @@ import { PLAYLIST } from './playlist'
 import type { Room } from './types'
 import { WEATHER_LOOPS } from './weather'
 
-// Une serre victorienne un soir de pluie. Sons nouveaux (le chœur de grenouilles du bassin, la boîte à musique, le tonneau d'eau de
-// pluie) synthétisés pour l'instant : leurs enregistrements se déclareront dans `loops` (docs/ASSETS.md), sources et licences dans
+// Une serre victorienne un soir de pluie. Sons nouveaux (le chœur de grenouilles du bassin, la boîte à musique, le tonneau d'eau de pluie,
+// la volière d'oiseaux tropicaux) synthétisés pour l'instant : leurs enregistrements se déclareront dans `loops` (docs/ASSETS.md), sources et licences dans
 // public/audio/CREDITS.md.
 
 export const greenhouse: Room = {
@@ -13,7 +13,7 @@ export const greenhouse: Room = {
   description:
     'Une serre victorienne un soir de pluie, en 3D isométrique : une charpente de fonte verte et des vitres embuées, un carrelage ' +
     'ancien, un phonographe à pavillon de laiton sur une table de rotin, un bassin de nénuphars où chante une grenouille, une boîte ' +
-    'à musique sur la table de lecture près d’un fauteuil d’osier, un tonneau d’eau de pluie sous la gouttière, une paillasse de ' +
+    'à musique sur la table de lecture près d’un fauteuil d’osier, une volière de fer blanc où sautillent des oiseaux de forêt tropicale, un tonneau d’eau de pluie sous la gouttière, une paillasse de ' +
     'rempotage, des palmiers, des fougères, un citronnier en pot, des suspensions fleuries, et le jardin dans la brume derrière le verre.',
   ui: {
     accent: ['#2f7a5c', '#9fe0b8'],
@@ -40,14 +40,15 @@ export const greenhouse: Room = {
   stations: ['rosee', 'pluie-fine', 'brume', 'petit-matin'],
   playlist: PLAYLIST,
   presets: {
-    work: { sounds: [['radio', 0.5], ['rainbarrel', 0.3], ['rain', 0.35]] },
-    read: { sounds: [['musicbox', 0.3], ['fountain', 0.25], ['rain', 0.4]] },
+    work: { sounds: [['radio', 0.5], ['aviary', 0.3], ['rainbarrel', 0.3], ['rain', 0.35]] },
+    read: { sounds: [['musicbox', 0.3], ['aviary', 0.3], ['fountain', 0.25], ['rain', 0.4]] },
     sleep: { sounds: [['frogs', 0.4], ['rainbarrel', 0.3], ['musicbox', 0.2], ['rain', 0.4]], night: true },
   },
   objects: [
     { id: 'radio', target: 'radio', label: 'Phonographe · lofi', anchor: [-2.0, 1.25, 1.9] },
-    { id: 'pond', target: 'frogs', label: 'Bassin · les grenouilles', anchor: [1.3, 0.4, -1.3] },
+    { id: 'pond', target: 'frogs', label: 'Bassin · les grenouilles', anchor: [0.6, 0.3, -1.9] },
     { id: 'musicbox', target: 'musicbox', label: 'Boîte à musique · la berceuse', anchor: [1.9, 0.95, 1.5] },
+    { id: 'aviary', target: 'aviary', label: 'Volière · les oiseaux de la forêt', anchor: [2.76, 0.49, 0.45] },
     { id: 'barrel', target: 'rainbarrel', label: 'Tonneau · l’eau de la gouttière', anchor: [-2.35, 1.0, -2.35] },
     // hors de la serre : la fontaine du parc, à gauche
     { id: 'fountain', target: 'fountain', label: 'Fontaine · le jet', anchor: [-7.2, 0.45, 0.0] },
@@ -57,6 +58,7 @@ export const greenhouse: Room = {
     { id: 'radio', name: 'Phonographe', chip: 'var(--c-radio)', icon: 'vinyl', skip: 'Rouleau suivant', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'frogs', name: 'Grenouilles', chip: 'var(--c-frogs)', volume: 0.45, sub: () => 'le chœur du bassin' },
     { id: 'musicbox', name: 'Boîte à musique', chip: 'var(--c-musicbox)', volume: 0.4, sub: () => 'une berceuse douce' },
+    { id: 'aviary', name: 'Volière', chip: 'var(--c-aviary)', volume: 0.45, sub: () => 'les oiseaux de la forêt' },
     { id: 'rainbarrel', name: 'Tonneau', chip: 'var(--c-rainbarrel)', volume: 0.45, sub: () => 'l’eau de la gouttière' },
     { id: 'fountain', name: 'Fontaine', chip: 'var(--c-fountain)', volume: 0.4, sub: () => 'le jet dans le parc' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'sur le verre' },

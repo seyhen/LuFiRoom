@@ -152,6 +152,7 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite (
 | Marché de nuit | yagura de la fête bon-odori au bout de la rue, taiko et lanternes (tambour et flûte, au loin) | `bonodori` |
 | Marché de nuit | aquarium d'étal d'un marchand de carpes koï (trois koï, gravier, herbes, filtre suspendu, pierre à air) : le filet du filtre et des bulles rares et feutrées (son synthétisé, faute d'enregistrement) | `aquarium` |
 | Laverie de nuit | fenêtre éclairée de l'immeuble d'en face, un piano droit et quelqu'un qui joue | `windowpiano` |
+| Laverie de nuit | petite voiture jaune garée le long du trottoir de la rue de droite (panier de linge sur sa galerie), phares et essuie-glaces quand le son joue, d'autres voitures passent sur la route mouillée : le chuintement lointain des pneus sur l'asphalte (son synthétisé, provisoire ; la voiture est dehors, la rue derrière la vitrine est trop étroite pour un objet cliquable qui reste lisible) | `wetroad` |
 | Toit-terrasse | saxophoniste sur le toit d’en face (dehors), un air lent de saxo alto | `sax` |
 | Atelier | accordéoniste en marinière sur le toit voisin (dehors), une valse, le soufflet qui respire | `accordion` |
 | Cabane | hibou sur son chicot, au bord du sentier (dehors de la cabane), la forêt de nuit | `owl` |

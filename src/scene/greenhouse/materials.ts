@@ -1,5 +1,5 @@
 import { BackSide, DoubleSide, MeshBasicMaterial } from 'three'
-import { M, gummy } from '../materials'
+import { M, gummy, skin } from '../materials'
 import { foliage, leafy, moss, stone } from '../nature/materials'
 import { boardTex, brickTex, fogTex, labelTex, rugTex, tileTex, wickerTex } from './textures'
 
@@ -72,6 +72,15 @@ export const G = {
   frog: gummy(0x6fae4e, { roughness: 0.3, clearcoat: 0.7 }),
   frogBelly: gummy(0xe8f0b8, { roughness: 0.4, clearcoat: 0.4 }),
   eye: gummy(0x1a1a1a, { roughness: 0.1, clearcoat: 1 }),
+  // la volière : fer forgé blanc, toit et pied vert-de-gris, perchoirs de bois clair, graines, oiseaux (couleurs de sommets)
+  cage: gummy(0xe6e4d6, { roughness: 0.4, clearcoat: 0.6 }),
+  verdi: gummy(0x6fa596, { roughness: 0.5, clearcoat: 0.45 }),
+  verdiDark: gummy(0x4a7f72, { roughness: 0.55, clearcoat: 0.35 }),
+  perch: gummy(0xb08a5a, { roughness: 0.7, clearcoat: 0.1 }),
+  seed: gummy(0xe2b84a, { roughness: 0.6, clearcoat: 0.2 }),
+  litter: gummy(0xe8dcc0, { roughness: 0.95, clearcoat: 0 }),
+  bowlIn: gummy(0xf4ecd8, { roughness: 0.5, clearcoat: 0.3, side: BackSide }),
+  bird: skin({ roughness: 0.5, clearcoat: 0.45 }),
   // la lanterne
   lanternGlass: gummy(0xfff2cf, { roughness: 0.2, clearcoat: 0.8, emissive: 0xffc36a, emissiveIntensity: 0.1 }),
 }

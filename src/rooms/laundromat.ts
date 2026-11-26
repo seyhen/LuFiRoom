@@ -6,6 +6,7 @@ import { WEATHER_LOOPS } from './weather'
 // Une laverie automatique de quartier, à 2 h du matin, sous la pluie. Sons à elle : lave-linge, sèche-linge (enregistrés), rinçage
 // (le clapotis de l'eau dans le tambour) et gouttière (l'eau de pluie dans le tuyau), ces deux-là synthétisés pour l'instant : leurs
 // enregistrements se déclareront dans `loops` (docs/ASSETS.md), sources et licences dans public/audio/CREDITS.md.
+// `wetroad` (les voitures de la rue mouillée, la petite voiture jaune du trottoir de droite) est un son synthétisé provisoire, sans enregistrement.
 
 export const laundromat: Room = {
   id: 'laundromat',
@@ -14,7 +15,7 @@ export const laundromat: Room = {
     'Une laverie automatique de quartier à deux heures du matin, en 3D isométrique : une rangée de lave-linge à hublot où tourne ' +
     'du linge de couleur, une colonne de sèche-linge, un radiocassette posé sur une machine, une grande table pour plier le linge, ' +
     'un distributeur de lessive et de monnaie, un banc de plastique où un client s’est assoupi, un chat endormi dans un panier de ' +
-    'linge chaud, le comptoir du pressing et sa lampe, et par la vitrine, la rue sous la pluie.',
+    'linge chaud, le comptoir du pressing et sa lampe, et dehors, la rue sous la pluie où une petite voiture jaune attend, phares allumés, pendant que d’autres passent.',
   ui: {
     accent: ['#2a63b8', '#8fdcff'],
     ink: ['#1b3040', '#e8f6ff'],
@@ -42,9 +43,9 @@ export const laundromat: Room = {
   stations: ['veillee', 'minuit', 'pluie-fine', 'nuit-douce'],
   playlist: PLAYLIST,
   presets: {
-    work: { sounds: [['radio', 0.5], ['tumble', 0.35], ['rain', 0.35]] },
-    read: { sounds: [['wash', 0.4], ['gutter', 0.25], ['rain', 0.4], ['radio', 0.25]] },
-    sleep: { sounds: [['rinse', 0.45], ['gutter', 0.2], ['rain', 0.4]], night: true },
+    work: { sounds: [['radio', 0.5], ['tumble', 0.35], ['rain', 0.35], ['wetroad', 0.3]] },
+    read: { sounds: [['wash', 0.4], ['gutter', 0.25], ['rain', 0.4], ['radio', 0.25], ['wetroad', 0.3]] },
+    sleep: { sounds: [['rinse', 0.45], ['gutter', 0.2], ['rain', 0.4], ['wetroad', 0.3]], night: true },
   },
   objects: [
     { id: 'radio', target: 'radio', label: 'Radiocassette · lofi', anchor: [-2.56, 1.13, 1.22] },
@@ -54,6 +55,8 @@ export const laundromat: Room = {
     { id: 'gutter', target: 'gutter', label: 'Gouttière · l’eau du tuyau', anchor: [-1.0, 1.9, -2.9] },
     // hors de la laverie : le piano de la fenêtre éclairée, de l'autre côté de la rue
     { id: 'pianowindow', target: 'windowpiano', label: 'Fenêtre d’en face · le piano', anchor: [-3.2, 1.55, -10.2] },
+    // la petite voiture jaune garée le long du trottoir de la rue de droite, phares allumés quand le son joue (dehors de la laverie)
+    { id: 'wetroad', target: 'wetroad', label: 'Rue · les voitures sous la pluie', anchor: [7.05, 0.3, 1.65] },
     { id: 'lamp', target: 'night', label: 'Lampe du comptoir · jour / nuit', anchor: [2.5, 1.25, 1.55] },
   ],
   sounds: [
@@ -63,6 +66,7 @@ export const laundromat: Room = {
     { id: 'rinse', name: 'Rinçage', chip: 'var(--c-rinse)', volume: 0.5, sub: () => 'le clapotis dans le tambour' },
     { id: 'gutter', name: 'Gouttière', chip: 'var(--c-gutter)', volume: 0.5, sub: () => 'l’eau de pluie dans le tuyau' },
     { id: 'windowpiano', name: 'Piano de la fenêtre', chip: 'var(--c-windowpiano)', volume: 0.4, sub: () => 'un air lent dans la nuit' },
+    { id: 'wetroad', name: 'Voitures sous la pluie', chip: 'var(--c-wetroad)', volume: 0.45, sub: () => 'le chuintement des pneus sur l’asphalte' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'contre la vitrine' },
     { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
   ],

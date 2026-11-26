@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { AdditiveBlending, MeshBasicMaterial, type Group, type Mesh, type Sprite } from 'three'
 import { TAU, rand, smooth } from '../../math'
 import { mood, reduceMotion } from '../anim'
+import { isActive, useStore } from '../../state/store'
 import { dn, mix, paintFlakes, paintWhiteout, rgb, rr, seeded, skyWx, snowFill, snowLine, usePainted, weathered, type RGB, type Wx } from '../paint'
 import { Part, SPH, cyl, noRay, rbox, worldUV } from '../parts'
 import { LIVE } from '../Static'
@@ -274,13 +275,15 @@ function PharmacyCross() {
 }
 
 /**
- * Une petite voiture qui passe de loin en loin dans la rue mouillée (une à deux minutes), phares allumés, de la gauche vers la
+ * Une petite voiture qui passe de loin en loin dans la rue mouillée (une à deux minutes, plus souvent quand `wetroad` joue), phares allumés, de la gauche vers la
  * droite : elle entre et sort derrière le mur (là où personne ne la voit apparaître). Rien à dessiner entre deux passages.
  */
 function PassingCar() {
   const g = useRef<Group>(null!), st = useRef({ t: -1 })
   const DUR = 4.2, X0 = -3.9, X1 = 1.72, Z = -4.3
-  useEvery(55, 110, () => (st.current.t = 0))
+  // une à deux minutes sans le son ; toutes les 16 à 34 s quand les voitures de la rue de droite (son `wetroad`) roulent
+  useEvery(55, 110, () => (st.current.t = 0), () => !isActive(useStore.getState(), 'wetroad'))
+  useEvery(16, 34, () => (st.current.t = 0), () => isActive(useStore.getState(), 'wetroad'))
   useFrame((_, delta) => {
     const s = st.current
     g.current.visible = s.t >= 0

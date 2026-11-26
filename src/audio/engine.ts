@@ -64,12 +64,14 @@ import husky from './channels/husky'
 import brook from './channels/brook'
 import cicadas from './channels/cicadas'
 import frogs from './channels/frogs'
+import aviary from './channels/aviary'
 import musicbox from './channels/musicbox'
 import rainbarrel from './channels/rainbarrel'
 import wash from './channels/wash'
 import tumble from './channels/tumble'
 import rinse from './channels/rinse'
 import gutter from './channels/gutter'
+import wetroad from './channels/wetroad'
 import noise from './channels/noise'
 import guitar from './channels/guitar'
 import jellies from './channels/jellies'
@@ -161,12 +163,14 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   brook: { build: brook, base: 1.05 },
   cicadas: { build: cicadas, base: 3.0 },
   frogs: { build: frogs, base: 1.8 },
+  aviary: { build: aviary, base: 2.0 }, // provisoire : synthèse, chants espacés de cinq oiseaux tropicaux
   musicbox: { build: musicbox, base: 0.9 },
   rainbarrel: { build: rainbarrel, base: 1.1 },
   wash: { build: wash, base: 1.0 },
   tumble: { build: tumble, base: 1.0 },
   rinse: { build: rinse, base: 1.05 },
   gutter: { build: gutter, base: 1.15 },
+  wetroad: { build: wetroad, base: 1.8 }, // provisoire : synthèse, chuintement de pneus sur l'asphalte mouillé, passages lents (-27,5 LUFS au curseur 0,45)
   guitar: { build: guitar, base: 1 },
   jellies: { build: jellies, base: 1.1 },
   flute: { build: flute, base: 3.2 },

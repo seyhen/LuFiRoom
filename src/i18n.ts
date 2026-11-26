@@ -180,6 +180,9 @@ const EN: Record<string, string> = {
   Phonographe: 'Phonograph',
   'Rouleau suivant': 'Next cylinder',
   'Bassin · les grenouilles': 'Pond · the frogs',
+  'Volière · les oiseaux de la forêt': 'Aviary · the rainforest birds',
+  Volière: 'Aviary',
+  'les oiseaux de la forêt': 'the rainforest birds',
   Grenouilles: 'Frogs',
   'le chœur du bassin': 'the pond chorus',
   'Boîte à musique · la berceuse': 'Music box · the lullaby',
@@ -264,6 +267,9 @@ const EN: Record<string, string> = {
   'Gouttière · l’eau du tuyau': 'Gutter · the water in the pipe',
   Rinçage: 'Rinse',
   Gouttière: 'Gutter',
+  'Rue · les voitures sous la pluie': 'Street · the cars in the rain',
+  'Voitures sous la pluie': 'Cars in the rain',
+  'le chuintement des pneus sur l’asphalte': 'tyres hissing on the wet asphalt',
   'le clapotis dans le tambour': 'water sloshing in the drum',
   'l’eau de pluie dans le tuyau': 'rainwater running down the pipe',
   'Citronnade · les glaçons': 'Lemonade · the ice cubes',
@@ -282,8 +288,8 @@ const EN: Record<string, string> = {
   'dans les feuilles': 'in the leaves',
   // la laverie de nuit
   'Laverie de nuit': 'Night laundromat',
-  'Une laverie automatique de quartier à deux heures du matin, en 3D isométrique : une rangée de lave-linge à hublot où tourne du linge de couleur, une colonne de sèche-linge, un radiocassette posé sur une machine, une grande table pour plier le linge, un distributeur de lessive et de monnaie, un banc de plastique où un client s’est assoupi, un chat endormi dans un panier de linge chaud, le comptoir du pressing et sa lampe, et par la vitrine, la rue sous la pluie.':
-    'A neighbourhood laundromat at two in the morning, in isometric 3D: a row of front-loading washers with colourful laundry tumbling behind the glass, a stack of dryers, a cassette radio on top of a machine, a big folding table, a soap and change dispenser, a plastic bench where a customer has dozed off, a cat asleep in a basket of warm laundry, the dry-cleaning counter and its lamp, and through the shop window, the street in the rain.',
+  'Une laverie automatique de quartier à deux heures du matin, en 3D isométrique : une rangée de lave-linge à hublot où tourne du linge de couleur, une colonne de sèche-linge, un radiocassette posé sur une machine, une grande table pour plier le linge, un distributeur de lessive et de monnaie, un banc de plastique où un client s’est assoupi, un chat endormi dans un panier de linge chaud, le comptoir du pressing et sa lampe, et dehors, la rue sous la pluie où une petite voiture jaune attend, phares allumés, pendant que d’autres passent.':
+    'A neighbourhood laundromat at two in the morning, in isometric 3D: a row of front-loading washers with colourful laundry tumbling behind the glass, a stack of dryers, a cassette radio on top of a machine, a big folding table, a soap and change dispenser, a plastic bench where a customer has dozed off, a cat asleep in a basket of warm laundry, the dry-cleaning counter and its lamp, and outside, the street in the rain where a small yellow car waits with its headlights on while others drive by.',
   'Radiocassette · lofi': 'Cassette radio · lofi',
   'Lave-linge · le tambour': 'Washer · the drum',
   'Sèche-linge · le linge chaud': 'Dryer · the warm laundry',

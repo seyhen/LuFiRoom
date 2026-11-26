@@ -7,6 +7,7 @@ import { Pond } from './Pond'
 import { MusicBox } from './MusicBox'
 import { RainBarrel } from './RainBarrel'
 import { Lantern } from './Lantern'
+import { Aviary } from './Aviary'
 import { FernStand, HangingBasket, LemonTree, Monstera, Palm } from './Plants'
 import { FallenLeaves, Odds, PlantStand, PottingBench, Rug, WickerChair } from './Props'
 import { G } from './materials'
@@ -67,6 +68,7 @@ export function GreenhouseScene() {
       <Phonograph position={[-2.0, 0.72, 1.9]} ry={0.3} />
       <Pond position={[1.3, 0, -1.3]} />
       <MusicBox position={[1.9, 0, 1.5]} />
+      <Aviary position={[2.5, 0, 0.45]} />
       <RainBarrel position={[-2.35, 0, -2.35]} />
       <Lantern position={[0.2, 0, -0.2]} />
       <Motes colors={[0xfff4d0, 0xbfe8c8]} opacity={[0.35, 0.55]} />
