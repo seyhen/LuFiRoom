@@ -88,12 +88,14 @@ Budget de dessin par pièce, mesuré le 2026-11-16 : appels de dessin par image 
 | Igloo | 328 | 340 |
 | Cabane perchée | 269 | 280 |
 | Laverie de nuit | 356 | 365 |
-| Serre | 190 | 200 |
+| Serre | 240 | 250 |
 | Salle de bain | 199 | 230 |
 | Avion de nuit | 251 | 260 |
 | Oasis du désert | 246 | 250 |
 
-Au-dessus de 300 (à ramener sous 300 quand on retouche la pièce : espacer les `Steam`, fusionner dans des `<Static>` imbriqués) : cabane, café, toit-terrasse, phare, sous-marin, marché de nuit, igloo, laverie de nuit. Le marché de nuit (369) est le plus chargé, la serre (190) la plus légère.
+La volière de la serre (`greenhouse/Aviary.tsx`, objet `aviary`, son `aviary`) coûte **+32 appels** (240 contre 208 sans elle, mesurés le 2026-11-26, nuit, 1440 × 900) et +50 000 triangles : douze matériaux fusionnés par `<Static>` (pied, cage, dôme, perchoirs, gamelles, lierre), un `<Static>` dans la porte qui oscille, et huit tracés pour les quatre oiseaux (`blob` : corps + tête qui penche, yeux fusionnés dans la tête). Un oiseau se pose toujours le bec vers l'extérieur d'un perchoir (queue vers le milieu), le bec vers la gamelle au sol : le sauter à l'envers lui fait traverser un barreau ; on saute de place en place sans jamais décoller (arc de 3 à 10 cm). Son ancre est sur le plateau, à droite du centre : plus haut, son bouton passait à 17 px de celui du bassin sur un téléphone (ancre du bassin reculée aussi).
+
+Au-dessus de 300 (à ramener sous 300 quand on retouche la pièce : espacer les `Steam`, fusionner dans des `<Static>` imbriqués) : cabane, café, toit-terrasse, phare, sous-marin, marché de nuit, igloo, laverie de nuit. Le marché de nuit (369) est le plus chargé, la salle de bain (199) la plus légère.
 Mesures du 2026-11-18 (même méthode, mêmes conditions) : le café passe de 331 à 338 avec l'horloge à balancier (+7, le mouvement fusionné en un seul maillage), le marché de 400 à 399 avec l'aquarium (+16) parce que les poissons rouges du bassin sont passés de 20 tracés à 2.
 Un sprite compte aussi : chaque particule de vapeur vivante est un appel de dessin, donc espace les émetteurs (`every` de `Steam` à 1 s ou plus pour un détail, 0,5 s pour la vedette). Un personnage ou un objet qui bouge se découpe : imbrique un `<Static>` dans son groupe `LIVE` pour fusionner ce qui ne bouge pas (voir `market/Chef.tsx`). Surveille aussi les triangles (300 à 370 milliers par image pour la plupart des pièces) : une forme de la nature coûte de 1 000 à 1 600 triangles, deux fois avec l'ombre. Pour fusionner l'intérieur d'un objet interactif, place un autre `<Static>` dans son groupe, comme la cheminée du café.
 Garde aussi au plus trois lumières ponctuelles par pièce : les bougies et les petites lampes se contentent d'un halo (sprite), sans lumière. Garde-en une pour la source chaude du soir (le lampadaire de l'atelier, la bougie de la plage) : c'est elle qui fait le cocon la nuit, avec un sol d'hémisphère tiède plutôt que bleu.

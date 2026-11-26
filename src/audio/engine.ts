@@ -163,7 +163,7 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   brook: { build: brook, base: 1.05 },
   cicadas: { build: cicadas, base: 3.0 },
   frogs: { build: frogs, base: 1.8 },
-  aviary: { build: aviary, base: 2.0 }, // provisoire : synthèse, chants espacés de cinq oiseaux tropicaux
+  aviary: { build: aviary, base: 5.0 }, // provisoire : synthèse, chants espacés de cinq oiseaux tropicaux
   musicbox: { build: musicbox, base: 0.9 },
   rainbarrel: { build: rainbarrel, base: 1.1 },
   wash: { build: wash, base: 1.0 },

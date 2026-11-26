@@ -27,7 +27,7 @@ export default function aviary(kit: Kit, out: GainNode, { loops }: Room): Channe
     bus.connect(biq('highpass', 500, 0.5)).connect(conv)
     conv.connect(biq('lowpass', 2600, 0.5)).connect(gain(0.45)).connect(out)
     // l'air feuillu : un souffle grave, et une houle de feuilles qui monte et redescend très lentement
-    loop(noise.pink, rand(0, 3)).connect(biq('lowpass', 620, 0.4)).connect(gain(0.1)).connect(out)
+    loop(noise.pink, rand(0, 3)).connect(biq('lowpass', 620, 0.4)).connect(gain(0.05)).connect(out)
     const leaves = gain(0.012), swell = osc('sine', 0.06), swellD = gain(0.008)
     loop(noise.white, rand(0, 3)).connect(biq('bandpass', 2600, 0.5)).connect(leaves).connect(out)
     swell.connect(swellD).connect(leaves.gain)
@@ -42,7 +42,7 @@ export default function aviary(kit: Kit, out: GainNode, { loops }: Room): Channe
       osc1.frequency.exponentialRampToValueAtTime(f1, t + len * 0.45)
       osc1.frequency.exponentialRampToValueAtTime(f2, t + len)
       g.gain.setValueAtTime(0.0001, t)
-      g.gain.exponentialRampToValueAtTime(a, t + len * peak)
+      g.gain.exponentialRampToValueAtTime(a * 4.6, t + len * peak)
       g.gain.exponentialRampToValueAtTime(0.0001, t + len)
       osc1.connect(g)
       if (vib > 0) {

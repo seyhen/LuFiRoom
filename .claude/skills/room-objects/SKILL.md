@@ -147,6 +147,7 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite (
 | Serre | boîte à musique | `musicbox` |
 | Serre | tonneau d'eau de pluie | `rainbarrel` |
 | Serre | fontaine du parc (dehors de la serre), le jet qui retombe dans le bassin | `fountain` |
+| Serre | volière de fer blanc à dôme et toit de pagode vert-de-gris, sur un pied tourné, avec quatre oiseaux de forêt tropicale d'une seule peau (perruche, deux tangaras, colibri) qui sautillent et penchent la tête au rythme des chants : des phrases irrégulières de cinq « oiseaux » aux timbres distincts (sifflements glissés, trille, notes liquides, roucoulement, pépiements) dans l'air feuillu d'une serre humide (son synthétisé, provisoire) ; autre chose que `outside` (oiseaux de base) et `frogs` | `aviary` |
 | Café | joueur de handpan sur le trottoir de devant, son étui ouvert (dehors du café) | `handpan` |
 | Café | horloge à balancier au mur du fond (régulateur de noyer et de laiton, cadran à l'heure réelle) : un tic-tac lent et feutré, une seconde par battement, tic et tac de timbres différents (son synthétisé, faute d'enregistrement) | `clock` |
 | Marché de nuit | yagura de la fête bon-odori au bout de la rue, taiko et lanternes (tambour et flûte, au loin) | `bonodori` |

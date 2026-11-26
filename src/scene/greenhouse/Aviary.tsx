@@ -23,19 +23,20 @@ const DOME = 0.42 // la hauteur du dôme de nervures au-dessus des barreaux
 const LITTER = FLOOR + 0.012 // le dessus du papier du fond
 const PA = 0.83, PB = 1.18, PERCH = 0.016 // la hauteur des deux perchoirs (leur axe) et leur rayon
 const BARS = Array.from({ length: 8 }, (_, i) => ((22.5 + i * 45) * Math.PI) / 180)
-const BIRD_S = 1.45 // les oiseaux sont un peu plus grands que nature, pour se lire de loin
+const BIRD_S = 1.3 // les oiseaux sont un peu plus grands que nature, pour se lire de loin
 
-// Les six places où un oiseau se pose : [x, y, z] (ses pieds) et l'axe où il fait face (le long du perchoir).
-type Slot = { p: V3; axis: 'x' | 'z'; reach: number[] }
+// Les six places où un oiseau se pose : [x, y, z] (ses pieds), l'angle où il fait face une fois posé (toujours le bec vers l'extérieur
+// d'un perchoir, la queue vers le milieu, jamais à travers un barreau ; le bec vers la gamelle au sol) et les places où il peut sauter.
+type Slot = { p: V3; face: number; reach: number[] }
 const SLOTS: Slot[] = [
-  { p: [-0.19, PA + PERCH, 0.176], axis: 'x', reach: [1, 3, 5] }, // 0 : perchoir bas, à gauche
-  { p: [0.19, PA + PERCH, 0.176], axis: 'x', reach: [0, 3, 4] }, // 1 : perchoir bas, à droite
-  { p: [-0.176, PB + PERCH, -0.2], axis: 'z', reach: [3, 4, 5] }, // 2 : perchoir haut, au fond
-  { p: [-0.176, PB + PERCH, 0.2], axis: 'z', reach: [0, 1, 2] }, // 3 : perchoir haut, devant
-  { p: [0.3, LITTER + 0.06, -0.12], axis: 'x', reach: [1, 2, 5] }, // 4 : le bord de la mangeoire
-  { p: [-0.23, LITTER + 0.064, 0.0], axis: 'x', reach: [0, 2, 4] }, // 5 : le bord de la coupelle d'eau
+  { p: [-0.235, PA + PERCH, 0.176], face: Math.PI, reach: [1, 3, 5] }, // 0 : perchoir bas, à gauche
+  { p: [0.235, PA + PERCH, 0.176], face: 0, reach: [0, 3, 4] }, // 1 : perchoir bas, à droite
+  { p: [-0.176, PB + PERCH, -0.23], face: Math.PI / 2, reach: [3, 4, 5] }, // 2 : perchoir haut, au fond
+  { p: [-0.176, PB + PERCH, 0.23], face: -Math.PI / 2, reach: [0, 1, 2] }, // 3 : perchoir haut, devant
+  { p: [0.105, LITTER + 0.062, -0.12], face: 0, reach: [1, 2, 5] }, // 4 : le bord de la mangeoire, le bec vers les graines
+  { p: [-0.02, LITTER + 0.066, 0.06], face: Math.PI, reach: [0, 2, 4] }, // 5 : le bord de la coupelle d'eau, le bec vers l'eau
 ]
-const FEEDER: V3 = [0.2, 0, -0.12], BATH: V3 = [-0.12, 0, 0.0]
+const FEEDER: V3 = [0.2, 0, -0.12], BATH: V3 = [-0.12, 0, 0.06]
 
 interface Species {
   body: number; belly: number; head: number; wing: number; tail: number; beak: number; leg: number
@@ -115,7 +116,6 @@ interface Bird {
 }
 
 const wrap = (a: number) => a - TAU * Math.round(a / TAU)
-const faceOf = (dx: number, dz: number) => Math.atan2(-dz, dx)
 
 /** Une feuille de lierre : ovale, un peu penchée. */
 function Ivy({ at, up = 0 }: { at: V3; up?: number }) {
@@ -132,9 +132,9 @@ function Climber({ angle }: { angle: number }) {
   const ys = [0.2, 0.32, 0.44, 0.56, 0.68, 0.8]
   return (
     <group>
-      <Part geo={cyl(0.007, 0.009, 0.7, 5)} m={G.leafDark} p={[c * r, BAR0 + 0.4, s * r]} castShadow={false} />
+      <Part geo={cyl(0.007, 0.009, 0.7, 5)} m={G.leaf} p={[c * r, BAR0 + 0.4, s * r]} castShadow={false} />
       {ys.map((y, i) => {
-        const side = i % 2 ? 1 : -1, ry = faceOf(c, s) + Math.PI / 2 + side * (0.9 + (i % 3) * 0.2)
+        const side = i % 2 ? 1 : -1, ry = Math.atan2(-s, c) + Math.PI / 2 + side * (0.9 + (i % 3) * 0.2)
         return <Ivy key={i} at={[c * (r + 0.005), BAR0 + y - 0.1, s * (r + 0.005)]} up={ry} />
       })}
     </group>
@@ -167,11 +167,10 @@ export function Aviary({ position }: { position: V3 }) {
     st.current = {
       birds: SPECIES.map((_, i): Bird => {
         const p = SLOTS[start[i]].p
-        return { slot: start[i], from: p, to: p, t: 1, dur: 0.4, arc: 0.08, next: rand(0.5, 2.5), ry: SLOTS[start[i]].axis === 'x' ? (i % 2 ? Math.PI : 0) : (i % 2 ? Math.PI / 2 : -Math.PI / 2), ryT: 0, tilt: 0, tiltT: 0, look: 0, lookT: 0, wait: rand(0.5, 2), pitch: 0, song: 0, land: 0, peck: rand(0, 6) }
+        return { slot: start[i], from: p, to: p, t: 1, dur: 0.4, arc: 0.08, next: rand(0.5, 2.5), ry: SLOTS[start[i]].face, ryT: SLOTS[start[i]].face, tilt: 0, tiltT: 0, look: 0, lookT: 0, wait: rand(0.5, 2), pitch: 0, song: 0, land: 0, peck: rand(0, 6) }
       }),
       seen: useStore.getState().pulses.aviary ?? 0, sing: 0, ph: 0, amp: 0, fPh: 0, fState: 0, fT: 0, fNext: rand(5, 9), fPos: [0, 0, 0],
     }
-    st.current.birds.forEach((b) => { b.ryT = b.ry })
   }
 
   useFrame((_, delta) => {
@@ -205,7 +204,7 @@ export function Aviary({ position }: { position: V3 }) {
             b.dur = 0.3 + d * 0.7
             b.arc = 0.03 + Math.min(0.07, d * 0.18)
             b.t = 0
-            b.ryT = faceOf(b.to[0] - b.from[0], b.to[2] - b.from[2])
+            b.ryT = SLOTS[to].face // il se tourne déjà comme il se posera : la queue ne passe jamais dans un barreau
           }
         }
       }
@@ -215,10 +214,8 @@ export function Aviary({ position }: { position: V3 }) {
         k = b.t * b.t * (3 - 2 * b.t)
         if (b.t >= 1) {
           b.land = 1
-          // sur le perchoir, il se tourne le long de la barre, du côté où il allait
-          const sl = SLOTS[b.slot]
-          const dx = b.to[0] - b.from[0], dz = b.to[2] - b.from[2]
-          b.ryT = sl.axis === 'x' ? (dx >= 0 ? 0 : Math.PI) : faceOf(0, dz >= 0 ? 1 : -1)
+          // posé, il se tourne comme la place l'exige
+          b.ryT = SLOTS[b.slot].face
         }
       }
       const grp = birdRefs.current[i], head = headRefs.current[i]
@@ -302,7 +299,7 @@ export function Aviary({ position }: { position: V3 }) {
       <Static>
         {/* le pied : socle de pierre, bague, bulbe tourné, fût, collerette, plateau de fer */}
         <Part geo={cyl(0.6, 0.64, 0.07, 32)} m={G.stone} p={[0, 0.035, 0]} />
-        <Part m={G.verdiDark} p={[0, 0.082, 0]} rotation-x={Math.PI / 2} castShadow={false}>
+        <Part m={G.verdi} p={[0, 0.082, 0]} rotation-x={Math.PI / 2}>
           <torusGeometry args={[0.56, 0.024, 8, 32]} />
         </Part>
         <Part geo={SPH} m={G.verdi} scale={[0.15, 0.075, 0.15]} p={[0, 0.17, 0]} />
@@ -311,18 +308,15 @@ export function Aviary({ position }: { position: V3 }) {
           <torusGeometry args={[0.07, 0.014, 8, 20]} />
         </Part>
         <Part geo={SPH} m={G.verdi} scale={[0.12, 0.045, 0.12]} p={[0, 0.42, 0]} />
-        <Part geo={cyl(0.62, 0.6, 0.06, 32)} m={G.verdiDark} p={[0, FLOOR - 0.03, 0]} />
+        <Part geo={cyl(0.62, 0.6, 0.06, 32)} m={G.verdi} p={[0, FLOOR - 0.03, 0]} />
         <Part m={G.brass} p={[0, FLOOR - 0.03, 0]} rotation-x={Math.PI / 2} castShadow={false}>
           <torusGeometry args={[0.617, 0.011, 6, 32]} />
         </Part>
-        {/* la mousse au pied, côté pot */}
-        <Part geo={SPH} m={G.moss} scale={[0.09, 0.03, 0.06]} p={[0.25, 0.07, -0.53]} rotation-y={0.4} castShadow={false} />
-        <Part geo={SPH} m={G.moss} scale={[0.06, 0.025, 0.05]} p={[0.34, 0.07, -0.5]} castShadow={false} />
 
         {/* le fond de la cage : un papier clair, des plumes tombées, un petit tas de graines */}
-        <Part geo={cyl(R, R, 0.012, 28)} m={G.litter} p={[0, FLOOR + 0.006, 0]} castShadow={false} />
+        <Part geo={cyl(R, R, 0.012, 28)} m={G.cream} p={[0, FLOOR + 0.006, 0]} castShadow={false} />
         <Part geo={SPH} m={G.seed} scale={[0.05, 0.008, 0.012]} p={[0.22, LITTER + 0.004, 0.2]} rotation-y={0.6} castShadow={false} />
-        <Part geo={SPH} m={G.cage} scale={[0.04, 0.007, 0.011]} p={[-0.24, LITTER + 0.004, -0.22]} rotation-y={2.2} castShadow={false} />
+        <Part geo={SPH} m={G.cage} scale={[0.04, 0.007, 0.011]} p={[-0.24, LITTER + 0.004, -0.22]} rotation-y={2.2} />
         {[[0.06, 0.14], [0.12, 0.17], [0.03, 0.23]].map(([x, z], i) => (
           <Part key={i} geo={SPH} m={G.seed} scale={[0.02, 0.008, 0.012]} p={[x, LITTER + 0.004, z]} rotation-y={i * 1.7} castShadow={false} />
         ))}
@@ -334,34 +328,34 @@ export function Aviary({ position }: { position: V3 }) {
         {BARS.map((a, i) => (
           <Part key={i} geo={cyl(0.02, 0.02, H, 8)} m={G.cage} p={[Math.cos(a) * R, BAR0 + H / 2, Math.sin(a) * R]} />
         ))}
-        <Part m={G.cage} p={[0, BAR0 + 0.4, 0]} rotation-x={Math.PI / 2} castShadow={false}>
+        <Part m={G.cage} p={[0, BAR0 + 0.4, 0]} rotation-x={Math.PI / 2}>
           <torusGeometry args={[R, 0.017, 6, 40]} />
         </Part>
         <Part m={G.cage} p={[0, Y0, 0]} rotation-x={Math.PI / 2}>
           <torusGeometry args={[R, 0.024, 8, 40]} />
         </Part>
         {/* les perchoirs : du bois clair, d'un barreau à l'autre, bouts de laiton */}
-        <Part geo={cyl(PERCH, PERCH, 0.86, 8)} m={G.perch} p={[0, PA, 0.176]} rotation-z={Math.PI / 2} />
-        <Part geo={cyl(PERCH, PERCH, 0.86, 8)} m={G.perch} p={[-0.176, PB, 0]} rotation-x={Math.PI / 2} />
+        <Part geo={cyl(PERCH, PERCH, 0.86, 8)} m={G.perch} p={[0, PA, 0.176]} rotation-z={Math.PI / 2} castShadow={false} />
+        <Part geo={cyl(PERCH, PERCH, 0.86, 8)} m={G.perch} p={[-0.176, PB, 0]} rotation-x={Math.PI / 2} castShadow={false} />
         {/* les barreaux qui recevront les perchoirs : un anneau de laiton à chaque bout */}
         {[[-0.4, PA, 0.176, 'x'], [0.4, PA, 0.176, 'x'], [-0.176, PB, -0.4, 'z'], [-0.176, PB, 0.4, 'z']].map(([x, y, z, ax], i) => (
           <Part key={i} geo={cyl(0.024, 0.024, 0.02, 10)} m={G.brass} p={[x as number, y as number, z as number]} rotation-z={ax === 'x' ? Math.PI / 2 : 0} rotation-x={ax === 'z' ? Math.PI / 2 : 0} castShadow={false} />
         ))}
         {/* la mangeoire et la coupelle d'eau sur le papier */}
         <Vessel p={[FEEDER[0], LITTER, FEEDER[2]]} rt={0.09} rb={0.07} h={0.055} m={G.verdi} inner={G.bowlIn} rim={G.brass} t={0.008} />
-        <Part geo={SPH} m={G.seed} scale={[0.068, 0.034, 0.068]} p={[FEEDER[0], LITTER + 0.034, FEEDER[2]]} />
+        <Part geo={SPH} m={G.seed} scale={[0.068, 0.034, 0.068]} p={[FEEDER[0], LITTER + 0.034, FEEDER[2]]} castShadow={false} />
         <Vessel p={[BATH[0], LITTER, BATH[2]]} rt={0.1} rb={0.08} h={0.06} m={G.cream} inner={G.bowlIn} rim={G.cream} t={0.008} />
         <Part geo={cyl(innerR(0.1, 0.08, 0.06, 0.044, 0.008), innerR(0.1, 0.08, 0.06, 0.044, 0.008), 0.008, 22)} m={G.barrelWater} p={[BATH[0], LITTER + 0.044, BATH[2]]} castShadow={false} />
 
         {/* la clochette de laiton, pendue sous le toit au bout d'une cordelette */}
-        <Part geo={cyl(0.004, 0.004, 0.2, 5)} m={G.woodDark} p={[0.12, Y0 - 0.1, -0.02]} castShadow={false} />
-        <Part geo={SPH} m={G.brass} scale={[0.03, 0.034, 0.03]} p={[0.12, Y0 - 0.22, -0.02]} />
-        <Part geo={SPH} m={G.ironDark} scale={0.009} p={[0.12, Y0 - 0.255, -0.02]} castShadow={false} />
+        <Part geo={cyl(0.004, 0.004, 0.2, 5)} m={G.perch} p={[0.12, Y0 - 0.1, -0.02]} castShadow={false} />
+        <Part geo={SPH} m={G.brass} scale={[0.03, 0.034, 0.03]} p={[0.12, Y0 - 0.22, -0.02]} castShadow={false} />
+        <Part geo={SPH} m={G.brass} scale={0.009} p={[0.12, Y0 - 0.255, -0.02]} castShadow={false} />
 
         {/* le dôme : huit nervures qui se rejoignent au sommet, une couronne de laiton, une perle au bout de chaque barreau ; au sommet, un petit toit de pagode */}
         {BARS.map((a, i) => (
           <group key={i} position={[0, Y0, 0]} rotation-y={-a} scale={[1, DOME / R, 1]}>
-            <Part m={G.cage} castShadow={false}>
+            <Part m={G.cage}>
               <torusGeometry args={[R, 0.02, 6, 16, Math.PI / 2]} />
             </Part>
           </group>
@@ -372,17 +366,17 @@ export function Aviary({ position }: { position: V3 }) {
         {BARS.map((a, i) => (
           <Part key={i} geo={SPH} m={G.brass} scale={0.032} p={[Math.cos(a) * R, Y0 + 0.03, Math.sin(a) * R]} castShadow={false} />
         ))}
-        <Part geo={cyl(0.02, 0.17, 0.1, 24)} m={G.iron} p={[0, Y0 + DOME + 0.04, 0]} />
+        <Part geo={cyl(0.02, 0.17, 0.1, 24)} m={G.verdi} p={[0, Y0 + DOME + 0.04, 0]} />
         <Part geo={cyl(0.18, 0.18, 0.016, 24)} m={G.brass} p={[0, Y0 + DOME - 0.004, 0]} castShadow={false} />
-        <Part geo={cyl(0.012, 0.03, 0.07, 14)} m={G.iron} p={[0, Y0 + DOME + 0.115, 0]} castShadow={false} />
-        <Part geo={SPH} m={G.brass} scale={0.04} p={[0, Y0 + DOME + 0.17, 0]} />
+        <Part geo={cyl(0.012, 0.03, 0.07, 14)} m={G.verdi} p={[0, Y0 + DOME + 0.115, 0]} />
+        <Part geo={SPH} m={G.brass} scale={0.04} p={[0, Y0 + DOME + 0.17, 0]} castShadow={false} />
         <Part geo={cyl(0.004, 0.012, 0.1, 6)} m={G.brass} p={[0, Y0 + DOME + 0.24, 0]} castShadow={false} />
 
         {/* le pot de lierre au bord du plateau : terre, tiges qui retombent, une tige qui grimpe le long d'un barreau */}
         <group position={[ringAt(BARS[7], 0.555)[0], FLOOR, ringAt(BARS[7], 0.555)[2]]}>
-          <Part geo={cyl(0.06, 0.045, 0.075, 16)} m={G.terracotta} p={[0, 0.0375, 0]} />
+          <Part geo={cyl(0.06, 0.045, 0.075, 16)} m={G.terracotta} p={[0, 0.0375, 0]} castShadow={false} />
           <Part geo={cyl(0.066, 0.066, 0.016, 16)} m={G.terracotta} p={[0, 0.072, 0]} castShadow={false} />
-          <Part geo={cyl(0.052, 0.052, 0.006, 16)} m={G.soil} p={[0, 0.078, 0]} castShadow={false} />
+          <Part geo={cyl(0.052, 0.052, 0.006, 16)} m={G.terracotta} p={[0, 0.078, 0]} castShadow={false} />
           <Vines p={[0.03, 0.07, 0.03]} strands={[[0.03, 0.03, 0.42], [0.025, 0.0, 0.3]]} m={G.leaf} m2={G.leafDark} size={0.07} crown={4} seed={7} />
         </group>
         <Climber angle={BARS[7]} />
@@ -391,19 +385,23 @@ export function Aviary({ position }: { position: V3 }) {
       {/* la porte : un cadre de fer sur une charnière, entre deux barreaux, face à la caméra ; elle oscille un peu */}
       <group position={[Math.cos(BARS[0]) * R, BAR0, Math.sin(BARS[0]) * R]} rotation-y={-Math.PI * 0.75} userData={LIVE}>
         <group ref={door}>
+         <Static>
           <group position={[0, 0, -0.034]}>
-            <Part geo={rbox(0.022, 0.56, 0.018, 0.007)} m={G.cage} p={[0.038, 0.4, 0]} castShadow={false} />
-            <Part geo={rbox(0.022, 0.56, 0.018, 0.007)} m={G.cage} p={[0.314, 0.4, 0]} castShadow={false} />
-            <Part geo={rbox(0.3, 0.022, 0.018, 0.007)} m={G.cage} p={[0.176, 0.13, 0]} castShadow={false} />
-            <Part geo={rbox(0.3, 0.022, 0.018, 0.007)} m={G.cage} p={[0.176, 0.67, 0]} castShadow={false} />
-            <Part geo={cyl(0.012, 0.012, 0.54, 6)} m={G.cage} p={[0.176, 0.4, 0]} castShadow={false} />
+            <Part geo={rbox(0.022, 0.56, 0.018, 0.007)} m={G.cage} p={[0.038, 0.4, 0]} />
+            <Part geo={rbox(0.022, 0.56, 0.018, 0.007)} m={G.cage} p={[0.314, 0.4, 0]} />
+            <Part geo={rbox(0.3, 0.022, 0.018, 0.007)} m={G.cage} p={[0.176, 0.13, 0]} />
+            <Part geo={rbox(0.3, 0.022, 0.018, 0.007)} m={G.cage} p={[0.176, 0.67, 0]} />
+            <Part geo={cyl(0.012, 0.012, 0.54, 6)} m={G.cage} p={[0.176, 0.4, 0]} />
             {/* le loquet de laiton et les deux charnières */}
             <Part geo={rbox(0.03, 0.05, 0.03, 0.01)} m={G.brass} p={[0.314, 0.4, -0.012]} castShadow={false} />
             {[0.2, 0.6].map((y) => <Part key={y} geo={rbox(0.05, 0.02, 0.024, 0.008)} m={G.brass} p={[0.03, y, 0]} castShadow={false} />)}
           </group>
+         </Static>
         </group>
         {/* les colliers de la charnière autour du barreau */}
-        {[0.2, 0.6].map((y) => <Part key={y} geo={cyl(0.027, 0.027, 0.03, 10)} m={G.brass} p={[0, y, 0]} castShadow={false} />)}
+        <Static>
+          {[0.2, 0.6].map((y) => <Part key={y} geo={cyl(0.027, 0.027, 0.03, 10)} m={G.brass} p={[0, y, 0]} castShadow={false} />)}
+        </Static>
       </group>
 
       {/* les quatre oiseaux, d'une seule peau : corps, tête qui bouge */}
