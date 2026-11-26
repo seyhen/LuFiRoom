@@ -24,8 +24,8 @@ import { Sky } from './Sky'
 
 /** La mousse se dessine avec trois finesses de sphère, selon la taille du paquet : 903 sphères de 440 triangles faisaient 400 000 des 690 000 triangles de la pièce. */
 const SPH_M16 = new SphereGeometry(1, 16, 10)
-/** Les bulles de la mousse (moins de 0,5 de rayon, 40 px au plus, par milliers) : 10 x 7, 140 triangles. */
-const SPH_S = new SphereGeometry(1, 10, 7)
+/** Les bulles de la mousse (moins de 0,5 de rayon, 40 px au plus, par milliers) : 9 x 6, 108 triangles. */
+const SPH_S = new SphereGeometry(1, 9, 6)
 
 /** Où tombe la pluie : autour du banc (le ciel plus loin vient de WeatherSky). */
 const AREA: [number, number, number, number] = [-13, 14, -13, 13]

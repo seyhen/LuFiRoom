@@ -83,22 +83,24 @@ export function makeBank(): Bank {
       const a = ((i + r() * 0.6) / n) * Math.PI * 2, d = shore(a) + grow - 0.2 - r() * 0.5, R = rad * (0.75 + r() * 0.5)
       const x = CX + Math.cos(a) * d, z = CZ + Math.sin(a) * d
       const ring: Puff = { p: [x, y - R * 0.1 + r() * 0.2, z], r: R, c: bank(r) }
-      puffs.push({ ...ring, r: R * 0.8 })
+      puffs.push({ ...ring, r: R * 0.6 })
       rings.push(ring)
     }
   })
   // un socle dessous, qu'on ne voit pas mais qui bouche le ciel entre le socle de la pièce et le flanc : tout reste sous le carrelage
+  const under: Puff[] = []
   for (let i = 0; i < 14; i++) {
     const R = 1.5 + r() * 0.7
-    puffs.push({ p: [CX + (r() - 0.5) * 6, -0.9 - R - r() * 0.3, CZ + (r() - 0.5) * 6], r: R, c: bank(r) })
+    under.push({ p: [CX + (r() - 0.5) * 6, -0.9 - R - r() * 0.3, CZ + (r() - 0.5) * 6], r: R, c: bank(r) })
   }
+  puffs.push(...under.map((g) => ({ ...g, r: g.r * 0.8 })))
   // le dessus : une grille de gros paquets, posés sur le relief voulu
   const big: Puff[] = []
   for (let gx = -10; gx <= 10; gx += 1.15) for (let gz = -10; gz <= 10; gz += 1.15) {
     const x = gx + (r() - 0.5) * 0.7, z = gz + (r() - 0.5) * 0.7, a = Math.atan2(z - CZ, x - CX), rho = Math.hypot(x - CX, z - CZ)
     if (rho > shore(a) - 0.5 || slabGap(x, z) < -0.1) continue
     const R = 0.55 + r() * 0.3
-    put(big, x, surface(x, z) - R * (0.95 + r() * 0.3), z, R, bank(r))
+    put(big, x, surface(x, z) - R * (1.1 + r() * 0.3), z, R, bank(r))
   }
   puffs.push(...big)
   // la peau : la mousse est un amas serré de bulles presque de même taille qui se recouvrent (jamais quelques points épars sur une boule lisse :
@@ -106,13 +108,21 @@ export function makeBank(): Bank {
   const skin: Puff[] = []
   for (let gx = -9.6; gx <= 9.6; gx += 0.42) for (let gz = -9.6; gz <= 9.6; gz += 0.42) {
     const x = gx + (r() - 0.5) * 0.3, z = gz + (r() - 0.5) * 0.3, a = Math.atan2(z - CZ, x - CX), rho = Math.hypot(x - CX, z - CZ)
-    if (rho > shore(a) - 0.7 || slabGap(x, z) < -0.1) continue
+    if (rho > shore(a) - 0.2 || slabGap(x, z) < -0.1) continue
     const R = 0.24 + 0.12 * (noise(x * 1.7, z * 1.7) * 0.5 + 0.5) + r() * 0.06
     put(skin, x, surface(x, z) + 0.12 * noise(x * 1.1 + 9, z * 1.1) - R * 0.25, z, R, bank(r))
   }
   for (const g of rings) {
-    for (let i = 0; i < 18; i++) {
-      const az = Math.PI / 4 + (r() - 0.5) * Math.PI * 1.8, el = -0.25 + r() * 1.6, R = 0.26 + r() * 0.16, d = g.r * 0.96
+    for (let i = 0; i < 22; i++) {
+      const az = Math.PI / 4 + (r() - 0.5) * Math.PI * 1.8, el = -1.3 + r() * 2.7, R = 0.26 + r() * 0.16, d = g.r * 0.96
+      skin.push({ p: [g.p[0] + Math.cos(az) * Math.cos(el) * d, g.p[1] + Math.sin(el) * d, g.p[2] + Math.sin(az) * Math.cos(el) * d], r: R, c: bank(r) })
+    }
+  }
+  // les gros paquets du dessous se voient sous la pièce : ils ont leur peau de bulles eux aussi
+  for (const g of under) {
+    const n = Math.ceil(g.r * g.r * 11)
+    for (let i = 0; i < n; i++) {
+      const az = Math.PI / 4 + (r() - 0.5) * Math.PI * 1.9, el = -1.3 + r() * 2.6, R = 0.28 + r() * 0.16, d = g.r * 0.97
       skin.push({ p: [g.p[0] + Math.cos(az) * Math.cos(el) * d, g.p[1] + Math.sin(el) * d, g.p[2] + Math.sin(az) * Math.cos(el) * d], r: R, c: bank(r) })
     }
   }
