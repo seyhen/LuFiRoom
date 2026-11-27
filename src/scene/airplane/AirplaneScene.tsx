@@ -1,4 +1,5 @@
 import { Motes } from '../Floaters'
+import { Belongings } from './Belongings'
 import { Ocarina } from './Ocarina'
 import { PetCarrier } from './PetCarrier'
 import { Static } from '../Static'
@@ -54,6 +55,7 @@ export function AirplaneScene() {
           rangée 2 (au sol entre les rangées, le sac passait sous le dossier de la rangée 2 et son bouton à 42 px de celui de l'ocarina) */}
       <PetCarrier position={[r1 + 0.03, 0.512, SEAT_Z.E]} ry={Math.PI / 2 + 0.08} />
       <Ocarina position={[r2 + 0.03, 0.512, SEAT_Z.E]} ry={0.25} />
+      <Belongings />
       <ReadingLight />
       <CabinLights />
       <Motes colors={[0xf4f0ff, 0xb4c4ff]} opacity={[0.25, 0.4]} />

@@ -1,6 +1,7 @@
 import { airplane } from '../../../rooms/airplane'
 import { SkyFadeClock } from '../../outdoor'
 import { CloudSea } from './Clouds'
+import { Peaks } from './Peaks'
 import { Sky } from './Sky'
 import { Wing } from './Wing'
 
@@ -15,6 +16,7 @@ export function Surroundings() {
       <SkyFadeClock room={airplane} />
       <Sky />
       <CloudSea />
+      <Peaks />
       <Wing side={-1} />
       <Wing side={1} />
     </>

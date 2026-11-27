@@ -40,6 +40,8 @@ export const A = {
   bin: gummy(0xffffff, { map: bin, roughness: 0.55, clearcoat: 0.35 }),
   binPlain: gummy(0xe6e1d6, { roughness: 0.55, clearcoat: 0.35 }),
   binDark: gummy(0xa9a395, { roughness: 0.6, clearcoat: 0.2 }),
+  /** Le dedans d'un coffre ouvert : un gris chaud dans l'ombre. */
+  binIn: gummy(0x6e6a62, { roughness: 0.9, clearcoat: 0 }),
   psu: gummy(0xdedad0, { roughness: 0.5, clearcoat: 0.45 }),
   lens: gummy(0xfff4dc, { roughness: 0.2, clearcoat: 0.9, emissive: 0xffc878, emissiveIntensity: 0.08 }),
   nozzle: gummy(0x8f8a7c, { roughness: 0.35, clearcoat: 0.6 }),

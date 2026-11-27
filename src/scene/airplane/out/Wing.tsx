@@ -83,6 +83,10 @@ export function Wing({ side }: { side: -1 | 1 }) {
           <mesh geometry={s < 0 ? WING_L : WING_R} material={O.wing} position={[0, -0.27, 0]} receiveShadow />
           {/* le carénage du bord de fuite et les becs de bord d'attaque */}
           <Part geo={rbox(0.5, 0.22, 3.6, 0.1)} m={O.wingEdge} p={[-4.0, -0.24, s * 6.6]} rotation-y={-s * 0.3} castShadow={false} />
+          {/* les carénages des rails de volets : trois fuseaux sous le bord de fuite, qui dépassent derrière l'aile */}
+          {[4.7, 8.0, 10.6].map((zz) => (
+            <Part key={zz} geo={SPH} m={O.wingEdge} scale={[0.75, 0.12, 0.13]} p={[-3.2 - 0.28 * (zz - 3.35) - 0.25, -0.36, s * zz]} castShadow={false} />
+          ))}
           {/* l'ailette du bout d'aile : une plaque qui se redresse vers le haut */}
           <Part geo={rbox(0.9, 0.9, 0.08, 0.04)} m={O.wing} p={[-5.1, 0.4, s * 13.1]} rotation-z={0.05} castShadow={false} />
           {/* le pylône sous l'aile, qui porte la nacelle */}
