@@ -172,6 +172,10 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite (
 | Oasis du désert | auvent de toile rayée sur ses perches, le vent doux qui passe sur le sable des dunes (son synthétisé, provisoire) | `dunes` |
 | Oasis du désert | grand palmier dattier, les palmes qui bruissent dans la brise (son synthétisé, provisoire) | `palms` |
 | Oasis du désert | mare et sa petite source de pierre, le filet d'eau et le clapotis rond (son synthétisé, provisoire) | `oasis` |
+| Salle de bain | capybara dans un baquet de bois aux yuzus, au milieu de la pièce (idée du propriétaire) : l'eau chaude qui roule lentement contre les douelles à chaque respiration et un yuzu qui se cogne de loin en loin (son synthétisé, provisoire) | `capybara` |
+| Avion de nuit | ocarina-oiseau d'argile d'un passager, sur une écharpe pliée, siège du couloir : une valse lente en ré majeur, notes liées presque pures (son synthétisé, provisoire) ; autre chose que la flûte de la cabane perchée | `ocarina` |
+| Avion de nuit | chaton roux dans son sac de transport sur un siège : le ronron enregistré de la chambre, **repris à la demande du propriétaire** (seule reprise de son voulue avec la météo et le bruit) | `purr` |
+| Oasis du désert | dromadaire accroupi devant le camp (dehors), collier à pompons et cloches de cuivre qui se balancent : les clochettes d'une caravane au pas lent, trois notes rondes qui ne tombent jamais ensemble, sur un souffle de sable (son synthétisé, provisoire) | `caravan` |
 
 Mets ce tableau à jour à chaque objet ajouté **et à chaque son retiré** : la liste réelle est `sounds` de chaque `src/rooms/<id>.ts` (`grep -n "id: '" src/rooms/*.ts`), pas ce tableau.
 
@@ -183,6 +187,7 @@ Mets ce tableau à jour à chaque objet ajouté **et à chaque son retiré** : l
 |---|---|---|
 | Moulin à café manuel (café) | moulure de grains | refusé par l'utilisateur : « pas agréable à écouter » — le grain abrasif qui broie fatigue (règle « frotte, râcle, broie » de l'étape 2) |
 | Verre de thé, livre (train), crayon (atelier), shishi-odoshi (onsen), néon et boulier (marché) | remuer, pages, crayon, bambou, bourdonnement, perles | aucun enregistrement CC0 doux et continu trouvé : objets devenus décor, remplacés par sablier, bol chantant, cascade (2026-11-15) |
+| Bouche d'aération, musique d'aéroport, battement de cœur dans un couffin (avion), petite harpe, fontaine de galets, verres chantants, ocean drum, brosse à cheveux (salle de bain) | souffle, nappes, cœur, arpèges, eau, verre, vagues, brosse | proposés le 2026-11-27, aucun retenu ; le propriétaire a voulu des objets de passagers et un animal (avion), un capybara (salle de bain) |
 | Troupeau de vaches à cloches (train, dehors) | cloches de vache | tout le dehors du train défile (voie, pré, collines) : le hotspot est fixe et ne peut pas suivre l’objet ; seul un élément immobile convient, et il n’y en a pas dehors (2026-11-15) |
 
 Quand l'utilisateur refuse un objet ou un son, ajoute-le ici avec sa raison, et corrige la règle de l'étape 2 si la raison est générale.

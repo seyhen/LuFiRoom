@@ -7,11 +7,15 @@ import { clearOf } from '../../paint'
 import { noRay } from '../../parts'
 import { LIVE } from '../../Static'
 import { O } from './materials'
-import { S } from './layout'
+import { LOOK } from './layout'
 
-/** Où sont la lune (et le soleil le jour) et l'aurore, en coordonnées d'écran (voir layout.ts). */
-const MOON = S(-5.0, 5.6, -12)
-const AURORA = S(-7.0, 3.4, -12)
+/**
+ * Où sont la lune (et le soleil le jour) et l'aurore, en coordonnées d'écran (x vers la droite, y vers le haut, z vers la caméra) :
+ * le groupe qui les porte est posé au point que regarde la caméra et tourné comme elle. Passer par `S` (déjà en coordonnées du monde)
+ * dans ce groupe tourné appliquait la rotation deux fois : la lune et l'aurore tombaient hors de l'écran, à gauche (2026-11-27).
+ */
+const MOON: [number, number, number] = [-3.5, 4.3, -12] // sous la barre des pièces, au-dessus du mur de gauche (1440 px)
+const AURORA: [number, number, number] = [-7.0, 3.4, -12]
 
 /**
  * Le ciel qu'on voit loin derrière : la lune (ou le soleil le jour) et son halo, en haut à gauche de l'écran, au-dessus des nuages qui s'y fondent ;
@@ -36,7 +40,7 @@ export function Sky() {
     if (!reduceMotion) aur.current.position.x = Math.sin(clock.elapsedTime * 0.05) * 0.25
   })
   return (
-    <group ref={g} userData={LIVE}>
+    <group ref={g} position={LOOK} userData={LIVE}>
       <group position={MOON}>
         <mesh material={O.halo} scale={5.4} raycast={noRay} renderOrder={-2}>
           <planeGeometry args={[1, 1]} />

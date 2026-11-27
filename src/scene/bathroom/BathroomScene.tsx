@@ -1,6 +1,7 @@
 import { Motes } from '../Floaters'
 import { Static } from '../Static'
 import { BathSteam } from './BathSteam'
+import { Capybara } from './Capybara'
 import { BathMat, BathScale, Hamper, Print, Robe, ShelfUnit, Sink, Stool, STOOL_TOP, TowelBasket, TowelLadder } from './Fixtures'
 import { Faucet } from './Faucet'
 import { Kalimba } from './Kalimba'
@@ -55,6 +56,9 @@ export function BathroomScene() {
       <Shower />
       <Kalimba position={[1.5, STOOL_TOP * STOOL_S, 0.7]} ry={Math.PI / 4} />
       <SillCandles position={[1.0, 1.75, -2.83]} />
+      {/* le capybara dans son baquet de yuzus, au milieu de la pièce ; un peu de vapeur au-dessus, plus quand il se baigne */}
+      <Capybara position={[-0.5, 0, 0.5]} />
+      <BathSteam at={[-0.45, 0.5, 0.45]} every={4.5} hot={['capybara']} size={0.45} spread={0.2} />
       {/* la vapeur du bain, toujours un peu, plus quand l'eau coule */}
       <BathSteam at={[TUB_AT[0] + 0.1, TUB.water + 0.18, TUB_AT[2]]} every={2.6} hot={['faucet', 'suds', 'shower']} size={0.6} spread={0.4} />
       <Motes colors={[0xfff2e4, 0xffd6b8]} opacity={[0.3, 0.45]} />

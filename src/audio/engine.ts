@@ -87,6 +87,9 @@ import lullaby from './channels/lullaby'
 import dunes from './channels/dunes'
 import palms from './channels/palms'
 import oasis from './channels/oasis'
+import caravan from './channels/caravan'
+import capybara from './channels/capybara'
+import ocarina from './channels/ocarina'
 
 // canal (bus Gain) ─┬─> master Gain 0.9 ─> volume général ─> liant doux ─> passe-haut 25 Hz ─> recalage ─> limiteur ─> plafond doux ─> sortie
 // canal (bus Gain) ─┘
@@ -184,6 +187,9 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   dunes: { build: dunes, base: 1.4 }, // provisoire : synthèse, le vent des dunes (sonie à -27,7 LUFS au volume par défaut)
   palms: { build: palms, base: 1.9 }, // provisoire : synthèse, les palmes dans la brise (sonie à -27,4 LUFS au volume par défaut)
   oasis: { build: oasis, base: 1.4 }, // provisoire : synthèse, la source qui clapote dans la mare (sonie à -27,2 LUFS au volume par défaut)
+  caravan: { build: caravan, base: 3.0 }, // provisoire : synthèse, les clochettes de la caravane (sonie à -28,3 LUFS au volume par défaut)
+  capybara: { build: capybara, base: 2.5 }, // provisoire : synthèse, le bain aux yuzus du capybara (sonie à -29,8 LUFS au volume par défaut)
+  ocarina: { build: ocarina, base: 1.4 }, // provisoire : synthèse, la valse de l'ocarina (sonie à -27,3 LUFS au volume par défaut)
   jet: { build: jet, base: 0.72 }, // provisoire : synthèse, le souffle grave des moteurs entendu depuis la cabine
   lullaby: { build: lullaby, base: 1.34 }, // provisoire : synthèse, la nappe de cordes et le violoncelle de la berceuse
   noise: { build: noise, base: 0.5 }, // sonie (pondérée A) du rose à 0,4 : celle du ventilateur et de la pluie par défaut ; couleurs égalisées dans public/noise-worklet.js

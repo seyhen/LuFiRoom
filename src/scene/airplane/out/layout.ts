@@ -2,7 +2,7 @@ import type { V3 } from '../../parts'
 
 // Les repères du décor autour de la cabine. On compose en coordonnées d'écran, puis `S` les rend en coordonnées du monde : la caméra regarde dans
 // la direction (1, 0,8, 1) le point (0, 1,85, 0) ; `sx` va vers la droite de l'écran, `sy` vers le haut, `dz` vers la caméra (négatif : derrière).
-const LOOK: V3 = [0, 1.85, 0]
+export const LOOK: V3 = [0, 1.85, 0]
 const RX: V3 = [0.7071, 0, -0.7071]
 const UP: V3 = [-0.344, 0.861, -0.344]
 const TO: V3 = [0.615, 0.492, 0.615]

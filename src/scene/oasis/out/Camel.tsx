@@ -1,9 +1,12 @@
-import { useEffect, useMemo } from 'react'
-import { BufferAttribute, CatmullRomCurve3, PlaneGeometry, TubeGeometry, Vector3 } from 'three'
+import { useEffect, useMemo, useRef } from 'react'
+import { useFrame } from '@react-three/fiber'
+import { BufferAttribute, CatmullRomCurve3, PlaneGeometry, TubeGeometry, Vector3, type Group } from 'three'
 import { blob, cone, ell, pair, type Blob } from '../../blob'
 import { skin } from '../../materials'
-import { Part, SPH_LO, cyl, rbox, type V3 } from '../../parts'
-import { Static } from '../../Static'
+import { Part, SPH, SPH_LO, cyl, rbox, type V3 } from '../../parts'
+import { LIVE, Static } from '../../Static'
+import { reduceMotion, useSquash } from '../../anim'
+import { isActive, useStore } from '../../../state/store'
 import { O } from './materials'
 import { groundY } from './ground'
 
@@ -86,11 +89,43 @@ function drape() {
   return g
 }
 
+/** Une clochette de cuivre pendue à son cordon : le cordon, l'anneau, la robe évasée, le bord roulé, le battant qui dépasse. `h` : la hauteur de la robe. Fusionnée (un tracé par matière), le groupe parent la balance. */
+function Bell({ h }: { h: number }) {
+  const r = h * 0.55
+  return (
+    <Static>
+      <Part geo={cyl(0.008, 0.008, 0.07, 5)} m={O.rope} p={[0, -0.035, 0]} castShadow={false} />
+      <Part m={O.bellBrass} p={[0, -0.075, 0]} castShadow={false}><torusGeometry args={[0.018, 0.006, 6, 12]} /></Part>
+      <Part geo={cyl(r * 0.45, r, h, 14)} m={O.bellBrass} p={[0, -0.09 - h / 2, 0]} />
+      <Part m={O.bellBrass} p={[0, -0.09 - h, 0]} rotation-x={Math.PI / 2} castShadow={false}><torusGeometry args={[r, 0.012, 6, 18]} /></Part>
+      <Part geo={SPH} m={O.bellDark} scale={r * 0.32} p={[0, -0.1 - h, 0]} castShadow={false} />
+    </Static>
+  )
+}
+
 /**
  * Le dromadaire accroupi au bord du campement, le bât (une couverture rayée, deux sacoches) sur sa bosse : une seule peau de blob, le
- * museau, l'œil, les oreilles, les callosités. `at` est le sol (x, z), `ry` le cap de la tête.
+ * museau, l'œil, les oreilles, les callosités. `at` est le sol (x, z), `ry` le cap de la tête. Interactif (`camel`, le son `caravan`) :
+ * une cloche de cuivre pend à son collier et deux clochettes sous les sacoches ; à chaque tintement du dromadaire le plus proche (le
+ * compteur `pulses.caravan`), elles reçoivent un élan et se balancent (un pendule amorti), et le dromadaire respire un peu plus large.
  */
 export function KneelingCamel({ at, ry }: { at: [number, number]; ry: number }) {
+  const root = useRef<Group>(null!), body = useRef<Group>(null!), bells = useRef<(Group | null)[]>([])
+  const s = useRef({ a: 0, w: 0, last: -1, amp: 0, breath: 0 })
+  useSquash('camel', root)
+  useFrame((_, delta) => {
+    const dt = Math.min(delta, 0.05), S = s.current, st = useStore.getState(), on = isActive(st, 'camel') && !reduceMotion
+    const n = st.pulses.caravan ?? 0
+    if (S.last < 0) S.last = n
+    if (n !== S.last) { S.last = n; if (on) S.w += (Math.random() < 0.5 ? -1 : 1) * (1.6 + Math.random()) }
+    // un pendule amorti (élan à chaque tintement), qui revient au repos quand le son s'arrête
+    S.w += (-26 * S.a - 2.2 * S.w) * dt
+    S.a += S.w * dt
+    S.amp += ((on ? 1 : 0) - S.amp) * Math.min(1, dt * 0.8)
+    S.breath += dt * 1.3
+    bells.current.forEach((b, i) => { if (b) { b.rotation.z = S.a * (i ? 0.7 : 1); b.rotation.x = S.a * (i ? -0.5 : 0.35) } })
+    body.current.scale.y = 1 + Math.sin(S.breath) * 0.012 * S.amp
+  })
   const geo = useMemo(() => blob(BODY, { h: 0.04, k: 0.08 }), [])
   const skinMat = useMemo(() => skin({ roughness: 0.9, clearcoat: 0 }), [])
   const cover = useMemo(() => drape(), [])
@@ -103,7 +138,8 @@ export function KneelingCamel({ at, ry }: { at: [number, number]; ry: number }) 
   const [x, z] = at, y = groundY(x, z)
   const p: V3 = [x, y - 0.02, z]
   return (
-    <group position={p} rotation-y={ry} scale={0.8}>
+    <group ref={root} position={p} userData={{ id: 'camel' }}>
+    <group ref={body} rotation-y={ry} scale={0.8} userData={LIVE}>
       <Static>
         <mesh geometry={geo} material={skinMat} castShadow receiveShadow />
         {/* la couverture rayée drapée sur la bosse et le dos, et deux sacoches de cuir qui pendent de chaque côté */}
@@ -119,7 +155,22 @@ export function KneelingCamel({ at, ry }: { at: [number, number]; ry: number }) 
         {/* la longe qui pend du licol, posée sur le sable */}
         <mesh geometry={lead} material={O.rope} />
         <Part geo={SPH_LO} m={O.rope} scale={0.03} p={[1.7, 0.03, 0.5]} castShadow={false} />
+        {/* le collier de cuir tressé autour du cou, d'où pend la cloche */}
+        <group position={[0.96, 0.94, 0]} rotation-z={-0.58}>
+          <Part m={O.saddle} rotation-x={Math.PI / 2} castShadow={false}><torusGeometry args={[0.215, 0.03, 8, 24]} /></Part>
+          {/* les pompons de laine du harnais, rouges et indigo, tout autour du collier */}
+          {Array.from({ length: 7 }, (_, k) => {
+            const a = (k / 7) * Math.PI * 2 + 0.3
+            return <Part key={k} geo={SPH} m={k % 2 ? O.pompomBlue : O.pompomRed} scale={0.05} p={[Math.cos(a) * 0.235, 0, Math.sin(a) * 0.235]} castShadow={false} />
+          })}
+        </group>
       </Static>
+      {/* la cloche du collier, et une clochette sous chaque sacoche : elles se balancent à chaque tintement */}
+      <group ref={(g) => { bells.current[0] = g }} position={[1.14, 0.83, 0]}><Bell h={0.24} /></group>
+      {[-1, 1].map((z, i) => (
+        <group key={z} ref={(g) => { bells.current[i + 1] = g }} position={[-0.1, 0.36, z * 0.55]}><Bell h={0.15} /></group>
+      ))}
+    </group>
     </group>
   )
 }

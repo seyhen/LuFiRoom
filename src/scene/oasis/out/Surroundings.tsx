@@ -38,8 +38,9 @@ export function Surroundings() {
         <Grove />
         <Far />
         {ROCKS.map(([x, z, k, ry], i) => <Rock key={i} v={i} p={[x, groundY(x, z) - 0.08, z]} s={[k * 1.2, k * 0.7, k]} ry={ry} m={O.stone} shadow={false} />)}
-        <KneelingCamel at={[5.4, -0.6]} ry={-Math.PI / 2} />
       </Static>
+      {/* le dromadaire accroupi : interactif (ses clochettes, le son `caravan`), donc hors du <Static> */}
+      <KneelingCamel at={[5.4, -0.6]} ry={-Math.PI / 2} />
       <OutdoorPrecip ground={groundY} area={[-13, 13, -12, 12]} covered />
     </>
   )

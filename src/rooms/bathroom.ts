@@ -41,7 +41,7 @@ export const bathroom: Room = {
   presets: {
     work: { sounds: [['radio', 0.55], ['shower', 0.25], ['rain', 0.3]] },
     read: { sounds: [['faucet', 0.3], ['suds', 0.25], ['radio', 0.3], ['rain', 0.35]] },
-    sleep: { sounds: [['shower', 0.35], ['suds', 0.2], ['rain', 0.4]], night: true },
+    sleep: { sounds: [['shower', 0.35], ['suds', 0.2], ['rain', 0.4], ['capybara', 0.3]], night: true },
   },
   objects: [
     { id: 'radio', target: 'radio', label: 'Kalimba · lofi', anchor: [1.5, 0.84, 0.7] },
@@ -49,12 +49,14 @@ export const bathroom: Room = {
     { id: 'foam', target: 'suds', label: 'Mousse · le pétillement', anchor: [0.7, 0.6, -2.02] },
     { id: 'shower', target: 'shower', label: 'Douche · la pluie sur le carrelage', anchor: [-2.3, 2.52, 1.15] },
     { id: 'lamp', target: 'night', label: 'Bougies · jour / nuit', anchor: [1.15, 2.1, -2.88] },
+    { id: 'capybara', target: 'capybara', label: 'Capybara · le bain de yuzus', anchor: [-0.42, 0.34, 1.05] },
   ],
   sounds: [
     { id: 'radio', name: 'Kalimba lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'faucet', name: 'Robinet', chip: 'var(--c-faucet)', volume: 0.45, sub: () => 'le filet dans le bain' },
     { id: 'suds', name: 'Mousse', chip: 'var(--c-suds)', volume: 0.4, sub: () => 'la mousse qui pétille' },
     { id: 'shower', name: 'Douche', chip: 'var(--c-shower)', volume: 0.45, sub: () => 'la pluie sur le carrelage' },
+    { id: 'capybara', name: 'Capybara', chip: 'var(--c-capybara)', volume: 0.45, sub: () => 'son bain chaud aux yuzus' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'sur la vitre embuée' },
     { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
   ],

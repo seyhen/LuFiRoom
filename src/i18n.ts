@@ -566,6 +566,17 @@ const EN: Record<string, string> = {
   'Mare · la source': 'Pool · the spring',
   Mare: 'Pool',
   'la source qui clapote': 'the spring lapping',
+  'Dromadaire · les clochettes': 'Camel · the bells',
+  'Caravane': 'Caravan',
+  'les clochettes au pas lent': 'bells at a slow walk',
+  Capybara: 'Capybara',
+  Ocarina: 'Ocarina',
+  'Capybara · le bain de yuzus': 'Capybara · the yuzu bath',
+  'son bain chaud aux yuzus': 'its warm yuzu bath',
+  'Chaton · ronron': 'Kitten · purring',
+  'le chaton dans son sac': 'the kitten in its carrier',
+  'Ocarina · une valse': 'Ocarina · a waltz',
+  'une valse lente': 'a slow waltz',
   'sur les dunes': 'over the dunes',
 }
 
