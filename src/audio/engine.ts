@@ -166,7 +166,7 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   brook: { build: brook, base: 1.05 },
   cicadas: { build: cicadas, base: 3.0 },
   frogs: { build: frogs, base: 1.8 },
-  aviary: { build: aviary, base: 5.0 }, // provisoire : synthèse, chants espacés de cinq oiseaux tropicaux
+  aviary: { build: aviary, base: 5.0 }, // enregistré (`loops.aviary`) ; ce base règle la synthèse de repli : chants espacés de cinq oiseaux tropicaux
   musicbox: { build: musicbox, base: 0.9 },
   rainbarrel: { build: rainbarrel, base: 1.1 },
   wash: { build: wash, base: 1.0 },
@@ -182,12 +182,12 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   aquarium: { build: aquarium, base: 2.2 }, // provisoire : synthèse, filet du filtre et bulles rares
   snore: { build: snore, base: 1.2 }, // provisoire : synthèse, la respiration lente d'un chien, un ronflement très doux
   faucet: { build: faucet, base: 4.5 }, // enregistré (`loops.faucet`, son gain règle l'enregistrement) ; ce base règle la synthèse de repli : le filet du robinet dans le bain plein (sonie à -27,8 LUFS au curseur plein, comme la médiane)
-  suds: { build: suds, base: 3.0 }, // provisoire : synthèse, le pétillement de la mousse
-  shower: { build: shower, base: 5.0 }, // provisoire : synthèse, la douche à effet pluie dans une pièce de carreaux
+  suds: { build: suds, base: 3.0 }, // enregistré (`loops.suds`) ; ce base règle la synthèse de repli : le pétillement de la mousse
+  shower: { build: shower, base: 5.0 }, // enregistré (`loops.shower`) ; ce base règle la synthèse de repli : la douche à effet pluie dans une pièce de carreaux
   dunes: { build: dunes, base: 1.4 }, // enregistré (`loops.dunes`) ; ce base règle aussi la synthèse de repli : le vent des dunes (sonie à -27,7 LUFS au volume par défaut)
-  palms: { build: palms, base: 1.9 }, // provisoire : synthèse, les palmes dans la brise (sonie à -27,4 LUFS au volume par défaut)
-  oasis: { build: oasis, base: 1.4 }, // provisoire : synthèse, la source qui clapote dans la mare (sonie à -27,2 LUFS au volume par défaut)
-  caravan: { build: caravan, base: 3.0 }, // provisoire : synthèse, les clochettes de la caravane (sonie à -28,3 LUFS au volume par défaut)
+  palms: { build: palms, base: 1.9 }, // enregistré (`loops.palms`) ; ce base règle la synthèse de repli : les palmes dans la brise (sonie à -27,4 LUFS au volume par défaut)
+  oasis: { build: oasis, base: 1.4 }, // enregistré (`loops.oasis`) ; ce base règle la synthèse de repli : la source qui clapote dans la mare (sonie à -27,2 LUFS au volume par défaut)
+  caravan: { build: caravan, base: 3.0 }, // enregistré (`loops.caravan`) ; ce base règle la synthèse de repli : les clochettes de la caravane (sonie à -28,3 LUFS au volume par défaut)
   capybara: { build: capybara, base: 2.5 }, // provisoire : synthèse, le bain aux yuzus du capybara (sonie à -29,8 LUFS au volume par défaut)
   ocarina: { build: ocarina, base: 1.4 }, // provisoire : synthèse, la valse de l'ocarina (sonie à -27,3 LUFS au volume par défaut)
   jet: { build: jet, base: 0.72 }, // enregistré (`loops.jet`, son gain règle l'enregistrement) ; ce base règle la synthèse de repli : le souffle grave des moteurs entendu depuis la cabine

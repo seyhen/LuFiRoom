@@ -7,8 +7,8 @@ import { WEATHER_LOOPS } from './weather'
 // toile rayée tendu sur deux perches, des tapis posés les uns sur les autres, des coussins, un plateau de cuivre et sa théière, un oud
 // sur un coussin, une lanterne de laiton ajouré qui jette des étoiles sur la toile ; la mare entre les rochers et les roseaux, un
 // grand palmier dattier, et autour les dunes dorées, un petit bosquet, un ksar de terre au loin et un dromadaire accroupi. Sons
-// nouveaux (le vent des dunes, les palmes, la source de la mare, les clochettes de la caravane du dromadaire) synthétisés pour l'instant : leurs enregistrements se déclareront
-// dans `loops` (docs/ASSETS.md), sources et licences dans public/audio/CREDITS.md. La météo (carte « Météo », rare au désert) et la
+// nouveaux (le vent des dunes, les palmes, la source de la mare, les clochettes de la caravane du dromadaire) enregistrés
+// (`loops`, docs/ASSETS.md) ; sources et licences dans public/audio/CREDITS.md. La météo (carte « Météo », rare au désert) et la
 // carte « Bruit » sont celles de toutes les pièces.
 
 export const oasis: Room = {
@@ -38,6 +38,12 @@ export const oasis: Room = {
     ...WEATHER_LOOPS,
     // un vent léger et régulier sur le désert, quelques grillons au loin (Freesound 454361, CC0)
     dunes: { src: 'audio/oasis/dunes', gain: 0.8 },
+    // le vent dans les palmes (Pixabay 143053, dennish18)
+    palms: { src: 'audio/oasis/palms', gain: 0.75 },
+    // un petit filet d'eau (Pixabay 252505, kuzu420)
+    oasis: { src: 'audio/oasis/oasis', gain: 0.9 },
+    // de petites clochettes au vent (Pixabay 22872)
+    caravan: { src: 'audio/oasis/caravan', gain: 0.5 },
   },
   stations: ['soleil-bas', 'minuit', 'veillee', 'brume'],
   playlist: PLAYLIST,

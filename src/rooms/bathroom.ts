@@ -5,8 +5,8 @@ import { WEATHER_LOOPS } from './weather'
 
 // Une salle de bain de rêve un soir de pluie fine : baignoire à pieds de lion pleine de mousse rose, carrelage pastel, fenêtre embuée sur un
 // monde de bulles (la pièce flotte sur un banc de mousse de bain rose, dans un ciel pastel plein de bulles de savon irisées dont six
-// grosses gardent une petite scène). Sons nouveaux (le robinet de la baignoire, la mousse du bain, la douche à effet pluie) synthétisés pour
-// l'instant : leurs enregistrements se déclareront dans `loops` (docs/ASSETS.md), sources et licences dans public/audio/CREDITS.md.
+// grosses gardent une petite scène). Sons nouveaux (le robinet de la baignoire, la mousse du bain, la douche à effet pluie) enregistrés
+// (`loops`, docs/ASSETS.md) ; le capybara reste synthétisé. Sources et licences dans public/audio/CREDITS.md.
 
 export const bathroom: Room = {
   id: 'bathroom',
@@ -37,6 +37,10 @@ export const bathroom: Room = {
     ...WEATHER_LOOPS,
     // une baignoire qui se remplit (Freesound 166328, CC0)
     faucet: { src: 'audio/bathroom/faucet', gain: 0.29 }, // mesuré par audio:levels (0,8 : 8,8 dB au-dessus de la médiane ; le base de 4,5 est fait pour la synthèse)
+    // une douche qui coule régulièrement (Pixabay 339233, jadeallencook)
+    shower: { src: 'audio/bathroom/shower', gain: 0.26 },
+    // un jacuzzi, les bulles qui montent (Pixabay 369758, alex_jauk)
+    suds: { src: 'audio/bathroom/suds', gain: 0.48 },
   },
   stations: ['rosee', 'soleil-bas', 'nuit-douce', 'brume'],
   playlist: PLAYLIST,

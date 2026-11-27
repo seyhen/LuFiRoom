@@ -85,7 +85,7 @@ Les vingt-huit morceaux sont ceux que le propriétaire a fournis (sept le 2026-1
 ## Sons synthétisés
 
 Tant qu'un son n'a pas d'enregistrement dans `loops` de sa pièce (`src/rooms/`), il reste synthétisé en direct (moteur de la phase 1) : rien à créditer. C'est le cas de la radio, tant qu'aucune piste n'est déclarée : ses cinq stations sont calculées en direct (`src/audio/stations.ts`).
-Chaque pièce a désormais des enregistrements pour ses sons (voir les sections ci-dessus). Restent synthétisés : la mousse, la douche et le capybara de la salle de bain (`suds`, `shower`, `capybara` ; le robinet `faucet` est enregistré depuis le 2026-11-27), les palmes, la source de la mare et la caravane de l'oasis (`palms`, `oasis`, `caravan` ; le vent des dunes `dunes` est enregistré depuis le 2026-11-27), la berceuse et l'ocarina de l'avion (les moteurs `jet` sont enregistrés depuis le 2026-11-27), la cloche de bouée du phare, les oiseaux et les grillons du jardin de l'onsen, la pluie du marché et les vagues du phare, ainsi que la radio.
+Chaque pièce a désormais des enregistrements pour ses sons (voir les sections ci-dessus). Restent synthétisés : le capybara de la salle de bain (`capybara` ; la mousse, la douche et le robinet sont enregistrés depuis le 2026-11-27, comme les sons de l'oasis et la volière de la serre), la berceuse et l'ocarina de l'avion (les moteurs `jet` sont enregistrés depuis le 2026-11-27), la cloche de bouée du phare, les oiseaux et les grillons du jardin de l'onsen, la pluie du marché et les vagues du phare, ainsi que la radio.
 
 ## Boucles ajoutées le 2026-10-17 (toit, onsen, phare, sous-marin, marché, plage, train)
 
@@ -142,6 +142,19 @@ Pixabay Content License (accord du propriétaire du projet), téléchargés depu
 | `laundromat/tumble` | Dryer Hum | freesound_community | 63149 |
 | `treehouse/brook` | Location Stream 1 | freesound_community | 23371 |
 | `treehouse/cicadas` | Cicadas chirping at night | freesound_community | 54307 |
+
+## Sons des objets ajoutés le 2026-11-27 (salle de bain, oasis, serre)
+
+Pixabay Content License (accord du propriétaire du projet), téléchargés depuis le CDN de Pixabay à sa demande. Les sons « freesound_community » viennent de Freesound, redistribués par Pixabay. Mono, ramenés à −20 LUFS par `npm run audio`.
+
+| Fichier | Titre | Auteur | Id Pixabay | Retouches |
+|---|---|---|---|---|
+| `bathroom/suds` | Hot Tub Ambience | alex_jauk | 369758 | 45 s à partir de 3 s |
+| `bathroom/shower` | Running Shower Water Sound in Bathroom with Steady Stream | jadeallencook | 339233 | 45 s à partir de 3 s |
+| `oasis/palms` | Wind trough palm trees | dennish18 | 143053 | 60 s à partir de 2 s |
+| `oasis/oasis` | Small waterflow | kuzu420 | 252505 | 36,5 s à partir de 0,5 s |
+| `oasis/caravan` | small chimes | freesound_community | 22872 | 60 s à partir de 2 s |
+| `greenhouse/aviary` | Tropical bird sounds_01 | freesound_community | 19910 | 60 s à partir de 1 s |
 
 ## Sons Freesound (CC0, récupérés par `npm run source`)
 
