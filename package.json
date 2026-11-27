@@ -15,8 +15,11 @@
     "test": "npm run test:unit && npm run build && npm run stations && npm run test:smoke",
     "test:unit": "node --test --experimental-strip-types --import ./tests/register.mjs --import ./tests/setup.mjs \"tests/*.test.mjs\"",
     "test:smoke": "node scripts/smoke.mjs",
-    "build:mobile": "tsc && vite build --mode mobile",
-    "mobile:sync": "npm run build:mobile && cap sync",
+    "build:android": "tsc && vite build --mode android && node scripts/mobile-audio.mjs webm",
+    "build:ios": "tsc && vite build --mode ios && node scripts/mobile-audio.mjs mp3",
+    "mobile:sync:android": "npm run build:android && cap sync android",
+    "mobile:sync:ios": "npm run build:ios && cap sync ios",
+    "mobile:sync": "npm run mobile:sync:android && npm run mobile:sync:ios",
     "mobile:android": "cap open android",
     "mobile:ios": "cap open ios"
   },

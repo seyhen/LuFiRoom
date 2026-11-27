@@ -79,6 +79,7 @@ scripts/encode-audio.mjs    # npm run audio : sources → Opus/WebM + MP3 dans p
 scripts/check-stations.mjs  # npm run stations : vérifie la musique des stations (accords, notes, rythmes)
 scripts/check-audio.mjs     # npm run audio:check : crêtes, sonie et paires webm + mp3 de public/audio/
 scripts/measure-levels.mjs  # npm run audio:levels : sonie de chaque canal (rendu hors ligne dans Chromium), écarts à la médiane ; `--ids`, `--rooms`, `--seconds`, `--json`
+scripts/mobile-audio.mjs    # un seul format de son dans les apps (WebM pour Android, MP3 pour iOS), après le build mobile
 scripts/smoke.mjs           # npm run test:smoke : test de fumée dans Chromium (Playwright), chaque pièce en 390 px et en desktop
 .github/workflows/ci.yml    # CI GitHub Actions à chaque push et pull request : build, stations, test de fumée, audio:check
 wrangler.jsonc              # hébergement : Cloudflare Workers publie dist/ (voir docs/DEPLOY.md)
@@ -184,7 +185,7 @@ npm run test:unit # tests unitaires (node --test, sans dépendance) des fonction
 npm run audio:check  # vérifie les crêtes (max -0,5 dBTP) et la sonie des sons de public/audio/ (ffmpeg requis)
 npm test          # test:unit + build + stations + test de fumée (tout ce que la CI vérifie, sauf audio:check)
 npm run test:smoke   # test de fumée seul, sur le dist/ déjà construit
-npm run mobile:sync  # construit et copie le site dans les apps Android et iOS (voir docs/MOBILE.md)
+npm run mobile:sync  # construit et copie le site dans les apps Android (sons WebM) et iOS (sons MP3) ; :android ou :ios pour une seule (voir docs/MOBILE.md)
 ```
 
 Tests unitaires (`tests/`, `node --test`, Node ≥ 22, pas de vitest) : ambiances et liens de partage (`state/mixes.ts`, courbe des volumes), bruit, météo, jour / nuit, repli du bruit (`audio/noiseGen.ts`, pentes spectrales), aides des stations.

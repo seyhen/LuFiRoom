@@ -11,7 +11,9 @@ native (une WebView), avec ses sons. Une seule base de code ; rien à réécrire
 ## Commandes
 
 ```
-npm run mobile:sync      # construit le site puis le copie dans android/ et ios/ (à refaire après chaque changement)
+npm run mobile:sync          # construit et copie les deux apps (Android puis iOS ; à refaire après chaque changement)
+npm run mobile:sync:android  # Android seul : build --mode android (sons en WebM seulement), puis cap sync android
+npm run mobile:sync:ios      # iOS seul : build --mode ios (sons en MP3 seulement), puis cap sync ios
 npm run mobile:android   # ouvre Android Studio (lancer sur un téléphone, construire l'APK ou l'AAB)
 npm run mobile:ios       # ouvre Xcode (Mac seulement)
 ```
@@ -30,7 +32,8 @@ Il faut Android Studio (et son SDK) pour Android, et un Mac avec Xcode pour iOS 
 - **Polices embarquées** (`@fontsource/*`, latin seulement, 127 Ko) : rien n'est demandé à Google, tout marche hors ligne.
 - **Liens de partage** : dans l'app, ils pointent vers le site (`PUBLIC_SITE_URL` dans `src/state/mixes.ts`), pas vers `https://localhost`.
   Ouvrir un lien partagé *dans* l'app demande des App Links (Android) et des Universal Links (iOS), pas encore faits.
-- **Pas de mesure d'audience** dans l'app : `npm run mobile:sync` construit avec `build:mobile` (`--mode mobile`), qui n'ajoute jamais `ANALYTICS_SRC`.
+- **Pas de mesure d'audience** dans l'app : `npm run mobile:sync` construit avec `build:android` et `build:ios` (`--mode android` / `ios`), qui n'ajoutent jamais `ANALYTICS_SRC`.
+- **Un seul format de son par app** (2026-11-27) : sur le site, chaque son existe en Opus/WebM et en MP3 ; les deux ensemble faisaient 262 Mo, au-delà des 200 Mo du paquet de base de Google Play. `scripts/mobile-audio.mjs` retire l'autre format de `dist/audio/` après la construction : **Android garde le WebM** (la WebView Chromium lit l'Opus ; 124 Mo de sons), **iOS garde le MP3** (138 Mo). `src/audio/recordings.ts` (`EXTS`) n'essaie alors que ce format (`import.meta.env.MODE`). Le script échoue si un son n'existe que dans l'autre format. Comme `cap sync` copie un seul `dist/` à la fois, les deux apps se construisent l'une après l'autre (`mobile:sync` enchaîne les deux).
 - **Icônes et écrans de lancement** : dessinés à partir de `public/icon.svg` (Android : `res/mipmap-*`, `res/drawable*/splash.png` ; iOS : `Assets.xcassets`).
 - **iOS** : `ITSAppUsesNonExemptEncryption` = false, `PrivacyInfo.xcprivacy` (aucun pistage, aucune donnée collectée).
 - **Confidentialité** : pages `public/confidentialite.html` et `public/privacy.html` (l'adresse de contact est à compléter). Fiches des stores prêtes à copier : `docs/STORES.md`.
@@ -43,7 +46,7 @@ Il faut Android Studio (et son SDK) pour Android, et un Mac avec Xcode pour iOS 
   il faut un service de premier plan et sa notification de lecture.
 - Compléter l'adresse de contact des pages de confidentialité, puis les déployer : l'adresse doit répondre avant l'envoi aux stores.
 - Iconographie : vérifier les icônes sur un vrai appareil (zone sûre de l'icône adaptative Android).
-- Taille : environ 160 Mo, dont 124 Mo pour la radio en double format ; garder un seul format par plateforme.
+- Taille : réglé, un seul format de son par plateforme (123 Mo copiés dans Android, 135 Mo dans iOS, le 2026-11-27). Toute nouvelle piste de radio ajoute environ 3 Mo.
 - Licences Pixabay : les sons sont embarqués dans le paquet ; leur licence interdit de les redistribuer seuls, tels quels. À vérifier.
 - App Store : règle 4.2 (voir `docs/STORES.md`, notes pour la revue). Comptes : Google Play (25 € une fois), Apple Developer (99 € par an).
 - Signature : clé Android (à garder précieusement), équipe de développement dans Xcode.

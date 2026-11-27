@@ -53,8 +53,8 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    // Build mobile (`npm run build:mobile`, --mode mobile) : aucune mesure d'audience dans l'app des stores.
-    siteMeta(mode !== 'mobile'),
+    // Builds des apps (`npm run build:android`, `build:ios` : --mode android / ios) : aucune mesure d'audience dans l'app des stores.
+    siteMeta(mode !== 'android' && mode !== 'ios'),
     VitePWA({
       // La nouvelle version prend la main toute seule, sans recharger la page : la musique ne s'arrête pas.
       registerType: 'autoUpdate',

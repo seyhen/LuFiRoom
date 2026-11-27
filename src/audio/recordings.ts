@@ -2,8 +2,13 @@ import type { Channel } from './engine'
 
 // Enregistrements servis depuis public/ : chaque son existe en Opus dans WebM (léger) et en MP3 (repli).
 
-/** Formats à essayer, dans l'ordre. Les navigateurs qui ne lisent pas l'Opus en WebM (vieux Safari) passent au MP3. */
-export const EXTS = document.createElement('audio').canPlayType('audio/webm; codecs="opus"') ? ['webm', 'mp3'] : ['mp3']
+/**
+ * Formats à essayer, dans l'ordre. Sur le site, les navigateurs qui ne lisent pas l'Opus en WebM (vieux Safari) passent au MP3.
+ * Les apps des stores n'embarquent qu'un format (scripts/mobile-audio.mjs) : WebM sur Android, MP3 sur iOS.
+ */
+const APP_FORMAT: Record<string, string[]> = { android: ['webm'], ios: ['mp3'] }
+export const EXTS =
+  APP_FORMAT[import.meta.env.MODE] ?? (document.createElement('audio').canPlayType('audio/webm; codecs="opus"') ? ['webm', 'mp3'] : ['mp3'])
 
 export const fileUrl = (src: string, ext: string) => `${import.meta.env.BASE_URL}${src}.${ext}`
 
