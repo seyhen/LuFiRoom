@@ -25,6 +25,8 @@ export const SKY = {
   uSkyDay: { value: [new Vector3(1, 1, 1), new Vector3(1, 1, 1), new Vector3(1, 1, 1)] },
   uSkyNight: { value: [new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(0, 0, 0)] },
   uSkyN: { value: 0 },
+  /** Les étoiles du dehors : la nuit, voilée par la pluie, l'orage et la neige (sous la pluie, l'avion les gardait toutes). */
+  uSkyStars: { value: 0 },
   uSkyRes: { value: new Vector2(1, 1) },
 }
 
@@ -89,6 +91,7 @@ export function skyFade<T extends Material>(m: T, o: FadeOpts = {}): T {
         `uniform vec3 uSkyDay[3];
         uniform vec3 uSkyNight[3];
         uniform float uSkyN;
+        uniform float uSkyStars;
         uniform vec2 uSkyRes;
         varying vec3 vSkyP;
         vec3 skyGrad_(vec3 a, vec3 b, vec3 c, float t) {
@@ -124,7 +127,7 @@ export function skyFade<T extends Material>(m: T, o: FadeOpts = {}): T {
             vec2 cp_ = vec2(0.3 + 0.4 * fract(h1_ * 13.0), 0.3 + 0.4 * fract(h2_ * 11.0));
             float big_ = step(0.992, h1_);
             float st_ = step(0.967, h1_) * smoothstep(0.17 + big_ * 0.1, 0.0, length(fract(cell_) - cp_)) * (0.35 + 0.65 * h2_);
-            gl_FragColor.rgb += vec3(1.0, 0.95, 0.85) * st_ * uSkyN * pow(k_, 1.5) * ${f(stars)};
+            gl_FragColor.rgb += vec3(1.0, 0.95, 0.85) * st_ * uSkyStars * pow(k_, 1.5) * ${f(stars)};
           }` : ''}
         }
         #include <dithering_fragment>`,
@@ -151,6 +154,8 @@ export function SkyFadeClock({ room }: { room: Room }) {
   }, [gl, size])
   useFrame(() => {
     SKY.uSkyN.value = smooth(mood.night)
+    // même voile que la lune et les étoiles peintes (`clearOf` de paint.ts)
+    SKY.uSkyStars.value = SKY.uSkyN.value * (1 - mood.rain * 0.95) * (1 - mood.storm) * Math.max(0, 1 - mood.snow * 1.15)
     // Sous la neige, le voile blanc du fond (`.sky-veil.snowy` de app.css) couvre le dégradé : le décor lointain se fond dans ce ciel-là,
     // sinon il reste de la couleur de la pièce (crème, dans la cabane perchée) et fait des plaques jaunes sur un fond blanc.
     const s = smooth(mood.snow)
