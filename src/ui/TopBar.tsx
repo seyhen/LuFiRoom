@@ -5,6 +5,7 @@ import { moonIcon, sunIcon } from './icons'
 import { RoomPicker } from './RoomPicker'
 import { InstallButton } from './InstallButton'
 import { WeatherPicker } from './WeatherPicker'
+import { NoisePicker } from './NoisePicker'
 
 const now = () => new Date().toLocaleTimeString(useLang.getState().lang === 'fr' ? 'fr-FR' : 'en-GB', { hour: '2-digit', minute: '2-digit' })
 
@@ -28,6 +29,7 @@ export function TopBar({ brandRef }: { brandRef: Ref<HTMLDivElement> }) {
       <div className="tools">
         <InstallButton />
         <span className="clock" aria-label={t('Heure locale')}>{time}</span>
+        <NoisePicker />
         <WeatherPicker />
         <button
           className="mode"

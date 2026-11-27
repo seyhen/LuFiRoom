@@ -194,7 +194,7 @@ Pour vérifier qu'un test mord : casse une règle à la main (la √ de `sliderO
 
 Le test de fumée (`scripts/smoke.mjs`) sert `dist/` avec `vite preview` et ouvre chaque pièce dans Chromium sans écran (WebGL logiciel),
 en 390 px tactile puis en 1440 px : la pièce se charge, le canvas dessine, un `<button>` avec `aria-label` et `aria-pressed` par objet,
-une carte par son dans le mixeur, un clic sur une carte allume un son ; aucune erreur en console ni « Enregistrement indisponible ».
+une carte par son dans le mixeur (la carte « Bruit » dans la barre du haut), un clic sur une carte allume un son ; aucune erreur en console ni « Enregistrement indisponible ».
 Ce qu'il attend vient des fiches `src/rooms/*.ts` : une pièce ajoutée est testée d'office. Compte 3 à 6 minutes (4 navigateurs en parallèle).
 Il faut le Chromium de Playwright : `npx playwright install chromium` une fois (ou `LOFI_CHROMIUM` = chemin d'un Chromium).
 Il affiche les triangles par image de chaque pièce et échoue au-dessus de `LOFI_SMOKE_MAX_TRIANGLES` (1 000 000 par défaut) ; les compteurs viennent de `window.__lofiStats`, chargé seulement si l'adresse porte `?stats` (`src/scene/stats.ts`, absent du bundle normal ; `window.__lofi` reste réservé au dev).
