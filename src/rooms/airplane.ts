@@ -37,6 +37,10 @@ export const airplane: Room = {
   },
   loops: {
     ...WEATHER_LOOPS,
+    // le chaton reprend l'enregistrement du ronron de la chambre (une reprise voulue par le propriétaire)
+    purr: { src: 'audio/bedroom/purr', gain: 1.25 }, // 0,45 le laissait 8,8 dB sous la médiane (audio:levels)
+    // l'intérieur d'un avion en croisière (Freesound 680662, CC0)
+    jet: { src: 'audio/airplane/jet', gain: 1.8 }, // mesuré par audio:levels (0,8 : 6,9 dB sous la médiane)
   },
   stations: ['minuit', 'nuit-douce', 'brume', 'rosee'],
   playlist: PLAYLIST,
@@ -44,19 +48,23 @@ export const airplane: Room = {
   skyLife: { bird: false },
   presets: {
     work: { sounds: [['radio', 0.5], ['jet', 0.3], ['lullaby', 0.15]] },
-    read: { sounds: [['jet', 0.3], ['lullaby', 0.25], ['radio', 0.25]] },
-    sleep: { sounds: [['jet', 0.4], ['lullaby', 0.3], ['rain', 0.2]], night: true },
+    read: { sounds: [['jet', 0.3], ['lullaby', 0.25], ['radio', 0.25], ['purr', 0.3]] },
+    sleep: { sounds: [['jet', 0.4], ['lullaby', 0.3], ['rain', 0.2], ['purr', 0.25]], night: true },
   },
   objects: [
     { id: 'radio', target: 'radio', label: 'Casque · lofi', anchor: [1.52, 0.98, -0.74] },
     { id: 'porthole', target: 'jet', label: 'Hublot · les moteurs', anchor: [-1.7, 1.75, -2.9] },
     { id: 'cello', target: 'lullaby', label: 'Violoncelle · la berceuse', anchor: [0.8, 1.6, -2.3] },
     { id: 'lamp', target: 'night', label: 'Lampe de lecture · jour / nuit', anchor: [0.9, 3.04, -2.7] },
+    { id: 'cat', target: 'purr', label: 'Chaton · ronron', anchor: [-1.28, 0.64, 2.5] },
+    { id: 'ocarina', target: 'ocarina', label: 'Ocarina · une valse', anchor: [1.15, 0.6, 2.5] },
   ],
   sounds: [
     { id: 'radio', name: 'Casque lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'jet', name: 'Moteurs', chip: 'var(--c-jet)', volume: 0.45, sub: () => 'le souffle grave des réacteurs' },
     { id: 'lullaby', name: 'Berceuse', chip: 'var(--c-lullaby)', volume: 0.4, sub: () => 'un violoncelle qui berce' },
+    { id: 'ocarina', name: 'Ocarina', chip: 'var(--c-ocarina)', volume: 0.4, sub: () => 'une valse lente' },
+    { id: 'purr', name: 'Ronron', chip: 'var(--c-cat)', volume: 0.5, sub: () => 'le chaton dans son sac' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'à travers le fuselage' },
     { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
   ],

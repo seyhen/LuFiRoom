@@ -1,6 +1,6 @@
 # La carte « Bruit » (blanc, rose, brun, vert, bleu, violet)
 
-Une carte du mixeur dans **les dix-huit pièces** (son `noise`, dernière carte, volume par défaut 0,4, éteinte au départ), pour écouter du bruit de fond : se concentrer, couvrir un voisin, dormir. Comme la carte « Météo » (`rain`), c'est une **exception assumée** à la règle « pas de son répété d'une pièce à l'autre », et elle n'a pas d'objet 3D (pas de hotspot : le mixeur suffit).
+Une carte dans **les dix-huit pièces** (son `noise`, volume par défaut 0,4, éteinte au départ), rangée hors du mixeur : un bouton de la barre du haut, à côté de la météo, l'ouvre (`src/ui/NoisePicker.tsx` ; dans le mixeur, ses pastilles doublaient la hauteur de toutes les cartes, 2026-11-27), pour écouter du bruit de fond : se concentrer, couvrir un voisin, dormir. Comme la carte « Météo » (`rain`), c'est une **exception assumée** à la règle « pas de son répété d'une pièce à l'autre », et elle n'a pas d'objet 3D (pas de hotspot : le bouton du haut suffit).
 
 ## Ce qu'on règle
 
@@ -22,7 +22,7 @@ Changer de couleur ou de tonalité se fait en **fondu** (constante de temps 0,15
 - `src/audio/channels/noise.ts` : le graphe (gains de couleur, passe-bande vert, étagères, passe-haut). La source n'est branchée que quand le son joue (elle se débranche 3 s après l'extinction : arrêtée, elle ne coûte rien).
 - **Repli** si l'AudioWorklet manque ou si `addModule` échoue (message `console.warn`) : `src/audio/noiseGen.ts` écrit les mêmes formules dans trois tampons de **30 s** sans couture (fondu de 1 s de la queue dans la tête, puissance constante), environ 35 Mo. Les deux fichiers ont les mêmes constantes de niveau : garde-les d'accord.
 - `src/state/noise.ts` : types, noms et sous-titres des couleurs, lecture et écriture de `localStorage` (`chambre-lofi.noise`), nettoyage de ce qui vient d'un stockage ou d'un lien. L'état (`noise: { color, tilt }`) est dans le store, **partagé par toutes les pièces** comme les volumes ; `setNoiseColor`, `setNoiseTilt`.
-- `src/ui/NoiseControls.tsx` : les pastilles et le curseur, rendus par `MixerCard` sous le volume quand le son est `noise` (la carte est plus large : 236 px, 224 px sous 400 px de large).
+- `src/ui/NoiseControls.tsx` : les pastilles et le curseur, rendus par `MixerCard` sous le volume quand le son est `noise` ; la carte s'ouvre sous la barre du haut (`.nz-pop`, 260 px).
 
 ## Niveaux
 

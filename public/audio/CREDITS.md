@@ -75,6 +75,17 @@ Le bruit blanc, rose, brun, vert, bleu et violet est généré en direct par `pu
 | `radio/tokyo-drizzle` | Tokyo Drizzle | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 60 | 2026-10-18 |
 | `radio/kyoto-drizzle` | Kyoto Drizzle | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 60 | 2026-10-18 |
 | `radio/gentle-drizzle` | Gentle Drizzle | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 64 | 2026-10-18 |
+| `radio/late-night-study` | Late Night Study Session | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 155 s) | à confirmer par le propriétaire | 74 | 2026-11-27 |
+| `radio/midnight-rain-ambience` | Midnight Rain Ambience | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 164 s) | à confirmer par le propriétaire | 72 | 2026-11-27 |
+| `radio/midnight-rain-ambience-2` | Midnight Rain Ambience II | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 163 s) | à confirmer par le propriétaire | 72 | 2026-11-27 |
+| `radio/rainy-study-ambience` | Rainy Study Ambience | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 176 s) | à confirmer par le propriétaire | 72 | 2026-11-27 |
+| `radio/quiet-midnight-study` | Quiet Midnight Study | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 163 s) | à confirmer par le propriétaire | 72 | 2026-11-27 |
+| `radio/midnight-lofi-chill` | Midnight Lofi Chill | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 177 s) | à confirmer par le propriétaire | 72 | 2026-11-27 |
+| `radio/rainy-night-study` | Rainy Night Study | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 164 s) | à confirmer par le propriétaire | 73 | 2026-11-27 |
+| `radio/midnight-focus` | Midnight Focus | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 176 s) | à confirmer par le propriétaire | 75 | 2026-11-27 |
+| `radio/midnight-rain-study` | Midnight Rain Study | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 162 s) | à confirmer par le propriétaire | 75 | 2026-11-27 |
+| `radio/rainy-focus-session` | Rainy Focus Session | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 160 s) | à confirmer par le propriétaire | 73 | 2026-11-27 |
+| `radio/deep-rain-focus` | Deep Rain Focus | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 163 s) | à confirmer par le propriétaire | 72 | 2026-11-27 |
 
 ## Sons d'interface
 
@@ -85,7 +96,7 @@ Les vingt-huit morceaux sont ceux que le propriétaire a fournis (sept le 2026-1
 ## Sons synthétisés
 
 Tant qu'un son n'a pas d'enregistrement dans `loops` de sa pièce (`src/rooms/`), il reste synthétisé en direct (moteur de la phase 1) : rien à créditer. C'est le cas de la radio, tant qu'aucune piste n'est déclarée : ses cinq stations sont calculées en direct (`src/audio/stations.ts`).
-Chaque pièce a désormais des enregistrements pour ses sons (voir les sections ci-dessus). Restent synthétisés : le robinet, la mousse et la douche de la salle de bain (`faucet`, `suds`, `shower`, aucun fichier), le vent des dunes, les palmes et la source de la mare de l'oasis (`dunes`, `palms`, `oasis`, aucun fichier), la cloche de bouée du phare, les oiseaux et les grillons du jardin de l'onsen, la pluie du marché et les vagues du phare, ainsi que la radio.
+Chaque pièce a désormais des enregistrements pour ses sons (voir les sections ci-dessus). Restent synthétisés : le capybara de la salle de bain (`capybara` ; la mousse, la douche et le robinet sont enregistrés depuis le 2026-11-27, comme les sons de l'oasis et la volière de la serre), la berceuse et l'ocarina de l'avion (les moteurs `jet` sont enregistrés depuis le 2026-11-27), la cloche de bouée du phare, les oiseaux et les grillons du jardin de l'onsen, la pluie du marché et les vagues du phare, ainsi que la radio.
 
 ## Boucles ajoutées le 2026-10-17 (toit, onsen, phare, sous-marin, marché, plage, train)
 
@@ -143,6 +154,19 @@ Pixabay Content License (accord du propriétaire du projet), téléchargés depu
 | `treehouse/brook` | Location Stream 1 | freesound_community | 23371 |
 | `treehouse/cicadas` | Cicadas chirping at night | freesound_community | 54307 |
 
+## Sons des objets ajoutés le 2026-11-27 (salle de bain, oasis, serre)
+
+Pixabay Content License (accord du propriétaire du projet), téléchargés depuis le CDN de Pixabay à sa demande. Les sons « freesound_community » viennent de Freesound, redistribués par Pixabay. Mono, ramenés à −20 LUFS par `npm run audio`.
+
+| Fichier | Titre | Auteur | Id Pixabay | Retouches |
+|---|---|---|---|---|
+| `bathroom/suds` | Hot Tub Ambience | alex_jauk | 369758 | 45 s à partir de 3 s |
+| `bathroom/shower` | Running Shower Water Sound in Bathroom with Steady Stream | jadeallencook | 339233 | 45 s à partir de 3 s |
+| `oasis/palms` | Wind trough palm trees | dennish18 | 143053 | 60 s à partir de 2 s |
+| `oasis/oasis` | Small waterflow | kuzu420 | 252505 | 36,5 s à partir de 0,5 s |
+| `oasis/caravan` | small chimes | freesound_community | 22872 | 60 s à partir de 2 s |
+| `greenhouse/aviary` | Tropical bird sounds_01 | freesound_community | 19910 | 60 s à partir de 1 s |
+
 ## Sons Freesound (CC0, récupérés par `npm run source`)
 
 Licence **CC0** (domaine public) : aucune mention obligatoire. Aperçu MP3 de Freesound, coupé, ramené à −20 LUFS par `npm run audio`.
@@ -193,3 +217,6 @@ Licence **CC0** (domaine public) : aucune mention obligatoire. Aperçu MP3 de Fr
 | `laundromat/windowpiano` | Piano improvisation | Bradovic | <https://freesound.org/people/Bradovic/sounds/171326/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
 | `igloo/guitar` | Calm and thoughts.wav | Elmatute | <https://freesound.org/people/Elmatute/sounds/679746/> | CC0 | 60 s à partir de 2 s, mono | 2026-11-15 |
 | `submarine/jellies` | Resonating Ambient Drone with Distant Shimmering Voices | bassimat | <https://freesound.org/people/bassimat/sounds/875083/> | CC0 | 48 s à partir de 0 s, mono | 2026-11-15 |
+| `airplane/jet` | Airplane Interior Ambience | wesleywestmusic | <https://freesound.org/people/wesleywestmusic/sounds/680662/> | CC0 | 60 s à partir de 20 s, mono | 2026-11-27 |
+| `bathroom/faucet` | Bath running 1.wav | deleted_user_2104797 | <https://freesound.org/people/deleted_user_2104797/sounds/166328/> | CC0 | 45 s à partir de 15 s, mono | 2026-11-27 |
+| `oasis/dunes` | wind light desert day steady eerie with crickets.flac | kyles | <https://freesound.org/people/kyles/sounds/454361/> | CC0 | 60 s à partir de 20 s, stéréo | 2026-11-27 |

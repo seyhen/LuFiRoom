@@ -81,11 +81,12 @@ export function ArchWindow() {
  * `position` : le pied du plateau, sur la tablette.
  */
 export function SillCandles({ position }: { position: [number, number, number] }) {
-  const g = useRef<Group>(null!), light = useRef<PointLight>(null!), glow = useRef<Sprite>(null!)
+  const g = useRef<Group>(null!), light = useRef<PointLight>(null!), bounce = useRef<PointLight>(null!), glow = useRef<Sprite>(null!)
   useSquash('lamp', g)
   useFrame(() => {
     const e = smooth(mood.night), on = isActive(useStore.getState(), 'lamp')
     light.current.intensity = (0.2 + e * 1.7) * Math.PI
+    bounce.current.intensity = e * 0.8 * Math.PI
     glow.current.material.opacity = on ? 0.25 + e * 0.5 : 0.15
   })
   return (
@@ -103,6 +104,8 @@ export function SillCandles({ position }: { position: [number, number, number] }
         <spriteMaterial map={glowTex} transparent depthWrite={false} blending={AdditiveBlending} opacity={0.15} />
       </sprite>
       <pointLight ref={light} color={0xffc27a} intensity={0} distance={7} decay={1.4} position={[0, 0.3, 0.2]} />
+      {/* le reflet de l'avant, la nuit : sans lui la douche, le lavabo et la plante de gauche restaient dans le noir (monde ≈ [-1, 2.2, 2.6]) */}
+      <pointLight ref={bounce} color={0xffd6c8} intensity={0} distance={10} decay={1.3} position={[-2.0, 0.45, 5.43]} />
     </group>
   )
 }

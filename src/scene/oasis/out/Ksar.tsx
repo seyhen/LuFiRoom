@@ -1,4 +1,4 @@
-import { Part, rbox, worldUV } from '../../parts'
+import { Part, cyl, rbox, worldUV } from '../../parts'
 import { FarCamel } from './Camel'
 import { Buttes } from './Mesa'
 import { groundY } from './ground'
@@ -31,6 +31,13 @@ function Village() {
             {/* le chaperon de terre, plus large que le mur */}
             <Part geo={rbox(w + 0.14, 0.14, d + 0.14, 0.05)} m={O.ksarCap} p={[0, h + 0.05, 0]} castShadow={false} />
             {crenel && [[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([sx, sz]) => <Part key={`${sx}${sz}`} geo={rbox(0.36, 0.34, 0.36, 0.06)} m={O.ksarCap} p={[sx * (w / 2 - 0.08), h + 0.3, sz * (d / 2 - 0.08)]} castShadow={false} />)}
+            {/* les rondins de palmier qui portent le toit et dépassent du pisé, sur les deux faces qu'on voit (sans eux, des boîtes nues) */}
+            {Array.from({ length: Math.floor(d / 0.5) }, (_, k) => -d / 2 + 0.25 + k * 0.5 + (d % 0.5) / 2).map((bz) => (
+              <Part key={`x${bz}`} geo={cyl(0.045, 0.045, 0.34, 6)} m={O.barkFar} p={[w / 2 + 0.06, h - 0.1, bz]} rotation-z={Math.PI / 2} castShadow={false} />
+            ))}
+            {Array.from({ length: Math.floor(w / 0.5) }, (_, k) => -w / 2 + 0.25 + k * 0.5 + (w % 0.5) / 2).map((bx) => (
+              <Part key={`z${bx}`} geo={cyl(0.045, 0.045, 0.34, 6)} m={O.barkFar} p={[bx, h - 0.1, d / 2 + 0.06]} rotation-x={Math.PI / 2} castShadow={false} />
+            ))}
           </group>
         )
       })}

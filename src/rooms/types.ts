@@ -48,12 +48,12 @@ export type SoundId =
   | 'clock' | 'aquarium'
   // la cabane : le chien qui dort sur le tapis, devant la cheminée
   | 'snore'
-  // la salle de bain : le robinet de la baignoire, la mousse du bain, la douche à effet pluie
-  | 'faucet' | 'suds' | 'shower'
-  // l'oasis du désert : le vent des dunes, les palmes du palmier, la source de la mare
-  | 'dunes' | 'palms' | 'oasis'
-  // l'avion de nuit : le souffle des moteurs (le hublot), la berceuse du violoncelle
-  | 'jet' | 'lullaby'
+  // la salle de bain : le robinet de la baignoire, la mousse du bain, la douche à effet pluie, le bain aux yuzus du capybara
+  | 'faucet' | 'suds' | 'shower' | 'capybara'
+  // l'oasis du désert : le vent des dunes, les palmes du palmier, la source de la mare, les clochettes de la caravane
+  | 'dunes' | 'palms' | 'oasis' | 'caravan'
+  // l'avion de nuit : le souffle des moteurs (le hublot), la berceuse du violoncelle, l'ocarina d'un passager
+  | 'jet' | 'lullaby' | 'ocarina'
 /** Un objet interactif de la scène. */
 export type ObjectId =
   | 'radio' | 'turntable' | 'window' | 'fan' | 'cat' | 'lamp' | 'fireplace' | 'espresso' | 'guests' | 'books'
@@ -73,11 +73,11 @@ export type ObjectId =
   | 'koto'
   | 'clock' | 'aquarium'
   | 'dog'
-  | 'faucet' | 'foam' | 'shower'
-  // l'oasis du désert : l'auvent de toile (le vent des dunes), le palmier, la mare
-  | 'awning' | 'datepalm' | 'waterhole'
-  // l'avion de nuit : le hublot (les moteurs), le violoncelle sanglé sur son siège
-  | 'porthole' | 'cello'
+  | 'faucet' | 'foam' | 'shower' | 'capybara'
+  // l'oasis du désert : l'auvent de toile (le vent des dunes), le palmier, la mare, le dromadaire accroupi (les clochettes)
+  | 'awning' | 'datepalm' | 'waterhole' | 'camel'
+  // l'avion de nuit : le hublot (les moteurs), le violoncelle sanglé sur son siège, l'ocarina d'un passager (le chaton du sac est `cat`)
+  | 'porthole' | 'cello' | 'ocarina'
 /** Ce qu'un objet pilote : un son, ou le passage jour / nuit. */
 export type Target = SoundId | 'night'
 

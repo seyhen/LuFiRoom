@@ -10,7 +10,7 @@ import { Batch, Part, SPH, cyl, type Item, type V3 } from '../parts'
 import { Static } from '../Static'
 import { seeded } from '../paint'
 import { D } from './materials'
-import { crownFronds, frondMatrix, mergeFronds, trunkGeo } from './palm'
+import { crownFronds, frondMatrix, mergeFronds, trunkGeo } from './palmGeo'
 
 /** Le palmier de la pièce : le pied, la hauteur du tronc et son décalage au sommet (il penche vers la mare et vers nous). */
 export const PALM = { at: [2.75, 0, -2.5] as V3, h: 3.3, lean: [-0.15, 0.55] as [number, number] }
@@ -66,9 +66,12 @@ export function DatePalm() {
           const a = i * 1.05 + 0.3
           return <Rock key={i} v={6 + (i % 2)} p={[Math.cos(a) * 0.42, -0.02, Math.sin(a) * 0.4]} s={[0.14, 0.06, 0.1]} ry={a} m={D.stone} shadow={false} />
         })}
-        {[0, 1, 2, 3].map((i) => <Leaf key={i} kind="pinnate" w={0.1} l={0.55} m={D.frond2} p={[0.34, 0.02, 0.18]} r={[-1.0 + i * 0.12, i * 1.6, 0]} />)}
+        {/* le rejet : un petit palmier, un bulbe et cinq palmes qui s'ouvrent (serrées à 57°, elles faisaient une pomme de pin) */}
+        <Part geo={SPH} m={D.barkBase} scale={[0.07, 0.09, 0.07]} p={[0.34, 0.05, 0.18]} castShadow={false} />
+        {[0, 1, 2, 3, 4].map((i) => <Leaf key={i} kind="pinnate" w={0.11} l={0.6} m={D.frond2} p={[0.34, 0.1, 0.18]} r={[-0.55 - (i % 2) * 0.15, i * 1.26 + 0.3, 0]} />)}
         <Leaf kind="pinnate" w={0.17} l={1.0} m={D.frondDry} p={[-0.7, 0.03, 0.55]} r={[-0.08, 0.7, 0]} />
-        <Leaf kind="pinnate" w={0.15} l={0.85} m={D.frondDry} p={[0.9, 0.03, 0.75]} r={[-0.05, 3.9, 0]} />
+        {/* tournée en travers de la vue : dans l'axe de la caméra, elle se tassait en pomme de pin */}
+        <Leaf kind="pinnate" w={0.15} l={0.85} m={D.frondDry} p={[0.9, 0.03, 0.75]} r={[-0.05, 3.9 + Math.PI / 2, 0]} />
         {/* le haut du tronc : la collerette des bases de palmes coupées, serrées */}
         <group position={CROWN}>
           {Array.from({ length: 10 }, (_, i) => {

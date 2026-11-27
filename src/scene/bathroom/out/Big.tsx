@@ -159,7 +159,6 @@ export function BigBubbles({ slots, onCaps }: { slots: Slot[]; onCaps: (f: () =>
                 <sprite scale={1.5} position={[0, 0.76, 0]} raycast={noRay}>
                   <spriteMaterial map={bulbGlowTex} blending={AdditiveBlending} transparent depthWrite={false} opacity={0.7} />
                 </sprite>
-                <mesh geometry={SPH_MID} material={O.flame} scale={[0.028, 0.07, 0.028]} position={[0.58, 0.155, 0.3]} raycast={noRay} />
               </>
             )}
           </group>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type RefObject } from 'react'
 import { useStore } from '../state/store'
 import { SKY_NAMES, WEATHER_KINDS, skyOf, type Sky } from '../state/weather'
 import { useT } from '../i18n'
@@ -6,14 +6,8 @@ import { skyIcons, weatherIcon } from './icons'
 
 const CHOICES: Sky[] = ['clear', ...WEATHER_KINDS]
 
-/** Le sélecteur de météo, dans la barre du haut : son icône dit le temps qu'il fait ; il ouvre la liste, un toucher l'applique. */
-export function WeatherPicker() {
-  const sky = useStore(skyOf)
-  const t = useT()
-  const [open, setOpen] = useState(false)
-  const root = useRef<HTMLDivElement>(null)
-
-  // Le menu se ferme quand on touche ailleurs ou sur Échap.
+/** Un menu de la barre du haut se ferme quand on touche ailleurs ou sur Échap (météo, bruit). */
+export function useDismiss(open: boolean, setOpen: (v: boolean) => void, root: RefObject<HTMLElement | null>) {
   useEffect(() => {
     if (!open) return
     const away = (e: PointerEvent) => {
@@ -26,7 +20,16 @@ export function WeatherPicker() {
       removeEventListener('pointerdown', away)
       removeEventListener('keydown', esc)
     }
-  }, [open])
+  }, [open, setOpen, root])
+}
+
+/** Le sélecteur de météo, dans la barre du haut : son icône dit le temps qu'il fait ; il ouvre la liste, un toucher l'applique. */
+export function WeatherPicker() {
+  const sky = useStore(skyOf)
+  const t = useT()
+  const [open, setOpen] = useState(false)
+  const root = useRef<HTMLDivElement>(null)
+  useDismiss(open, setOpen, root)
 
   const choose = (w: Sky) => {
     useStore.getState().setWeather(w) // dans le geste : l'audio peut démarrer

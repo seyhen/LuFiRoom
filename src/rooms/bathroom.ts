@@ -5,8 +5,8 @@ import { WEATHER_LOOPS } from './weather'
 
 // Une salle de bain de rêve un soir de pluie fine : baignoire à pieds de lion pleine de mousse rose, carrelage pastel, fenêtre embuée sur un
 // monde de bulles (la pièce flotte sur un banc de mousse de bain rose, dans un ciel pastel plein de bulles de savon irisées dont six
-// grosses gardent une petite scène). Sons nouveaux (le robinet de la baignoire, la mousse du bain, la douche à effet pluie) synthétisés pour
-// l'instant : leurs enregistrements se déclareront dans `loops` (docs/ASSETS.md), sources et licences dans public/audio/CREDITS.md.
+// grosses gardent une petite scène). Sons nouveaux (le robinet de la baignoire, la mousse du bain, la douche à effet pluie) enregistrés
+// (`loops`, docs/ASSETS.md) ; le capybara reste synthétisé. Sources et licences dans public/audio/CREDITS.md.
 
 export const bathroom: Room = {
   id: 'bathroom',
@@ -35,13 +35,19 @@ export const bathroom: Room = {
   },
   loops: {
     ...WEATHER_LOOPS,
+    // une baignoire qui se remplit (Freesound 166328, CC0)
+    faucet: { src: 'audio/bathroom/faucet', gain: 0.29 }, // mesuré par audio:levels (0,8 : 8,8 dB au-dessus de la médiane ; le base de 4,5 est fait pour la synthèse)
+    // une douche qui coule régulièrement (Pixabay 339233, jadeallencook)
+    shower: { src: 'audio/bathroom/shower', gain: 0.26 },
+    // un jacuzzi, les bulles qui montent (Pixabay 369758, alex_jauk)
+    suds: { src: 'audio/bathroom/suds', gain: 0.48 },
   },
   stations: ['rosee', 'soleil-bas', 'nuit-douce', 'brume'],
   playlist: PLAYLIST,
   presets: {
     work: { sounds: [['radio', 0.55], ['shower', 0.25], ['rain', 0.3]] },
     read: { sounds: [['faucet', 0.3], ['suds', 0.25], ['radio', 0.3], ['rain', 0.35]] },
-    sleep: { sounds: [['shower', 0.35], ['suds', 0.2], ['rain', 0.4]], night: true },
+    sleep: { sounds: [['shower', 0.35], ['suds', 0.2], ['rain', 0.4], ['capybara', 0.3]], night: true },
   },
   objects: [
     { id: 'radio', target: 'radio', label: 'Kalimba · lofi', anchor: [1.5, 0.84, 0.7] },
@@ -49,12 +55,14 @@ export const bathroom: Room = {
     { id: 'foam', target: 'suds', label: 'Mousse · le pétillement', anchor: [0.7, 0.6, -2.02] },
     { id: 'shower', target: 'shower', label: 'Douche · la pluie sur le carrelage', anchor: [-2.3, 2.52, 1.15] },
     { id: 'lamp', target: 'night', label: 'Bougies · jour / nuit', anchor: [1.15, 2.1, -2.88] },
+    { id: 'capybara', target: 'capybara', label: 'Capybara · le bain de yuzus', anchor: [-0.42, 0.34, 1.05] },
   ],
   sounds: [
     { id: 'radio', name: 'Kalimba lofi', chip: 'var(--c-radio)', volume: 0.7, sub: radioSub(PLAYLIST.length) },
     { id: 'faucet', name: 'Robinet', chip: 'var(--c-faucet)', volume: 0.45, sub: () => 'le filet dans le bain' },
     { id: 'suds', name: 'Mousse', chip: 'var(--c-suds)', volume: 0.4, sub: () => 'la mousse qui pétille' },
     { id: 'shower', name: 'Douche', chip: 'var(--c-shower)', volume: 0.45, sub: () => 'la pluie sur le carrelage' },
+    { id: 'capybara', name: 'Capybara', chip: 'var(--c-capybara)', volume: 0.45, sub: () => 'son bain chaud aux yuzus' },
     { id: 'rain', name: 'Météo', chip: 'var(--c-rain)', volume: 0.6, sub: () => 'sur la vitre embuée' },
     { id: 'noise', name: 'Bruit', chip: 'var(--c-noise)', volume: 0.4, sub: () => 'souffle continu' },
   ],

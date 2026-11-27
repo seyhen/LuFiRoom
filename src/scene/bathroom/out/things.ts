@@ -71,7 +71,7 @@ export function monstera() {
   return join(parts)
 }
 
-/** Un pot de bougie bleu givré à étiquette crème, de la cire, une mèche ; en plus, un petit bougeoir de laiton. */
+/** Un pot de bougie bleu givré à étiquette crème, de la cire, une mèche (le petit bougeoir d'à côté sortait de la bulle : retiré). */
 export function candle() {
   return join([
     bake(cyl(0.3, 0.28, 0.5, 24), 0x9ccbe0, [0, 0.25, 0]),
@@ -80,8 +80,6 @@ export function candle() {
     bake(cyl(0.255, 0.255, 0.012, 22), 0xfff6e8, [0, 0.49, 0]),
     bake(cyl(0.012, 0.012, 0.09, 6), 0x3b2c2c, [0, 0.54, 0]),
     sph([0.06, 0.505, 0.05], [0.05, 0.016, 0.04], 0xfff6e8),
-    bake(cyl(0.12, 0.14, 0.03, 18), 0xe0b25a, [0.58, 0.015, 0.3]),
-    bake(cyl(0.075, 0.075, 0.07, 16), 0xfff1de, [0.58, 0.065, 0.3]),
   ])
 }
 

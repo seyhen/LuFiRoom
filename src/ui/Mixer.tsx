@@ -78,7 +78,8 @@ export function Mixer({ panelRef }: { panelRef: Ref<HTMLDivElement> }) {
           </div>
         </div>
         <div className="mix" id="mix-row" hidden={shut} ref={row} onScroll={fades} key={id /* chaque pièce repart de la première carte */}>
-          {sounds.map((s) => (
+          {/* la carte « Bruit » vit dans la barre du haut (NoisePicker) : ses pastilles doublaient la hauteur du mixeur */}
+          {sounds.filter((s) => s.id !== 'noise').map((s) => (
             // Avec des pistes enregistrées, la radio les joue dans l'ordre mélangé : un bouton « morceau suivant » ; sinon, les stations.
             <MixerCard key={s.id} sound={s} extra={s.id === 'radio' ? (playlist.length ? <TrackButton noun={s.skip} /> : <StationButton noun={s.skip} />) : undefined} />
           ))}

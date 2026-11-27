@@ -4,7 +4,7 @@ import type { Room } from './types'
 import { WEATHER_LOOPS } from './weather'
 
 // Une serre victorienne un soir de pluie. Sons nouveaux (le chœur de grenouilles du bassin, la boîte à musique, le tonneau d'eau de pluie,
-// la volière d'oiseaux tropicaux) synthétisés pour l'instant : leurs enregistrements se déclareront dans `loops` (docs/ASSETS.md), sources et licences dans
+// la volière d'oiseaux tropicaux) enregistrés (`loops`, docs/ASSETS.md) ; sources et licences dans
 // public/audio/CREDITS.md.
 
 export const greenhouse: Room = {
@@ -34,6 +34,8 @@ export const greenhouse: Room = {
     ...WEATHER_LOOPS,
     frogs: { src: 'audio/greenhouse/frogs', gain: 0.8 },
     musicbox: { src: 'audio/greenhouse/musicbox', gain: 0.8 },
+    // des oiseaux tropicaux (Pixabay 19910)
+    aviary: { src: 'audio/greenhouse/aviary', gain: 0.26 },
     rainbarrel: { src: 'audio/greenhouse/rainbarrel', gain: 0.8 },
     fountain: { src: 'audio/greenhouse/fountain', gain: 0.8 },
   },

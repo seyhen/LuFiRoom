@@ -4,7 +4,7 @@ import { seeded } from '../../../math'
 import { Leaf } from '../../nature/Leaf'
 import { Foliage } from '../../nature/Foliage'
 import { Rock } from '../../nature/Rock'
-import { crownFronds, mergeFronds, trunkGeo } from '../palm'
+import { crownFronds, mergeFronds, trunkGeo } from '../palmGeo'
 import { LAKE, groundY } from './ground'
 import { O } from './materials'
 

@@ -111,10 +111,15 @@ export function FrontCorner() {
       </group>
       {/* les sacoches rayées (khurjin) jetées côte à côte, leur sangle, deux glands */}
       <group position={[2.9, 0, 1.45]} rotation-y={0.9}>
-        <Part geo={worldUV(rbox(0.36, 0.34, 0.2, 0.09), 0.5)} m={D.cushionA} p={[0, 0.17, -0.2]} />
-        <Part geo={worldUV(rbox(0.36, 0.34, 0.2, 0.09), 0.5)} m={D.cushionA} p={[0, 0.17, 0.2]} rotation-y={0.1} />
-        <Part geo={rbox(0.12, 0.03, 0.34, 0.012)} m={D.leather} p={[0, 0.355, 0]} castShadow={false} />
-        {[-0.2, 0.2].map((z) => <Part key={z} geo={SPH} m={D.tassel} scale={0.03} p={[0.19, 0.22, z]} castShadow={false} />)}
+        {/* couchées à plat (debout, elles se lisaient comme deux cubes empilés) : deux poches molles reliées par la bande, un rabat de cuir et un gland chacune */}
+        {[-1, 1].map((s) => (
+          <group key={s} position={[0, 0, s * 0.21]} rotation-y={s * 0.06}>
+            <Part geo={worldUV(rbox(0.4, 0.15, 0.32, 0.07), 0.5)} m={D.cushionA} p={[0, 0.075, 0]} />
+            <Part geo={rbox(0.2, 0.018, 0.3, 0.008)} m={D.leather} p={[0.1, 0.158, 0]} rotation-z={-0.08} castShadow={false} />
+            <Part geo={SPH} m={D.tassel} scale={[0.03, 0.04, 0.03]} p={[0.22, 0.12, 0]} castShadow={false} />
+          </group>
+        ))}
+        <Part geo={rbox(0.16, 0.03, 0.14, 0.012)} m={D.leather} p={[-0.02, 0.1, 0]} castShadow={false} />
       </group>
       {/* le rouleau de corde au pied du sac */}
       <group position={[1.85, 0.02, 2.0]}>

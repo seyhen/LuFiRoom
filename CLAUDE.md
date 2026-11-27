@@ -155,6 +155,7 @@ Les défauts qui reviennent le plus, à traquer avant de dire « fini » (explic
 - **Un appui, un trait dessiné dans une texture au mauvais endroit** : l'appui de fenêtre de `farWall()` (atelier) était à y = 74 au milieu de la vitre (16 à 88) et barrait chaque fenêtre ; à vérifier sur une texture de façade en gros plan, de jour comme de nuit (2026-11-11).
 - **Un objet pas assez abouti** : lisible mais pauvre. Chaque objet a 5 formes au moins, deux matières, une trace d'usage et un accessoire voisin ; l'extérieur visible de la pièce est habillé (voir le skill `audit-room`, « Pas assez abouti »).
 - **Tout ce qui regarde la caméra est dans le noir** : une seule lampe au centre d'une pièce ouverte éclaire les faces tournées vers elle, et la caméra voit les autres (la tente, retirée le 2026-11-20 : caisse, bocal, bottes noirs de nuit). Ajoute un reflet doux venu de l'avant (une seconde lumière ponctuelle, `bounce` de `oasis/Lantern.tsx`), jamais plus de trois lumières. Et un objet minuscule posé sur une surface (une botte de 3 pièces, un ukulélé aux cordes épaisses) ne se lit pas : vérifie le gros plan, le contour d'abord (une botte est un contour extrudé, `outline`).
+- **Deux fichiers dont le nom ne diffère que par la casse** (`palm.ts` et `Palm.tsx`) : sous Windows, `import './Palm'` peut ouvrir l'autre, et la pièce plante en dev (oasis, 2026-11-27). Un nom par fichier, sans jeu de majuscules.
 - **Une radio qui ne va pas avec la pièce** : l'objet qui joue la musique est propre à la pièce (tourne-disque, shamisen, boombox, gramophone, ukulélé, jukebox…), pas une radio partout. Il a son id `radio`, le hook `useBeat` (`src/scene/objects/useBeat.ts`) et son libellé.
 
 Comment travailler un objet :
@@ -193,7 +194,7 @@ Pour vérifier qu'un test mord : casse une règle à la main (la √ de `sliderO
 
 Le test de fumée (`scripts/smoke.mjs`) sert `dist/` avec `vite preview` et ouvre chaque pièce dans Chromium sans écran (WebGL logiciel),
 en 390 px tactile puis en 1440 px : la pièce se charge, le canvas dessine, un `<button>` avec `aria-label` et `aria-pressed` par objet,
-une carte par son dans le mixeur, un clic sur une carte allume un son ; aucune erreur en console ni « Enregistrement indisponible ».
+une carte par son dans le mixeur (la carte « Bruit » dans la barre du haut), un clic sur une carte allume un son ; aucune erreur en console ni « Enregistrement indisponible ».
 Ce qu'il attend vient des fiches `src/rooms/*.ts` : une pièce ajoutée est testée d'office. Compte 3 à 6 minutes (4 navigateurs en parallèle).
 Il faut le Chromium de Playwright : `npx playwright install chromium` une fois (ou `LOFI_CHROMIUM` = chemin d'un Chromium).
 Il affiche les triangles par image de chaque pièce et échoue au-dessus de `LOFI_SMOKE_MAX_TRIANGLES` (1 000 000 par défaut) ; les compteurs viennent de `window.__lofiStats`, chargé seulement si l'adresse porte `?stats` (`src/scene/stats.ts`, absent du bundle normal ; `window.__lofi` reste réservé au dev).

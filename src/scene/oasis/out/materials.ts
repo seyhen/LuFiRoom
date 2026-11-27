@@ -39,6 +39,12 @@ export const O = {
   blanketIndigo: near(far(0x2a417d, { roughness: 0.92 })),
   saddle: near(far(0x6a3e22, { roughness: 0.8 })),
   rope: near(far(0xd8c69a, { roughness: 0.9 })),
+  /** Le cuivre des clochettes du dromadaire. */
+  bellBrass: near(far(0xb87428, { roughness: 0.3, metalness: 0.5, emissive: 0x5a3008, emissiveIntensity: 0.1 })),
+  /** Les pompons de laine du harnais. */
+  pompomRed: near(far(0xc0402a, { roughness: 0.95 })),
+  pompomBlue: near(far(0x2a417d, { roughness: 0.95 })),
+  bellDark: near(far(0x6a4a24, { roughness: 0.6 })),
   glow: new SpriteMaterial({ map: glowTex, color: 0xffc070, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }),
   ember: new MeshBasicMaterial({ color: 0xff7a2a }),
 }

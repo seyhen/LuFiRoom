@@ -58,8 +58,9 @@ export function Oud({ position, ry = 0 }: { position: V3; ry?: number }) {
             <Part geo={SPH} m={D.featherDark} scale={[0.04, 0.0045, 0.026]} p={[-0.07, 0.0065, 0.0]} castShadow={false} />
           </group>
         </Static>
-        {/* l'oud : posé à plat sur le coussin, la coque enfoncée */}
-        <group position={[0.02, CUSHION_TOP + 0.02, 0.0]} rotation-y={0.1} scale={SC}>
+        {/* l'oud : couché sur le flanc, la table tournée vers la caméra, la coque posée sur le coussin (à plat et enfoncée, on ne voyait
+            qu'un disque pâle, et la coque traversait le coussin). Point le plus bas de la coque inclinée : √(b²cos²θ + a²sin²θ) ≈ 0,23. */}
+        <group position={[0.02, CUSHION_TOP + 0.215, -0.05]} rotation={[0.45, 0.1, 0]} scale={SC}>
           <Static>
             {/* la caisse : deux coques en poire (la grande côté chevalet, la petite côté manche) */}
             <mesh geometry={BOWL} material={bowlMat} position={[0.04, 0, 0]} scale={[0.2, 0.11, 0.164]} castShadow />

@@ -290,6 +290,12 @@ html.night .sky-veil.snowy { background: linear-gradient(180deg, rgba(150, 160, 
 .sky-menu button:hover { background: var(--accent-soft) }
 .sky-menu button[aria-pressed=true] { background: var(--accent-soft); color: var(--accent) }
 .sky-menu button:focus-visible { outline: 2px solid var(--accent) }
+/* la carte « Bruit », ouverte sous la barre du haut, calée sur son bord droit (sous son bouton, elle sortait de l'écran à gauche en 390 px) */
+.tools { position: relative }
+.sky-pick.nz-pick { position: static }
+.nz-pop { position: absolute; right: 0; top: calc(100% + 8px); z-index: 6; width: min(260px, calc(100vw - 32px)); display: flex;
+  background: var(--bg); border-radius: 22px; box-shadow: var(--shadow) }
+.nz-pop .card { flex: 1 1 auto }
 
 /* 360 px : cartes un peu plus étroites et fondu plus court, pour qu'un bout net de la carte suivante dépasse */
 @media (max-width: 399px) {

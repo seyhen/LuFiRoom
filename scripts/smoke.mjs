@@ -140,7 +140,7 @@ async function testRoom(page, vp, room, problems) {
           document.querySelectorAll('.mix .card').length === nSounds
         )
       },
-      { name: room.name, nObjects: room.objects.length, nSounds: room.sounds.length },
+      { name: room.name, nObjects: room.objects.length, nSounds: room.sounds.filter((s) => s.id !== 'noise').length },
       // Le toit met de 35 à 70 s à se compiler quand 4 navigateurs se partagent le WebGL logiciel (CI) : 60 s était trop juste.
       { timeout: 120_000 },
     )
@@ -177,7 +177,7 @@ async function testRoom(page, vp, room, problems) {
       cs.map((c) => ({ name: c.querySelector('.nm')?.textContent.trim(), pressed: c.querySelector('button.tg')?.getAttribute('aria-pressed'), range: !!c.querySelector('input[type=range][aria-label]') })),
     )
     const names = cards.map((c) => c.name)
-    for (const s of room.sounds) if (!names.includes(s.name)) errs.push(`carte manquante dans le mixeur : « ${s.name} »`)
+    for (const s of room.sounds) if (s.id !== 'noise' && !names.includes(s.name)) errs.push(`carte manquante dans le mixeur : « ${s.name} »`)
     for (const c of cards) if (!['true', 'false'].includes(c.pressed) || !c.range) errs.push(`carte mal formée : ${JSON.stringify(c)}`)
 
     // Un geste : clic sur la carte d'un son (pas la radio, qui télécharge un morceau entier) ; il s'allume, puis s'éteint.
@@ -192,10 +192,11 @@ async function testRoom(page, vp, room, problems) {
     await page.waitForFunction((el) => el.getAttribute('aria-pressed') === 'false', await toggle.elementHandle(), { timeout: 30_000 })
     mark(`son « ${sound.id} »`)
 
-    // La carte « Bruit » (dans toutes les pièces, sans objet 3D) : six pastilles de couleur et la tonalité, des boutons et un curseur accessibles.
+    // La carte « Bruit » (dans toutes les pièces, sans objet 3D), dans la barre du haut : son bouton l'ouvre ; six pastilles de couleur et la tonalité, des boutons et un curseur accessibles.
     // Un clic sur une pastille la choisit et allume le bruit (le worklet se charge) ; un second clic sur la carte l'éteint.
-    const noiseCard = page.locator('.mix .card.noise')
-    if ((await noiseCard.count()) !== 1) errs.push('carte « Bruit » absente du mixeur')
+    await page.locator('.nz-pick > button').click()
+    const noiseCard = page.locator('.nz-pop .card.noise')
+    if ((await noiseCard.count()) !== 1) errs.push('carte « Bruit » absente de la barre du haut')
     else {
       const chips = await noiseCard.locator('.nz-chip').evaluateAll((bs) => bs.map((b) => ({ label: b.getAttribute('aria-label'), pressed: b.getAttribute('aria-pressed'), w: b.offsetWidth, h: b.offsetHeight })))
       if (chips.length !== 6 || chips.some((c) => !c.label || !['true', 'false'].includes(c.pressed) || c.w < 44 || c.h < 44)) errs.push(`pastilles du bruit mal formées : ${JSON.stringify(chips)}`)
