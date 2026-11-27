@@ -7,7 +7,6 @@ import { loadScene } from '../scene/scenes'
 import { clockNight, holdFor } from './daylight'
 import { isWeather, type WeatherKind } from './weather'
 import { clampTilt, loadNoise, storeNoise, type NoiseColor, type NoiseSetting } from './noise'
-import { fanTap, loadFan, storeFan, type FanSpeed } from './fan'
 import { MAX_SAVED, MIX_VERSION, loadMixes, mixFromSearch, mixName, sliderOf, storeLast, storeMixes, type Mix, type SavedMix } from './mixes'
 
 type PerSound<T> = Record<SoundId, T>
@@ -34,8 +33,6 @@ export interface Store {
   vol: PerSound<number>
   /** La carte « Bruit » : sa couleur et sa tonalité (voir state/noise.ts). Elle joue quand le son `noise` est allumé. */
   noise: NoiseSetting
-  /** La vitesse du ventilateur de la chambre (voir state/fan.ts). Elle compte quand le son `fan` est allumé. */
-  fan: FanSpeed
   /** Volume général (0 à 1), par-dessus le mélange : propre à l'appareil, il ne fait pas partie des ambiances. */
   master: number
   /** « Sons d'interface » : le pop d'allumage et d'extinction, le carillon jour / nuit. Propre à l'appareil, hors des ambiances. */
@@ -69,10 +66,8 @@ export interface Store {
   /** Place prise par le titre (en haut) et le mixeur (en bas), en px : la pièce se cadre entre les deux. */
   insets: { top: number; bottom: number }
   toggle: (target: Target) => void
-  /** Toucher un objet de la scène (son hotspot ou lui-même) : comme `toggle`, sauf le ventilateur qui passe à la vitesse suivante. */
+  /** Toucher un objet de la scène (son hotspot ou lui-même) : comme `toggle`. */
   touch: (target: Target) => void
-  /** Choisit la vitesse du ventilateur et l'allume (comme choisir une couleur de bruit). */
-  setFanSpeed: (f: FanSpeed) => void
   /** Choisit la météo et l'allume, ou « clear » : la carte « Météo » s'éteint. */
   setWeather: (w: WeatherKind | 'clear') => void
   /** Choisit la couleur du bruit et l'allume (comme choisir une météo). */
@@ -203,7 +198,6 @@ export const useStore = create<Store>()((set, get, api) => ({
   // `volume` des fiches : le niveau sonore d'origine (échelle d'amplitude) ; le curseur le montre à sa position sur la courbe d'oreille.
   vol: perSound((s) => sliderOf(s.volume)),
   noise: loadNoise(),
-  fan: loadFan(),
   master: savedMaster(),
   uiSounds: savedUiSounds(),
   weather: savedWeather(),
@@ -230,7 +224,6 @@ export const useStore = create<Store>()((set, get, api) => ({
       night: s.night,
       ...(on.includes('rain') ? { weather: s.weather } : {}),
       ...(on.includes('noise') ? { noise: s.noise } : {}),
-      ...(on.includes('fan') ? { fan: s.fan } : {}),
       // La station ne compte que si la radio joue (et si elle joue des stations : sans piste enregistrée).
       ...(on.includes('radio') && !roomById(s.room).playlist.length ? { station: s.station } : {}),
     }
@@ -257,12 +250,10 @@ export const useStore = create<Store>()((set, get, api) => ({
       rememberStation(m.room, station)
       if (m.weather) rememberWeather(m.weather)
       if (m.noise) storeNoise(m.noise)
-      if (m.fan) storeFan(m.fan)
       set((s) => ({
         station,
         ...(m.weather ? { weather: m.weather } : {}),
         ...(m.noise ? { noise: m.noise } : {}),
-        ...(m.fan ? { fan: m.fan } : {}),
         ...byHand(m.night),
         vol: { ...s.vol, ...m.vol },
         on: { ...perSound(() => false), ...Object.fromEntries(sounds.filter((x) => m.on.includes(x.id)).map((x) => [x.id, true])) },
@@ -287,20 +278,7 @@ export const useStore = create<Store>()((set, get, api) => ({
   setSleep: (minutes) => set({ sleepEnd: minutes === null ? null : Date.now() + minutes * 60_000 }),
   // Toucher un objet, son hotspot ou sa carte du mixeur. Sans effet pendant une transition.
   toggle: (target) => set((s) => (s.leaving ? s : { taps: s.taps + 1, ...flip(s, target) })),
-  touch: (target) => {
-    // Le ventilateur allumé passe à la vitesse suivante sans s'éteindre ; après « Fort » il s'éteint et repart de « Faible ».
-    if (target === 'fan' && !get().leaving) {
-      const s = get(), next = fanTap(s.on.fan, s.fan)
-      if (next.speed !== s.fan) storeFan(next.speed)
-      return set({ taps: s.taps + 1, ...flip(s, 'fan'), fan: next.speed, on: { ...s.on, fan: next.on } })
-    }
-    get().toggle(target)
-  },
-  setFanSpeed: (fan) => {
-    if (get().leaving) return
-    storeFan(fan)
-    set((s) => ({ taps: s.taps + 1, fan, on: { ...s.on, fan: true } }))
-  },
+  touch: (target) => get().toggle(target),
   setWeather: (w) => {
     if (get().leaving) return
     if (w === 'clear') return set((s) => ({ taps: s.taps + 1, on: { ...s.on, rain: false } }))
@@ -376,7 +354,7 @@ export const useStore = create<Store>()((set, get, api) => ({
 // La dernière ambiance jouée est gardée, pour le bouton « Reprendre » : pas pendant un changement de pièce (tout est coupé), ni en silence.
 // Un passage du jour à la nuit fait par l'horloge ne compte pas : c'est l'ambiance qu'on a composée qu'on garde.
 useStore.subscribe((s, p) => {
-  if (s.leaving || (s.on === p.on && (s.night === p.night || s.dusk) && s.vol === p.vol && s.weather === p.weather && s.noise === p.noise && s.fan === p.fan)) return
+  if (s.leaving || (s.on === p.on && (s.night === p.night || s.dusk) && s.vol === p.vol && s.weather === p.weather && s.noise === p.noise)) return
   const mix = s.currentMix()
   if (mix.on.length) storeLast(mix)
 })

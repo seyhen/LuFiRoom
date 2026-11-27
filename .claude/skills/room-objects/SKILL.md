@@ -158,7 +158,7 @@ Test d'écoute avant de proposer un objet : imagine le son 20 minutes de suite (
 | Atelier | accordéoniste en marinière sur le toit voisin (dehors), une valse, le soufflet qui respire | `accordion` |
 | Cabane | hibou sur son chicot, au bord du sentier (dehors de la cabane), la forêt de nuit | `owl` |
 | Cabane | chien qui dort sur le tapis tressé, le flanc qui respire avec le son (provisoire : synthèse, une respiration lente et un ronflement très doux) | `snore` |
-| Chambre | ventilateur à trois vitesses (faible, moyen, fort) : la vitesse règle le son et la rotation des pales, `docs/FAN.md` | `fan` |
+| Chambre | ventilateur de bureau (une seule vitesse : les pastilles d'intensité ont été retirées le 2026-11-27, elles agrandissaient le mixeur), `docs/FAN.md` | `fan` |
 | Phare | pêcheur qui rame au large (dehors du phare), les avirons dans l’eau calme | `oars` |
 | Cabane perchée | joueur de flûte debout sur le pont de corde (dehors), un air lent de pâtre (son synthétisé, faute d’enregistrement) | `flute` |
 | Igloo | guitariste en parka rouge sur une plaque de glace (dehors), une guitare nylon qui égrène des accords lents | `guitar` |

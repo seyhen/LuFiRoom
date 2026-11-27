@@ -14,7 +14,7 @@ Nom : « LufiRoom » (le dossier et les clés de stockage gardent « chambre-lof
 - `docs/RADIO.md` : les stations de la radio générative.
 - `docs/WEATHER.md` : la météo (sélecteur, son, ce qu'on voit dehors).
 - `docs/NOISE.md` : la carte « Bruit » (blanc, rose, brun, vert, bleu, violet ; worklet, tonalité, niveaux).
-- `docs/FAN.md` : le ventilateur de la chambre à trois vitesses (son, pales, pastilles, règle du toucher, lien) et le chien endormi de la cabane (souffle partagé entre le son et le corps).
+- `docs/FAN.md` : le ventilateur de la chambre (une seule vitesse : les pastilles d'intensité ont été retirées le 2026-11-27) et le chien endormi de la cabane (souffle partagé entre le son et le corps).
 - `docs/captures/` : captures du prototype, jour et nuit, mobile et desktop.
 
 ## Stack cible
@@ -39,7 +39,6 @@ src/
   state/noise.ts            # la carte « Bruit » : couleur et tonalité, retenues et partagées avec les ambiances (voir docs/NOISE.md)
   state/weather.ts          # la météo : les choix, ce qu'on voit et entend (voir docs/WEATHER.md)
   state/daylight.ts         # le jour et la nuit qui suivent l'heure, et la règle de la main (voir docs/ROOMS.md)
-  state/fan.ts              # le ventilateur de la chambre à trois vitesses : vitesse retenue, règle du toucher, rotation des pales (voir docs/FAN.md)
   state/snore.ts           # le souffle du chien endormi de la cabane, partagé par le son et le corps (voir docs/FAN.md, « Le chien de la cabane »)
   state/focus.ts            # le minuteur de concentration 25/5 ou 50/10
   math.ts, motion.ts        # petits utilitaires (maths, prefers-reduced-motion)
@@ -97,6 +96,7 @@ Principe clé : **une chambre est une donnée**. Les objets interactifs, les son
 - L'audio ne démarre qu'après un geste utilisateur (règle d'autoplay des navigateurs). Le premier toucher crée ou relance l'`AudioContext`.
 - Chaque hotspot est un vrai `<button>` avec `aria-label` et `aria-pressed`. Le mixeur reste utilisable sans toucher la 3D.
 - Respecter `prefers-reduced-motion` (pas de flottement de la pièce, pas d'animations de pulsation).
+- **Le mixeur du bas reste compact** (remarque du propriétaire, 2026-11-27, à propos des trois pastilles de vitesse du ventilateur) : une carte de son = un nom, un volume ; pas de pastilles ni de réglages en plus (seules les cartes « Bruit » et « Météo », communes à toutes les pièces, en ont).
 - Pas de nouvelle dépendance sans raison claire. Demander avant d'en ajouter une lourde.
 - Composants petits, un objet 3D par fichier. Pas de logique audio dans les composants 3D : ils lisent le store, l'audio s'abonne au store.
 - Le décor immobile va dans `<Static>` (il fusionne les maillages), ce qui bouge reste dehors ; le budget de dessin par pièce est dans `docs/ROOMS.md`.

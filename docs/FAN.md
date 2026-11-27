@@ -1,19 +1,14 @@
-# Le ventilateur de la chambre (3 vitesses) et le chien de la cabane
+# Le ventilateur de la chambre et le chien de la cabane
 
-Deux objets interactifs ajoutés ensemble, avec la même idée : **un réglage qu'on voit et qu'on entend**.
+Deux objets interactifs de la chambre et de la cabane : **un geste qu'on voit et qu'on entend**.
 
 ## Le ventilateur (chambre, son `fan`, carte « Bruit blanc »)
 
-- **Trois vitesses** : `low` (Faible), `mid` (Moyen, celle d'avant), `high` (Fort). `src/state/fan.ts` : types, nettoyage (`cleanFan`), règle du toucher (`fanTap`), rotation des pales, stockage.
-- **Ce que règle la vitesse**
-  - le son (`src/audio/channels/fan.ts`) : niveau (≈ −5 dB, 0, +2 à +3 dB), brillance du souffle (passe-bas et étagère d'aigus), hauteur du ronflement du moteur (74, 110, 148 Hz), battement des pales et part de souffle de la synthèse. Les changements glissent en un quart de seconde environ (un moteur ne change pas de régime d'un coup), enregistrement compris (le filtre et le niveau s'appliquent aussi à la boucle `audio/bedroom/fan`) ;
-  - les pales (`src/scene/bedroom/Fan.tsx`) : 9, 22 ou 38 rad/s ; la tête balaie au rythme des pales ; la touche de la vitesse choisie est enfoncée, le témoin ambre s'allume, deux rubans noués à la grille s'envolent d'autant plus que le vent est fort ; les rideaux et la guirlande de lunes bougent plus ou moins (`FAN_WIND`) ;
-  - `prefers-reduced-motion` : les pales tournent doucement (3, 5 ou 8 rad/s), la tête reste fixe, les rubans pendent sans battre.
-- **L'interface** (le sous-titre de la carte dit la vitesse : « brise douce », « souffle régulier », « plein vent ») : trois pastilles « Faible / Moyen / Fort » (`aria-pressed`, 44 px, style `.nz-chip`) sous le volume de la carte (`src/ui/FanControls.tsx`). Choisir une vitesse allume le ventilateur, comme choisir une couleur de bruit.
-- **La règle du toucher sur l'objet** (hotspot et 3D : `touch` du store) : éteint, un toucher l'allume à sa vitesse ; **allumé, chaque toucher passe à la vitesse suivante sans l'éteindre** ; après « Fort » il s'éteint, et **repart de « Faible »** au toucher d'après (sans cela, il se rallumerait sur « Fort » et il faudrait deux touchers de plus pour l'éteindre). Un tour complet : éteint → faible → moyen → fort → éteint. La carte du mixeur, elle, ne fait qu'allumer et éteindre : elle garde la vitesse.
-- **Mémoire** : `localStorage` `chambre-lofi.fan` (une chaîne : `"low"`, `"mid"` ou `"high"`). Une valeur abîmée donne « Moyen ».
-- **Ambiances** (`docs/MIXES.md`) : `Mix.fan` est **facultatif**, enregistré seulement si le son `fan` joue ; lien `&fan=low|mid|high`. Un lien ou une ambiance sans lui reste valide : le ventilateur garde sa vitesse. Une valeur inconnue est ignorée.
-- **Tests** : `tests/fan.test.mjs` (nettoyage, cycle du toucher, stockage, lien, ambiances).
+- **Une seule vitesse** (la « moyenne » d'avant). Il a eu trois vitesses (faible, moyen, fort) du 2026-11-24 au 2026-11-27 : les trois pastilles sous le volume de la carte agrandissaient trop le mixeur en bas de l'écran, et le propriétaire n'en voulait pas (« pas besoin d'avoir l'intensité »). Ne pas les remettre ; si une intensité revient un jour, un simple curseur dans la carte, pas des pastilles.
+- **Le son** (`src/audio/channels/fan.ts`) : souffle brun et rose modulé au rythme des pales (7,2 Hz), plus le ronflement du moteur (110 Hz) ; ou l'enregistrement `audio/bedroom/fan` en segments tirés au hasard.
+- **L'objet** (`src/scene/bedroom/Fan.tsx`) : les pales tournent à 22 rad/s (5 avec `prefers-reduced-motion`, la tête fixe, les rubans qui pendent), la tête balaie, les deux rubans noués à la grille s'envolent, le témoin ambre s'allume, la touche du milieu du socle est enfoncée (les trois touches sont du décor) ; les rideaux et la guirlande de lunes bougent à peine quand il tourne.
+- **Le toucher** : un toucher sur l'objet ou sur sa carte allume et éteint, comme tout autre son (`touch` du store ne fait plus que `toggle`).
+- **Ambiances et liens** : plus de champ `fan` dans `Mix` ni de `&fan=` dans le lien ; un ancien lien ou une ancienne ambiance qui en porte un reste valide (le champ est ignoré). L'ancienne clé `localStorage` `chambre-lofi.fan` est abandonnée, sans effet.
 
 ## Le chien de la cabane (son `snore`, carte « Chien », objet `dog`)
 

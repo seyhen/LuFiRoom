@@ -3,7 +3,6 @@ import { useFrame } from '@react-three/fiber'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { CatmullRomCurve3, TubeGeometry, Vector3, type Group, type Mesh } from 'three'
 import { isActive, useStore } from '../../state/store'
-import { FAN_SPEEDS, FAN_SPIN, FAN_SPIN_CALM } from '../../state/fan'
 import { TAU, approach } from '../../math'
 import { M, gummy } from '../materials'
 import { Batch, Part, SPH, cyl, rbox, type Item, type V3 } from '../parts'
@@ -25,8 +24,11 @@ const SPOKES: Item[] = [
 // le fil : il sort de l'arrière du socle, traîne sur le bureau et file vers la prise, derrière
 const CORD = new TubeGeometry(new CatmullRomCurve3([[0, 0.02, -0.15], [-0.05, 0.012, -0.24], [-0.2, 0.012, -0.26], [-0.32, 0.012, -0.3], [-0.36, 0.05, -0.36]].map(([x, y, z]) => new Vector3(x, y, z))), 24, 0.011, 6, false)
 
-// Les trois touches de vitesse du socle (faible, moyenne, forte, de gauche à droite à l'écran) : celle de la vitesse choisie est enfoncée
-// quand il tourne. Le témoin ambre s'allume avec lui. Les deux rubans noués à la grille s'envolent d'autant plus que le vent est fort.
+// La vitesse du ventilateur : une seule, moyenne (22 rad/s ; 5 avec `prefers-reduced-motion`).
+const SPIN = 22, SPIN_CALM = 5
+// Les trois touches du socle (décor, comme sur un vrai ventilateur rétro) : celle du milieu, la vitesse moyenne, est enfoncée quand il tourne.
+// Le témoin ambre s'allume avec lui. Les deux rubans noués à la grille s'envolent avec le vent.
+const SPEED_KEY = 1
 const KEY_UP = 0.062, KEY_DOWN = 0.05
 const KEY = rbox(0.055, 0.03, 0.04, 0.012)
 // les touches sont à l'avant du socle, du côté de la caméra : faible à gauche, fort à droite (à l'écran)
@@ -37,10 +39,9 @@ const PILOT = gummy(0xd9b078, { emissive: 0xffa631, emissiveIntensity: 0, roughn
 const RIBBONS = [{ x: -0.07, m: B.blushDeep, ph: 0 }, { x: 0.075, m: B.mintSoft, ph: 2.1 }]
 
 /**
- * Ventilateur de bureau rétro à trois vitesses : socle à trois touches (celle de la vitesse choisie est enfoncée) et son témoin, pied à rotule,
- * moteur bombé, grille à rayons, deux rubans noués à la grille, pales en pétales. Les pales tournent lentement, normalement ou vite
- * (9, 22 ou 38 rad/s) selon la vitesse, la tête oscille et les rubans s'envolent ; avec `prefers-reduced-motion`, elles tournent doucement
- * (3, 5 ou 8 rad/s), la tête reste fixe et les rubans ne battent plus.
+ * Ventilateur de bureau rétro : socle à trois touches (celle du milieu est enfoncée quand il tourne) et son témoin, pied à rotule,
+ * moteur bombé, grille à rayons, deux rubans noués à la grille, pales en pétales. Les pales tournent à 22 rad/s, la tête oscille et les
+ * rubans s'envolent ; avec `prefers-reduced-motion`, elles tournent doucement (5 rad/s), la tête reste fixe et les rubans ne battent plus.
  */
 export function Fan({ position = [0.98, 1.35, -2.45] }: { position?: V3 }) {
   const g = useRef<Group>(null!), head = useRef<Group>(null!), blades = useRef<Group>(null!)
@@ -49,18 +50,17 @@ export function Fan({ position = [0.98, 1.35, -2.45] }: { position?: V3 }) {
   useSquash('fan', g)
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05), s = spin.current, st = useStore.getState()
-    const on = isActive(st, 'fan'), idx = FAN_SPEEDS.indexOf(st.fan)
-    const table = reduceMotion ? FAN_SPIN_CALM : FAN_SPIN
-    s.speed = approach(s.speed, on ? table[st.fan] : 0, dt * 14)
-    const k = s.speed / FAN_SPIN.high // 0 à l'arrêt, 1 à pleine vitesse
+    const on = isActive(st, 'fan')
+    s.speed = approach(s.speed, on ? (reduceMotion ? SPIN_CALM : SPIN) : 0, dt * 14)
+    const k = s.speed / SPIN // 0 à l'arrêt, 1 en marche
     s.angle = (s.angle + s.speed * dt) % TAU
     // la tête balaie au rythme des pales ; elle reste fixe si l'on préfère moins de mouvement
-    s.swivel += dt * 0.55 * (s.speed / FAN_SPIN.mid)
+    s.swivel += dt * 0.55 * (s.speed / SPIN)
     blades.current.rotation.z = s.angle
     head.current.rotation.y = -0.45 + (reduceMotion ? 0 : Math.sin(s.swivel) * 0.4)
-    // les touches : celle de la vitesse choisie descend, les autres remontent
+    // les touches : celle du milieu descend, les autres restent en haut
     for (let i = 0; i < 3; i++) {
-      s.press[i] = approach(s.press[i], on && i === idx ? 1 : 0, dt * 9)
+      s.press[i] = approach(s.press[i], on && i === SPEED_KEY ? 1 : 0, dt * 9)
       const key = keys.current[i]
       if (key) {
         key.position.y = KEY_UP + (KEY_DOWN - KEY_UP) * s.press[i]

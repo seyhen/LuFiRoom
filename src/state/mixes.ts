@@ -5,7 +5,6 @@ import type { SoundId } from '../rooms/types'
 import { tr } from '../i18n'
 import { SKY_NAMES, isWeather, type WeatherKind } from './weather'
 import { NOISE_NAMES, clampTilt, cleanNoise, isNoiseColor, type NoiseSetting } from './noise'
-import { cleanFan, type FanSpeed } from './fan'
 
 /** Une ambiance : la pièce, les sons qui jouent avec leur volume, le jour / nuit, et la station si la radio joue. */
 export interface Mix {
@@ -20,8 +19,6 @@ export interface Mix {
   weather?: WeatherKind
   /** La couleur et la tonalité du bruit, si la carte « Bruit » joue (un mix sans elle reste valide). */
   noise?: NoiseSetting
-  /** La vitesse du ventilateur, si la carte « Bruit blanc » joue (un mix sans elle reste valide : vitesse moyenne). */
-  fan?: FanSpeed
 }
 
 /** Une ambiance gardée dans le navigateur. */
@@ -60,19 +57,13 @@ function withNoise({ noise, ...m }: Mix): Mix {
   return n ? { ...m, noise: n } : m
 }
 
-/** La même ambiance, avec une vitesse de ventilateur valide (ou sans). */
-function withFan({ fan, ...m }: Mix): Mix {
-  const f = cleanFan(fan)
-  return f ? { ...m, fan: f } : m
-}
-
 export function loadMixes(): SavedMix[] {
   try {
     const list = JSON.parse(localStorage.getItem(KEY) ?? '[]') as SavedMix[]
     // Ce qui ne correspond plus à une pièce ou à un son connus (une pièce retirée, un fichier abîmé) est ignoré.
     return list
       .filter((x) => x?.mix && rooms.some((r) => r.id === x.mix.room) && Array.isArray(x.mix.on))
-      .map((x) => ({ ...x, mix: withCurve(withFan(withNoise(x.mix))) }))
+      .map((x) => ({ ...x, mix: withCurve(withNoise(x.mix)) }))
       .slice(0, MAX)
   } catch {
     return []
@@ -88,7 +79,7 @@ export function loadLast(): Mix | null {
     if (!m || !rooms.some((r) => r.id === m.room) || !Array.isArray(m.on)) return null
     const known = new Set(roomById(m.room).sounds.map((s) => s.id as string))
     const on = m.on.filter((id) => known.has(id))
-    return on.length ? withCurve(withFan(withNoise({ ...m, on }))) : null
+    return on.length ? withCurve(withNoise({ ...m, on })) : null
   } catch {
     return null
   }
@@ -115,7 +106,7 @@ export const MAX_SAVED = MAX
 /** Adresse publique du site (sans « / » final), utilisée pour les liens de partage depuis l'app mobile. */
 export const PUBLIC_SITE_URL = 'https://lufiroom.an-alexcore.workers.dev'
 
-// Lien de partage : ?room=cabin&mix=fire.70,rain.60&night=1&station=veillee&weather=snow&fan=high&v=2   (son.volume en % de curseur, jour = 0, nuit = 1 ; sans v=2 : ancien lien, volumes en amplitude)
+// Lien de partage : ?room=cabin&mix=fire.70,rain.60&night=1&station=veillee&weather=snow&v=2   (son.volume en % de curseur, jour = 0, nuit = 1 ; sans v=2 : ancien lien, volumes en amplitude)
 
 /** Les paramètres du lien de partage (partie pure de `mixToUrl`, testée dans tests/). */
 export function mixQuery(m: Mix) {
@@ -131,7 +122,6 @@ export function mixQuery(m: Mix) {
     q.set('noise', m.noise.color)
     q.set('tilt', String(Math.round(m.noise.tilt * 100)))
   }
-  if (m.fan) q.set('fan', m.fan)
   return q
 }
 
@@ -156,7 +146,7 @@ export function mixFromSearch(search: string): Mix | null {
     if (Number.isFinite(n)) vol[sid as SoundId] = Math.min(1, Math.max(0, n / 100))
   }
   // Un lien d'avant la courbe d'oreille (sans `v=2`) donne des amplitudes : `withCurve` les ramène à des positions de curseur.
-  const station = q.get('station'), weather = q.get('weather'), color = q.get('noise'), fan = cleanFan(q.get('fan'))
+  const station = q.get('station'), weather = q.get('weather'), color = q.get('noise')
   if (!on.length) return null
   return withCurve({
     v: q.get('v') === String(MIX_VERSION) ? MIX_VERSION : undefined,
@@ -169,7 +159,5 @@ export function mixFromSearch(search: string): Mix | null {
     ...(on.includes('rain') ? { weather: isWeather(weather) ? weather : 'rain' } : {}),
     // La couleur et la tonalité du bruit (`tilt` en %, de -100 à 100) ; sans elles, la carte garde son réglage.
     ...(on.includes('noise') && isNoiseColor(color) ? { noise: { color, tilt: clampTilt(Number(q.get('tilt') ?? 0) / 100) } } : {}),
-    // La vitesse du ventilateur (`fan=low|mid|high`) ; sans elle, ou inconnue, le ventilateur garde sa vitesse.
-    ...(on.includes('fan') && fan ? { fan } : {}),
   })
 }
