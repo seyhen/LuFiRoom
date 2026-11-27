@@ -181,16 +181,16 @@ const CHANNELS: Record<SoundId, { build: Build; base: number }> = {
   clock: { build: clock, base: 2.7 }, // provisoire : synthèse, un battement par seconde (sonie à -32,6 LUFS, crête à -5 dB au curseur plein)
   aquarium: { build: aquarium, base: 2.2 }, // provisoire : synthèse, filet du filtre et bulles rares
   snore: { build: snore, base: 1.2 }, // provisoire : synthèse, la respiration lente d'un chien, un ronflement très doux
-  faucet: { build: faucet, base: 4.5 }, // provisoire : synthèse, le filet du robinet dans le bain plein (sonie à -27,8 LUFS au curseur plein, comme la médiane)
+  faucet: { build: faucet, base: 4.5 }, // enregistré (`loops.faucet`, son gain règle l'enregistrement) ; ce base règle la synthèse de repli : le filet du robinet dans le bain plein (sonie à -27,8 LUFS au curseur plein, comme la médiane)
   suds: { build: suds, base: 3.0 }, // provisoire : synthèse, le pétillement de la mousse
   shower: { build: shower, base: 5.0 }, // provisoire : synthèse, la douche à effet pluie dans une pièce de carreaux
-  dunes: { build: dunes, base: 1.4 }, // provisoire : synthèse, le vent des dunes (sonie à -27,7 LUFS au volume par défaut)
+  dunes: { build: dunes, base: 1.4 }, // enregistré (`loops.dunes`) ; ce base règle aussi la synthèse de repli : le vent des dunes (sonie à -27,7 LUFS au volume par défaut)
   palms: { build: palms, base: 1.9 }, // provisoire : synthèse, les palmes dans la brise (sonie à -27,4 LUFS au volume par défaut)
   oasis: { build: oasis, base: 1.4 }, // provisoire : synthèse, la source qui clapote dans la mare (sonie à -27,2 LUFS au volume par défaut)
   caravan: { build: caravan, base: 3.0 }, // provisoire : synthèse, les clochettes de la caravane (sonie à -28,3 LUFS au volume par défaut)
   capybara: { build: capybara, base: 2.5 }, // provisoire : synthèse, le bain aux yuzus du capybara (sonie à -29,8 LUFS au volume par défaut)
   ocarina: { build: ocarina, base: 1.4 }, // provisoire : synthèse, la valse de l'ocarina (sonie à -27,3 LUFS au volume par défaut)
-  jet: { build: jet, base: 0.72 }, // provisoire : synthèse, le souffle grave des moteurs entendu depuis la cabine
+  jet: { build: jet, base: 0.72 }, // enregistré (`loops.jet`, son gain règle l'enregistrement) ; ce base règle la synthèse de repli : le souffle grave des moteurs entendu depuis la cabine
   lullaby: { build: lullaby, base: 1.34 }, // provisoire : synthèse, la nappe de cordes et le violoncelle de la berceuse
   noise: { build: noise, base: 0.5 }, // sonie (pondérée A) du rose à 0,4 : celle du ventilateur et de la pluie par défaut ; couleurs égalisées dans public/noise-worklet.js
 }

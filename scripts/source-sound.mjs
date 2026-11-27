@@ -87,7 +87,13 @@ if (cmd === 'search') {
   const row = `| \`${target}\` | ${s.name.replace(/\|/g, '/')} | ${s.username} | <${s.url}> | CC0 | ${cut} | ${new Date().toISOString().slice(0, 10)} |\n`
   const doc = readFileSync(CREDITS, 'utf8')
   if (doc.includes(`\`${target}\` |`)) console.log(`(crédit déjà présent pour ${target} : à mettre à jour à la main)`)
-  else if (doc.includes(SECTION)) writeFileSync(CREDITS, doc.replace(/(## Sons Freesound[^\n]*\n(?:[^\n]*\n)*?\|[-| ]+\|\n(?:\|[^\n]*\n)*)/, `$1${row}`))
+  // CREDITS.md peut avoir des fins de ligne CRLF (Windows) : sans `\r?`, le tableau n'était pas trouvé et le crédit se perdait en silence
+  else if (doc.includes(SECTION)) {
+    const eol = doc.includes('\r\n') ? row.replace('\n', '\r\n') : row
+    const next = doc.replace(/(## Sons Freesound[^\n]*\n(?:[^\n]*\n)*?\|[-| ]+\|\r?\n(?:\|[^\n]*\n)*)/, (m) => m + eol)
+    if (next === doc) die(`Tableau des crédits introuvable dans ${CREDITS} : ajoute la ligne à la main.\n${row}`)
+    writeFileSync(CREDITS, next)
+  }
   else appendFileSync(CREDITS, `\n${SECTION}\n\nLicence **CC0** (domaine public) : aucune mention obligatoire. Aperçu MP3 de Freesound, coupé, ramené à −20 LUFS par \`npm run audio\`.\n\n| Fichier | Titre | Auteur | Source | Licence | Retouches | Ajouté le |\n|---|---|---|---|---|---|---|\n${row}`)
 
   console.log(`${out}  (${cut})\nCrédit ajouté à ${CREDITS}.\nProchaine étape : npm run audio, puis dans src/rooms/${room}.ts :\n  loops: { ${son}: { src: 'audio/${room}/${son}', gain: 0.8 } }\nPuis un mode de lecture dans le canal (voir skill source-sounds, étape 3) et le niveau (étape 4).`)

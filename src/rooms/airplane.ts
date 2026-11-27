@@ -38,7 +38,9 @@ export const airplane: Room = {
   loops: {
     ...WEATHER_LOOPS,
     // le chaton reprend l'enregistrement du ronron de la chambre (une reprise voulue par le propriétaire)
-    purr: { src: 'audio/bedroom/purr', gain: 0.45 },
+    purr: { src: 'audio/bedroom/purr', gain: 1.25 }, // 0,45 le laissait 8,8 dB sous la médiane (audio:levels)
+    // l'intérieur d'un avion en croisière (Freesound 680662, CC0)
+    jet: { src: 'audio/airplane/jet', gain: 1.8 }, // mesuré par audio:levels (0,8 : 6,9 dB sous la médiane)
   },
   stations: ['minuit', 'nuit-douce', 'brume', 'rosee'],
   playlist: PLAYLIST,

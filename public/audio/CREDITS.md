@@ -85,7 +85,7 @@ Les vingt-huit morceaux sont ceux que le propriétaire a fournis (sept le 2026-1
 ## Sons synthétisés
 
 Tant qu'un son n'a pas d'enregistrement dans `loops` de sa pièce (`src/rooms/`), il reste synthétisé en direct (moteur de la phase 1) : rien à créditer. C'est le cas de la radio, tant qu'aucune piste n'est déclarée : ses cinq stations sont calculées en direct (`src/audio/stations.ts`).
-Chaque pièce a désormais des enregistrements pour ses sons (voir les sections ci-dessus). Restent synthétisés : le robinet, la mousse et la douche de la salle de bain (`faucet`, `suds`, `shower`, aucun fichier), le vent des dunes, les palmes et la source de la mare de l'oasis (`dunes`, `palms`, `oasis`, aucun fichier), la cloche de bouée du phare, les oiseaux et les grillons du jardin de l'onsen, la pluie du marché et les vagues du phare, ainsi que la radio.
+Chaque pièce a désormais des enregistrements pour ses sons (voir les sections ci-dessus). Restent synthétisés : la mousse, la douche et le capybara de la salle de bain (`suds`, `shower`, `capybara` ; le robinet `faucet` est enregistré depuis le 2026-11-27), les palmes, la source de la mare et la caravane de l'oasis (`palms`, `oasis`, `caravan` ; le vent des dunes `dunes` est enregistré depuis le 2026-11-27), la berceuse et l'ocarina de l'avion (les moteurs `jet` sont enregistrés depuis le 2026-11-27), la cloche de bouée du phare, les oiseaux et les grillons du jardin de l'onsen, la pluie du marché et les vagues du phare, ainsi que la radio.
 
 ## Boucles ajoutées le 2026-10-17 (toit, onsen, phare, sous-marin, marché, plage, train)
 
@@ -193,3 +193,6 @@ Licence **CC0** (domaine public) : aucune mention obligatoire. Aperçu MP3 de Fr
 | `laundromat/windowpiano` | Piano improvisation | Bradovic | <https://freesound.org/people/Bradovic/sounds/171326/> | CC0 | 60 s à partir de 0 s, mono | 2026-11-15 |
 | `igloo/guitar` | Calm and thoughts.wav | Elmatute | <https://freesound.org/people/Elmatute/sounds/679746/> | CC0 | 60 s à partir de 2 s, mono | 2026-11-15 |
 | `submarine/jellies` | Resonating Ambient Drone with Distant Shimmering Voices | bassimat | <https://freesound.org/people/bassimat/sounds/875083/> | CC0 | 48 s à partir de 0 s, mono | 2026-11-15 |
+| `airplane/jet` | Airplane Interior Ambience | wesleywestmusic | <https://freesound.org/people/wesleywestmusic/sounds/680662/> | CC0 | 60 s à partir de 20 s, mono | 2026-11-27 |
+| `bathroom/faucet` | Bath running 1.wav | deleted_user_2104797 | <https://freesound.org/people/deleted_user_2104797/sounds/166328/> | CC0 | 45 s à partir de 15 s, mono | 2026-11-27 |
+| `oasis/dunes` | wind light desert day steady eerie with crickets.flac | kyles | <https://freesound.org/people/kyles/sounds/454361/> | CC0 | 60 s à partir de 20 s, stéréo | 2026-11-27 |

@@ -36,6 +36,8 @@ export const oasis: Room = {
   shelter: 'open',
   loops: {
     ...WEATHER_LOOPS,
+    // un vent léger et régulier sur le désert, quelques grillons au loin (Freesound 454361, CC0)
+    dunes: { src: 'audio/oasis/dunes', gain: 0.8 },
   },
   stations: ['soleil-bas', 'minuit', 'veillee', 'brume'],
   playlist: PLAYLIST,

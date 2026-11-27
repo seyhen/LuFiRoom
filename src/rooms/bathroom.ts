@@ -35,6 +35,8 @@ export const bathroom: Room = {
   },
   loops: {
     ...WEATHER_LOOPS,
+    // une baignoire qui se remplit (Freesound 166328, CC0)
+    faucet: { src: 'audio/bathroom/faucet', gain: 0.29 }, // mesuré par audio:levels (0,8 : 8,8 dB au-dessus de la médiane ; le base de 4,5 est fait pour la synthèse)
   },
   stations: ['rosee', 'soleil-bas', 'nuit-douce', 'brume'],
   playlist: PLAYLIST,
