@@ -91,6 +91,14 @@ export function Duffel({ position, ry = 0.4 }: { position: V3; ry?: number }) {
         {/* la poche du flanc */}
         <Part geo={rbox(0.26, 0.11, 0.025, 0.012)} m={A.suitcaseRib} p={[0, 0.14, 0.15]} castShadow={false} />
         <Part geo={SPH} m={A.steel} scale={0.012} p={[0.1, 0.17, 0.168]} castShadow={false} />
+        {/* le passepoil des deux bouts, et l'étiquette de bagage pendue à une anse */}
+        {[-1, 1].map((s) => (
+          <Part key={s} m={A.strap} p={[s * 0.25, 0.15, 0]} rotation-y={Math.PI / 2} castShadow={false}>
+            <torusGeometry args={[0.15, 0.011, 6, 24]} />
+          </Part>
+        ))}
+        <Part geo={cyl(0.003, 0.003, 0.06, 4)} m={A.steel} p={[0.1, 0.33, 0.05]} rotation-x={0.6} castShadow={false} />
+        <Part geo={rbox(0.07, 0.045, 0.006, 0.006)} m={A.suitcase} p={[0.1, 0.31, 0.09]} rotation-x={1.1} castShadow={false} />
       </Static>
     </group>
   )

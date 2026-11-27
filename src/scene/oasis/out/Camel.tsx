@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { BufferAttribute, PlaneGeometry } from 'three'
+import { BufferAttribute, CatmullRomCurve3, PlaneGeometry, TubeGeometry, Vector3 } from 'three'
 import { blob, cone, ell, pair, type Blob } from '../../blob'
 import { skin } from '../../materials'
 import { Part, SPH_LO, cyl, rbox, type V3 } from '../../parts'
@@ -95,6 +95,11 @@ export function KneelingCamel({ at, ry }: { at: [number, number]; ry: number }) 
   const skinMat = useMemo(() => skin({ roughness: 0.9, clearcoat: 0 }), [])
   const cover = useMemo(() => drape(), [])
   useEffect(() => () => cover.dispose(), [cover])
+  // la longe : du licol, elle tombe en courbe jusqu'au sable et y traîne (droite et arrêtée en l'air sur un nœud, elle faisait sucette)
+  const lead = useMemo(() => new TubeGeometry(new CatmullRomCurve3([
+    new Vector3(1.9, 1.55, 0.03), new Vector3(1.97, 0.9, 0.07), new Vector3(2.02, 0.2, 0.16), new Vector3(1.95, 0.025, 0.36), new Vector3(1.7, 0.025, 0.5),
+  ]), 24, 0.013, 5, false), [])
+  useEffect(() => () => lead.dispose(), [lead])
   const [x, z] = at, y = groundY(x, z)
   const p: V3 = [x, y - 0.02, z]
   return (
@@ -112,8 +117,8 @@ export function KneelingCamel({ at, ry }: { at: [number, number]; ry: number }) 
         ))}
         <Part geo={cyl(0.31, 0.31, 0.06, 14)} m={O.rope} p={[0.4, 0.82, 0]} rotation-z={-0.1} castShadow={false} />
         {/* la longe qui pend du licol, posée sur le sable */}
-        <Part geo={cyl(0.012, 0.012, 0.5, 5)} m={O.rope} p={[1.9, 1.3, 0.03]} rotation-z={0.15} castShadow={false} />
-        <Part geo={SPH_LO} m={O.rope} scale={0.03} p={[1.92, 1.05, 0.03]} castShadow={false} />
+        <mesh geometry={lead} material={O.rope} />
+        <Part geo={SPH_LO} m={O.rope} scale={0.03} p={[1.7, 0.03, 0.5]} castShadow={false} />
       </Static>
     </group>
   )

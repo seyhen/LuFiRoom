@@ -79,7 +79,7 @@ const SLIPPER = (() => {
   return g
 })()
 
-/** Une paire de babouches de cuir orange à la pointe relevée, posées sur le bord du tapis : la semelle sombre, l'empeigne, le contrefort. */
+/** Une paire de babouches de cuir orange à la pointe relevée, posées sur le bord du tapis : la semelle sombre, l'empeigne, la semelle intérieure, le talon écrasé. */
 export function Slippers({ position, ry = 0 }: { position: V3; ry?: number }) {
   return (
     <group position={position} rotation-y={ry}>
@@ -87,9 +87,11 @@ export function Slippers({ position, ry = 0 }: { position: V3; ry?: number }) {
         {[-0.095, 0.095].map((z, i) => (
           <group key={z} position={[0, 0, z]} rotation-y={i ? -0.12 : 0.1}>
             <mesh geometry={SLIPPER} material={D.leatherDark} position={[0, 0, 0]} castShadow receiveShadow />
-            <Part geo={SPH} m={D.leather} scale={[0.1, 0.034, 0.066]} p={[0.07, 0.07, 0]} castShadow={false} />
-            <Part geo={SPH} m={D.leather} scale={[0.07, 0.045, 0.062]} p={[-0.07, 0.078, 0]} castShadow={false} />
-            <Part geo={SPH} m={D.leatherCream} scale={[0.04, 0.012, 0.03]} p={[0.07, 0.102, 0]} castShadow={false} />
+            {/* la semelle intérieure crème qu'on voit par l'ouverture, l'empeigne qui couvre l'avant, le talon écrasé à plat (une boule
+                d'empeigne, une boule de talon et un point crème dessus se lisaient comme des petits pains) */}
+            <Part geo={SPH} m={D.leatherCream} scale={[0.12, 0.008, 0.055]} p={[-0.04, 0.066, 0]} castShadow={false} />
+            <Part geo={SPH} m={D.leather} scale={[0.12, 0.045, 0.068]} p={[0.09, 0.064, 0]} castShadow={false} />
+            <Part geo={SPH} m={D.leather} scale={[0.05, 0.014, 0.062]} p={[-0.125, 0.072, 0]} castShadow={false} />
             <Part m={D.leather} p={[0.22, 0.06, 0]} castShadow={false}><coneGeometry args={[0.02, 0.06, 7]} /></Part>
           </group>
         ))}
