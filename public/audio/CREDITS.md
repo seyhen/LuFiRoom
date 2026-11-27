@@ -75,6 +75,17 @@ Le bruit blanc, rose, brun, vert, bleu et violet est généré en direct par `pu
 | `radio/tokyo-drizzle` | Tokyo Drizzle | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 60 | 2026-10-18 |
 | `radio/kyoto-drizzle` | Kyoto Drizzle | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 60 | 2026-10-18 |
 | `radio/gentle-drizzle` | Gentle Drizzle | RhythmicInk | fichier fourni par le propriétaire du projet (m4a) | à confirmer par le propriétaire | 64 | 2026-10-18 |
+| `radio/late-night-study` | Late Night Study Session | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 155 s) | à confirmer par le propriétaire | 74 | 2026-11-27 |
+| `radio/midnight-rain-ambience` | Midnight Rain Ambience | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 164 s) | à confirmer par le propriétaire | 72 | 2026-11-27 |
+| `radio/midnight-rain-ambience-2` | Midnight Rain Ambience II | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 163 s) | à confirmer par le propriétaire | 72 | 2026-11-27 |
+| `radio/rainy-study-ambience` | Rainy Study Ambience | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 176 s) | à confirmer par le propriétaire | 72 | 2026-11-27 |
+| `radio/quiet-midnight-study` | Quiet Midnight Study | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 163 s) | à confirmer par le propriétaire | 72 | 2026-11-27 |
+| `radio/midnight-lofi-chill` | Midnight Lofi Chill | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 177 s) | à confirmer par le propriétaire | 72 | 2026-11-27 |
+| `radio/rainy-night-study` | Rainy Night Study | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 164 s) | à confirmer par le propriétaire | 73 | 2026-11-27 |
+| `radio/midnight-focus` | Midnight Focus | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 176 s) | à confirmer par le propriétaire | 75 | 2026-11-27 |
+| `radio/midnight-rain-study` | Midnight Rain Study | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 162 s) | à confirmer par le propriétaire | 75 | 2026-11-27 |
+| `radio/rainy-focus-session` | Rainy Focus Session | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 160 s) | à confirmer par le propriétaire | 73 | 2026-11-27 |
+| `radio/deep-rain-focus` | Deep Rain Focus | RhythmicInk | fichier fourni par le propriétaire du projet (m4a, 163 s) | à confirmer par le propriétaire | 72 | 2026-11-27 |
 
 ## Sons d'interface
 
