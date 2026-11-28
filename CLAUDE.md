@@ -66,6 +66,7 @@ src/
     buffers.ts              # bruits en boucle sans couture, gouttes, crépitement, ronron
     recordings.ts           # chargement Opus/MP3, boucles en fondu, repli sur la synthèse
     session.ts              # Media Session : titre, pause / lecture depuis l'écran verrouillé
+    background.ts           # l'app Android : service de lecture de premier plan tant qu'un son joue (voir docs/MOBILE.md)
     stations.ts             # les stations de la radio générative (accords, rythmes, timbres) ; chaque pièce choisit les siennes
     events.ts               # canal d'évènements ponctuels (tasse qui tinte, page qui se tourne)
     noiseGen.ts             # repli de la carte « Bruit » sans AudioWorklet (mêmes formules que public/noise-worklet.js)

@@ -26,9 +26,9 @@ Il faut Android Studio (et son SDK) pour Android, et un Mac avec Xcode pour iOS 
 - **Le son en arrière-plan** :
   - iOS : mode d'arrière-plan « audio » (`Info.plist`, `UIBackgroundModes`) et session audio `.playback` (`AppDelegate.swift`) :
     le son continue écran verrouillé et n'est pas coupé par le bouton silencieux.
-  - Android : la WebView continue de jouer tant que le système garde l'app. **À vérifier sur un vrai téléphone** : si Android
-    coupe le son après quelques minutes d'écran éteint, il faudra un service de premier plan avec sa notification de lecture
-    (un petit plugin natif).
+  - Android (2026-11-28) : un **service de premier plan « lecture de médias »** tourne tant qu'un son joue (`src/audio/background.ts`, chargé par `main.tsx` sur Android seulement ; plugin `@capawesome-team/capacitor-android-foreground-service`, MIT). Sans lui, Android peut couper la WebView après quelques minutes d'écran éteint. Il affiche une notification discrète (canal « Ambiance en cours », importance basse, sans son) : « LufiRoom », le nom de la pièce, un bouton « Mettre en pause » qui coupe tout ; il s'arrête dès que tout se tait (silence, minuteur, Pause). Manifeste : permissions `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_MEDIA_PLAYBACK`, `POST_NOTIFICATIONS`, `WAKE_LOCK`, et le service avec `foregroundServiceType="mediaPlayback"` (le plugin ne propose pas ce type : appelé sans type, Android prend celui du manifeste). Icône de la barre d'état : `res/drawable/ic_stat_lufiroom.xml` (une note blanche). Au premier son, Android 13+ demande la permission d'afficher les notifications ; refusée, le service garde quand même le son. **Jamais construit ni essayé** (pas d'Android Studio ici) : à vérifier au premier essai sur téléphone (le son écran éteint 10 minutes, la notification, le bouton Pause, l'arrêt du service au silence).
+  - Pas encore de commandes de lecture natives sur l'écran verrouillé d'Android (la notification n'a que Pause) : il faudrait un plugin `MediaSession` natif.
+  - iOS : la page déclare déjà ses commandes (`src/audio/session.ts`, Media Session). Que la WebView d'iOS les montre sur l'écran verrouillé quand le son vient de Web Audio est **à vérifier sur un iPhone** ; sinon il faudra un petit plugin natif (`MPNowPlayingInfoCenter`, `MPRemoteCommandCenter`).
 - **Polices embarquées** (`@fontsource/*`, latin seulement, 127 Ko) : rien n'est demandé à Google, tout marche hors ligne.
 - **Liens de partage** : dans l'app, ils pointent vers le site (`PUBLIC_SITE_URL` dans `src/state/mixes.ts`), pas vers `https://localhost`.
   Ouvrir un lien partagé *dans* l'app demande des App Links (Android) et des Universal Links (iOS), pas encore faits.
@@ -42,8 +42,7 @@ Il faut Android Studio (et son SDK) pour Android, et un Mac avec Xcode pour iOS 
 
 - **Bloquant : licences de la musique de la radio.** Les pistes de `public/audio/radio/` sont notées « à confirmer par le propriétaire »
   dans `public/audio/CREDITS.md` (dont une reprise, « Melancholic Lo-Fi Jazz Cover »). Il faut une preuve de licence commerciale, sinon retirer les pistes.
-- **Le son en arrière-plan, à tester sur de vrais téléphones** : écran verrouillé et plusieurs minutes d'écran éteint. Android : si le son se coupe,
-  il faut un service de premier plan et sa notification de lecture.
+- **Le son en arrière-plan, à tester sur de vrais téléphones** : écran verrouillé et plusieurs minutes d'écran éteint (le service de lecture Android est en place mais jamais essayé ; les commandes de l'écran verrouillé d'iOS sont à vérifier).
 - Compléter l'adresse de contact des pages de confidentialité, puis les déployer : l'adresse doit répondre avant l'envoi aux stores.
 - Iconographie : vérifier les icônes sur un vrai appareil (zone sûre de l'icône adaptative Android).
 - Taille : réglé, un seul format de son par plateforme (123 Mo copiés dans Android, 135 Mo dans iOS, le 2026-11-27). Toute nouvelle piste de radio ajoute environ 3 Mo.

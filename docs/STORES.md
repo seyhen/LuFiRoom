@@ -133,6 +133,8 @@ Les exigences des stores évoluent : revérifier les tailles dans App Store Conn
 - [ ] Keystore de signature créé, **sauvegardé à deux endroits hors du dépôt**, mots de passe notés (le perdre empêche toute mise à jour sans la signature Play App Signing) ; activer Play App Signing.
 - [ ] Construire un bundle `.aab` en release (`./gradlew bundleRelease`), tester l'APK de release sur un vrai téléphone (son en arrière-plan, hors ligne).
 - [ ] Niveau d'API cible conforme à l'exigence actuelle de Google Play.
+- [ ] **Déclaration du service de premier plan** (Play Console, « Contenu de l'application » > « Autorisations de services de premier plan ») : type « Lecture de médias » ; justification : « l'appli joue des ambiances sonores (pluie, musique, bruit blanc) qui doivent continuer écran éteint, comme un lecteur de musique ; le service ne tourne que pendant la lecture et s'arrête au silence » ; Google demande une courte vidéo de la fonction (lancer un son, éteindre l'écran, la notification de lecture).
+- [ ] Permission de notification (Android 13+) : demandée au premier son, seulement pour la notification de lecture ; rien à déclarer de plus dans « Sécurité des données » (aucune donnée collectée).
 
 **iOS**
 - [ ] Équipe de signature choisie dans Xcode, profil de distribution, archive, envoi via Xcode ou Transporter, test via TestFlight.

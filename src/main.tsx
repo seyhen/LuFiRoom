@@ -20,6 +20,8 @@ import { Capacitor } from '@capacitor/core'
 
 // Le service worker (hors ligne, mises à jour) sert le site. L'app mobile embarque déjà tous ses fichiers : pas de service worker.
 if (!Capacitor.isNativePlatform()) registerSW({ immediate: true })
+// L'app Android : un service de lecture garde le son écran éteint (src/audio/background.ts).
+if (Capacitor.getPlatform() === 'android') void import('./audio/background')
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

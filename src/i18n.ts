@@ -84,6 +84,10 @@ const EN: Record<string, string> = {
   '50 min · pause 10 min': '50 min · 10 min break',
   Travail: 'Work',
   Pause: 'Break',
+  // la notification de lecture de l'app Android
+  'Ambiance en cours': 'Ambience playing',
+  'Le son continue quand l’écran est éteint': 'Keeps the sound going with the screen off',
+  'Mettre en pause': 'Pause',
   'lofi · 28 morceaux': 'lofi · 28 tracks',
   nuit: 'night',
   'de nuit': 'at night',
